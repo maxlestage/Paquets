@@ -1,157 +1,37 @@
-//! The website of Paquets, in Rust with Yew (WebAssembly), in English,
-//! French and Spanish, with its documentation hub.
+//! `cargo run`: the website, with the live demo (`/demo`, `/api/todos`), on
+//! `http://localhost:3000` (`PORT` on Heroku). Run it from `site/`, after building the
+//! browser bundle (see `README.md`).
+//!
+//! `cargo run -- export dist`: the whole site as static files in `dist/`, for GitHub
+//! Pages. `BASE_PATH` (e.g. `/Paquets`) prefixes every link, `SITE_URL` (e.g.
+//! `https://maxlestage.github.io/Paquets`) makes the absolute URLs.
 
-mod components;
-mod data;
-mod docs;
-mod dom;
-mod highlight;
-mod i18n;
-mod route;
-
-use gloo_events::EventListener;
-use gloo_timers::callback::Timeout;
-use yew::prelude::*;
-
-use components::layout::{Cursor, Footer, Loader, Nav};
-use components::sections::{
-    Cta, Deploy, DocsPreview, Features, Hero, Journey, Marquee, Numbers, Packages, Showcase,
-};
-use docs::{DocsHome, DocsPage};
-use i18n::{Lang, LangCtx};
-use route::Route;
-
-#[component]
-fn Home() -> Html {
-    let t = i18n::use_lang().lang.texts();
-    use_effect_with(t.meta_title, |title| dom::document().set_title(title));
-    html! {
-        <>
-            <Hero />
-            <Marquee />
-            <Packages />
-            <Showcase />
-            <Features />
-            <Numbers />
-            <Journey />
-            <Deploy />
-            <DocsPreview />
-            <Cta />
-        </>
+#[cfg(not(target_arch = "wasm32"))]
+fn main() -> std::io::Result<()> {
+    let mut args = std::env::args().skip(1);
+    match args.next().as_deref() {
+        Some("export") => {
+            let dir = args.next().unwrap_or_else(|| "dist".into());
+            let base = std::env::var("BASE_PATH").unwrap_or_default();
+            let site_url = std::env::var("SITE_URL").ok();
+            let runtime = tokio::runtime::Builder::new_multi_thread()
+                .enable_all()
+                .build()?;
+            let files = runtime.block_on(paquets_site::server::export::export(
+                std::path::Path::new(&dir),
+                &base,
+                site_url,
+            ))?;
+            println!("📦 {files} files written to {dir}");
+            Ok(())
+        }
+        Some(other) => {
+            eprintln!("unknown command {other:?}: run without arguments, or `export <dir>`");
+            std::process::exit(2);
+        }
+        None => paquets_site::server::run(),
     }
 }
 
-/// Scrolls to the section of the hash (`#packages`…), once the home page is
-/// shown.
-fn scroll_to_section(smooth: bool) {
-    let hash = dom::window().location().hash().unwrap_or_default();
-    let id = hash.trim_start_matches('#');
-    if id.is_empty() || id.starts_with('/') {
-        return;
-    }
-    if let Some(el) = dom::document().get_element_by_id(id) {
-        if id == "top" {
-            dom::scroll_top(smooth);
-        } else {
-            dom::scroll_to(&el, smooth);
-        }
-    }
-}
-
-#[component]
-fn App() -> Html {
-    let lang = use_state(Lang::detect);
-    let route = use_state(route::current);
-    let loaded = use_state(|| false);
-
-    {
-        let route = route.clone();
-        use_effect_with((), move |_| {
-            let listener = EventListener::new(&dom::window(), "hashchange", move |_| {
-                let next = route::current();
-                // A section of the home page, from the home page: the browser
-                // already scrolls (smoothly, thanks to the CSS).
-                if *route != next {
-                    route.set(next);
-                } else if next == Route::Home {
-                    scroll_to_section(true);
-                }
-            });
-            move || drop(listener)
-        });
-    }
-    {
-        let loaded = loaded.clone();
-        let docs = route.is_docs();
-        use_effect_with((), move |_| {
-            let delay = match (dom::reduced_motion(), docs) {
-                (true, _) => 0,
-                (false, true) => 650,
-                (false, false) => 1900,
-            };
-            let timeout = Timeout::new(delay, move || loaded.set(true));
-            move || drop(timeout)
-        });
-    }
-    use_effect_with(*loaded, |loaded| {
-        if *loaded && let Some(body) = dom::document().body() {
-            let _ = body.class_list().add_1("is-loaded");
-        }
-    });
-    use_effect_with(*lang, |lang| {
-        if let Some(root) = dom::document().document_element() {
-            let _ = root.set_attribute("lang", lang.code());
-        }
-    });
-    // Scroll effects and reveals start again on every screen change (home,
-    // docs hub, a docs page).
-    let screen = match &*route {
-        Route::Home => "home".to_owned(),
-        Route::DocsHome => "docs".to_owned(),
-        Route::Doc { slug, .. } => (*slug).to_owned(),
-    };
-    use_effect_with((screen, *lang), |_| {
-        let effects = components::effects::start();
-        let reveal = dom::reveal_on_scroll();
-        move || {
-            drop(effects);
-            drop(reveal);
-        }
-    });
-    use_effect_with((*route).clone(), |route| {
-        if *route == Route::Home {
-            scroll_to_section(false);
-        }
-    });
-
-    let context = LangCtx {
-        lang: *lang,
-        set: {
-            let lang = lang.clone();
-            Callback::from(move |l: Lang| {
-                l.save();
-                lang.set(l);
-            })
-        },
-    };
-    html! {
-        <ContextProvider<LangCtx> {context}>
-            <Loader done={*loaded} />
-            <Cursor />
-            <Nav docs={route.is_docs()} />
-            <main class={classes!(route.is_docs().then_some("main--docs"))}>
-                { match &*route {
-                    Route::Home => html! { <Home /> },
-                    Route::DocsHome => html! { <DocsHome /> },
-                    Route::Doc { slug, anchor } => html! { <DocsPage slug={*slug} anchor={anchor.clone()} /> },
-                } }
-            </main>
-            <Footer />
-            <div class="noise" aria-hidden="true"></div>
-        </ContextProvider<LangCtx>>
-    }
-}
-
-fn main() {
-    yew::Renderer::<App>::new().render();
-}
+#[cfg(target_arch = "wasm32")]
+fn main() {}

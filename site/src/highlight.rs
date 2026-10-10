@@ -301,6 +301,67 @@ pub fn truncate(tokens: &[(Kind, String)], limit: usize) -> Tokens {
     out
 }
 
+/// Escapes `&`, `<`, `>` and `"` for HTML.
+pub fn escape(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    for c in text.chars() {
+        match c {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            '"' => out.push_str("&quot;"),
+            _ => out.push(c),
+        }
+    }
+    out
+}
+
+/// The HTML of the tokens: `<span class="t-…">` around each colored token.
+pub fn html(tokens: &[(Kind, String)]) -> String {
+    let mut out = String::new();
+    for (kind, text) in tokens {
+        if *kind == Kind::Plain {
+            out.push_str(&escape(text));
+        } else {
+            out.push_str(&format!(
+                "<span class=\"{}\">{}</span>",
+                kind.class(),
+                escape(text)
+            ));
+        }
+    }
+    out
+}
+
+/// Like [`html`], one `<span class="ln" style="--l:N">` per line (the lines appear
+/// one after the other, in CSS).
+pub fn lines_html(tokens: &[(Kind, String)]) -> String {
+    let mut out = String::from("<span class=\"ln\" style=\"--l:0\">");
+    let mut line = 0;
+    for (kind, text) in tokens {
+        for (n, part) in text.split('\n').enumerate() {
+            if n > 0 {
+                line += 1;
+                out.push_str(&format!("</span>\n<span class=\"ln\" style=\"--l:{line}\">"));
+            }
+            if part.is_empty() {
+                continue;
+            }
+            if *kind == Kind::Plain {
+                out.push_str(&escape(part));
+            } else {
+                out.push_str(&format!(
+                    "<span class=\"{}\">{}</span>",
+                    kind.class(),
+                    escape(part)
+                ));
+            }
+        }
+    }
+    out.push_str("</span>");
+    out
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -343,6 +404,15 @@ mod tests {
         assert_eq!(kinds(&t, Kind::Type), ["[dependencies]"]);
         assert_eq!(kinds(&t, Kind::String), ["\"0.1\""]);
         assert_eq!(kinds(&t, Kind::Function), ["paquets "]);
+    }
+
+    #[test]
+    fn renders_lines() {
+        let html = lines_html(&tokenize("let s = \"<a>\";\n// two"));
+        assert_eq!(
+            html,
+            "<span class=\"ln\" style=\"--l:0\"><span class=\"t-kw\">let</span> s <span class=\"t-punct\">=</span> <span class=\"t-str\">&quot;&lt;a&gt;&quot;</span><span class=\"t-punct\">;</span></span>\n<span class=\"ln\" style=\"--l:1\"><span class=\"t-com\">// two</span></span>"
+        );
     }
 
     #[test]
