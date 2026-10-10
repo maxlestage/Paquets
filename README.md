@@ -163,8 +163,8 @@ API reference: [docs.rs/paquets](https://docs.rs/paquets).
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
 
 1. Tap **Deploy to Heroku**, choose an app name, tap **Deploy app**. Heroku builds the
-   [`Dockerfile`](Dockerfile): the website and its live demo (`/demo`, `/api/todos`), served by
-   Paquets itself.
+   [`Dockerfile`](Dockerfile): the website, which is itself a Paquets app, with its live demo
+   (`/demo`, `/api/todos`).
 2. Automatic deploys of `master`: in GitHub, *Settings → Secrets and variables → Actions*, add the
    secret `HEROKU_API_KEY` (Heroku → *Account settings* → *API Key*) and the variable
    `HEROKU_APP_NAME`. [`heroku.yml`](.github/workflows/heroku.yml) then deploys every merge.
@@ -203,7 +203,7 @@ published first, each from its own repository in the same way; the workflow chec
 cargo test --workspace                     # the crate, the CLI, the examples
 cargo run --example todo                   # the demo app on http://localhost:3000
 cargo run -- new my-app --path .           # the CLI, with this checkout of Paquets
-cd site && trunk serve                     # the website (Yew + WebAssembly)
+cd site && cargo run                       # the website, itself a Paquets app (see site/README.md)
 ```
 
 | Folder | Contents |
@@ -212,7 +212,7 @@ cd site && trunk serve                     # the website (Yew + WebAssembly)
 | [`macros/`](macros) | `#[model]` and `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` and `todo` (the app deployed on Heroku) |
 | [`docs/`](docs) | the documentation, in English, French and Spanish |
-| [`site/`](site) | the website, in Rust with Yew, compiled to WebAssembly |
+| [`site/`](site) | the website: a Paquets app (pages rendered by active, islands in WebAssembly), exported to static files for GitHub Pages |
 
 ## License
 

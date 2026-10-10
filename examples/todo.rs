@@ -4,9 +4,7 @@
 //!     cargo run --example todo                                  # http://localhost:3000
 //!     DATABASE_URL=sqlite://todo.db cargo run --example todo    # kept in a file
 //!
-//! This is also the app deployed by the "Deploy to Heroku" button of the repository:
-//! there, `public/` holds the Paquets website, served at `/`, and the to-do list is at
-//! `/demo`.
+//! The website of the repository (`site/`) includes the same demo at `/demo`.
 
 use paquets::prelude::*;
 

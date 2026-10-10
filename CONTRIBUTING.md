@@ -14,9 +14,10 @@ cargo clippy --lib --no-default-features --features client --target wasm32-unkno
 cargo test --workspace --all-features
 ```
 
-The website is a separate crate: if you change `site/` or `docs/`, also run
-`cargo fmt --check`, `cargo clippy --target wasm32-unknown-unknown -- -D warnings` and
-`cargo test` in `site/` (the tests check every documentation page and link).
+The website (`site/`) is a Paquets app in its own crate: if you change `site/` or
+`docs/`, also run `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`,
+`cargo clippy --lib --target wasm32-unknown-unknown -- -D warnings` and `cargo test` in
+`site/` (the tests check every documentation page and link). See `site/README.md`.
 
 ## Branches
 
