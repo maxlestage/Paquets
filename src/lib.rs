@@ -39,8 +39,8 @@
 //!
 //! ## In handlers
 //!
-//! A handler is an `async` function (or closure) that takes a [`Request`] and
-//! returns anything that becomes a response: text, [`Json`], a [`Page`], a status,
+//! A handler is an `async` function (or closure) that takes a [`Request`](vitesse::Request) and
+//! returns anything that becomes a response: text, [`Json`](vitesse::Json), a [`Page`], a status,
 //! a `Result`… Use `?` on any error: database errors become `404`, `409` or `400`,
 //! the others `500` (see [`Error`]).
 //!
@@ -116,7 +116,7 @@ pub use error::{Error, Result};
 #[cfg(not(target_arch = "wasm32"))]
 pub use page::{Page, THEME};
 #[cfg(not(target_arch = "wasm32"))]
-pub use shield::default_shield;
+pub use shield::{default_shield, shield};
 
 /// Front end: views, state, SEO tags, islands ([active](https://github.com/maxlestage/Active)).
 pub use active;
