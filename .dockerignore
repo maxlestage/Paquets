@@ -1,0 +1,5 @@
+target
+site/target
+site/dist
+.git
+*.db
