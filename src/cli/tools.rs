@@ -80,6 +80,75 @@ pub fn wasm_bindgen_version() -> Option<String> {
     out.split_whitespace().nth(1).map(str::to_owned)
 }
 
+/// Where `cargo install` puts programs (`$CARGO_HOME/bin`, `~/.cargo/bin` by default).
+fn cargo_bin() -> Option<PathBuf> {
+    let home = std::env::var_os("CARGO_HOME")
+        .map(PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("HOME")
+                .or_else(|| std::env::var_os("USERPROFILE"))
+                .map(|home| PathBuf::from(home).join(".cargo"))
+        })?;
+    Some(home.join("bin"))
+}
+
+/// The name of the prebuilt wasm-bindgen archive for this system, if there is one.
+fn wasm_bindgen_target() -> Option<&'static str> {
+    match (std::env::consts::OS, std::env::consts::ARCH) {
+        ("linux", "x86_64") => Some("x86_64-unknown-linux-musl"),
+        ("linux", "aarch64") => Some("aarch64-unknown-linux-gnu"),
+        ("macos", "x86_64") => Some("x86_64-apple-darwin"),
+        ("macos", "aarch64") => Some("aarch64-apple-darwin"),
+        ("windows", "x86_64") => Some("x86_64-pc-windows-msvc"),
+        _ => None,
+    }
+}
+
+/// Installs the prebuilt `wasm-bindgen` of GitHub's releases in `~/.cargo/bin`, with
+/// `curl` and `tar` (present on Linux, macOS and Windows 10+). `false` if it did not
+/// work, so that the caller compiles it instead.
+pub fn download_wasm_bindgen(version: &str) -> bool {
+    let (Some(target), Some(bin)) = (wasm_bindgen_target(), cargo_bin()) else {
+        return false;
+    };
+    let name = format!("wasm-bindgen-{version}-{target}");
+    let url = format!(
+        "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/{version}/{name}.tar.gz"
+    );
+    let dir = std::env::temp_dir().join(format!("paquets-{name}"));
+    let archive = dir.join("wasm-bindgen.tar.gz");
+    let program = if cfg!(windows) {
+        "wasm-bindgen.exe"
+    } else {
+        "wasm-bindgen"
+    };
+    let quiet = |command: &mut Command| {
+        command
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .is_ok_and(|s| s.success())
+    };
+    let done = std::fs::create_dir_all(&dir).is_ok()
+        && std::fs::create_dir_all(&bin).is_ok()
+        && quiet(
+            Command::new("curl")
+                .args(["-sSfL", "-o"])
+                .arg(&archive)
+                .arg(&url),
+        )
+        && quiet(
+            Command::new("tar")
+                .arg("-xzf")
+                .arg(&archive)
+                .arg("-C")
+                .arg(&dir),
+        )
+        && std::fs::copy(dir.join(&name).join(program), bin.join(program)).is_ok();
+    let _ = std::fs::remove_dir_all(&dir);
+    done && wasm_bindgen_version().as_deref() == Some(version)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

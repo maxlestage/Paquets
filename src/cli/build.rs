@@ -83,14 +83,17 @@ fn islands(manifest: &str, release: bool) -> Result<(), String> {
     let wanted = tools::lock_version(&lock, "wasm-bindgen")
         .ok_or("wasm-bindgen is not in Cargo.lock: add `wasm-bindgen = \"0.2\"` for wasm32")?;
     if tools::wasm_bindgen_version().as_deref() != Some(wanted.as_str()) {
-        println!("   Installing wasm-bindgen-cli {wanted} (once, it matches Cargo.lock)…");
-        tools::run(Command::new("cargo").args([
-            "install",
-            "wasm-bindgen-cli",
-            "--version",
-            &wanted,
-            "--locked",
-        ]))?;
+        println!("   Installing wasm-bindgen {wanted} (once, it matches Cargo.lock)…");
+        if !tools::download_wasm_bindgen(&wanted) {
+            // No prebuilt binary for this system (or no network to GitHub): compile it.
+            tools::run(Command::new("cargo").args([
+                "install",
+                "wasm-bindgen-cli",
+                "--version",
+                &wanted,
+                "--locked",
+            ]))?;
+        }
     }
 
     let dir = if profile == "dev" { "debug" } else { profile };
