@@ -1,0 +1,72 @@
+[package]
+name = "paquets-site"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "The website and documentation of Paquets, written with Paquets (and active)."
+
+# Standalone crate: not part of the Paquets build (the root Cargo.toml excludes `site`).
+[workspace]
+
+# The library holds what the server and the browser share (texts, routes, islands) and,
+# compiled to WebAssembly, the browser bundle. The binary is the server (and the static
+# export for GitHub Pages).
+[lib]
+name = "paquets_site"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "paquets-site"
+path = "src/main.rs"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+paquets = { path = ".." }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+paquets = { path = "..", default-features = false, features = ["client"] }
+wasm-bindgen = "=0.2.129"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+  "AddEventListenerOptions",
+  "Clipboard",
+  "CssStyleDeclaration",
+  "Document",
+  "DomRect",
+  "DomStringMap",
+  "DomTokenList",
+  "Element",
+  "EventTarget",
+  "HtmlDialogElement",
+  "HtmlElement",
+  "HtmlInputElement",
+  "IntersectionObserver",
+  "IntersectionObserverEntry",
+  "IntersectionObserverInit",
+  "KeyboardEvent",
+  "Location",
+  "MediaQueryList",
+  "MouseEvent",
+  "Navigator",
+  "NodeList",
+  "PointerEvent",
+  "Response",
+  "Storage",
+  "Window",
+] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+# The browser bundle: `cargo build --lib --target wasm32-unknown-unknown --profile wasm-release`.
+[profile.wasm-release]
+inherits = "release"
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

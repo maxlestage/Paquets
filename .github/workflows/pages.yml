@@ -1,0 +1,103 @@
+# Publishes the website on GitHub Pages: https://<owner>.github.io/<repository>/
+# (static files exported by the site's own server: `paquets-site export`).
+#
+# Started after every merge into master by ci.yml, by a direct push to master
+# that changes the site or the docs, and by hand (Actions → Pages → Run workflow).
+#
+# One-time setup, possible from the GitHub app or the mobile website:
+# Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Until then, the run is skipped with a notice instead of failing.
+
+name: Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "site/**"
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: Is GitHub Pages on?
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.build_type' 2>/dev/null | grep -q workflow; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=GitHub Pages is off::Settings → Pages → Source: GitHub Actions, then run this workflow again."
+            {
+              echo "### GitHub Pages is not enabled yet"
+              echo "Settings → Pages → Build and deployment → Source: **GitHub Actions**, then Actions → Pages → Run workflow."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  build:
+    name: Build
+    needs: check
+    if: needs.check.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: site
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Islands (WebAssembly)
+        run: |
+          cargo build --lib --target wasm32-unknown-unknown --profile wasm-release
+          version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')
+          curl -sSfL "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/${version}/wasm-bindgen-${version}-x86_64-unknown-linux-musl.tar.gz" \
+            | tar -xz --strip-components=1 -C "$HOME/.cargo/bin"
+          wasm-bindgen --target web --no-typescript --out-dir pkg target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
+      # Every page rendered by the site's own server code, links behind the
+      # repository's path.
+      - name: Static export
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+        run: cargo run --release -- export dist
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

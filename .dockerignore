@@ -1,0 +1,6 @@
+target
+site/target
+site/dist
+site/pkg
+.git
+*.db

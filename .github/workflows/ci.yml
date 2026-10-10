@@ -1,0 +1,167 @@
+# Tests every push, then merges the branch into master automatically.
+#
+# - rust: format, clippy (server, browser, every feature), tests, docs, the
+#   crates.io packages;
+# - template: `paquets new` (full and minimal), and the generated projects pass
+#   their own checks;
+# - site: the website (a Paquets app: active pages, WebAssembly islands) and its
+#   documentation, exported to static files;
+# - merge: when everything is green, the branch is merged into master (except
+#   master itself and branches named wip/...), then the website (pages.yml) and
+#   the Heroku app (heroku.yml) are deployed: a push made by a workflow starts no
+#   other workflow, so they are started explicitly.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    name: Crate (fmt, clippy, tests, docs, package)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - name: Clippy (server, default features)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Clippy (server, every feature)
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Clippy (browser, wasm32)
+        run: cargo clippy --lib --no-default-features --features client --target wasm32-unknown-unknown -- -D warnings
+      - run: cargo test --workspace
+      - run: cargo test --workspace --all-features
+      - name: Documentation
+        run: cargo doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: -D warnings
+      # paquets-macros is checked completely. paquets can only be verified by
+      # crates.io once vitesse, securite, memoire-orm and active are published
+      # there: its file list is checked here (see release.yml).
+      - name: crates.io packages
+        run: |
+          cargo package -p paquets-macros --allow-dirty
+          cargo package -p paquets --list --allow-dirty
+
+  msrv:
+    name: MSRV (Rust 1.88)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.88
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo check --workspace --lib --bins --tests --examples
+
+  template:
+    name: paquets new (generated projects)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - name: Generate the projects
+        run: |
+          cargo build --bin paquets
+          mkdir -p "$RUNNER_TEMP/apps"
+          cd "$RUNNER_TEMP/apps"
+          "$GITHUB_WORKSPACE/target/debug/paquets" new demo --path "$GITHUB_WORKSPACE"
+          "$GITHUB_WORKSPACE/target/debug/paquets" new mini --minimal --path "$GITHUB_WORKSPACE"
+      - name: Check the projects
+        env:
+          CARGO_TARGET_DIR: ${{ github.workspace }}/target/apps
+        run: |
+          for app in demo mini; do
+            echo "::group::$app"
+            cd "$RUNNER_TEMP/apps/$app"
+            cargo fmt --check
+            cargo clippy --all-targets -- -D warnings
+            cargo test
+            echo "::endgroup::"
+          done
+          cd "$RUNNER_TEMP/apps/demo"
+          cargo clippy --lib --target wasm32-unknown-unknown -- -D warnings
+
+  site:
+    name: Website (active, WebAssembly, static export)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: site
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo clippy --lib --target wasm32-unknown-unknown -- -D warnings
+      # Native tests: translations, routes, Markdown, every page of docs/ (in
+      # English, French and Spanish, with their links), every route answers.
+      - run: cargo test
+      - name: Islands (WebAssembly)
+        run: |
+          cargo build --lib --target wasm32-unknown-unknown --profile wasm-release
+          version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')
+          curl -sSfL "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/${version}/wasm-bindgen-${version}-x86_64-unknown-linux-musl.tar.gz" \
+            | tar -xz --strip-components=1 -C "$HOME/.cargo/bin"
+          wasm-bindgen --target web --no-typescript --out-dir pkg target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
+      # The same command as pages.yml: the static version for GitHub Pages.
+      - name: Static export
+        run: BASE_PATH="/${{ github.event.repository.name }}" cargo run --release -- export dist
+
+  merge:
+    name: Merge into master
+    needs: [rust, msrv, template, site]
+    if: >-
+      github.event_name == 'push' && github.ref_name != 'master' &&
+      !startsWith(github.ref_name, 'wip/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    concurrency:
+      group: merge-into-master
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+      - name: Merge ${{ github.ref_name }}
+        env:
+          BRANCH: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git merge-base --is-ancestor "$SHA" HEAD; then
+            echo "$BRANCH is already in master."
+            exit 0
+          fi
+          git merge --no-ff --no-edit "$SHA" -m "Merge branch '$BRANCH' into master (auto-merge)"
+          git push origin HEAD:master
+          echo "::notice title=Auto-merge::$BRANCH merged into master"
+      - name: Deploy master (GitHub Pages and Heroku)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run pages.yml --ref master --repo "$GITHUB_REPOSITORY"
+          gh workflow run heroku.yml --ref master --repo "$GITHUB_REPOSITORY"
