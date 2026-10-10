@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Paquets">
+  <title>Paquets</title>
+  <defs>
+    <linearGradient id="p-top" x1="8" y1="18" x2="56" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8f74ff"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="p-left" x1="8" y1="18" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6d4aff"/>
+      <stop offset="1" stop-color="#3a1fb8"/>
+    </linearGradient>
+    <linearGradient id="p-right" x1="32" y1="32" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff4fa3"/>
+      <stop offset="1" stop-color="#b72a7c"/>
+    </linearGradient>
+  </defs>
+  <g stroke-linejoin="round" stroke-width="2">
+    <path d="M32 4 56 18 32 32 8 18Z" fill="url(#p-top)" stroke="url(#p-top)"/>
+    <path d="M8 18 32 32 32 60 8 46Z" fill="url(#p-left)" stroke="url(#p-left)"/>
+    <path d="M32 32 56 18 56 46 32 60Z" fill="url(#p-right)" stroke="url(#p-right)"/>
+  </g>
+  <path d="M17.4 12.5 22.6 9.5 46.6 23.5 41.4 26.5Z" fill="#fff" fill-opacity=".9"/>
+  <path d="M41.4 26.5 46.6 23.5 46.6 51.5 41.4 54.5Z" fill="#fff" fill-opacity=".55"/>
+  <path d="M8 18 32 32 56 18M32 32v28" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1" stroke-linejoin="round"/>
+</svg>
