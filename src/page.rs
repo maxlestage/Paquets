@@ -127,63 +127,112 @@ impl Page {
 
     /// The HTML of the page.
     pub fn render(self) -> String {
+        self.render_with_policy().0
+    }
+
+    /// The HTML and its Content-Security-Policy: `default-src 'self'` and friends,
+    /// plus the hash of each inline `<style>` and `<script>` the page writes itself
+    /// (the theme, [`style`](Self::style), [`head`](Self::head), the islands loader).
+    /// Nothing else inline can run, even if some HTML slipped into the body.
+    fn render_with_policy(self) -> (String, String) {
         let seo = Seo::new().title(self.title).merged(&self.seo);
         let mut document = Document::new(self.body).lang(self.lang).seo(seo);
+        // `active` always writes this style for islands.
+        let mut styles = vec![cached(&ACTIVE_STYLE, || style_hash(ACTIVE_STYLE_CSS))];
+        let mut scripts = Vec::new();
+        let mut fonts = Vec::new();
         if self.theme {
+            styles.push(cached(&THEME_HASH, || style_hash(THEME)));
             document = document.head(format!("<style>{THEME}</style>"));
         }
         for css in self.styles {
-            document = document.head(format!("<style>{}</style>", css.replace("</", "<\\/")));
+            let css = css.replace("</", "<\\/");
+            styles.push(style_hash(&css));
+            document = document.head(format!("<style>{css}</style>"));
         }
         for href in self.stylesheets {
+            if let Some(origin) = crate::shield::origin_of(&href) {
+                if origin == "https://fonts.googleapis.com" {
+                    fonts.push("https://fonts.gstatic.com".to_owned());
+                }
+                styles.push(origin);
+            }
             document = document.stylesheet(href);
         }
         for html in self.head {
+            styles.extend(ContentSecurityPolicy::hashes_for_inline_styles(&html));
+            scripts.extend(ContentSecurityPolicy::hashes_for_inline_scripts(&html));
             document = document.head(html);
         }
         let mut html = document.render();
-        if let Some((js, wasm)) = BUNDLE.get()
+        if let Some((tags, hash)) = loader()
             && html.contains("<active-island")
             && let Some(at) = html.find("</head>")
         {
-            html.insert_str(at, &loader(js, wasm));
+            html.insert_str(at, tags);
+            scripts.push(hash.clone());
         }
-        html
+        let policy = format!(
+            "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'{}; style-src 'self'{}; \
+             style-src-attr 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'{}; \
+             connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; \
+             frame-ancestors 'none'",
+            sources(&scripts),
+            sources(&styles),
+            sources(&fonts),
+        );
+        (html, policy)
     }
 }
 
-/// The tags `active` writes to start the browser bundle: the module, the binary
-/// preloaded in parallel, and the call that starts it.
-fn loader(js: &str, wasm: &str) -> String {
-    format!(
-        r#"<link rel="modulepreload" href="{js}"/><link rel="preload" href="{wasm}" as="fetch" type="application/wasm" crossorigin=""/><script type="module">import init from "{js}";init({{module_or_path:"{wasm}"}});</script>"#
-    )
+const ACTIVE_STYLE_CSS: &str = "active-island{display:contents}";
+static ACTIVE_STYLE: OnceLock<String> = OnceLock::new();
+static THEME_HASH: OnceLock<String> = OnceLock::new();
+static LOADER: OnceLock<(String, String)> = OnceLock::new();
+
+fn cached(cell: &'static OnceLock<String>, compute: impl FnOnce() -> String) -> String {
+    cell.get_or_init(compute).clone()
 }
 
-/// `default-src 'self'` and friends, plus a hash for each inline `<style>` and
-/// `<script>` of this page: nothing else can run, even if some HTML slipped in.
-pub(crate) fn content_security_policy(html: &str) -> String {
-    let mut scripts = vec!["'self'".to_owned(), "'wasm-unsafe-eval'".to_owned()];
-    scripts.extend(ContentSecurityPolicy::hashes_for_inline_scripts(html));
-    let mut styles = vec!["'self'".to_owned()];
-    styles.extend(ContentSecurityPolicy::hashes_for_inline_styles(html));
-    ContentSecurityPolicy::strict()
-        .script_src(scripts)
-        .style_src(styles)
-        .style_src_attr(["'unsafe-inline'"])
-        .img_src(["'self'", "data:", "https:"])
-        .remove_directive("upgrade-insecure-requests")
-        .to_string()
+/// `'sha256-…'` of a `<style>` content.
+fn style_hash(css: &str) -> String {
+    ContentSecurityPolicy::hashes_for_inline_styles(&format!("<style>{css}</style>"))
+        .pop()
+        .unwrap_or_default()
+}
+
+fn sources(list: &[String]) -> String {
+    list.iter().fold(String::new(), |mut out, source| {
+        out.push(' ');
+        out.push_str(source);
+        out
+    })
+}
+
+/// The tags `active` writes to start the browser bundle (the module, the binary
+/// preloaded in parallel, the call that starts it), and the hash of that call.
+fn loader() -> Option<&'static (String, String)> {
+    let (js, wasm) = BUNDLE.get()?;
+    Some(LOADER.get_or_init(|| {
+        let script = format!(r#"import init from "{js}";init({{module_or_path:"{wasm}"}});"#);
+        let tags = format!(
+            r#"<link rel="modulepreload" href="{js}"/><link rel="preload" href="{wasm}" as="fetch" type="application/wasm" crossorigin=""/><script type="module">{script}</script>"#
+        );
+        let hash =
+            ContentSecurityPolicy::hashes_for_inline_scripts(&format!("<script>{script}</script>"))
+                .pop()
+                .unwrap_or_default();
+        (tags, hash)
+    }))
 }
 
 impl IntoResponse for Page {
     fn into_response(self) -> Response {
         let status = self.status;
-        let html = self.render();
-        let csp = content_security_policy(&html);
+        let (html, policy) = self.render_with_policy();
         Response::new()
             .status(status)
-            .header(header::CONTENT_SECURITY_POLICY, csp)
+            .header(header::CONTENT_SECURITY_POLICY, policy)
             .html(html)
     }
 }
@@ -191,7 +240,7 @@ impl IntoResponse for Page {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use active::html::{h1, main};
+    use active::html::{h1, main, p};
 
     #[test]
     fn renders_a_themed_page_with_its_seo() {
@@ -208,16 +257,27 @@ mod tests {
     }
 
     #[test]
-    fn the_policy_allows_the_inline_styles_of_the_page() {
-        let html = Page::new("x").style("p{color:red}").render();
-        let csp = content_security_policy(&html);
-        let hashes = ContentSecurityPolicy::hashes_for_inline_styles(&html);
-        assert_eq!(hashes.len(), 3, "active's style, the theme and ours");
-        for hash in hashes {
-            assert!(csp.contains(&hash));
+    fn the_policy_allows_the_inline_code_of_the_page_and_nothing_else() {
+        let (html, csp) = Page::new("x")
+            .style("p{color:red}")
+            .head("<script>console.log(1)</script>")
+            .stylesheet("https://fonts.googleapis.com/css2?family=Inter")
+            .body(p().html("<script>alert('injected')</script>"))
+            .render_with_policy();
+        let styles = ContentSecurityPolicy::hashes_for_inline_styles(&html);
+        assert_eq!(styles.len(), 3, "active's style, the theme and ours");
+        for hash in styles {
+            assert!(csp.contains(&hash), "{hash} missing in {csp}");
         }
-        assert!(csp.contains("script-src 'self' 'wasm-unsafe-eval'"));
-        assert!(!csp.contains("unsafe-inline';") || csp.contains("style-src-attr 'unsafe-inline'"));
+        let scripts = ContentSecurityPolicy::hashes_for_inline_scripts(&html);
+        assert_eq!(scripts.len(), 2);
+        assert!(csp.contains(&scripts[0]), "the head script is allowed");
+        assert!(!csp.contains(&scripts[1]), "the injected script is not");
+        assert!(csp.contains("script-src 'self' 'wasm-unsafe-eval' 'sha256-"));
+        assert!(csp.contains("https://fonts.googleapis.com"));
+        assert!(csp.contains("font-src 'self' https://fonts.gstatic.com"));
+        assert!(csp.contains("style-src-attr 'unsafe-inline'"));
+        assert!(csp.contains("frame-ancestors 'none'"));
     }
 
     #[test]

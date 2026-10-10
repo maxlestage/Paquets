@@ -154,7 +154,7 @@ fn attribute<'a>(attrs: &'a str, name: &str) -> Option<&'a str> {
 }
 
 /// `https://host[:port]` of an absolute `https://` URL.
-fn origin_of(url: &str) -> Option<String> {
+pub(crate) fn origin_of(url: &str) -> Option<String> {
     let rest = url.strip_prefix("https://")?;
     let host = rest.split(['/', '?', '#']).next()?;
     (!host.is_empty()).then(|| format!("https://{host}"))
