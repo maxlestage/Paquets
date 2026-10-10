@@ -28,6 +28,7 @@ Paquets doesn't read `.env` files. If you like them, the [`dotenvy`](https://cra
 |---|---|---|
 | `app.port(8080)` | the port, instead of `PORT` | `PORT`, then `3000` |
 | `app.quiet()` | turns off the request log | one line per request |
+| `app.pwa(manifest)` | installable app that works offline (see [Pages](pages.md#installable-app-pwa)) | not installable |
 | `app.database(url_or_db)` | the database, instead of `DATABASE_URL` | `DATABASE_URL`, then memory |
 | `app.security(shield)` | another security shield, or `None` to turn it off | `paquets::shield()` |
 | `app.on_start(hook)` | code run once the database is ready | — |

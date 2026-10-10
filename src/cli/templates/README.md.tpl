@@ -1,7 +1,8 @@
 # {{title}}
 
 A full-stack Rust app built with [Paquets](https://github.com/maxlestage/Paquets) 📦:
-server, security, database, REST API, pages{{readme_islands}}.
+server, security, database, REST API, pages{{readme_islands}}, installable on phones
+(PWA) and usable offline.
 
 ## Run it
 

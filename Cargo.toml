@@ -57,7 +57,7 @@ client = ["active/client"]
 
 [workspace]
 members = ["macros"]
-# The website is a separate crate (Yew, WebAssembly) with its own workspace.
+# The website is a separate crate (a Paquets app, active and WebAssembly) with its own workspace.
 exclude = ["site"]
 
 [dependencies]

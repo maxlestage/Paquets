@@ -28,6 +28,7 @@ Paquets no lee archivos `.env`. Si te gustan, el crate [`dotenvy`](https://crate
 |---|---|---|
 | `app.port(8080)` | el puerto, en lugar de `PORT` | `PORT`, y si no `3000` |
 | `app.quiet()` | desactiva el log de peticiones | una línea por petición |
+| `app.pwa(manifiesto)` | aplicación instalable que funciona sin conexión (ver [Páginas](pages.md#aplicación-instalable-pwa)) | no instalable |
 | `app.database(url_or_db)` | la base de datos, en lugar de `DATABASE_URL` | `DATABASE_URL`, y si no en memoria |
 | `app.security(shield)` | otro escudo de seguridad, o `None` para desactivarlo | `paquets::shield()` |
 | `app.on_start(hook)` | código que se ejecuta cuando la base de datos está lista | — |

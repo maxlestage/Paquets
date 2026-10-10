@@ -232,6 +232,17 @@ pub fn app(site: Arc<Site>) -> App {
         route(&mut app, path, &site, page);
     }
     demo::mount(&mut app);
+    // Installable on phones and computers, readable offline (the theme color, the
+    // home screen title and the icons come from the manifest).
+    app.pwa(
+        Pwa::new("Paquets")
+            .short_name("Paquets")
+            .description("The simplest full-stack framework for Rust.")
+            .start_url("/en/")
+            .theme_color("#07060d")
+            .background_color("#07060d")
+            .categories(["developer", "productivity"]),
+    );
     let fallback = site.clone();
     app.fallback(move |req: Request| {
         let site = fallback.clone();

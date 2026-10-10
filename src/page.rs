@@ -164,6 +164,19 @@ impl Page {
             scripts.extend(ContentSecurityPolicy::hashes_for_inline_scripts(&html));
             document = document.head(html);
         }
+        if let Some(manifest) = crate::pwa::manifest() {
+            document = document
+                .manifest(crate::pwa::MANIFEST_URL, manifest)
+                .service_worker(crate::pwa::WORKER_URL);
+            scripts.push(cached(&REGISTER_HASH, || {
+                let script = active::pwa::register_script(crate::pwa::WORKER_URL);
+                ContentSecurityPolicy::hashes_for_inline_scripts(&format!(
+                    "<script>{script}</script>"
+                ))
+                .pop()
+                .unwrap_or_default()
+            }));
+        }
         let mut html = document.render();
         if let Some((tags, hash)) = loader()
             && html.contains("<active-island")
@@ -188,6 +201,7 @@ impl Page {
 const ACTIVE_STYLE_CSS: &str = "active-island{display:contents}";
 static ACTIVE_STYLE: OnceLock<String> = OnceLock::new();
 static THEME_HASH: OnceLock<String> = OnceLock::new();
+static REGISTER_HASH: OnceLock<String> = OnceLock::new();
 static LOADER: OnceLock<(String, String)> = OnceLock::new();
 
 fn cached(cell: &'static OnceLock<String>, compute: impl FnOnce() -> String) -> String {

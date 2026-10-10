@@ -24,6 +24,7 @@ See [Command line tool](cli.md).
 | Run inside `#[tokio::main]` | `app.serve().await` |
 | Choose the port | `app.port(8080);` |
 | Turn the request log off | `app.quiet();` |
+| Installable app, offline (PWA) | `app.pwa(Pwa::new("My app").theme_color("#6d4aff"));` |
 | Choose the database | `app.database("sqlite://app.db");` or `app.database(Db::memory());` |
 | Change the shield | `app.security(paquets::shield().guard(...).build());` |
 | Turn the shield off | `app.security(None);` |

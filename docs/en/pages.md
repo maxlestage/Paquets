@@ -326,6 +326,25 @@ No CSRF token is needed: the shield refuses forms posted from other websites. Th
 
 A page is static HTML. To make part of it react in the browser (a counter, a search box, a cart), make that part an **island**: `island("counter", "0", counter)`. Only pages that contain islands load the browser bundle. See [Islands](islands.md).
 
+## Installable app (PWA)
+
+One line makes the app installable on phones and computers, and usable offline:
+
+```rust
+app.pwa(
+    Pwa::new("My todos")
+        .short_name("Todos")
+        .theme_color("#6d4aff")
+        .background_color("#0b0b12"),
+);
+```
+
+- The app serves the web app manifest at `/manifest.webmanifest` and a service worker at `/sw.js`; every `Page` links them (with the theme color, the home screen title and the Apple touch icon), and the page's policy allows the registration script.
+- Offline: the start page, the islands bundle and the icons are downloaded at installation. Pages come from the network first, then from the cache when the network is down; the REST APIs of `app.api` always come from the network.
+- Without icons, the Paquets box is used. Your own icons (at least a 192×192 and a 512×512 PNG in `public/`): `.icon("/icon-192.png", "192x192", "image/png").icon("/icon-512.png", "512x512", "image/png").maskable_icon("/icon-maskable.png", "512x512", "image/png")`.
+- `.start_url("/demo")` opens another page; `.description(...)`, `.lang("fr")`, `.display("fullscreen")`… complete the manifest ([active's `pwa` module](https://docs.rs/active/latest/active/pwa/index.html) builds it).
+- Browsers only install a PWA served over HTTPS (or `localhost`): Heroku gives every app HTTPS. On a phone, open the site, then *Add to Home Screen* (Safari's share menu) or *Install app* (Chrome's menu).
+
 ## Learn more
 
 Views come from [active](https://github.com/maxlestage/Active). Its documentation covers [components and views](https://github.com/maxlestage/Active/blob/master/site/docs/en/components.md), [SEO](https://github.com/maxlestage/Active/blob/master/site/docs/en/seo.md) and [structured data](https://github.com/maxlestage/Active/blob/master/site/docs/en/structured-data.md) in depth.
