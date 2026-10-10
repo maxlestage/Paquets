@@ -324,44 +324,6 @@ fn shorten(text: &str, max: usize) -> String {
     format!("{}…", cut.trim_end_matches([',', ';', ':', '.']))
 }
 
-/// The plain text of a line of Markdown, for the search.
-pub fn plain_line(line: &str) -> String {
-    let mut s = line.trim();
-    s = s.trim_start_matches('#').trim_start();
-    s = s.trim_start_matches('>').trim_start();
-    for marker in [
-        "[!NOTE]",
-        "[!TIP]",
-        "[!IMPORTANT]",
-        "[!WARNING]",
-        "[!CAUTION]",
-    ] {
-        s = s.trim_start_matches(marker);
-    }
-    if let Some(rest) = s.strip_prefix("- ").or_else(|| s.strip_prefix("* ")) {
-        s = rest;
-    }
-    // [text](link) → text; `, ** and _ are removed.
-    let mut out = String::with_capacity(s.len());
-    let mut chars = s.chars().peekable();
-    while let Some(c) = chars.next() {
-        match c {
-            '`' | '*' => {}
-            ']' if chars.peek() == Some(&'(') => {
-                for c in chars.by_ref() {
-                    if c == ')' {
-                        break;
-                    }
-                }
-            }
-            '[' => {}
-            '|' => out.push(' '),
-            _ => out.push(c),
-        }
-    }
-    out.split_whitespace().collect::<Vec<_>>().join(" ")
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -460,12 +422,4 @@ mod tests {
         assert!(r.html.contains("src=\"https://github.com/maxlestage/Paquets/raw/master/docs/es/../../site/assets/logo.svg\""));
     }
 
-    #[test]
-    fn plain_lines_for_search() {
-        assert_eq!(
-            plain_line("> [!NOTE] See [routing](routing.md) and `app.get`"),
-            "See routing and app.get"
-        );
-        assert_eq!(plain_line("## A **title**"), "A title");
-    }
 }

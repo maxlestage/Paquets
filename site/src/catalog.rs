@@ -165,7 +165,7 @@ pub const PAGES: [Page; 24] = [
     Page {
         slug: "islands",
         category: 2,
-        title: ["Îlots WebAssembly", "WebAssembly islands", "Islas WebAssembly"],
+        title: ["Îlots", "Islands", "Islas"],
         summary: [
             "De l'interactivité dans le navigateur, composant par composant.",
             "Interactivity in the browser, one component at a time.",
@@ -195,7 +195,7 @@ pub const PAGES: [Page; 24] = [
     Page {
         slug: "errors",
         category: 2,
-        title: ["Gestion des erreurs", "Error handling", "Manejo de errores"],
+        title: ["Erreurs", "Errors", "Errores"],
         summary: [
             "L'opérateur ?, les codes HTTP et les pages d'erreur.",
             "The ? operator, status codes and error pages.",
@@ -280,9 +280,9 @@ pub const PAGES: [Page; 24] = [
         slug: "cli",
         category: 4,
         title: [
-            "La commande paquets",
-            "The paquets command",
-            "El comando paquets",
+            "Outil en ligne de commande",
+            "Command line tool",
+            "Herramienta de línea de comandos",
         ],
         summary: [
             "new, dev, build, doctor : toutes les commandes et options.",

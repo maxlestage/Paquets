@@ -467,8 +467,8 @@ fn hero_mouse() {
             let (ex, ey) = eased.get();
             let next = (ex + (mx - ex) * 0.06, ey + (my - ey) * 0.06);
             eased.set(next);
-            set(&hero, "--mx", &format!("{:.4}", next.0));
-            set(&hero, "--my", &format!("{:.4}", next.1));
+            set(&hero, "--hx", &format!("{:.4}", next.0));
+            set(&hero, "--hy", &format!("{:.4}", next.1));
             let moving = (mx - next.0).abs() > 0.001 || (my - next.1).abs() > 0.001;
             running.set(moving);
             moving
