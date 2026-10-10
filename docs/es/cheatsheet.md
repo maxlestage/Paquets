@@ -24,6 +24,7 @@ Consulta [Herramienta de línea de comandos](cli.md).
 | Ejecutar dentro de `#[tokio::main]` | `app.serve().await` |
 | Elegir el puerto | `app.port(8080);` |
 | Desactivar el log de peticiones | `app.quiet();` |
+| Aplicación instalable, sin conexión (PWA) | `app.pwa(Pwa::new("Mi app").theme_color("#6d4aff"));` |
 | Elegir la base de datos | `app.database("sqlite://app.db");` o `app.database(Db::memory());` |
 | Modificar el escudo | `app.security(paquets::shield().guard(...).build());` |
 | Desactivar el escudo | `app.security(None);` |

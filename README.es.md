@@ -53,6 +53,7 @@ configurar.
 | 🛡️ **Seguro por defecto** | WAF (inyección SQL, XSS, RCE, Log4Shell…), límite de peticiones, CSRF, cabeceras de seguridad, identificadores de petición, bloqueo de bots de ataque. Las páginas envían una Content-Security-Policy que solo permite su propio código. |
 | 🗄️ **Cualquier base de datos** | En memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB, elegida con `DATABASE_URL`. `#[model]` te da consultas tipadas y una API REST en una línea. |
 | 🔎 **Páginas SEO** | Las páginas son HTML terminado en el servidor: título, descripción, Open Graph, Twitter, URL canónica, JSON-LD. Un tema integrado (claro y oscuro) las hace bonitas sin CSS. |
+| 📲 **Instalable (PWA)** | `app.pwa(Pwa::new("Mi app"))`: un manifiesto de aplicación web y un service worker sin conexión, para que la aplicación vaya a la pantalla de inicio y funcione sin red. |
 | 🏝️ **Islas** | Las partes interactivas son componentes Rust compilados a WebAssembly, y solo ellas: el resto de la página no envía código. |
 | ⚡ **Rápido** | Construido sobre un servidor más rápido que actix-web y axum, una cadena de seguridad de unos 6 µs y SQL generado al compilar. |
 | 📱 **Despliegue desde el móvil** | Se generan el Dockerfile, `heroku.yml`, `app.json` y las GitHub Actions: basta un toque en *Deploy to Heroku*. |

@@ -93,6 +93,8 @@ pub struct App {
     tables: Vec<CreateTable>,
     startup: Vec<StartHook>,
     port: Option<u16>,
+    pwa: Option<crate::Pwa>,
+    api_paths: Vec<String>,
 }
 
 impl Default for App {
@@ -137,6 +139,8 @@ impl App {
             tables: Vec::new(),
             startup: Vec::new(),
             port: None,
+            pwa: None,
+            api_paths: Vec::new(),
         }
     }
 
@@ -167,6 +171,7 @@ impl App {
     #[track_caller]
     pub fn api<M: Resource>(&mut self, path: &str) -> &mut Self {
         crate::api::routes::<M>(&mut self.inner, path);
+        self.api_paths.push(path.trim_end_matches('/').to_owned());
         self.model::<M>()
     }
 
@@ -261,6 +266,31 @@ impl App {
     {
         self.inner
             .on_error(move |err: vitesse::Error| handler(crate::Error::from(err)));
+        self
+    }
+
+    /// Makes the app installable on phones and computers (a PWA), and usable offline:
+    /// serves the web app manifest at `/manifest.webmanifest` and a service worker at
+    /// `/sw.js`, and every [`Page`](crate::Page) links them.
+    ///
+    /// The start page, the islands bundle and the icons are available offline; pages
+    /// come from the network first (the cached copy when offline); the REST APIs of
+    /// [`App::api`] always come from the network. Without icons in the manifest, the
+    /// Paquets box is used.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// let mut app = App::new();
+    /// app.pwa(
+    ///     Pwa::new("My todos")
+    ///         .short_name("Todos")
+    ///         .theme_color("#6d4aff")
+    ///         .background_color("#0b0b12"),
+    /// );
+    /// ```
+    pub fn pwa(&mut self, manifest: crate::Pwa) -> &mut Self {
+        self.pwa = Some(manifest);
         self
     }
 
@@ -390,6 +420,9 @@ impl App {
         if let Some((js, wasm)) = &bundle {
             self.inner.static_dir("/pkg", "pkg");
             page::set_bundle(js.clone(), wasm.clone());
+        }
+        if let Some(manifest) = self.pwa.take() {
+            crate::pwa::install(&mut self.inner, manifest, bundle.as_ref(), &self.api_paths);
         }
 
         let port = self

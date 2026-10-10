@@ -24,6 +24,7 @@ Voir [Ligne de commande](cli.md).
 | Lancer dans `#[tokio::main]` | `app.serve().await` |
 | Choisir le port | `app.port(8080);` |
 | Désactiver le journal des requêtes | `app.quiet();` |
+| Application installable, hors ligne (PWA) | `app.pwa(Pwa::new("Mon app").theme_color("#6d4aff"));` |
 | Choisir la base de données | `app.database("sqlite://app.db");` ou `app.database(Db::memory());` |
 | Modifier le bouclier | `app.security(paquets::shield().guard(...).build());` |
 | Désactiver le bouclier | `app.security(None);` |
