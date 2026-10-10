@@ -54,9 +54,9 @@ docker run --rm -p 8080:8080 my-app
 
 Open http://localhost:8080. The first build takes several minutes: it compiles every dependency, and `wasm-bindgen-cli`, in release mode. Stop the container with `Ctrl+C`: Paquets receives the signal and shuts down gracefully.
 
-### Add a .dockerignore
+### The .dockerignore
 
-`COPY . .` sends the whole project folder to Docker, including `target/`, which can weigh gigabytes. Create a `.dockerignore` file next to the `Dockerfile`:
+`COPY . .` sends the whole project folder to Docker. Without care, that includes `target/`, which can weigh gigabytes. `paquets new` creates a `.dockerignore` next to the `Dockerfile` that leaves it out (add one with this content to an older project):
 
 ```text
 target

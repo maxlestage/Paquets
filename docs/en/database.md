@@ -114,7 +114,7 @@ app.database("sqlite://app.db"); // a file next to where the program runs
 If the URL is wrong or the server can't be reached, the app doesn't start, and says why. A URL that needs a feature you didn't enable even tells you what to write in `Cargo.toml`:
 
 ```text
-Error: Custom { kind: Other, error: "database: operation not supported by this backend: `mysql` URLs need the `mysql` feature: paquets = { version = \"0.1\", features = [\"mysql\"] }" }
+📦 Paquets could not start: database: operation not supported by this backend: `mysql` URLs need the `mysql` feature: paquets = { version = "0.1", features = ["mysql"] }
 ```
 
 > [!NOTE]

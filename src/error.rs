@@ -72,9 +72,32 @@ impl Error {
         Error(vitesse::Error::unprocessable(message))
     }
 
-    /// `500 Internal Server Error`: the message is logged, not sent to the client.
+    /// `500 Internal Server Error`. The message is sent to the client too: keep it
+    /// generic, and attach the cause with [`with_source`](Self::with_source).
     pub fn internal(message: impl Into<Cow<'static, str>>) -> Self {
         Error(vitesse::Error::internal(message))
+    }
+
+    /// Attaches the cause: it is logged, never sent to the client.
+    ///
+    /// ```
+    /// use paquets::Error;
+    ///
+    /// fn settings() -> paquets::Result<String> {
+    ///     std::fs::read_to_string("settings.toml")
+    ///         .map_err(|e| Error::internal("settings unavailable").with_source(e))
+    /// }
+    /// ```
+    pub fn with_source(self, source: impl Into<vitesse::BoxError>) -> Self {
+        Error(self.0.with_source(source))
+    }
+
+    /// What went wrong, for logs: the cause when there is one, the message otherwise.
+    pub(crate) fn describe(&self) -> String {
+        match self.0.source() {
+            Some(source) => source.to_string(),
+            None => self.0.message().to_owned(),
+        }
     }
 
     /// The HTTP status.

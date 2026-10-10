@@ -55,7 +55,7 @@ paquets new my-app
 ```
 
 ```text
-📦 my-app is ready (11 files, git repository on master).
+📦 my-app is ready (12 files, git repository on master).
 
   cd my-app
   paquets dev        # http://localhost:3000
@@ -64,11 +64,11 @@ The first `paquets dev` also prepares the WebAssembly tools for the islands.
 Deploy from your phone: push the project to GitHub, then see README.md.
 ```
 
-It creates a folder named after the project with every file described in [Project structure](project-structure.md): `Cargo.toml`, `src/main.rs`, `src/lib.rs`, `public/favicon.svg`, `Dockerfile`, `heroku.yml`, `app.json`, `.github/workflows/ci.yml`, `.github/workflows/heroku.yml`, `README.md` and `.gitignore`. Then it runs `git init` with a `master` branch (the branch the CI merges into), unless Git is missing or the folder is already inside a Git repository.
+It creates a folder named after the project with every file described in [Project structure](project-structure.md): `Cargo.toml`, `src/main.rs`, `src/lib.rs`, `public/favicon.svg`, `Dockerfile`, `heroku.yml`, `app.json`, `.github/workflows/ci.yml`, `.github/workflows/heroku.yml`, `README.md`, `.gitignore` and `.dockerignore`. Then it runs `git init` with a `master` branch (the branch the CI merges into), unless Git is missing or the folder is already inside a Git repository.
 
 | Option | Effect |
 |---|---|
-| `--minimal` | one `src/main.rs`, no `src/lib.rs`, no islands: no WebAssembly tool needed (10 files) |
+| `--minimal` | one `src/main.rs`, no `src/lib.rs`, no islands: no WebAssembly tool needed (11 files) |
 | `--path <dir>` | the project uses a local checkout of Paquets (`paquets = { path = "<dir>" }`) instead of the published one: for working on Paquets itself |
 
 The name must be a valid package name: lowercase letters, digits, `-` and `_`, starting with a letter (`my-app`, `blog2`, `todo_list`). Some names are reserved (`paquets`, `test`, `std`, `core`…). The folder must not exist yet, or be empty:

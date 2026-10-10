@@ -169,6 +169,10 @@ fn files(options: &Options) -> Vec<(&'static str, String)> {
         ),
         ("README.md", readme),
         (".gitignore", fill(include_str!("templates/gitignore.tpl"))),
+        (
+            ".dockerignore",
+            fill(include_str!("templates/dockerignore.tpl")),
+        ),
     ];
     if !options.minimal {
         files.push(("src/lib.rs", fill(include_str!("templates/lib.rs.tpl"))));

@@ -204,3 +204,16 @@ async fn startup_hooks_seed_the_database() {
     let client = app.test().await;
     assert_eq!(client.get("/todos/1/title").await.text(), "Seeded");
 }
+
+#[tokio::test]
+async fn custom_error_format() {
+    let mut app = app();
+    app.on_error(|err: Error| res::status(err.status()).json(json!({ "problem": err.message() })));
+    let client = app.test().await;
+    let res = client.get("/api/todos/99").await;
+    assert_eq!(res.status(), 404);
+    assert_eq!(
+        res.json::<serde_json::Value>()["problem"],
+        "record not found"
+    );
+}

@@ -34,7 +34,7 @@ app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Durat
 ```
 
 - `paquets::vitesse::tokio`: the tokio runtime vitesse runs on (`tokio::spawn`, `tokio::sync`, `tokio::time`…), without adding tokio to your dependencies;
-- `paquets::vitesse::Error`: the error type of `on_error`, and of `with_source` (see [Errors](errors.md));
+- `paquets::vitesse::Error`: vitesse's own error type, wrapped by `paquets::Error` (`err.into_inner()` gives it back);
 - `paquets::vitesse::ws::Upgrade`: WebSocket handshakes with subprotocols and size limits;
 - HTTP/3 with the `http3` feature (see [vitesse's HTTP/3 guide](https://github.com/maxlestage/Vitesse/blob/master/docs/en/http3.md)).
 
