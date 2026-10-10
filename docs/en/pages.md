@@ -283,7 +283,7 @@ Every page is sent with a `Content-Security-Policy` header that tells the browse
 
 Even if an attacker managed to slip some HTML into a page (through a comment field, for example), their script would not run.
 
-Static HTML files of `public/` (a landing page, or a site built with a tool such as Trunk or Vite) are covered too: at startup, the default shield reads them and its policy allows their inline scripts and styles (by hash), the external stylesheets and scripts they link to (Google Fonts included, with its font files), WebAssembly and `https:` images. This automatic policy belongs to the default shield: if you replace the shield with `app.security(...)`, set the policy yourself (see [Security](security.md#security-headers-and-the-content-security-policy)).
+Static HTML files of `public/` (a landing page, or a site exported by a static site generator) are covered too: at startup, the default shield reads them and its policy allows their inline scripts and styles (by hash), the external stylesheets and scripts they link to (Google Fonts included, with its font files), WebAssembly and `https:` images. This automatic policy belongs to the default shield: if you replace the shield with `app.security(...)`, set the policy yourself (see [Security](security.md#security-headers-and-the-content-security-policy)).
 
 The simplest way to use a font or a library from another site is to **download it into `public/`** and link it from there: it is also faster and better for your visitors' privacy. If you really need an external source, add it to the policy of that response:
 
