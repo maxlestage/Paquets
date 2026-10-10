@@ -33,7 +33,9 @@ pub async fn export(out: &Path, base_path: &str, site_url: Option<String>) -> io
     let dir = std::path::absolute(site_dir())?;
     std::env::set_current_dir(&dir)?;
     if !dir.join("pkg").is_dir() {
-        eprintln!("warning: site/pkg is missing: the pages will not be interactive (see site/README.md)");
+        eprintln!(
+            "warning: site/pkg is missing: the pages will not be interactive (see site/README.md)"
+        );
     }
     let site_url = site_url
         .filter(|u| !u.trim().is_empty())
@@ -71,7 +73,10 @@ pub async fn export(out: &Path, base_path: &str, site_url: Option<String>) -> io
 
     for route in Route::all() {
         let html = get(route.path(), 200).await?;
-        write(&format!("{}index.html", route.path()), with_base(&html, base).as_bytes())?;
+        write(
+            &format!("{}index.html", route.path()),
+            with_base(&html, base).as_bytes(),
+        )?;
     }
     let home = get(Route::new(Lang::En, crate::routes::Page::Home).path(), 200).await?;
     write("index.html", with_base(&home, base).as_bytes())?;
@@ -142,6 +147,9 @@ mod tests {
         let out = with_base(html, "/Paquets");
         assert_eq!(out.matches("\"/Paquets/pkg/").count(), 3);
         assert_eq!(with_base(html, ""), html);
-        assert_eq!(default_site_url("/Paquets"), "https://maxlestage.github.io/Paquets");
+        assert_eq!(
+            default_site_url("/Paquets"),
+            "https://maxlestage.github.io/Paquets"
+        );
     }
 }

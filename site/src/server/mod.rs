@@ -125,8 +125,8 @@ fn page(site: &Site, req: &Request) -> Response {
         return Redirect::permanent(format!("{}/{query}", link(path))).into_response();
     }
     // The preloader plays on the first home page of a visit.
-    let intro = route.page == PageKind::Home
-        && (!site.live || req.cookie("paquets-intro").is_none());
+    let intro =
+        route.page == PageKind::Home && (!site.live || req.cookie("paquets-intro").is_none());
     let ctx = pages::Ctx {
         site,
         route,
@@ -213,12 +213,7 @@ fn robots(site: &Site, req: &Request) -> Response {
 }
 
 /// Routes a handler that only needs the site and the request.
-fn route(
-    app: &mut App,
-    path: &str,
-    site: &Arc<Site>,
-    handler: fn(&Site, &Request) -> Response,
-) {
+fn route(app: &mut App, path: &str, site: &Arc<Site>, handler: fn(&Site, &Request) -> Response) {
     let site = site.clone();
     app.get(path, move |req: Request| {
         let site = site.clone();

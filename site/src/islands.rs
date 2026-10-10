@@ -94,9 +94,8 @@ pub fn search(props: &str) -> Node {
                                         "ArrowDown" => {
                                             e.prevent_default();
                                             let n = results.with(Vec::len);
-                                            active.update(|a| {
-                                                *a = (*a + 1).min(n.saturating_sub(1))
-                                            });
+                                            active
+                                                .update(|a| *a = (*a + 1).min(n.saturating_sub(1)));
                                         }
                                         "ArrowUp" => {
                                             e.prevent_default();
@@ -179,7 +178,9 @@ pub fn showcase(props: &str) -> Node {
                 .class("tabs")
                 .attr("role", "tablist")
                 .attr("data-reveal", "")
-                .attr_dyn("style", move || format!("--tab:{};--tabs:{count}", tab.get()))
+                .attr_dyn("style", move || {
+                    format!("--tab:{};--tabs:{count}", tab.get())
+                })
                 .child(span().class("tabs__indicator").attr("aria-hidden", "true"))
                 .children(t.samples.iter().enumerate().map(|(i, sample)| {
                     button()

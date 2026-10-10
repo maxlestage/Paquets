@@ -197,7 +197,7 @@ struct NewTodo {
 async fn create_todo(req: Request) -> Result<(StatusCode, Json<Todo>)> {
     let new: NewTodo = req.json().await?;
     let title = new.title.trim();
-    if title.is_empty() || title.len() > 200 {
+    if title.is_empty() || title.chars().count() > 200 {
         return Err(Error::unprocessable("the title must have 1 to 200 characters"));
     }
     let mut todo = Todo { id: 0, title: title.to_string(), done: false };

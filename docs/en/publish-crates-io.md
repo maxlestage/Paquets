@@ -23,7 +23,7 @@ securite = { version = "0.1", git = "https://github.com/maxlestage/Securite", de
 
 ## The publication order
 
-Six crates are published from five repositories. Each repository has its own release workflow, started the same way: by publishing a GitHub release.
+Seven crates are published from five repositories. Each repository has its own release workflow, started the same way: by publishing a GitHub release.
 
 | Order | Crate | Repository | Workflow (Actions tab) |
 |---|---|---|---|
@@ -34,7 +34,7 @@ Six crates are published from five repositories. Each repository has its own rel
 | 5 | `active` | [Active](https://github.com/maxlestage/Active) | **Release** |
 | 6 | `paquets-macros`, then `paquets` | [Paquets](https://github.com/maxlestage/Paquets) | **Release** |
 
-`memoire-orm` needs `memoire-orm-derive`, and the Memoire workflow publishes them in that order. Steps 1 to 5 don't depend on each other: you can release the four repositories in any order, as long as all of them are on crates.io before step 6. Paquets' workflow checks it, and says which crates are missing.
+`memoire-orm` needs `memoire-orm-derive`, and the Memoire workflow publishes them in that order. The four repositories of steps 1 to 5 don't depend on each other: you can release them in any order, as long as all of them are on crates.io before step 6. Paquets' workflow checks it, and says which crates are missing.
 
 Each workflow skips a crate whose version is already on crates.io, so running one again is safe.
 

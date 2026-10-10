@@ -196,7 +196,7 @@ async fn attacks_are_blocked() {
     let res = client.get("/").header("user-agent", "sqlmap/1.7").await;
     assert_eq!(res.status(), 403);
 
-    // A form posted from another website: blocked by the CSRF guard.
+    // A request sent from another website: blocked by the CSRF guard.
     let res = client
         .post("/api/todos")
         .header("sec-fetch-site", "cross-site")

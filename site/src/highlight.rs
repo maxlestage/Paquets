@@ -110,7 +110,10 @@ pub fn tokenize(code: &str) -> Tokens {
                 i += 4;
                 continue;
             }
-            if chars.get(i + 1).is_some_and(|c| c.is_alphabetic() || *c == '_') {
+            if chars
+                .get(i + 1)
+                .is_some_and(|c| c.is_alphabetic() || *c == '_')
+            {
                 let start = i;
                 i += 1;
                 while i < chars.len() && (chars[i].is_alphanumeric() || chars[i] == '_') {
@@ -255,14 +258,14 @@ pub fn tokenize_simple(code: &str, language: &str) -> Tokens {
                 plain_start = rest.len();
                 break;
             }
-            if c == '"' || c == '\'' {
-                if let Some(end) = rest[i + 1..].find(c).map(|j| i + 1 + j + 1) {
-                    push(&mut out, Kind::Plain, &rest[plain_start..i]);
-                    push(&mut out, Kind::String, &rest[i..end]);
-                    plain_start = end;
-                    while chars.peek().is_some_and(|&(j, _)| j < end) {
-                        chars.next();
-                    }
+            if (c == '"' || c == '\'')
+                && let Some(end) = rest[i + 1..].find(c).map(|j| i + 1 + j + 1)
+            {
+                push(&mut out, Kind::Plain, &rest[plain_start..i]);
+                push(&mut out, Kind::String, &rest[i..end]);
+                plain_start = end;
+                while chars.peek().is_some_and(|&(j, _)| j < end) {
+                    chars.next();
                 }
             }
         }
@@ -342,7 +345,9 @@ pub fn lines_html(tokens: &[(Kind, String)]) -> String {
         for (n, part) in text.split('\n').enumerate() {
             if n > 0 {
                 line += 1;
-                out.push_str(&format!("</span>\n<span class=\"ln\" style=\"--l:{line}\">"));
+                out.push_str(&format!(
+                    "</span>\n<span class=\"ln\" style=\"--l:{line}\">"
+                ));
             }
             if part.is_empty() {
                 continue;
@@ -376,7 +381,9 @@ mod tests {
 
     #[test]
     fn highlights_rust() {
-        let t = tokenize("#[model]\nstruct Todo { id: i64 }\nlet s: &'static str = \"hi\"; // ok\nprintln!(\"{}\", 1.5);");
+        let t = tokenize(
+            "#[model]\nstruct Todo { id: i64 }\nlet s: &'static str = \"hi\"; // ok\nprintln!(\"{}\", 1.5);",
+        );
         assert_eq!(kinds(&t, Kind::Macro), ["#[model]", "println!"]);
         assert!(kinds(&t, Kind::Keyword).contains(&"struct"));
         assert_eq!(kinds(&t, Kind::Type), ["Todo"]);

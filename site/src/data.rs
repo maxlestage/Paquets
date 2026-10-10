@@ -5,7 +5,8 @@
 pub const GITHUB: &str = "https://github.com/maxlestage/Paquets";
 pub const CRATES_IO: &str = "https://crates.io/crates/paquets";
 pub const DOCS_RS: &str = "https://docs.rs/paquets";
-pub const HEROKU_DEPLOY: &str = "https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets";
+pub const HEROKU_DEPLOY: &str =
+    "https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets";
 pub const HEROKU_BUTTON: &str = "https://www.herokucdn.com/deploy/button.svg";
 pub const AUTHOR: &str = "https://github.com/maxlestage";
 

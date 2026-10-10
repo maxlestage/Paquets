@@ -77,9 +77,9 @@ pub const PAGES: [Page; 24] = [
         category: 0,
         title: ["Démarrage rapide", "Quick start", "Inicio rápido"],
         summary: [
-            "Une app complète en cinq minutes : page, API REST et base de données.",
-            "A complete app in five minutes: a page, a REST API and a database.",
-            "Una app completa en cinco minutos: una página, una API REST y una base de datos.",
+            "Une app complète en dix minutes : page, API REST et base de données.",
+            "A complete app in ten minutes: a page, a REST API and a database.",
+            "Una app completa en diez minutos: una página, una API REST y una base de datos.",
         ],
     },
     Page {
@@ -100,7 +100,7 @@ pub const PAGES: [Page; 24] = [
     Page {
         slug: "routing",
         category: 1,
-        title: ["Routage", "Routing", "Enrutamiento"],
+        title: ["Routes", "Routing", "Enrutamiento"],
         summary: [
             "Routes, paramètres, routeurs et middlewares.",
             "Routes, parameters, routers and middleware.",
@@ -227,7 +227,7 @@ pub const PAGES: [Page; 24] = [
         slug: "deploy-heroku-mobile",
         category: 3,
         title: [
-            "Déployer sur Heroku depuis un téléphone",
+            "Déployer sur Heroku depuis votre téléphone",
             "Deploy to Heroku from your phone",
             "Desplegar en Heroku desde el móvil",
         ],
@@ -280,7 +280,7 @@ pub const PAGES: [Page; 24] = [
         slug: "cli",
         category: 4,
         title: [
-            "Outil en ligne de commande",
+            "Ligne de commande",
             "Command line tool",
             "Herramienta de línea de comandos",
         ],

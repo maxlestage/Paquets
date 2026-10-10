@@ -382,7 +382,10 @@ mod tests {
                 .contains("<span class=\"t-type\">[dependencies]</span>")
         );
         assert!(r.html.contains("<span class=\"t-fn\">paquets</span>"));
-        assert!(r.html.contains("data-copied=\"Copié !\"><span>Copier</span></button>"));
+        assert!(
+            r.html
+                .contains("data-copied=\"Copié !\"><span>Copier</span></button>")
+        );
         assert!(r.html.contains("callout--tip"));
         assert!(r.html.contains("Astuce"));
         assert!(r.html.contains("<div class=\"table-wrap\"><table>"));
@@ -417,9 +420,10 @@ mod tests {
             "![The button](https://www.herokucdn.com/deploy/button.svg)",
             Lang::En,
         );
-        assert!(r.html.contains("<img src=\"https://www.herokucdn.com/deploy/button.svg\" alt=\"The button\""));
+        assert!(r.html.contains(
+            "<img src=\"https://www.herokucdn.com/deploy/button.svg\" alt=\"The button\""
+        ));
         let r = render("![Logo](../../site/assets/logo.svg)", Lang::Es);
         assert!(r.html.contains("src=\"https://github.com/maxlestage/Paquets/raw/master/docs/es/../../site/assets/logo.svg\""));
     }
-
 }

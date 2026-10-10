@@ -163,7 +163,11 @@ fn scroll_state() {
         }
         last.set(y);
         for (el, speed) in &parallax {
-            set(el, "transform", &format!("translate3d(0,{:.1}px,0)", y * speed));
+            set(
+                el,
+                "transform",
+                &format!("translate3d(0,{:.1}px,0)", y * speed),
+            );
         }
         for el in &journey {
             let rect = el.get_bounding_client_rect();
@@ -172,7 +176,11 @@ fn scroll_state() {
         }
         if !still {
             for el in &hero {
-                set(el, "--scroll", &format!("{:.4}", (y / height).clamp(0.0, 1.0)));
+                set(
+                    el,
+                    "--scroll",
+                    &format!("{:.4}", (y / height).clamp(0.0, 1.0)),
+                );
             }
         }
     };
@@ -222,8 +230,7 @@ fn counters() {
             .unwrap_or(0);
         let prefix = data.get("prefix").unwrap_or_default();
         let suffix = data.get("suffix").unwrap_or_default();
-        let render =
-            move |v: f64| format!("{prefix}{}{suffix}", number(lang, v, decimals));
+        let render = move |v: f64| format!("{prefix}{}{suffix}", number(lang, v, decimals));
         if reduced_motion() {
             el.set_text_content(Some(&render(target)));
             return;
@@ -287,7 +294,10 @@ fn copy_buttons() {
 
 /// The mobile menu, the docs sidebar, and the big search field of the docs hub.
 fn toggles(root: &HtmlElement) {
-    let pairs = [("[data-toggle-menu]", "menu-open"), ("[data-toggle-side]", "side-open")];
+    let pairs = [
+        ("[data-toggle-menu]", "menu-open"),
+        ("[data-toggle-side]", "side-open"),
+    ];
     for (selector, class) in pairs {
         for button in all(selector) {
             let (root, target) = (root.clone(), button.clone());
@@ -327,16 +337,20 @@ fn toc() {
     }
     let options = IntersectionObserverInit::new();
     options.set_root_margin("-15% 0px -70% 0px");
-    observe(".doc-body h2[id], .doc-body h3[id]", &options, move |entry, _| {
-        if !entry.is_intersecting() {
-            return;
-        }
-        let id = entry.target().id();
-        for link in &links {
-            let active = link.get_attribute("href").as_deref() == Some(&format!("#{id}"));
-            let _ = link.class_list().toggle_with_force("is-active", active);
-        }
-    });
+    observe(
+        ".doc-body h2[id], .doc-body h3[id]",
+        &options,
+        move |entry, _| {
+            if !entry.is_intersecting() {
+                return;
+            }
+            let id = entry.target().id();
+            for link in &links {
+                let active = link.get_attribute("href").as_deref() == Some(&format!("#{id}"));
+                let _ = link.class_list().toggle_with_force("is-active", active);
+            }
+        },
+    );
 }
 
 /// A dot follows the pointer, a ring catches up with it; the ring grows over links
@@ -376,7 +390,9 @@ fn cursor() {
     for (event, down) in [("pointerdown", true), ("pointerup", false)] {
         let ring = ring.clone();
         on(&window(), event, move |_: web_sys::Event| {
-            let _ = ring.class_list().toggle_with_force("cursor__ring--down", down);
+            let _ = ring
+                .class_list()
+                .toggle_with_force("cursor__ring--down", down);
         });
     }
     let mut pos = (-100.0f64, -100.0f64);
