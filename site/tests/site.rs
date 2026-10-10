@@ -224,3 +224,25 @@ async fn the_live_demo_works() {
     // The home page of the running server links to it.
     assert!(client.get("/en/").await.text().contains("href=\"/demo\""));
 }
+
+#[tokio::test]
+async fn the_site_is_an_installable_app() {
+    let client = client().await;
+    let res = client.get("/manifest.webmanifest").await;
+    assert_eq!(res.status(), 200);
+    let manifest = res.text();
+    assert!(manifest.contains(r#""name":"Paquets""#), "{manifest}");
+    assert!(manifest.contains(r#""start_url":"/en/""#), "{manifest}");
+    let worker = client.get("/sw.js").await.text();
+    assert!(worker.contains(r#"const OFFLINE = "/en/";"#), "{worker}");
+    assert!(worker.contains("/pkg/paquets_site_bg.wasm") || !std::path::Path::new("pkg").is_dir());
+    assert!(
+        worker.contains(r#"const NETWORK_ONLY = ["/api/todos"];"#),
+        "{worker}"
+    );
+    let home = client.get("/fr/").await.text();
+    assert!(home.contains(r#"<link rel="manifest" href="/manifest.webmanifest"/>"#));
+    assert!(home.contains(r#"navigator.serviceWorker.register("/sw.js")"#));
+    assert_eq!(home.matches(r#"name="theme-color""#).count(), 1);
+    assert_eq!(client.get("/paquets/icon-512.png").await.status(), 200);
+}

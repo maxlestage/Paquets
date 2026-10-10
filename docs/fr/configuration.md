@@ -28,6 +28,7 @@ Paquets ne lit pas les fichiers `.env`. Si vous y tenez, la crate [`dotenvy`](ht
 |---|---|---|
 | `app.port(8080)` | le port, à la place de `PORT` | `PORT`, sinon `3000` |
 | `app.quiet()` | désactive le journal des requêtes | une ligne par requête |
+| `app.pwa(manifeste)` | application installable qui marche hors ligne (voir [Pages](pages.md#application-installable-pwa)) | non installable |
 | `app.database(url_ou_db)` | la base de données, à la place de `DATABASE_URL` | `DATABASE_URL`, sinon en mémoire |
 | `app.security(bouclier)` | un autre bouclier de sécurité, ou `None` pour le désactiver | `paquets::shield()` |
 | `app.on_start(hook)` | du code exécuté une fois la base de données prête | — |

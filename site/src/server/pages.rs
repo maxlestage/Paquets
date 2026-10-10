@@ -272,7 +272,7 @@ fn layout(ctx: &Ctx<'_>, title: &str, description: &str, content: Element) -> Pa
     }
     let icon_href = link("/assets/logo.svg");
     let head = format!(
-        r##"<meta name="theme-color" content="#07060d"/><meta name="color-scheme" content="dark"/><link rel="icon" href="{icon_href}" type="image/svg+xml"/><link rel="apple-touch-icon" href="{icon_href}"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>"##
+        r##"<meta name="color-scheme" content="dark"/><link rel="icon" href="{icon_href}" type="image/svg+xml"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>"##
     );
     let mut root = div()
         .class("site")

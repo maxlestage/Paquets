@@ -326,6 +326,25 @@ Aucun jeton CSRF n'est nécessaire : le bouclier refuse les formulaires envoyés
 
 Une page, c'est du HTML statique. Pour qu'une partie réagisse dans le navigateur (un compteur, un champ de recherche, un panier), faites-en un **îlot** : `island("counter", "0", counter)`. Seules les pages qui contiennent des îlots chargent le bundle du navigateur. Voir [Îlots](islands.md).
 
+## Application installable (PWA)
+
+Une ligne rend l'application installable sur les téléphones et les ordinateurs, et utilisable hors ligne :
+
+```rust
+app.pwa(
+    Pwa::new("Mes tâches")
+        .short_name("Tâches")
+        .theme_color("#6d4aff")
+        .background_color("#0b0b12"),
+);
+```
+
+- L'application sert le manifeste d'application web à `/manifest.webmanifest` et un service worker à `/sw.js` ; chaque `Page` les référence (avec la couleur du thème, le titre sur l'écran d'accueil et l'icône Apple), et la politique de la page autorise le script d'enregistrement.
+- Hors ligne : la page de départ, le bundle des îlots et les icônes sont téléchargés à l'installation. Les pages viennent d'abord du réseau, puis du cache quand le réseau est coupé ; les API REST de `app.api` viennent toujours du réseau.
+- Sans icônes, c'est la boîte de Paquets qui est utilisée. Vos propres icônes (au moins un PNG de 192×192 et un de 512×512 dans `public/`) : `.icon("/icon-192.png", "192x192", "image/png").icon("/icon-512.png", "512x512", "image/png").maskable_icon("/icon-maskable.png", "512x512", "image/png")`.
+- `.start_url("/demo")` ouvre une autre page ; `.description(...)`, `.lang("fr")`, `.display("fullscreen")`… complètent le manifeste (c'est [le module `pwa` d'active](https://docs.rs/active/latest/active/pwa/index.html) qui le construit).
+- Les navigateurs n'installent une PWA que servie en HTTPS (ou sur `localhost`) : Heroku donne le HTTPS à chaque application. Sur un téléphone, ouvrez le site, puis *Sur l'écran d'accueil* (menu de partage de Safari) ou *Installer l'application* (menu de Chrome).
+
 ## Pour aller plus loin
 
 Les vues viennent d'[active](https://github.com/maxlestage/Active). Sa documentation approfondit [les composants et les vues](https://github.com/maxlestage/Active/blob/master/site/docs/fr/components.md), [le SEO](https://github.com/maxlestage/Active/blob/master/site/docs/fr/seo.md) et [les données structurées](https://github.com/maxlestage/Active/blob/master/site/docs/fr/structured-data.md).
