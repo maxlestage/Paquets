@@ -165,8 +165,8 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
 
 1. Appuyez sur **Deploy to Heroku**, choisissez un nom d'application, appuyez sur **Deploy app**.
-   Heroku construit le [`Dockerfile`](Dockerfile) : le site et sa démo en direct (`/demo`,
-   `/api/todos`), servis par Paquets lui-même.
+   Heroku construit le [`Dockerfile`](Dockerfile) : le site, qui est lui-même une application
+   Paquets, avec sa démo en direct (`/demo`, `/api/todos`).
 2. Déploiements automatiques de `master` : dans GitHub, *Settings → Secrets and variables →
    Actions*, ajoutez le secret `HEROKU_API_KEY` (Heroku → *Account settings* → *API Key*) et la
    variable `HEROKU_APP_NAME`. [`heroku.yml`](.github/workflows/heroku.yml) déploie alors chaque fusion.
@@ -205,7 +205,7 @@ donc publiés d'abord, chacun depuis son dépôt, de la même façon ; le workfl
 cargo test --workspace                     # la crate, la commande, les exemples
 cargo run --example todo                   # l'application de démo sur http://localhost:3000
 cargo run -- new mon-app --path .          # la commande, avec ce dépôt de Paquets
-cd site && trunk serve                     # le site (Yew + WebAssembly)
+cd site && cargo run                       # le site, lui-même une application Paquets (voir site/README.md)
 ```
 
 | Dossier | Contenu |
@@ -214,7 +214,7 @@ cd site && trunk serve                     # le site (Yew + WebAssembly)
 | [`macros/`](macros) | `#[model]` et `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` et `todo` (l'application déployée sur Heroku) |
 | [`docs/`](docs) | la documentation, en anglais, français et espagnol |
-| [`site/`](site) | le site, en Rust avec Yew, compilé en WebAssembly |
+| [`site/`](site) | le site : une application Paquets (pages rendues par active, îlots en WebAssembly), exportée en fichiers statiques pour GitHub Pages |
 
 ## Licence
 

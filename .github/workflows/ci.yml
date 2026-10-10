@@ -4,7 +4,8 @@
 #   crates.io packages;
 # - template: `paquets new` (full and minimal), and the generated projects pass
 #   their own checks;
-# - site: the website (Yew, WebAssembly) and its documentation;
+# - site: the website (a Paquets app: active pages, WebAssembly islands) and its
+#   documentation, exported to static files;
 # - merge: when everything is green, the branch is merged into master (except
 #   master itself and branches named wip/...), then the website (pages.yml) and
 #   the Heroku app (heroku.yml) are deployed: a push made by a workflow starts no
@@ -19,7 +20,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  TRUNK_VERSION: v0.21.14
 
 jobs:
   rust:
@@ -95,7 +95,7 @@ jobs:
           cargo clippy --lib --target wasm32-unknown-unknown -- -D warnings
 
   site:
-    name: Website (Yew + Trunk)
+    name: Website (active, WebAssembly, static export)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -109,17 +109,22 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: site
-      - name: Install Trunk
-        run: |
-          curl -sSfL "https://github.com/trunk-rs/trunk/releases/download/${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz" \
-            | tar -xz -C "$HOME/.cargo/bin"
-          trunk --version
       - run: cargo fmt --check
-      - run: cargo clippy --target wasm32-unknown-unknown --release -- -D warnings
-      # Native tests: translations, routes, Markdown, and every page of docs/
-      # (in English, French and Spanish, with their links).
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo clippy --lib --target wasm32-unknown-unknown -- -D warnings
+      # Native tests: translations, routes, Markdown, every page of docs/ (in
+      # English, French and Spanish, with their links), every route answers.
       - run: cargo test
-      - run: trunk build --release --public-url "/${{ github.event.repository.name }}/"
+      - name: Islands (WebAssembly)
+        run: |
+          cargo build --lib --target wasm32-unknown-unknown --profile wasm-release
+          version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')
+          curl -sSfL "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/${version}/wasm-bindgen-${version}-x86_64-unknown-linux-musl.tar.gz" \
+            | tar -xz --strip-components=1 -C "$HOME/.cargo/bin"
+          wasm-bindgen --target web --no-typescript --out-dir pkg target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
+      # The same command as pages.yml: the static version for GitHub Pages.
+      - name: Static export
+        run: BASE_PATH="/${{ github.event.repository.name }}" cargo run --release -- export dist
 
   merge:
     name: Merge into master

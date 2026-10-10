@@ -165,8 +165,8 @@ Referencia de la API: [docs.rs/paquets](https://docs.rs/paquets).
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
 
 1. Toca **Deploy to Heroku**, elige un nombre de aplicación y toca **Deploy app**. Heroku construye
-   el [`Dockerfile`](Dockerfile): el sitio web y su demo en vivo (`/demo`, `/api/todos`), servidos
-   por el propio Paquets.
+   el [`Dockerfile`](Dockerfile): el sitio web, que es en sí una aplicación Paquets, con su demo en
+   vivo (`/demo`, `/api/todos`).
 2. Despliegues automáticos de `master`: en GitHub, *Settings → Secrets and variables → Actions*,
    añade el secreto `HEROKU_API_KEY` (Heroku → *Account settings* → *API Key*) y la variable
    `HEROKU_APP_NAME`. [`heroku.yml`](.github/workflows/heroku.yml) despliega entonces cada fusión.
@@ -205,7 +205,7 @@ comprueba. Guía: [docs/es/publish-crates-io.md](docs/es/publish-crates-io.md).
 cargo test --workspace                     # la crate, el comando, los ejemplos
 cargo run --example todo                   # la aplicación de demo en http://localhost:3000
 cargo run -- new mi-app --path .           # el comando, con este repositorio de Paquets
-cd site && trunk serve                     # el sitio web (Yew + WebAssembly)
+cd site && cargo run                       # el sitio web, que es una aplicación Paquets (ver site/README.md)
 ```
 
 | Carpeta | Contenido |
@@ -214,7 +214,7 @@ cd site && trunk serve                     # el sitio web (Yew + WebAssembly)
 | [`macros/`](macros) | `#[model]` y `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` y `todo` (la aplicación desplegada en Heroku) |
 | [`docs/`](docs) | la documentación, en inglés, francés y español |
-| [`site/`](site) | el sitio web, en Rust con Yew, compilado a WebAssembly |
+| [`site/`](site) | el sitio web: una aplicación Paquets (páginas renderizadas por active, islas en WebAssembly), exportada a archivos estáticos para GitHub Pages |
 
 ## Licencia
 

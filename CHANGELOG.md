@@ -26,5 +26,6 @@ project adheres to [Semantic Versioning](https://semver.org/).
   dependencies.
 - The `paquets` command: `new` (complete project with Dockerfile, Heroku files and GitHub
   Actions that merge green branches into master), `dev`, `build`, `doctor`.
-- Website in Rust with Yew (WebAssembly), documentation in English, French and Spanish,
+- Website built with Paquets itself (active pages, WebAssembly islands, static export
+  for GitHub Pages), documentation in English, French and Spanish,
   Heroku deployment from a phone, GitHub Pages, crates.io release workflow.

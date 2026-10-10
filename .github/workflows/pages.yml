@@ -1,4 +1,5 @@
 # Publishes the website on GitHub Pages: https://<owner>.github.io/<repository>/
+# (static files exported by the site's own server: `paquets-site export`).
 #
 # Started after every merge into master by ci.yml, by a direct push to master
 # that changes the site or the docs, and by hand (Actions → Pages → Run workflow).
@@ -29,7 +30,6 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  TRUNK_VERSION: v0.21.14
 
 jobs:
   check:
@@ -71,11 +71,22 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: site
-      - name: Install Trunk
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Islands (WebAssembly)
         run: |
-          curl -sSfL "https://github.com/trunk-rs/trunk/releases/download/${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz" \
-            | tar -xz -C "$HOME/.cargo/bin"
-      - run: trunk build --release --public-url "/${{ github.event.repository.name }}/"
+          cargo build --lib --target wasm32-unknown-unknown --profile wasm-release
+          version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')
+          curl -sSfL "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/${version}/wasm-bindgen-${version}-x86_64-unknown-linux-musl.tar.gz" \
+            | tar -xz --strip-components=1 -C "$HOME/.cargo/bin"
+          wasm-bindgen --target web --no-typescript --out-dir pkg target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
+      # Every page rendered by the site's own server code, links behind the
+      # repository's path.
+      - name: Static export
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+        run: cargo run --release -- export dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist
