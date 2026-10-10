@@ -6,7 +6,7 @@ This page installs everything you need to build Paquets apps: Rust, the `paquets
 
 | Tool | Needed for | Version |
 |---|---|---|
-| Rust and Cargo | everything | 1.85 or newer (Paquets uses the 2024 edition) |
+| Rust and Cargo | everything | 1.88 or newer (Paquets uses the 2024 edition) |
 | A C compiler | the SQLite database, which is compiled into your program | any (`cc`, `gcc`, `clang` or MSVC) |
 | `wasm32-unknown-unknown` target | islands only | installed by `paquets dev` |
 | `wasm-bindgen-cli` | islands only | the exact version of the `wasm-bindgen` crate in your `Cargo.lock`, installed by `paquets dev` |
@@ -28,7 +28,7 @@ On Windows, download and run `rustup-init.exe` from https://rustup.rs instead. I
 Open a new terminal, then check the installation:
 
 ```sh
-rustc --version   # rustc 1.85.0 or newer
+rustc --version   # rustc 1.88.0 or newer
 cargo --version
 ```
 
@@ -42,15 +42,17 @@ If Rust was already installed, update it with `rustup update`.
 The `paquets` command creates projects, runs them and builds them for production. Install it with Cargo:
 
 ```sh
-cargo install paquets
+cargo install paquets --locked
 ```
 
 > [!NOTE]
 > Until Paquets is published on crates.io (see [Publish on crates.io](publish-crates-io.md)), install it from the GitHub repository instead:
 >
 > ```sh
-> cargo install --git https://github.com/maxlestage/Paquets paquets
+> cargo install --git https://github.com/maxlestage/Paquets paquets --locked
 > ```
+
+`--locked` builds the tool with the exact dependency versions it was tested with.
 
 The first installation takes a few minutes, because Cargo compiles the tool and its dependencies. Then check it:
 
@@ -177,7 +179,7 @@ Any editor works. For completion, inline errors and "go to definition", install 
 |---|---|
 | `paquets: command not found` | Cargo installs commands in `~/.cargo/bin`. Open a new terminal, or add that folder to your `PATH`. |
 | `linker 'cc' not found` | Install a C toolchain (see the tip in step 1). |
-| `error: package ... requires rustc 1.85` or an edition 2024 error | Your Rust is too old: `rustup update`. |
+| `error: package ... requires rustc 1.88` or an edition 2024 error | Your Rust is too old: `rustup update`. |
 | The first build takes several minutes | Normal: Cargo compiles every dependency once. Later builds only recompile your code. |
 | `wasm-bindgen` reports a version or schema mismatch | The CLI and the crate differ: `cargo install wasm-bindgen-cli --version <version in Cargo.lock> --locked`. `paquets doctor` shows both versions. |
 

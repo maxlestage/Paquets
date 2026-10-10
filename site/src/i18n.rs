@@ -1,13 +1,7 @@
-//! The languages of the site (English, French, Spanish): every text, number
-//! formatting, and the choice of the language (remembered, otherwise taken
-//! from the browser, otherwise English).
+//! The languages of the site (English, French, Spanish): every text and the number
+//! formats. The language of a page comes from its URL (`/en/`, `/fr/`, `/es/`).
 //!
-//! Each language is a [`Texts`] constant: forgetting a translation is a
-//! compile error.
-
-use yew::prelude::*;
-
-use crate::dom;
+//! Each language is a [`Texts`] constant: forgetting a translation is a compile error.
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub enum Lang {
@@ -15,8 +9,6 @@ pub enum Lang {
     En,
     Es,
 }
-
-const STORAGE_KEY: &str = "paquets-lang";
 
 impl Lang {
     /// In the order of the selector.
@@ -30,6 +22,11 @@ impl Lang {
         self.pick(["Français", "English", "Español"])
     }
 
+    /// The Open Graph locale.
+    pub fn locale(self) -> &'static str {
+        self.pick(["fr_FR", "en_US", "es_ES"])
+    }
+
     /// Picks the value of this language in `[fr, en, es]`.
     pub fn pick<T: Copy>(self, values: [T; 3]) -> T {
         values[match self {
@@ -39,59 +36,38 @@ impl Lang {
         }]
     }
 
-    pub fn from_code(code: &str) -> Option<Lang> {
-        match code.get(..2)?.to_ascii_lowercase().as_str() {
-            "fr" => Some(Lang::Fr),
-            "en" => Some(Lang::En),
-            "es" => Some(Lang::Es),
-            _ => None,
-        }
+    /// `en`, `fr` or `es` exactly.
+    pub fn parse(code: &str) -> Option<Lang> {
+        Lang::ALL.into_iter().find(|l| l.code() == code)
+    }
+
+    /// The language of a tag such as `fr-CA` or `ES`.
+    pub fn from_tag(tag: &str) -> Option<Lang> {
+        Lang::parse(&tag.get(..2)?.to_ascii_lowercase())
     }
 
     pub fn texts(self) -> &'static Texts {
         self.pick([&FR, &EN, &ES])
     }
-
-    /// The language chosen last time, otherwise the browser's, otherwise
-    /// English.
-    pub fn detect() -> Lang {
-        let win = dom::window();
-        let stored = win
-            .local_storage()
-            .ok()
-            .flatten()
-            .and_then(|s| s.get_item(STORAGE_KEY).ok().flatten())
-            .and_then(|c| Lang::from_code(&c));
-        if let Some(lang) = stored {
-            return lang;
-        }
-        let navigator = win.navigator();
-        navigator
-            .languages()
-            .iter()
-            .filter_map(|l| l.as_string())
-            .chain(navigator.language())
-            .find_map(|l| Lang::from_code(&l))
-            .unwrap_or(Lang::En)
-    }
-
-    pub fn save(self) {
-        if let Some(storage) = dom::window().local_storage().ok().flatten() {
-            let _ = storage.set_item(STORAGE_KEY, self.code());
-        }
-    }
 }
 
-/// The current language, shared through a context.
-#[derive(Clone, PartialEq)]
-pub struct LangCtx {
-    pub lang: Lang,
-    pub set: Callback<Lang>,
-}
-
-#[hook]
-pub fn use_lang() -> LangCtx {
-    use_context::<LangCtx>().expect("missing LangCtx")
+/// The preferred supported language of an `Accept-Language` header, English by default.
+pub fn pick_lang(header: &str) -> Lang {
+    let mut ranked: Vec<(Lang, f32)> = header
+        .split(',')
+        .filter_map(|part| {
+            let mut pieces = part.trim().split(";q=");
+            let lang = Lang::from_tag(pieces.next()?)?;
+            let q = pieces
+                .next()
+                .and_then(|q| q.trim().parse().ok())
+                .unwrap_or(1.0);
+            Some((lang, q))
+        })
+        .filter(|(_, q)| *q > 0.0)
+        .collect();
+    ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
+    ranked.first().map_or(Lang::En, |r| r.0)
 }
 
 /// Formats a number for the language: `2 781 541` / `2,781,541` /
@@ -233,6 +209,7 @@ pub struct Texts {
     // Documentation
     pub docs_title: &'static str,
     pub docs_lead: &'static str,
+    pub search: &'static str,
     pub docs_search: &'static str,
     pub docs_search_hint: &'static str,
     pub docs_no_results: &'static str,
@@ -240,14 +217,19 @@ pub struct Texts {
     pub docs_prev: &'static str,
     pub docs_next: &'static str,
     pub docs_edit: &'static str,
-    pub docs_loading: &'static str,
     pub docs_missing: &'static str,
-    pub docs_read_en: &'static str,
     pub docs_menu: &'static str,
     pub docs_api: &'static str,
     pub docs_quick: &'static str,
     pub docs_pages: &'static str,
+    pub docs_fallback: &'static str,
     pub callouts: [&'static str; 5],
+    // Other pages
+    pub demo: &'static str,
+    pub skip: &'static str,
+    pub nf_title: &'static str,
+    pub nf_text: &'static str,
+    pub nf_home: &'static str,
 }
 
 impl Texts {
@@ -328,6 +310,7 @@ impl Texts {
             totop_cursor,
             docs_title,
             docs_lead,
+            search,
             docs_search,
             docs_search_hint,
             docs_no_results,
@@ -335,14 +318,18 @@ impl Texts {
             docs_prev,
             docs_next,
             docs_edit,
-            docs_loading,
             docs_missing,
-            docs_read_en,
             docs_menu,
             docs_api,
             docs_quick,
             docs_pages,
+            docs_fallback,
             callouts,
+            demo,
+            skip,
+            nf_title,
+            nf_text,
+            nf_home,
         } = self;
         let mut out: Vec<&'static str> = vec![
             meta_title,
@@ -401,6 +388,7 @@ impl Texts {
             totop_cursor,
             docs_title,
             docs_lead,
+            search,
             docs_search,
             docs_search_hint,
             docs_no_results,
@@ -408,13 +396,17 @@ impl Texts {
             docs_prev,
             docs_next,
             docs_edit,
-            docs_loading,
             docs_missing,
-            docs_read_en,
             docs_menu,
             docs_api,
             docs_quick,
             docs_pages,
+            docs_fallback,
+            demo,
+            skip,
+            nf_title,
+            nf_text,
+            nf_home,
         ];
         out.extend(nav_links);
         out.extend(hero_title);
@@ -695,6 +687,7 @@ pub const EN: Texts = Texts {
     totop_cursor: "Top",
     docs_title: "Documentation",
     docs_lead: "Everything you need to build, test and deploy a Paquets app, step by step.",
+    search: "Search",
     docs_search: "Search the docs…",
     docs_search_hint: "Press / to search",
     docs_no_results: "No results for “{}”.",
@@ -702,14 +695,18 @@ pub const EN: Texts = Texts {
     docs_prev: "Previous",
     docs_next: "Next",
     docs_edit: "Edit this page on GitHub",
-    docs_loading: "Loading…",
     docs_missing: "This page is not available in this language yet.",
-    docs_read_en: "Read the English version",
     docs_menu: "Contents",
     docs_api: "Full API reference (docs.rs)",
     docs_quick: "Start here",
     docs_pages: "{} pages",
+    docs_fallback: "This page is not translated yet: here is the English version.",
     callouts: ["Note", "Tip", "Important", "Warning", "Caution"],
+    demo: "Live demo",
+    skip: "Skip to content",
+    nf_title: "This box is empty.",
+    nf_text: "The page you are looking for does not exist, or it has moved. Everything else is still packed and ready.",
+    nf_home: "Back to the home page",
 };
 
 pub const FR: Texts = Texts {
@@ -962,6 +959,7 @@ pub const FR: Texts = Texts {
     totop_cursor: "Haut",
     docs_title: "Documentation",
     docs_lead: "Tout ce qu'il faut pour créer, tester et déployer une app Paquets, pas à pas.",
+    search: "Rechercher",
     docs_search: "Rechercher dans la documentation…",
     docs_search_hint: "Appuyez sur / pour chercher",
     docs_no_results: "Aucun résultat pour « {} ».",
@@ -969,14 +967,18 @@ pub const FR: Texts = Texts {
     docs_prev: "Précédent",
     docs_next: "Suivant",
     docs_edit: "Modifier cette page sur GitHub",
-    docs_loading: "Chargement…",
     docs_missing: "Cette page n'est pas encore disponible dans cette langue.",
-    docs_read_en: "Lire la version anglaise",
     docs_menu: "Sommaire",
     docs_api: "Référence complète de l'API (docs.rs)",
     docs_quick: "Pour commencer",
     docs_pages: "{} pages",
+    docs_fallback: "Cette page n'est pas encore traduite : voici la version anglaise.",
     callouts: ["Note", "Astuce", "Important", "Attention", "Prudence"],
+    demo: "Démo en direct",
+    skip: "Aller au contenu",
+    nf_title: "Ce carton est vide.",
+    nf_text: "La page que vous cherchez n'existe pas, ou elle a déménagé. Tout le reste est bien emballé et prêt à partir.",
+    nf_home: "Retour à l'accueil",
 };
 
 pub const ES: Texts = Texts {
@@ -1229,6 +1231,7 @@ pub const ES: Texts = Texts {
     totop_cursor: "Arriba",
     docs_title: "Documentación",
     docs_lead: "Todo lo que necesitas para crear, probar y desplegar una app Paquets, paso a paso.",
+    search: "Buscar",
     docs_search: "Buscar en la documentación…",
     docs_search_hint: "Pulsa / para buscar",
     docs_no_results: "Sin resultados para «{}».",
@@ -1236,14 +1239,18 @@ pub const ES: Texts = Texts {
     docs_prev: "Anterior",
     docs_next: "Siguiente",
     docs_edit: "Editar esta página en GitHub",
-    docs_loading: "Cargando…",
     docs_missing: "Esta página aún no está disponible en este idioma.",
-    docs_read_en: "Leer la versión en inglés",
     docs_menu: "Índice",
     docs_api: "Referencia completa de la API (docs.rs)",
     docs_quick: "Para empezar",
     docs_pages: "{} páginas",
+    docs_fallback: "Esta página aún no está traducida: aquí tienes la versión en inglés.",
     callouts: ["Nota", "Consejo", "Importante", "Advertencia", "Precaución"],
+    demo: "Demo en vivo",
+    skip: "Saltar al contenido",
+    nf_title: "Esta caja está vacía.",
+    nf_text: "La página que buscas no existe o se ha mudado. Todo lo demás sigue empaquetado y listo.",
+    nf_home: "Volver al inicio",
 };
 
 #[cfg(test)]
@@ -1264,12 +1271,22 @@ mod tests {
 
     #[test]
     fn detects_language_codes() {
-        assert_eq!(Lang::from_code("fr-CA"), Some(Lang::Fr));
-        assert_eq!(Lang::from_code("ES"), Some(Lang::Es));
-        assert_eq!(Lang::from_code("en"), Some(Lang::En));
-        assert_eq!(Lang::from_code("de-DE"), None);
-        assert_eq!(Lang::from_code("e"), None);
+        assert_eq!(Lang::from_tag("fr-CA"), Some(Lang::Fr));
+        assert_eq!(Lang::from_tag("ES"), Some(Lang::Es));
+        assert_eq!(Lang::parse("en"), Some(Lang::En));
+        assert_eq!(Lang::parse("EN"), None);
+        assert_eq!(Lang::from_tag("de-DE"), None);
+        assert_eq!(Lang::from_tag("e"), None);
         assert_eq!(Lang::ALL.map(Lang::code), ["en", "fr", "es"]);
+    }
+
+    #[test]
+    fn picks_the_preferred_language() {
+        assert_eq!(pick_lang("fr-FR,fr;q=0.9,en;q=0.8"), Lang::Fr);
+        assert_eq!(pick_lang("de-DE, es;q=0.5, en;q=0.4"), Lang::Es);
+        assert_eq!(pick_lang("de, it"), Lang::En);
+        assert_eq!(pick_lang(""), Lang::En);
+        assert_eq!(pick_lang("fr;q=0, en"), Lang::En);
     }
 
     #[test]

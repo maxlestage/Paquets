@@ -155,7 +155,7 @@ In every other file (modules, `src/lib.rs`, tests), `main()` works as expected.
 
 ## The built-in theme
 
-Every page includes a small theme (about 4 kB): readable typography, buttons, forms, tables, and a light or dark mode that follows the visitor's system settings. Plain HTML already looks good, and a few classes cover common layouts:
+Every page includes a small theme (about 3.5 kB): readable typography, buttons, forms, tables, and a light or dark mode that follows the visitor's system settings. Plain HTML already looks good, and a few classes cover common layouts:
 
 | Class or element | Look |
 |---|---|
