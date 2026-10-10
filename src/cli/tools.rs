@@ -1,0 +1,106 @@
+//! Running cargo, rustup and wasm-bindgen, and reading Cargo files.
+
+use std::path::PathBuf;
+use std::process::{Command, Stdio};
+
+/// Runs a command with the terminal attached; an error if it fails.
+pub fn run(command: &mut Command) -> Result<(), String> {
+    let shown = format!("{command:?}").replace('"', "");
+    println!("  → {shown}");
+    let status = command
+        .status()
+        .map_err(|e| format!("cannot start `{shown}`: {e}"))?;
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!("`{shown}` failed ({status})"))
+    }
+}
+
+/// The trimmed standard output of a successful command.
+pub fn output(program: &str, args: &[&str]) -> Option<String> {
+    let out = Command::new(program)
+        .args(args)
+        .stderr(Stdio::null())
+        .output()
+        .ok()?;
+    out.status
+        .success()
+        .then(|| String::from_utf8_lossy(&out.stdout).trim().to_owned())
+}
+
+/// The version of `package` in a `Cargo.lock`.
+pub fn lock_version(lock: &str, package: &str) -> Option<String> {
+    let wanted = format!("name = \"{package}\"");
+    let mut lines = lock.lines();
+    while let Some(line) = lines.next() {
+        if line.trim() == wanted {
+            let version = lines.next()?.trim();
+            return version
+                .strip_prefix("version = \"")?
+                .strip_suffix('"')
+                .map(str::to_owned);
+        }
+    }
+    None
+}
+
+/// The `name` of the `[package]` section of a `Cargo.toml`.
+pub fn package_name(manifest: &str) -> Option<String> {
+    let mut in_package = false;
+    for line in manifest.lines().map(str::trim) {
+        if line.starts_with('[') {
+            in_package = line == "[package]";
+        } else if in_package {
+            if let Some(value) = line.strip_prefix("name") {
+                let value = value.trim_start().strip_prefix('=')?.trim();
+                return Some(value.trim_matches('"').to_owned());
+            }
+        }
+    }
+    None
+}
+
+/// Where cargo writes what it builds.
+pub fn target_dir() -> PathBuf {
+    std::env::var_os("CARGO_TARGET_DIR").map_or_else(|| PathBuf::from("target"), PathBuf::from)
+}
+
+/// Whether the `wasm32-unknown-unknown` target is installed (`None` without rustup).
+pub fn has_wasm_target() -> Option<bool> {
+    let installed = output("rustup", &["target", "list", "--installed"])?;
+    Some(
+        installed
+            .lines()
+            .any(|l| l.trim() == "wasm32-unknown-unknown"),
+    )
+}
+
+/// The version of the installed `wasm-bindgen` command, if any.
+pub fn wasm_bindgen_version() -> Option<String> {
+    let out = output("wasm-bindgen", &["--version"])?;
+    out.split_whitespace().nth(1).map(str::to_owned)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn reads_versions_from_cargo_lock() {
+        let lock = "[[package]]\nname = \"wasm-bindgen\"\nversion = \"0.2.129\"\nsource = \"x\"\n\n[[package]]\nname = \"wasm-bindgen-macro\"\nversion = \"0.2.129\"\n";
+        assert_eq!(
+            lock_version(lock, "wasm-bindgen").as_deref(),
+            Some("0.2.129")
+        );
+        assert_eq!(lock_version(lock, "serde"), None);
+    }
+
+    #[test]
+    fn reads_the_package_name() {
+        let manifest =
+            "[workspace]\nname = \"no\"\n\n[package]\nname = \"my-app\"\nversion = \"0.1.0\"\n";
+        assert_eq!(package_name(manifest).as_deref(), Some("my-app"));
+        assert_eq!(package_name("[dependencies]\nname = \"x\""), None);
+    }
+}

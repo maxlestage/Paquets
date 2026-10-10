@@ -1,0 +1,91 @@
+[package]
+name = "paquets"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "The simplest full-stack web framework for Rust: server, security, database, REST API, SEO pages and WebAssembly islands in one crate. Built on vitesse, securite, memoire-orm and active."
+authors = ["Maxime Lestage"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/maxlestage/Paquets"
+homepage = "https://maxlestage.github.io/Paquets/"
+documentation = "https://docs.rs/paquets"
+readme = "README.md"
+keywords = ["web", "framework", "fullstack", "orm", "wasm"]
+categories = ["web-programming::http-server", "web-programming", "database", "wasm"]
+default-run = "paquets"
+# The published package contains the library, the command line tool, the
+# examples and the tests (not the website, the docs or the CI files).
+include = [
+    "/src",
+    "/examples",
+    "/tests",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/LICENSE-MIT",
+    "/LICENSE-APACHE",
+]
+
+[[bin]]
+name = "paquets"
+path = "src/main.rs"
+
+[features]
+default = ["sqlite", "postgres"]
+## SQLite database (`DATABASE_URL=sqlite://app.db`), compiled in: nothing to install.
+sqlite = ["memoire-orm/sqlite"]
+## PostgreSQL with TLS (Heroku Postgres, Neon, Supabase…).
+postgres = ["memoire-orm/postgres", "memoire-orm/postgres-tls"]
+## MySQL / MariaDB with TLS.
+mysql = ["memoire-orm/mysql", "memoire-orm/mysql-tls"]
+## Redis (rows stored as JSON documents), with `rediss://` TLS.
+redis = ["memoire-orm/redis", "memoire-orm/redis-tls"]
+## MongoDB.
+mongodb = ["memoire-orm/mongodb"]
+## `chrono` date and time columns.
+chrono = ["memoire-orm/chrono"]
+## `uuid::Uuid` columns.
+uuid = ["memoire-orm/uuid"]
+## JSON columns (`serde_json::Value`, `Json<T>`).
+json = ["memoire-orm/json"]
+## HTTP/3 over QUIC, next to HTTP/1.1.
+http3 = ["vitesse/http3"]
+## Every database and option.
+full = ["sqlite", "postgres", "mysql", "redis", "mongodb", "chrono", "uuid", "json", "http3"]
+## Browser side, for `wasm32-unknown-unknown`: hydrate islands, mount
+## client-side apps, route without reloading.
+client = ["active/client"]
+
+[workspace]
+members = ["macros"]
+# The website is a separate crate (Yew, WebAssembly) with its own workspace.
+exclude = ["site"]
+
+[dependencies]
+paquets-macros = { version = "=0.1.0", path = "macros" }
+# Each package is published on crates.io under the version below; the `git`
+# source is used while developing (and ignored by `cargo publish`).
+active = { version = "0.1", git = "https://github.com/maxlestage/Active" }
+memoire-orm = { version = "0.1", git = "https://github.com/maxlestage/Memoire", default-features = false, features = ["memory"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# The server only exists outside the browser.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+vitesse = { version = "0.1", git = "https://github.com/maxlestage/Vitesse" }
+securite = { version = "0.1", git = "https://github.com/maxlestage/Securite", default-features = false }
+http = "1"
+tower-layer = "0.3"
+tower-service = "0.3"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
