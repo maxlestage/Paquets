@@ -236,7 +236,10 @@ async fn the_site_is_an_installable_app() {
     let worker = client.get("/sw.js").await.text();
     assert!(worker.contains(r#"const OFFLINE = "/en/";"#), "{worker}");
     assert!(worker.contains("/pkg/paquets_site_bg.wasm") || !std::path::Path::new("pkg").is_dir());
-    assert!(worker.contains(r#"const NETWORK_ONLY = ["/api/todos"];"#), "{worker}");
+    assert!(
+        worker.contains(r#"const NETWORK_ONLY = ["/api/todos"];"#),
+        "{worker}"
+    );
     let home = client.get("/fr/").await.text();
     assert!(home.contains(r#"<link rel="manifest" href="/manifest.webmanifest"/>"#));
     assert!(home.contains(r#"navigator.serviceWorker.register("/sw.js")"#));
