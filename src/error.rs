@@ -95,10 +95,10 @@ impl Error {
 
 impl<E: Into<vitesse::Error> + 'static> From<E> for Error {
     fn from(err: E) -> Self {
-        if let Some(db) = (&err as &dyn Any).downcast_ref::<memoire_orm::Error>() {
-            if let Some(status) = database_status(db) {
-                return Error(vitesse::Error::new(status, db.to_string()));
-            }
+        if let Some(db) = (&err as &dyn Any).downcast_ref::<memoire_orm::Error>()
+            && let Some(status) = database_status(db)
+        {
+            return Error(vitesse::Error::new(status, db.to_string()));
         }
         Error(err.into())
     }

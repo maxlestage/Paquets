@@ -142,12 +142,11 @@ impl Page {
             document = document.head(html);
         }
         let mut html = document.render();
-        if let Some((js, wasm)) = BUNDLE.get() {
-            if html.contains("<active-island") {
-                if let Some(at) = html.find("</head>") {
-                    html.insert_str(at, &loader(js, wasm));
-                }
-            }
+        if let Some((js, wasm)) = BUNDLE.get()
+            && html.contains("<active-island")
+            && let Some(at) = html.find("</head>")
+        {
+            html.insert_str(at, &loader(js, wasm));
         }
         html
     }

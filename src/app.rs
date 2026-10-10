@@ -12,7 +12,7 @@ use securite::Shield;
 use vitesse::{BoxFuture, Middleware, Next, Request, Response};
 
 use crate::api::Resource;
-use crate::shield::{ShieldMiddleware, default_shield};
+use crate::shield::{ShieldMiddleware, shield_for};
 use crate::{Db, page};
 
 /// Where the database comes from: a URL (`"sqlite://app.db"`) or an open handle.
@@ -192,19 +192,16 @@ impl App {
     }
 
     /// The security layer: securite's recommended shield by default (see
-    /// [`default_shield`]). Pass another [`Shield`] to change it, or `None` to
-    /// turn it off.
+    /// [`shield`](crate::shield())), whose Content-Security-Policy also allows the
+    /// inline code of the HTML files of `public/`. Pass another [`Shield`] to change
+    /// it, or `None` to turn it off.
     ///
     /// ```
     /// use paquets::prelude::*;
     /// use paquets::securite::prelude::*;
     ///
     /// let mut app = App::new();
-    /// app.security(
-    ///     ShieldBuilder::recommended()
-    ///         .guard(RateLimit::per_minute(600))
-    ///         .build(),
-    /// );
+    /// app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
     /// ```
     pub fn security(&mut self, shield: impl Into<Option<Shield>>) -> &mut Self {
         self.security = Some(shield.into());
@@ -347,7 +344,7 @@ impl App {
         let shield = self
             .security
             .take()
-            .unwrap_or_else(|| Some(default_shield()));
+            .unwrap_or_else(|| Some(shield_for(Path::new("public"))));
         let guards = shield.as_ref().map_or(0, |s| s.guard_names().len());
         let _ = self.shield.set(shield);
         let _ = self.logs.set(true);

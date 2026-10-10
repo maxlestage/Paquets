@@ -51,11 +51,9 @@ pub fn package_name(manifest: &str) -> Option<String> {
     for line in manifest.lines().map(str::trim) {
         if line.starts_with('[') {
             in_package = line == "[package]";
-        } else if in_package {
-            if let Some(value) = line.strip_prefix("name") {
-                let value = value.trim_start().strip_prefix('=')?.trim();
-                return Some(value.trim_matches('"').to_owned());
-            }
+        } else if in_package && let Some(value) = line.strip_prefix("name") {
+            let value = value.trim_start().strip_prefix('=')?.trim();
+            return Some(value.trim_matches('"').to_owned());
         }
     }
     None
