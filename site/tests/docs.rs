@@ -74,8 +74,10 @@ fn every_link_between_pages_resolves() {
     let mut problems = Vec::new();
     for lang in Lang::ALL {
         let pages = pages(lang);
-        let anchors: HashMap<&str, HashSet<String>> =
-            pages.iter().map(|(slug, r)| (*slug, ids(&r.html))).collect();
+        let anchors: HashMap<&str, HashSet<String>> = pages
+            .iter()
+            .map(|(slug, r)| (*slug, ids(&r.html)))
+            .collect();
         let prefix = format!("href=\"/{}/docs/", lang.code());
         for (slug, rendered) in &pages {
             let here = format!("{}/{slug}", lang.code());

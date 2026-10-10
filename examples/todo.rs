@@ -90,7 +90,7 @@ async fn demo(req: Request) -> Result<Page> {
 async fn add(req: Request) -> Result<Redirect> {
     let form: NewTodo = req.form().await?;
     let title = form.title.trim();
-    if title.is_empty() || title.len() > 200 {
+    if title.is_empty() || title.chars().count() > 200 {
         return Err(Error::bad_request("a title has 1 to 200 characters"));
     }
     let mut todo = Todo {

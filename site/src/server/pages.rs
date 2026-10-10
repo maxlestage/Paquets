@@ -76,24 +76,28 @@ fn roll(text: &str) -> Element {
 
 /// Each letter rises in turn (CSS); `offset` chains several lines.
 fn split(text: &str, offset: usize) -> Element {
-    let mut index = offset;
     let words: Vec<&str> = text.split(' ').collect();
     let mut root = span()
         .class("split")
         .attr("aria-label", text.to_owned())
         .attr("role", "text");
+    let mut start = offset;
     for (w, word) in words.iter().enumerate() {
-        let letters = word.chars().map(|c| {
-            let i = index;
-            index += 1;
+        let letters = (start..).zip(word.chars()).map(|(i, c)| {
             span()
                 .class("ch")
                 .attr("aria-hidden", "true")
                 .style(format!("--i:{i}"))
                 .text(c.to_string())
         });
-        root = root.child(span().class("word").attr("aria-hidden", "true").children(letters));
-        index += 1;
+        root = root.child(
+            span()
+                .class("word")
+                .attr("aria-hidden", "true")
+                .children(letters),
+        );
+        // One more for the space.
+        start += word.chars().count() + 1;
         if w + 1 < words.len() {
             root = root.text(" ");
         }
@@ -216,10 +220,7 @@ fn install(ctx: &Ctx<'_>, class: &str, delay: &str) -> Element {
 
 /// The language selector: links to the same page in each language.
 fn lang_switch(ctx: &Ctx<'_>) -> Element {
-    let index = Lang::ALL
-        .iter()
-        .position(|&l| l == ctx.lang())
-        .unwrap_or(0);
+    let index = Lang::ALL.iter().position(|&l| l == ctx.lang()).unwrap_or(0);
     div()
         .class("lang")
         .attr("role", "group")
@@ -276,11 +277,7 @@ fn layout(ctx: &Ctx<'_>, title: &str, description: &str, content: Element) -> Pa
     let mut root = div()
         .class("site")
         .attr("data-base", base())
-        .child(
-            a().class("skip")
-                .href("#main")
-                .text(ctx.t().skip),
-        )
+        .child(a().class("skip").href("#main").text(ctx.t().skip))
         .child(div().class("progress").attr("aria-hidden", "true"));
     if ctx.intro {
         root = root.class("site--intro").child(loader(ctx));
@@ -298,11 +295,7 @@ fn layout(ctx: &Ctx<'_>, title: &str, description: &str, content: Element) -> Pa
         .seo(seo)
         .plain()
         .stylesheet(FONTS)
-        .stylesheet(format!(
-            "{}?v={}",
-            link("/site.css"),
-            ctx.site.css_version
-        ))
+        .stylesheet(format!("{}?v={}", link("/site.css"), ctx.site.css_version))
         .head(head)
         .body(root)
 }
@@ -323,23 +316,23 @@ fn loader(ctx: &Ctx<'_>) -> Element {
                         )))
                         .child(div().class("loader__shadow")),
                 )
-                .child(div().class("loader__word").children(
-                    "PAQUETS".chars().enumerate().map(|(i, c)| {
-                        span().style(format!("--i:{i}")).text(c.to_string())
-                    }),
-                ))
+                .child(
+                    div().class("loader__word").children(
+                        "PAQUETS"
+                            .chars()
+                            .enumerate()
+                            .map(|(i, c)| span().style(format!("--i:{i}")).text(c.to_string())),
+                    ),
+                )
                 .child(div().class("loader__bar").child(span()))
                 .child(
-                    div()
-                        .class("loader__label")
-                        .text(ctx.t().loader)
-                        .child(
-                            span()
-                                .class("loader__dots")
-                                .child(i().text("."))
-                                .child(i().text("."))
-                                .child(i().text(".")),
-                        ),
+                    div().class("loader__label").text(ctx.t().loader).child(
+                        span()
+                            .class("loader__dots")
+                            .child(i().text("."))
+                            .child(i().text("."))
+                            .child(i().text(".")),
+                    ),
                 ),
         )
         .child(div().class("loader__percent"))
@@ -359,52 +352,50 @@ const SECTIONS: [&str; 4] = ["packages", "code", "features", "deploy"];
 fn navbar(ctx: &Ctx<'_>) -> Element {
     let t = ctx.t();
     let docs = matches!(ctx.route.page, PageKind::Docs | PageKind::Doc(_));
-    let mut header = header()
-        .class("nav")
-        .id("nav")
-        .child(
-            a().class("nav__brand")
-                .href(ctx.home(""))
-                .attr("aria-label", t.brand_aria)
-                .child(logo())
-                .child(span().text("Paquets")),
-        )
-        .child(
-            nav()
-                .class("nav__links")
-                .attr("aria-label", t.nav_aria)
-                .children(SECTIONS.iter().zip(t.nav_links).map(|(id, text)| {
-                    a().class("nav__link").href(ctx.home(id)).child(roll(text))
-                }))
-                .child({
-                    let link = a()
-                        .class("nav__link nav__link--docs")
-                        .href(Route::new(ctx.lang(), PageKind::Docs).href())
-                        .child(icon("book"))
-                        .child(roll(t.nav_docs));
-                    if docs { link.class("is-active") } else { link }
-                }),
-        )
-        .child(island("search", ctx.lang().code(), crate::islands::search))
-        .child(lang_switch(ctx))
-        .child(
-            magnetic(GITHUB, "btn--ghost nav__cta", true)
-                .attr("aria-label", "GitHub")
-                .child(inner([
-                    icon("github").into(),
-                    span().text("GitHub").into(),
-                ])),
-        )
-        .child(
-            button()
-                .class("nav__burger")
-                .attr("type", "button")
-                .attr("data-toggle-menu", "")
-                .attr("aria-label", t.menu)
-                .attr("aria-expanded", "false")
-                .child(span())
-                .child(span()),
-        );
+    let mut header =
+        header()
+            .class("nav")
+            .id("nav")
+            .child(
+                a().class("nav__brand")
+                    .href(ctx.home(""))
+                    .attr("aria-label", t.brand_aria)
+                    .child(logo())
+                    .child(span().text("Paquets")),
+            )
+            .child(
+                nav()
+                    .class("nav__links")
+                    .attr("aria-label", t.nav_aria)
+                    .children(SECTIONS.iter().zip(t.nav_links).map(|(id, text)| {
+                        a().class("nav__link").href(ctx.home(id)).child(roll(text))
+                    }))
+                    .child({
+                        let link = a()
+                            .class("nav__link nav__link--docs")
+                            .href(Route::new(ctx.lang(), PageKind::Docs).href())
+                            .child(icon("book"))
+                            .child(roll(t.nav_docs));
+                        if docs { link.class("is-active") } else { link }
+                    }),
+            )
+            .child(island("search", ctx.lang().code(), crate::islands::search))
+            .child(lang_switch(ctx))
+            .child(
+                magnetic(GITHUB, "btn--ghost nav__cta", true)
+                    .attr("aria-label", "GitHub")
+                    .child(inner([icon("github").into(), span().text("GitHub").into()])),
+            )
+            .child(
+                button()
+                    .class("nav__burger")
+                    .attr("type", "button")
+                    .attr("data-toggle-menu", "")
+                    .attr("aria-label", t.menu)
+                    .attr("aria-expanded", "false")
+                    .child(span())
+                    .child(span()),
+            );
     if docs {
         header = header.class("nav--docs");
     }
@@ -430,18 +421,23 @@ fn menu(ctx: &Ctx<'_>) -> Element {
         .child(
             nav()
                 .attr("aria-label", t.nav_aria)
-                .children(links.into_iter().enumerate().map(|(i, (href, text, external))| {
-                    let link = a()
-                        .href(href)
-                        .style(format!("--i:{i}"))
-                        .child(span().class("menu__num").text(format!("0{}", i + 1)))
-                        .text(text);
-                    if external {
-                        link.attr("target", "_blank").attr("rel", "noopener")
-                    } else {
-                        link
-                    }
-                })),
+                .children(
+                    links
+                        .into_iter()
+                        .enumerate()
+                        .map(|(i, (href, text, external))| {
+                            let link = a()
+                                .href(href)
+                                .style(format!("--i:{i}"))
+                                .child(span().class("menu__num").text(format!("0{}", i + 1)))
+                                .text(text);
+                            if external {
+                                link.attr("target", "_blank").attr("rel", "noopener")
+                            } else {
+                                link
+                            }
+                        }),
+                ),
         )
         .child(
             div()
@@ -490,10 +486,13 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
         .class("totop__text")
         .attr("viewBox", "0 0 100 100")
         .attr("aria-hidden", "true")
-        .child(defs().child(path().id("totop-circle").attr(
-            "d",
-            "M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0",
-        )))
+        .child(
+            defs().child(
+                path()
+                    .id("totop-circle")
+                    .attr("d", "M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0"),
+            ),
+        )
         .child(
             text_svg().child(
                 el("textPath")
@@ -528,38 +527,43 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
                                 .child(lang_switch(ctx)),
                         ),
                 )
-                .child(div().class("footer__cols").children(
-                    columns.into_iter().enumerate().map(|(c, (title, links))| {
-                        div()
-                            .class("footer__col")
-                            .attr("data-reveal", "")
-                            .style(format!("--d:{}ms", c * 80))
-                            .child(h2().text(title))
-                            .child(ul().children(links.into_iter().map(
-                                |(text, href, external)| {
-                                    let link = a()
-                                        .class("footer__link")
-                                        .href(href)
-                                        .child(span().text(text))
-                                        .child(icon("arrow"));
-                                    li().child(if external {
-                                        link.attr("target", "_blank").attr("rel", "noopener")
-                                    } else {
-                                        link
-                                    })
-                                },
-                            )))
-                    }),
-                )),
+                .child(
+                    div()
+                        .class("footer__cols")
+                        .children(columns.into_iter().enumerate().map(|(c, (title, links))| {
+                            div()
+                                .class("footer__col")
+                                .attr("data-reveal", "")
+                                .style(format!("--d:{}ms", c * 80))
+                                .child(h2().text(title))
+                                .child(ul().children(links.into_iter().map(
+                                    |(text, href, external)| {
+                                        let link = a()
+                                            .class("footer__link")
+                                            .href(href)
+                                            .child(span().text(text))
+                                            .child(icon("arrow"));
+                                        li().child(if external {
+                                            link.attr("target", "_blank").attr("rel", "noopener")
+                                        } else {
+                                            link
+                                        })
+                                    },
+                                )))
+                        })),
+                ),
         )
         .child(
             div()
                 .class("footer__word")
                 .attr("aria-hidden", "true")
                 .attr("data-reveal", "")
-                .children("PAQUETS".chars().enumerate().map(|(i, c)| {
-                    span().style(format!("--i:{i}")).text(c.to_string())
-                })),
+                .children(
+                    "PAQUETS"
+                        .chars()
+                        .enumerate()
+                        .map(|(i, c)| span().style(format!("--i:{i}")).text(c.to_string())),
+                ),
         )
         .child(
             div()
@@ -624,13 +628,14 @@ fn hero(ctx: &Ctx<'_>) -> Element {
             row.child(words)
         }
     });
-    let blobs = ["a", "b", "c", "d"].iter().zip(["0.14", "-0.08", "0.06", "0.2"]).map(
-        |(name, speed)| {
+    let blobs = ["a", "b", "c", "d"]
+        .iter()
+        .zip(["0.14", "-0.08", "0.06", "0.2"])
+        .map(|(name, speed)| {
             span()
                 .class(format!("aurora__blob aurora__blob--{name}"))
                 .attr("data-speed", speed)
-        },
-    );
+        });
     // (left %, top %, size px, parallax speed, wireframe)
     const FLOATERS: [(u32, u32, u32, &str, bool); 7] = [
         (6, 22, 34, "0.18", true),
@@ -699,12 +704,9 @@ fn hero(ctx: &Ctx<'_>) -> Element {
                                         icon("arrow").into(),
                                     ])),
                                 )
-                                .child(magnetic(GITHUB, "btn--ghost btn--lg", true).child(
-                                    inner([
-                                        icon("github").into(),
-                                        span().text(t.hero_github).into(),
-                                    ]),
-                                )),
+                                .child(magnetic(GITHUB, "btn--ghost btn--lg", true).child(inner(
+                                    [icon("github").into(), span().text(t.hero_github).into()],
+                                ))),
                         )
                         .child(install(ctx, "intro", "1300ms")),
                 )
@@ -751,13 +753,14 @@ fn scene() -> Element {
                 .child(div().class("scene__rig").child(pbox("", pkgs))),
         )
         .child(div().class("scene__floor"))
-        .child(ul().class("scene__labels").children(PACKAGES.iter().enumerate().map(
-            |(i, p)| {
-                li().style(format!("--i:{i};--c:{}", p.color))
-                    .child(i_tag())
-                    .text(p.name)
-            },
-        )))
+        .child(
+            ul().class("scene__labels")
+                .children(PACKAGES.iter().enumerate().map(|(i, p)| {
+                    li().style(format!("--i:{i};--c:{}", p.color))
+                        .child(i_tag())
+                        .text(p.name)
+                })),
+        )
 }
 
 fn i_tag() -> Element {
@@ -768,23 +771,26 @@ fn marquee(ctx: &Ctx<'_>) -> Element {
     let t = ctx.t();
     let row = |items: &[&str], class: &str| {
         let group = |hidden: bool| {
-            let g = div().class("marquee__group").children(items.iter().flat_map(|w| {
-                [
-                    Node::from(span().class("marquee__item").text((*w).to_owned())),
-                    Node::from(span().class("marquee__sep").child(logo())),
-                ]
-            }));
-            if hidden { g.attr("aria-hidden", "true") } else { g }
+            let g = div()
+                .class("marquee__group")
+                .children(items.iter().flat_map(|w| {
+                    [
+                        Node::from(span().class("marquee__item").text((*w).to_owned())),
+                        Node::from(span().class("marquee__sep").child(logo())),
+                    ]
+                }));
+            if hidden {
+                g.attr("aria-hidden", "true")
+            } else {
+                g
+            }
         };
-        div()
-            .class("marquee__row")
-            .class(class.to_owned())
-            .child(
-                div()
-                    .class("marquee__track")
-                    .child(group(false))
-                    .child(group(true)),
-            )
+        div().class("marquee__row").class(class.to_owned()).child(
+            div()
+                .class("marquee__track")
+                .child(group(false))
+                .child(group(true)),
+        )
     };
     section()
         .class("marquee")
@@ -795,48 +801,52 @@ fn marquee(ctx: &Ctx<'_>) -> Element {
 
 fn packages(ctx: &Ctx<'_>) -> Element {
     let t = ctx.t();
-    let cards = PACKAGES.iter().zip(&t.packages).enumerate().map(|(i, (pkg, text))| {
-        let (value, unit) = pkg.figure.split_once(' ').unwrap_or((pkg.figure, ""));
-        div()
-            .class("pkgs__item")
-            .attr("data-reveal", "")
-            .style(format!("--d:{}ms", i * 100))
-            .child(
-                div()
-                    .class("tilt pkg-card card")
-                    .attr("data-tilt", "10")
-                    .style(format!("--c:{}", pkg.color))
-                    .child(span().class("tilt__spot").attr("aria-hidden", "true"))
-                    .child(
-                        div()
-                            .class("pkg-card__top")
-                            .child(cube(46, Some(pkg.color), Some(pkg.glyph), true, false))
-                            .child(span().class("pkg-card__index").text(format!("0{}", i + 1))),
-                    )
-                    .child(h3().class("pkg-card__name").text(pkg.name))
-                    .child(
-                        p().class("pkg-card__role")
-                            .child(icon(pkg.icon))
-                            .text(text.role),
-                    )
-                    .child(p().class("pkg-card__text").text(text.text))
-                    .child(
-                        div()
-                            .class("pkg-card__figure")
-                            .child(strong().text(value).child(small().text(unit)))
-                            .child(span().text(text.figure)),
-                    )
-                    .child(
-                        a().class("pkg-card__link")
-                            .href(pkg.repo)
-                            .attr("target", "_blank")
-                            .attr("rel", "noopener")
-                            .child(icon("github"))
-                            .child(span().text(t.pkg_repo))
-                            .child(icon("external")),
-                    ),
-            )
-    });
+    let cards = PACKAGES
+        .iter()
+        .zip(&t.packages)
+        .enumerate()
+        .map(|(i, (pkg, text))| {
+            let (value, unit) = pkg.figure.split_once(' ').unwrap_or((pkg.figure, ""));
+            div()
+                .class("pkgs__item")
+                .attr("data-reveal", "")
+                .style(format!("--d:{}ms", i * 100))
+                .child(
+                    div()
+                        .class("tilt pkg-card card")
+                        .attr("data-tilt", "10")
+                        .style(format!("--c:{}", pkg.color))
+                        .child(span().class("tilt__spot").attr("aria-hidden", "true"))
+                        .child(
+                            div()
+                                .class("pkg-card__top")
+                                .child(cube(46, Some(pkg.color), Some(pkg.glyph), true, false))
+                                .child(span().class("pkg-card__index").text(format!("0{}", i + 1))),
+                        )
+                        .child(h3().class("pkg-card__name").text(pkg.name))
+                        .child(
+                            p().class("pkg-card__role")
+                                .child(icon(pkg.icon))
+                                .text(text.role),
+                        )
+                        .child(p().class("pkg-card__text").text(text.text))
+                        .child(
+                            div()
+                                .class("pkg-card__figure")
+                                .child(strong().text(value).child(small().text(unit)))
+                                .child(span().text(text.figure)),
+                        )
+                        .child(
+                            a().class("pkg-card__link")
+                                .href(pkg.repo)
+                                .attr("target", "_blank")
+                                .attr("rel", "noopener")
+                                .child(icon("github"))
+                                .child(span().text(t.pkg_repo))
+                                .child(icon("external")),
+                        ),
+                )
+        });
     let mut terms: Vec<Node> = vec![
         span()
             .class("equation__term equation__term--brand")
@@ -883,7 +893,11 @@ fn showcase(ctx: &Ctx<'_>) -> Element {
         .class("section showcase")
         .id("code")
         .child(head("02", t.code_label, t.code_title, Some(t.code_lead)))
-        .child(island("showcase", ctx.lang().code(), crate::islands::showcase))
+        .child(island(
+            "showcase",
+            ctx.lang().code(),
+            crate::islands::showcase,
+        ))
 }
 
 fn features(ctx: &Ctx<'_>) -> Element {
@@ -897,24 +911,28 @@ fn features(ctx: &Ctx<'_>) -> Element {
             t.features_title,
             Some(t.features_lead),
         ))
-        .child(div().class("features").children(
-            FEATURES.iter().zip(&t.features).enumerate().map(|(i, ((name, tag), f))| {
-                div()
-                    .class("features__item")
-                    .attr("data-reveal", "")
-                    .style(format!("--d:{}ms", (i % 4) * 90))
-                    .child(
+        .child(
+            div()
+                .class("features")
+                .children(FEATURES.iter().zip(&t.features).enumerate().map(
+                    |(i, ((name, tag), f))| {
                         div()
-                            .class("tilt feature card")
-                            .attr("data-tilt", "10")
-                            .child(span().class("tilt__spot").attr("aria-hidden", "true"))
-                            .child(span().class("feature__icon").child(icon(name)))
-                            .child(h3().text(f.title))
-                            .child(p().text(f.text))
-                            .child(code().class("feature__tag").text(*tag)),
-                    )
-            }),
-        ))
+                            .class("features__item")
+                            .attr("data-reveal", "")
+                            .style(format!("--d:{}ms", (i % 4) * 90))
+                            .child(
+                                div()
+                                    .class("tilt feature card")
+                                    .attr("data-tilt", "10")
+                                    .child(span().class("tilt__spot").attr("aria-hidden", "true"))
+                                    .child(span().class("feature__icon").child(icon(name)))
+                                    .child(h3().text(f.title))
+                                    .child(p().text(f.text))
+                                    .child(code().class("feature__tag").text(*tag)),
+                            )
+                    },
+                )),
+        )
 }
 
 fn numbers(ctx: &Ctx<'_>) -> Element {
@@ -925,57 +943,63 @@ fn numbers(ctx: &Ctx<'_>) -> Element {
         .id("numbers")
         .child(div().class("numbers__bg").attr("aria-hidden", "true"))
         .child(head("04", t.numbers_label, t.numbers_title, None))
-        .child(div().class("stats").children(
-            NUMBERS.iter().zip(&t.numbers).enumerate().map(
-                |(i, ((value, decimals, prefix, suffix), item))| {
-                    article()
-                        .class("stat")
-                        .attr("data-reveal", "")
-                        .style(format!("--d:{}ms", (i % 3) * 110))
-                        .child(
-                            div().class("stat__value").child(
-                                span()
-                                    .class("counter")
-                                    .attr("data-count", value.to_string())
-                                    .attr("data-decimals", decimals.to_string())
-                                    .attr("data-prefix", *prefix)
-                                    .attr("data-suffix", *suffix)
-                                    .text(format!(
-                                        "{prefix}{}{suffix}",
-                                        number(lang, *value, *decimals)
-                                    )),
-                            ),
-                        )
-                        .child(h3().class("stat__label").text(item.title))
-                        .child(p().class("stat__detail").text(item.text))
-                        .child(span().class("stat__line"))
-                },
-            ),
-        ))
+        .child(
+            div()
+                .class("stats")
+                .children(NUMBERS.iter().zip(&t.numbers).enumerate().map(
+                    |(i, ((value, decimals, prefix, suffix), item))| {
+                        article()
+                            .class("stat")
+                            .attr("data-reveal", "")
+                            .style(format!("--d:{}ms", (i % 3) * 110))
+                            .child(
+                                div()
+                                    .class("stat__value")
+                                    .child(span().class("stat__affix").text(prefix.trim()))
+                                    .child(
+                                        span()
+                                            .class("counter")
+                                            .attr("data-count", value.to_string())
+                                            .attr("data-decimals", decimals.to_string())
+                                            .text(number(lang, *value, *decimals)),
+                                    )
+                                    .child(span().class("stat__unit").text(suffix.trim())),
+                            )
+                            .child(h3().class("stat__label").text(item.title))
+                            .child(p().class("stat__detail").text(item.text))
+                            .child(span().class("stat__line"))
+                    },
+                )),
+        )
 }
 
 fn journey(ctx: &Ctx<'_>) -> Element {
     let t = ctx.t();
     let icons = ["box", "terminal", "git", "cloud"];
-    let steps = t.journey.iter().zip(JOURNEY).enumerate().map(|(i, (item, command))| {
-        // The reveal is on an inner element: the browser toggles the classes of the
-        // step itself while the terminal types.
-        li().class("timeline__step").child(
-            div()
-                .class("timeline__inner")
-                .attr("data-reveal", "")
-                .style(format!("--d:{}ms", i * 90))
-                .child(span().class("timeline__dot").child(icon(icons[i])))
-                .child(
-                    div()
-                        .class("timeline__body")
-                        .child(span().class("timeline__num").text(format!("0{}", i + 1)))
-                        .child(h3().text(item.title))
-                        .child(p().text(item.text))
-                        .child(code().class("timeline__cmd").text(command)),
-                ),
-        )
-    });
+    let steps = t
+        .journey
+        .iter()
+        .zip(JOURNEY)
+        .enumerate()
+        .map(|(i, (item, command))| {
+            // The reveal is on an inner element: the browser toggles the classes of the
+            // step itself while the terminal types.
+            li().class("timeline__step").child(
+                div()
+                    .class("timeline__inner")
+                    .attr("data-reveal", "")
+                    .style(format!("--d:{}ms", i * 90))
+                    .child(span().class("timeline__dot").child(icon(icons[i])))
+                    .child(
+                        div()
+                            .class("timeline__body")
+                            .child(span().class("timeline__num").text(format!("0{}", i + 1)))
+                            .child(h3().text(item.title))
+                            .child(p().text(item.text))
+                            .child(code().class("timeline__cmd").text(command)),
+                    ),
+            )
+        });
     section()
         .class("section journey")
         .id("start")
@@ -1010,7 +1034,11 @@ fn journey(ctx: &Ctx<'_>) -> Element {
                         .class("journey__terminal")
                         .attr("data-reveal", "")
                         .style("--d:150ms")
-                        .child(island("terminal", ctx.lang().code(), crate::islands::terminal)),
+                        .child(island(
+                            "terminal",
+                            ctx.lang().code(),
+                            crate::islands::terminal,
+                        )),
                 ),
         )
 }
@@ -1038,11 +1066,7 @@ fn phone(t: &Texts) -> Element {
                                 .class("phone__status")
                                 .child(span().text("9:41"))
                                 .child(
-                                    span()
-                                        .class("phone__bars")
-                                        .child(i())
-                                        .child(i())
-                                        .child(i()),
+                                    span().class("phone__bars").child(i()).child(i()).child(i()),
                                 ),
                         )
                         .child(
@@ -1093,7 +1117,9 @@ fn phone(t: &Texts) -> Element {
                                     p().class("phone__url")
                                         .text(format!("{}.herokuapp.com", t.phone[1])),
                                 )
-                                .child(div().class("phone__btn phone__btn--ghost").text(t.phone[4])),
+                                .child(
+                                    div().class("phone__btn phone__btn--ghost").text(t.phone[4]),
+                                ),
                         ),
                 ),
         )
@@ -1192,29 +1218,31 @@ fn docs_preview(ctx: &Ctx<'_>) -> Element {
             t.docs_home_title,
             Some(t.docs_home_lead),
         ))
-        .child(div().class("doc-preview").children(CATEGORIES.iter().enumerate().map(
-            |(c, category)| {
-                div()
-                    .class("doc-preview__item")
-                    .attr("data-reveal", "")
-                    .style(format!("--d:{}ms", c * 80))
-                    .child(
-                        div()
-                            .class("tilt doc-preview__card card")
-                            .attr("data-tilt", "6")
-                            .child(span().class("tilt__spot").attr("aria-hidden", "true"))
-                            .child(span().class("doc-preview__num").text(format!("0{}", c + 1)))
-                            .child(span().class("doc-preview__icon").child(icon(category.icon)))
-                            .child(h3().text(lang.pick(category.title)))
-                            .child(ul().children(pages_of(c).map(|page| {
-                                li().child(
-                                    a().href(doc_href(lang, page.slug, None))
-                                        .text(page.title(lang)),
-                                )
-                            }))),
-                    )
-            },
-        )))
+        .child(
+            div()
+                .class("doc-preview")
+                .children(CATEGORIES.iter().enumerate().map(|(c, category)| {
+                    div()
+                        .class("doc-preview__item")
+                        .attr("data-reveal", "")
+                        .style(format!("--d:{}ms", c * 80))
+                        .child(
+                            div()
+                                .class("tilt doc-preview__card card")
+                                .attr("data-tilt", "6")
+                                .child(span().class("tilt__spot").attr("aria-hidden", "true"))
+                                .child(span().class("doc-preview__num").text(format!("0{}", c + 1)))
+                                .child(span().class("doc-preview__icon").child(icon(category.icon)))
+                                .child(h3().text(lang.pick(category.title)))
+                                .child(ul().children(pages_of(c).map(|page| {
+                                    li().child(
+                                        a().href(doc_href(lang, page.slug, None))
+                                            .text(page.title(lang)),
+                                    )
+                                }))),
+                        )
+                })),
+        )
         .child(
             div().class("center").attr("data-reveal", "").child(
                 magnetic(
@@ -1253,10 +1281,10 @@ fn cta(ctx: &Ctx<'_>) -> Element {
             span().text(t.cta_star).into(),
         ])));
     if ctx.site.live {
-        actions = actions.child(magnetic("/demo", "btn--ghost btn--lg", false).child(inner([
-            icon("spark").into(),
-            span().text(t.demo).into(),
-        ])));
+        actions = actions.child(
+            magnetic("/demo", "btn--ghost btn--lg", false)
+                .child(inner([icon("spark").into(), span().text(t.demo).into()])),
+        );
     }
     section()
         .class("cta")
@@ -1304,75 +1332,76 @@ pub fn docs_home(ctx: &Ctx<'_>) -> Page {
         ("deploy-heroku-mobile", "phone"),
         ("cheatsheet", "page"),
     ];
-    let content = main()
-        .class("docs-home")
-        .child(
-            div()
-                .class("docs-home__hero")
-                .child(div().class("docs-home__glow").attr("aria-hidden", "true"))
-                .child(
-                    div()
-                        .class("docs-home__cube")
-                        .attr("aria-hidden", "true")
-                        .child(cube(64, None, None, true, false)),
-                )
-                .child(
-                    p().class("eyebrow")
-                        .child(span().class("eyebrow__num").text("Paquets"))
-                        .text(lang.name()),
-                )
-                .child(h1().class("docs-home__title").text(t.docs_title))
-                .child(p().class("docs-home__lead").text(t.docs_lead))
-                .child(search_field(t))
-                .child(p().class("docs-home__hint").text(t.docs_search_hint)),
-        )
-        .child(
-            div()
-                .class("docs-home__quick")
-                .child(h2().class("docs-home__h2").text(t.docs_quick))
-                .child(div().class("docs-home__quick-grid").children(
-                    quick.iter().enumerate().filter_map(|(i, (slug, name))| {
-                        let (_, page) = catalog::find(slug)?;
-                        Some(
-                            a().class("doc-quick card")
-                                .href(doc_href(lang, page.slug, None))
-                                .attr("data-reveal", "")
-                                .style(format!("--d:{}ms", i * 80))
-                                .child(span().class("doc-quick__icon").child(icon(name)))
-                                .child(span().class("doc-quick__title").text(page.title(lang)))
-                                .child(span().class("doc-quick__text").text(page.summary(lang)))
-                                .child(span().class("doc-quick__arrow").child(icon("arrow"))),
-                        )
-                    }),
-                )),
-        )
-        .child(div().class("docs-home__cats").children(
-            CATEGORIES.iter().enumerate().map(|(c, category)| {
-                let pages: Vec<&catalog::Page> = pages_of(c).collect();
-                article()
-                    .class("doc-cat card")
-                    .attr("data-reveal", "")
-                    .style(format!("--d:{}ms", (c % 3) * 90))
+    let content =
+        main()
+            .class("docs-home")
+            .child(
+                div()
+                    .class("docs-home__hero")
+                    .child(div().class("docs-home__glow").attr("aria-hidden", "true"))
                     .child(
                         div()
-                            .class("doc-cat__head")
-                            .child(span().class("doc-cat__icon").child(icon(category.icon)))
-                            .child(h2().text(lang.pick(category.title)))
-                            .child(
-                                span()
-                                    .class("doc-cat__count")
-                                    .text(t.docs_pages.replace("{}", &pages.len().to_string())),
-                            ),
+                            .class("docs-home__cube")
+                            .attr("aria-hidden", "true")
+                            .child(cube(64, None, None, true, false)),
                     )
-                    .child(ul().children(pages.iter().map(|page| {
-                        li().child(
-                            a().href(doc_href(lang, page.slug, None))
-                                .child(strong().text(page.title(lang)))
-                                .child(span().text(page.summary(lang))),
-                        )
-                    })))
-            }),
-        ));
+                    .child(
+                        p().class("eyebrow")
+                            .child(span().class("eyebrow__num").text("Paquets"))
+                            .text(lang.name()),
+                    )
+                    .child(h1().class("docs-home__title").text(t.docs_title))
+                    .child(p().class("docs-home__lead").text(t.docs_lead))
+                    .child(search_field(t))
+                    .child(p().class("docs-home__hint").text(t.docs_search_hint)),
+            )
+            .child(
+                div()
+                    .class("docs-home__quick")
+                    .child(h2().class("docs-home__h2").text(t.docs_quick))
+                    .child(div().class("docs-home__quick-grid").children(
+                        quick.iter().enumerate().filter_map(|(i, (slug, name))| {
+                            let (_, page) = catalog::find(slug)?;
+                            Some(
+                                a().class("doc-quick card")
+                                    .href(doc_href(lang, page.slug, None))
+                                    .attr("data-reveal", "")
+                                    .style(format!("--d:{}ms", i * 80))
+                                    .child(span().class("doc-quick__icon").child(icon(name)))
+                                    .child(span().class("doc-quick__title").text(page.title(lang)))
+                                    .child(span().class("doc-quick__text").text(page.summary(lang)))
+                                    .child(span().class("doc-quick__arrow").child(icon("arrow"))),
+                            )
+                        }),
+                    )),
+            )
+            .child(
+                div()
+                    .class("docs-home__cats")
+                    .children(CATEGORIES.iter().enumerate().map(|(c, category)| {
+                        let pages: Vec<&catalog::Page> = pages_of(c).collect();
+                        article()
+                            .class("doc-cat card")
+                            .attr("data-reveal", "")
+                            .style(format!("--d:{}ms", (c % 3) * 90))
+                            .child(
+                                div()
+                                    .class("doc-cat__head")
+                                    .child(span().class("doc-cat__icon").child(icon(category.icon)))
+                                    .child(h2().text(lang.pick(category.title)))
+                                    .child(span().class("doc-cat__count").text(
+                                        t.docs_pages.replace("{}", &pages.len().to_string()),
+                                    )),
+                            )
+                            .child(ul().children(pages.iter().map(|page| {
+                                li().child(
+                                    a().href(doc_href(lang, page.slug, None))
+                                        .child(strong().text(page.title(lang)))
+                                        .child(span().text(page.summary(lang))),
+                                )
+                            })))
+                    })),
+            );
     layout(
         ctx,
         &format!("{} — Paquets", t.docs_title),
@@ -1458,24 +1487,22 @@ pub fn doc(ctx: &Ctx<'_>, slug: &'static str) -> Page {
             .child(span().class("doc-pager__label").text(label.to_owned()))
             .child(span().class("doc-pager__title").text(page.title(lang)))
     };
-    let mut article = article()
-        .class("docs__main")
-        .child(
-            p().class("docs__crumb")
-                .child(
-                    a().href(Route::new(lang, PageKind::Docs).href())
-                        .text(t.docs_title),
-                )
-                .child(span().class("docs__crumb-sep").text("/"))
-                .child(
-                    a().href(doc_href(
-                        lang,
-                        pages_of(category).next().map_or(slug, |p| p.slug),
-                        None,
-                    ))
-                    .text(lang.pick(CATEGORIES[category].title)),
-                ),
-        );
+    let mut article = article().class("docs__main").child(
+        p().class("docs__crumb")
+            .child(
+                a().href(Route::new(lang, PageKind::Docs).href())
+                    .text(t.docs_title),
+            )
+            .child(span().class("docs__crumb-sep").text("/"))
+            .child(
+                a().href(doc_href(
+                    lang,
+                    pages_of(category).next().map_or(slug, |p| p.slug),
+                    None,
+                ))
+                .text(lang.pick(CATEGORIES[category].title)),
+            ),
+    );
     article = match doc {
         Some(doc) => {
             if doc.fallback {
@@ -1491,7 +1518,11 @@ pub fn doc(ctx: &Ctx<'_>, slug: &'static str) -> Page {
             div()
                 .class("doc-body")
                 .child(h1().class("doc-title").text(title.to_owned()))
-                .child(div().class("doc-missing card").child(p().text(t.docs_missing))),
+                .child(
+                    div()
+                        .class("doc-missing card")
+                        .child(p().text(t.docs_missing)),
+                ),
         ),
     };
     let mut pager_nav = nav().class("doc-pager");
@@ -1516,20 +1547,23 @@ pub fn doc(ctx: &Ctx<'_>, slug: &'static str) -> Page {
             ),
         )
         .child(pager_nav);
-    let toc = doc.map(|d| &d.toc).filter(|toc| !toc.is_empty()).map(|toc| {
-        nav()
-            .class("doc-toc")
-            .attr("aria-label", t.docs_toc)
-            .child(p().class("doc-toc__title").text(t.docs_toc))
-            .child(ul().children(toc.iter().map(|e| {
-                let item = li().child(a().href(format!("#{}", e.id)).text(e.text.clone()));
-                if e.level == 3 {
-                    item.class("is-sub")
-                } else {
-                    item
-                }
-            })))
-    });
+    let toc = doc
+        .map(|d| &d.toc)
+        .filter(|toc| !toc.is_empty())
+        .map(|toc| {
+            nav()
+                .class("doc-toc")
+                .attr("aria-label", t.docs_toc)
+                .child(p().class("doc-toc__title").text(t.docs_toc))
+                .child(ul().children(toc.iter().map(|e| {
+                    let item = li().child(a().href(format!("#{}", e.id)).text(e.text.clone()));
+                    if e.level == 3 {
+                        item.class("is-sub")
+                    } else {
+                        item
+                    }
+                })))
+        });
     let content = main()
         .class("docs")
         .child(
@@ -1568,22 +1602,25 @@ pub fn not_found(ctx: &Ctx<'_>) -> Page {
         .class("nf")
         .child(div().class("nf__glow").attr("aria-hidden", "true"))
         .child(
-            div()
-                .class("nf__stage")
-                .attr("aria-hidden", "true")
-                .child(div().class("nf__rig").child(pbox("pbox--empty", Vec::new()))),
+            div().class("nf__stage").attr("aria-hidden", "true").child(
+                div()
+                    .class("nf__rig")
+                    .child(pbox("pbox--empty", Vec::new())),
+            ),
         )
-        .child(p().class("eyebrow").child(span().class("eyebrow__num").text("404")).text("Paquets"))
+        .child(
+            p().class("eyebrow")
+                .child(span().class("eyebrow__num").text("404"))
+                .text("Paquets"),
+        )
         .child(h1().class("nf__title").text(t.nf_title))
         .child(p().class("nf__text").text(t.nf_text))
         .child(
             div()
                 .class("nf__actions")
                 .child(
-                    magnetic(&ctx.home(""), "btn--primary btn--lg", false).child(inner([
-                        span().text(t.nf_home).into(),
-                        icon("arrow").into(),
-                    ])),
+                    magnetic(&ctx.home(""), "btn--primary btn--lg", false)
+                        .child(inner([span().text(t.nf_home).into(), icon("arrow").into()])),
                 )
                 .child(
                     magnetic(

@@ -129,10 +129,7 @@ mod tests {
         assert_eq!(Route::parse("/en").unwrap().page, Page::Home);
         assert_eq!(Route::parse("/en/").unwrap().page, Page::Home);
         assert_eq!(Route::parse("/es/docs").unwrap().page, Page::Docs);
-        assert_eq!(
-            Route::parse("/en/docs/nope/").unwrap().page,
-            Page::NotFound
-        );
+        assert_eq!(Route::parse("/en/docs/nope/").unwrap().page, Page::NotFound);
         assert_eq!(Route::parse("/en/a/b/c").unwrap().page, Page::NotFound);
         assert_eq!(Route::parse("/de/"), None);
         assert_eq!(Route::parse("/"), None);
@@ -156,9 +153,6 @@ mod tests {
         assert_eq!(normalize_base(" /Paquets "), "/Paquets");
         // The base is not set in unit tests.
         assert_eq!(link("/en/"), "/en/");
-        assert_eq!(
-            doc_href(Lang::Es, "faq", Some("x")),
-            "/es/docs/faq/#x"
-        );
+        assert_eq!(doc_href(Lang::Es, "faq", Some("x")), "/es/docs/faq/#x");
     }
 }

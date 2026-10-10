@@ -90,7 +90,12 @@ pub fn icon(name: &str) -> Element {
         .children(paths(name).iter().map(|d| path().attr("d", *d)))
 }
 
-fn gradient(id: &'static str, (x1, y1, x2, y2): (&'static str, &'static str, &'static str, &'static str), from: &'static str, to: &'static str) -> Element {
+fn gradient(
+    id: &'static str,
+    (x1, y1, x2, y2): (&'static str, &'static str, &'static str, &'static str),
+    from: &'static str,
+    to: &'static str,
+) -> Element {
     linear_gradient()
         .id(id)
         .attr("x1", x1)
@@ -116,9 +121,24 @@ pub fn logo() -> Element {
         .attr("aria-hidden", "true")
         .child(
             defs()
-                .child(gradient("lg-top", ("8", "18", "56", "18"), "#8f74ff", "#22d3ee"))
-                .child(gradient("lg-left", ("8", "18", "32", "60"), "#6d4aff", "#3a1fb8"))
-                .child(gradient("lg-right", ("32", "32", "56", "56"), "#ff4fa3", "#b72a7c")),
+                .child(gradient(
+                    "lg-top",
+                    ("8", "18", "56", "18"),
+                    "#8f74ff",
+                    "#22d3ee",
+                ))
+                .child(gradient(
+                    "lg-left",
+                    ("8", "18", "32", "60"),
+                    "#6d4aff",
+                    "#3a1fb8",
+                ))
+                .child(gradient(
+                    "lg-right",
+                    ("32", "32", "56", "56"),
+                    "#ff4fa3",
+                    "#b72a7c",
+                )),
         )
         .child(
             g().attr("stroke-linejoin", "round")

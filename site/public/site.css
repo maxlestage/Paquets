@@ -80,6 +80,12 @@ html.menu-open body {
   display: none !important;
 }
 
+/* Clipped here rather than on <body> (whose overflow would go to the viewport):
+   nothing can make the page wider than the screen, sticky elements keep working. */
+.site {
+  overflow-x: clip;
+}
+
 .skip {
   position: fixed;
   z-index: 120;
@@ -1487,7 +1493,7 @@ html.menu-open .menu nav a {
 
 .hero__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.8fr);
   align-items: center;
   gap: 32px;
   width: 100%;
@@ -1572,7 +1578,7 @@ html.menu-open .menu nav a {
 
 .hero__title {
   margin: 26px 0 24px;
-  font-size: clamp(40px, 5.4vw, 82px);
+  font-size: clamp(40px, 5vw, 76px);
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 0.98;
@@ -1818,7 +1824,7 @@ html.menu-open .menu nav a {
   position: relative;
   max-width: var(--max);
   margin: 0 auto;
-  padding: clamp(84px, 12vw, 160px) var(--gutter);
+  padding: clamp(64px, 8.5vw, 120px) var(--gutter);
 }
 
 .head {
@@ -2311,9 +2317,23 @@ html.menu-open .menu nav a {
   background: rgba(109, 74, 255, 0.06);
 }
 
+.stat__affix,
+.stat__unit {
+  font-size: 0.5em;
+  letter-spacing: -0.02em;
+}
+
+.stat__affix:empty,
+.stat__unit:empty {
+  display: none;
+}
+
 .stat__value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.08em;
   font-family: var(--font-display);
-  font-size: clamp(46px, 5.4vw, 76px);
+  font-size: clamp(46px, 5vw, 72px);
   font-weight: 800;
   letter-spacing: -0.05em;
   line-height: 1;
@@ -3252,8 +3272,8 @@ html.menu-open .menu nav a {
   margin: 80px auto 26px;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(56px, 16vw, 236px);
-  letter-spacing: -0.05em;
+  font-size: clamp(44px, 11.5vw, 166px);
+  letter-spacing: -0.04em;
   line-height: 0.85;
   filter: none !important;
   transform: none !important;
@@ -3395,6 +3415,8 @@ html.menu-open .menu nav a {
 .lang__btn {
   position: relative;
   z-index: 1;
+  display: inline-block;
+  text-align: center;
   width: 34px;
   padding: 6px 0;
   border-radius: 999px;
@@ -4130,7 +4152,8 @@ html.menu-open .menu nav a {
   display: grid;
   justify-items: center;
   gap: 18px;
-  max-width: 760px;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 820px;
   margin: 0 auto 80px;
   text-align: center;
   animation: doc-in 0.8s var(--ease-out) both;
@@ -4158,7 +4181,9 @@ html.menu-open .menu nav a {
 }
 
 .docs-home__title {
-  font-size: clamp(46px, 9vw, 100px);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: clamp(26px, 7vw, 84px);
   font-weight: 800;
   letter-spacing: -0.05em;
   background: linear-gradient(180deg, #fff 30%, #c4bde8);
@@ -4341,6 +4366,356 @@ html.menu-open .menu nav a {
   font-size: 13.5px;
   line-height: 1.45;
   color: var(--muted);
+}
+
+/* ----- Rolling links (navigation) --------------------------------------------- */
+
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.roll > span {
+  display: inline-block;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.roll::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  color: var(--cyan);
+  transition: transform 0.45s var(--ease-out);
+}
+
+a:hover > .roll > span,
+a:hover > .roll::after {
+  transform: translateY(-100%);
+}
+
+/* ----- Docs search (island) ----------------------------------------------------- */
+
+.search-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 8px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 13.5px;
+  color: var(--muted);
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+
+.search-btn:hover {
+  color: var(--text);
+  border-color: var(--border-2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.search-btn .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.search-btn kbd,
+.search-keys kbd,
+.search-field kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: var(--dim);
+}
+
+dialog.search {
+  width: min(640px, calc(100vw - 24px));
+  max-height: min(70vh, 620px);
+  margin: 12vh auto auto;
+  padding: 0;
+  border: 1px solid var(--border-2);
+  border-radius: 20px;
+  background: #0f0d1c;
+  color: var(--text);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(109, 74, 255, 0.15);
+  overflow: hidden;
+}
+
+dialog.search[open] {
+  animation: dialog-in 0.35s var(--ease-out);
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+}
+
+dialog.search::backdrop {
+  background: rgba(5, 4, 10, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.search-box {
+  display: flex;
+  flex-direction: column;
+  max-height: min(70vh, 620px);
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-field .icon {
+  width: 20px;
+  height: 20px;
+  color: var(--violet-2);
+}
+
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  font: inherit;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.search-field input::placeholder {
+  color: var(--dim);
+}
+
+.search-field input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search-box ul {
+  flex: 1;
+  margin: 0;
+  padding: 8px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.search-box li a {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+}
+
+.search-box li[aria-selected="true"] a {
+  background: rgba(109, 74, 255, 0.16);
+}
+
+.search-box li strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.search-box li span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.search-box li.empty {
+  padding: 18px 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.search-keys {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.search-keys span {
+  margin-left: auto;
+}
+
+/* The big field of the docs hub opens the same dialog. */
+button.doc-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 62px;
+  margin-top: 16px;
+  padding: 0 16px 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 17px;
+  color: var(--dim);
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+button.doc-search:hover {
+  border-color: rgba(143, 116, 255, 0.7);
+  box-shadow: 0 0 0 4px rgba(109, 74, 255, 0.16);
+}
+
+button.doc-search .icon {
+  width: 22px;
+  height: 22px;
+}
+
+button.doc-search span {
+  flex: 1;
+}
+
+button.doc-search kbd {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* ----- Showcase: the code types itself, line by line --------------------------- */
+
+.showcase__asides {
+  display: grid;
+}
+
+.code--lines .ln {
+  animation: line-in 0.4s var(--ease-out) calc(var(--l) * 42ms) both;
+}
+
+.hydrated .showcase__grid:not(.in) .ln {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes line-in {
+  from { opacity: 0; filter: blur(4px); }
+}
+
+.window__bar .copy {
+  margin-left: auto;
+}
+
+/* ----- Terminal states -------------------------------------------------------- */
+
+.term__line.is-waiting {
+  position: relative;
+  color: transparent;
+}
+
+.term__line.is-waiting::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -7px;
+  border: 2px solid var(--border-2);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.term .caret {
+  margin-left: 2px;
+}
+
+/* ----- Docs: notice of an untranslated page ------------------------------------- */
+
+.doc-fallback {
+  margin: 0 0 22px;
+}
+
+/* ----- Not found ---------------------------------------------------------------- */
+
+.nf {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 18px;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 120px var(--gutter) 80px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.nf__glow {
+  position: absolute;
+  z-index: -1;
+  inset: 10% 10% auto;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(109, 74, 255, 0.3), transparent);
+  filter: blur(30px);
+}
+
+.nf__stage {
+  display: grid;
+  place-items: center;
+  width: 220px;
+  height: 200px;
+  perspective: 800px;
+}
+
+.nf__rig {
+  transform-style: preserve-3d;
+  animation: rig-spin-small 14s linear infinite;
+}
+
+@keyframes rig-spin-small {
+  from { transform: rotateX(-24deg) rotateY(0deg); }
+  to { transform: rotateX(-24deg) rotateY(360deg); }
+}
+
+.pbox--empty {
+  --u: 110px;
+  --glow: 0.4;
+}
+
+.pbox--empty .pbox__lid {
+  transform: translateZ(calc(var(--hu) * -1)) rotateX(215deg);
+  animation: lid-wobble 3s ease-in-out infinite alternate;
+}
+
+@keyframes lid-wobble {
+  to { transform: translateZ(calc(var(--hu) * -1)) rotateX(196deg); }
+}
+
+.nf__title {
+  font-size: clamp(40px, 7vw, 84px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.nf__text {
+  max-width: 520px;
+  color: var(--muted);
+}
+
+.nf__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 /* ----- Responsive ----------------------------------------------------------------------- */
@@ -4652,7 +5027,7 @@ html.menu-open .menu nav a {
   }
 
   .stat__value {
-    font-size: clamp(34px, 10.5vw, 48px);
+    font-size: clamp(32px, 9.5vw, 46px);
   }
 
   .stat__label {
@@ -4763,6 +5138,36 @@ html.menu-open .menu nav a {
   }
 }
 
+/* ----- Navigation search, on small screens --------------------------------------- */
+
+@media (max-width: 960px) {
+  .nav .search-btn {
+    margin-left: auto;
+  }
+
+  .nav > .lang {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav .search-btn {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .search-btn__label,
+  .nav .search-btn kbd,
+  .search-keys {
+    display: none;
+  }
+
+  dialog.search {
+    margin-top: 72px;
+  }
+}
+
 /* ----- Reduced motion ------------------------------------------------------------------ */
 
 @media (prefers-reduced-motion: reduce) {
@@ -4774,9 +5179,15 @@ html.menu-open .menu nav a {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
+  }
+
+  .loader,
+  .cursor {
+    display: none !important;
   }
 
   .noise,
