@@ -161,13 +161,12 @@ async fn order(req: Request) -> Result<&'static str> {
 
 ### Keeping the cause in the logs
 
-To send a clear message to the client and keep the original error in the logs, attach it as the source of a vitesse error:
+To send a clear message to the client and keep the original error in the logs, attach it with `with_source`:
 
 ```rust
 async fn settings(_req: Request) -> Result<String> {
-    let text = std::fs::read_to_string("settings.toml").map_err(|e| {
-        paquets::vitesse::Error::internal("settings unavailable").with_source(e)
-    })?;
+    let text = std::fs::read_to_string("settings.toml")
+        .map_err(|e| Error::internal("settings unavailable").with_source(e))?;
     Ok(text)
 }
 ```
@@ -179,7 +178,7 @@ The client receives `500 {"error":"settings unavailable"}`, and the logs get the
 By default, errors are sent as `{"error": "message"}`. `app.on_error` replaces that format for the whole app:
 
 ```rust
-app.on_error(|err: paquets::vitesse::Error| {
+app.on_error(|err: Error| {
     res::status(err.status()).json(json!({
         "error": { "status": err.status().as_u16(), "message": err.message() }
     }))
@@ -190,7 +189,7 @@ app.on_error(|err: paquets::vitesse::Error| {
 {"error":{"message":"member 9 not found","status":404}}
 ```
 
-- The function receives vitesse's error type: write its type as `paquets::vitesse::Error`, or leave it out (`|err| ...`). `Error` alone is `paquets::Error` in the prelude, which doesn't fit here.
+- The function receives a `paquets::Error` (`Error` in the prelude): `err.status()`, `err.message()`.
 - It is called for every response made from an error: your handlers' errors, the default 404, 405s, invalid bodies, 413s, panics.
 - Set the status yourself (`res::status(err.status())`): otherwise the error page is sent with `200 OK`.
 - It is not called for requests blocked by the shield, which have their own format (see [Security](security.md#what-a-blocked-request-looks-like)), nor for responses you build yourself such as `(404, "not here")`.
@@ -230,7 +229,7 @@ Some mistakes stop the app before it serves anything, with a message that says w
 |---|---|
 | invalid or duplicate route | panic when the route is declared: `duplicate route: GET /api/todos is already defined` |
 | wrong `DATABASE_URL`, database unreachable | `run()` returns an error starting with `database:` |
-| an `on_start` hook fails | `run()` returns an error starting with `startup:` |
+| an `on_start` hook fails | `run()` prints `📦 Paquets could not start: startup: …` with the cause, and returns the error |
 | the port is already taken | `run()` returns an "address in use" error |
 
 Because `main` returns `std::io::Result<()>`, the program prints the error and exits with a non-zero code. On Heroku, the dyno then crashes (`H10` in the logs): read the line just above.

@@ -20,7 +20,8 @@ my-app/
 │       ├── ci.yml              tests every push, then merges the branch into master
 │       └── heroku.yml          deploys master to Heroku
 ├── README.md                   how to run, test and deploy the project
-└── .gitignore                  ignores target/, pkg/ and *.db files
+├── .gitignore                  ignores target/, pkg/ and *.db files
+└── .dockerignore               keeps target/, pkg/, .git and *.db out of Docker builds
 ```
 
 `paquets new` also runs `git init` with a `master` branch, unless the folder is already inside a Git repository.

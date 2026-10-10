@@ -153,9 +153,9 @@ Two limits protect the server from huge bodies:
 | Limit | Default | Checked by | Response |
 |---|---|---|---|
 | The shield's body limit | 2 MiB | the `Content-Length` header, before your code runs | `413` |
-| The read limit | 1 MiB | `req.json()`, `req.form()`, `req.text()` and `req.bytes()` | `413 {"error":"Payload Too Large"}` |
+| The read limit | 2 MiB | `req.json()`, `req.form()`, `req.text()` and `req.bytes()` | `413 {"error":"Payload Too Large"}` |
 
-So, by default, a handler reads at most 1 MiB. To accept bigger bodies, raise both limits:
+So, by default, a handler reads at most 2 MiB. To accept bigger bodies, raise both limits:
 
 ```rust
 use paquets::securite::prelude::*;

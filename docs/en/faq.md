@@ -48,9 +48,9 @@ A handler's future must be able to move between threads, and two things prevent 
 - a **view** (`div()`, `Page`…) created before an `.await`: build the page after the last `.await` (see [Pages](pages.md#build-the-page-at-the-end-of-the-handler));
 - a `std::sync::Mutex` or `RwLock` guard kept across an `.await`: read the body or the database first, then take the lock, or use `tokio::sync::Mutex`.
 
-### Why doesn't `app.on_error(|err: Error| ...)` compile?
+### How do I change the format of every error?
 
-In the prelude, `Error` is `paquets::Error`, while `on_error` receives vitesse's error type. Write `|err: paquets::vitesse::Error|`, or leave the type out: `|err| ...`. See [Errors](errors.md#changing-the-format-of-every-error).
+With `app.on_error(|err: Error| ...)`: it receives a `paquets::Error` and returns any response. Set the status yourself with `res::status(err.status())`. See [Errors](errors.md#changing-the-format-of-every-error).
 
 ### How do I share data between requests?
 

@@ -39,7 +39,7 @@ Paquets doesn't read `.env` files. If you like them, the [`dotenvy`](https://cra
 | Method | Effect | Default |
 |---|---|---|
 | `app.state(value)` | shared state, read with `req.state::<T>()` (see below) | — |
-| `app.body_limit(bytes)` | the largest body a handler can read | 1 MiB |
+| `app.body_limit(bytes)` | the largest body a handler can read | 2 MiB, like the shield's body limit |
 | `app.middleware(m)` | a global middleware (see [Routing](routing.md#middleware)) | — |
 | `app.mount(prefix, router)` | a router under a prefix | — |
 | `app.static_dir(prefix, dir)` | serves a folder under a prefix | `public/` at `/` |

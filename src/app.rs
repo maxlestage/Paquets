@@ -126,6 +126,8 @@ impl App {
             logger: Box::new(vitesse::middleware::logger()),
         });
         inner.middleware(ShieldMiddleware(shield.clone()));
+        // The same limit as the shield's (2 MiB): one setting decides.
+        inner.body_limit(2 * 1024 * 1024);
         App {
             inner,
             shield,
@@ -238,6 +240,30 @@ impl App {
         self
     }
 
+    /// The format of every error response (`{"error": "message"}` by default), for
+    /// the errors of your handlers, 404s, invalid bodies, panics… Set the status
+    /// yourself, as in the example.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// let mut app = App::new();
+    /// app.on_error(|err: Error| {
+    ///     res::status(err.status()).json(json!({
+    ///         "error": { "status": err.status().as_u16(), "message": err.message() }
+    ///     }))
+    /// });
+    /// ```
+    pub fn on_error<F, R>(&mut self, handler: F) -> &mut Self
+    where
+        F: Fn(crate::Error) -> R + Send + Sync + 'static,
+        R: vitesse::IntoResponse,
+    {
+        self.inner
+            .on_error(move |err: vitesse::Error| handler(crate::Error::from(err)));
+        self
+    }
+
     /// The port (by default `PORT`, then 3000).
     pub fn port(&mut self, port: u16) -> &mut Self {
         self.port = Some(port);
@@ -257,6 +283,14 @@ impl App {
     /// vitesse's fastest mode; with a database server (PostgreSQL…), on a tokio
     /// runtime shared by its connections.
     pub fn run(self) -> io::Result<()> {
+        let result = self.start();
+        if let Err(error) = &result {
+            eprintln!("📦 Paquets could not start: {error}");
+        }
+        result
+    }
+
+    fn start(self) -> io::Result<()> {
         let kind = self.database_kind();
         if matches!(kind, "memory" | "sqlite") {
             let startup = tokio::runtime::Builder::new_current_thread()
@@ -337,7 +371,7 @@ impl App {
         for hook in std::mem::take(&mut self.startup) {
             hook(db)
                 .await
-                .map_err(|e| io::Error::other(format!("startup: {e}")))?;
+                .map_err(|e| io::Error::other(format!("startup: {}", e.describe())))?;
         }
         self.inner.state(DbHandle(db));
 
