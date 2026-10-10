@@ -326,6 +326,25 @@ No hace falta ningún token CSRF: el escudo rechaza los formularios enviados des
 
 Una página es HTML estático. Para que una parte reaccione en el navegador (un contador, un cuadro de búsqueda, un carrito), convierte esa parte en una **isla**: `island("counter", "0", counter)`. Solo las páginas que contienen islas cargan el bundle del navegador. Consulta [Islas](islands.md).
 
+## Aplicación instalable (PWA)
+
+Una línea hace que la aplicación se pueda instalar en móviles y ordenadores, y usar sin conexión:
+
+```rust
+app.pwa(
+    Pwa::new("Mis tareas")
+        .short_name("Tareas")
+        .theme_color("#6d4aff")
+        .background_color("#0b0b12"),
+);
+```
+
+- La aplicación sirve el manifiesto de aplicación web en `/manifest.webmanifest` y un service worker en `/sw.js`; cada `Page` los enlaza (con el color del tema, el título en la pantalla de inicio y el icono de Apple), y la política de la página permite el script de registro.
+- Sin conexión: la página de inicio, el bundle de las islas y los iconos se descargan al instalar. Las páginas vienen primero de la red y, sin red, de la caché; las API REST de `app.api` vienen siempre de la red.
+- Sin iconos, se usa la caja de Paquets. Tus propios iconos (al menos un PNG de 192×192 y otro de 512×512 en `public/`): `.icon("/icon-192.png", "192x192", "image/png").icon("/icon-512.png", "512x512", "image/png").maskable_icon("/icon-maskable.png", "512x512", "image/png")`.
+- `.start_url("/demo")` abre otra página; `.description(...)`, `.lang("es")`, `.display("fullscreen")`… completan el manifiesto (lo construye [el módulo `pwa` de active](https://docs.rs/active/latest/active/pwa/index.html)).
+- Los navegadores solo instalan una PWA servida por HTTPS (o en `localhost`): Heroku da HTTPS a cada aplicación. En el móvil, abre el sitio y luego *Añadir a pantalla de inicio* (menú de compartir de Safari) o *Instalar aplicación* (menú de Chrome).
+
 ## Más información
 
 Las vistas vienen de [active](https://github.com/maxlestage/Active). Su documentación trata en profundidad los [componentes y las vistas](https://github.com/maxlestage/Active/blob/master/site/docs/es/components.md), el [SEO](https://github.com/maxlestage/Active/blob/master/site/docs/es/seo.md) y los [datos estructurados](https://github.com/maxlestage/Active/blob/master/site/docs/es/structured-data.md).

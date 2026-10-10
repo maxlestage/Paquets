@@ -86,6 +86,7 @@ fn app() -> App {
     app.get("/", home);
     app.post("/todos", add);
     app.api::<Todo>("/api/todos"); // GET, POST, PUT, PATCH, DELETE
+    app.pwa(Pwa::new("{{title}}").theme_color("#6d4aff")); // installable, works offline
     app
 }
 
@@ -101,6 +102,7 @@ mod tests {
     async fn home_page_and_api() {
         let client = app().test().await;
         assert_eq!(client.get("/").await.status(), 200);
+        assert_eq!(client.get("/manifest.webmanifest").await.status(), 200);
 
         let res = client
             .post("/api/todos")

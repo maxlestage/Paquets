@@ -103,6 +103,8 @@ mod error;
 #[cfg(not(target_arch = "wasm32"))]
 mod page;
 #[cfg(not(target_arch = "wasm32"))]
+mod pwa;
+#[cfg(not(target_arch = "wasm32"))]
 mod shield;
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -117,6 +119,10 @@ pub use error::{Error, Result};
 pub use page::{Page, THEME};
 #[cfg(not(target_arch = "wasm32"))]
 pub use shield::{default_shield, shield};
+
+/// The web app manifest of an installable app: see [`App::pwa`].
+#[cfg(not(target_arch = "wasm32"))]
+pub use active::pwa::Manifest as Pwa;
 
 /// Front end: views, state, SEO tags, islands ([active](https://github.com/maxlestage/Active)).
 pub use active;
@@ -165,7 +171,7 @@ pub mod prelude {
     pub use crate::{hydrate, location, mount_to, navigate, query_param};
 
     #[cfg(not(target_arch = "wasm32"))]
-    pub use crate::{App, Db, Error, Page, RequestExt, Result};
+    pub use crate::{App, Db, Error, Page, Pwa, RequestExt, Result};
     #[cfg(not(target_arch = "wasm32"))]
     pub use vitesse::{
         Cookie, HandlerExt, Html, IntoResponse, Json, Method, Next, Redirect, Request, Response,

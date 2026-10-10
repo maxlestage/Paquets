@@ -6,6 +6,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `app.pwa(Pwa::new(...))`: installable apps (PWA) with a web app manifest and an offline
+  service worker (active's `pwa` module), linked by every page; the default icons are the
+  Paquets box. Projects created by `paquets new` are installable, and so is the website.
+
 ## [0.1.0] - 2026-10-10
 
 ### Added

@@ -86,6 +86,24 @@ pub async fn export(out: &Path, base_path: &str, site_url: Option<String>) -> io
         let index = format!("/search/{}.txt", lang.code());
         write(&index, get(index.clone(), 200).await?.as_bytes())?;
     }
+    // The PWA: the manifest and the service worker list absolute URLs, the icons are
+    // served by Paquets itself.
+    for file in ["/manifest.webmanifest", "/sw.js"] {
+        let body = get(file.to_owned(), 200).await?;
+        write(file, with_base_everywhere(&body, base).as_bytes())?;
+    }
+    for icon in [
+        "/paquets/icon-192.png",
+        "/paquets/icon-512.png",
+        "/paquets/icon-maskable-512.png",
+        "/paquets/apple-touch-icon.png",
+    ] {
+        let res = client.get(icon).await;
+        if res.status() != 200 {
+            return Err(io::Error::other(format!("GET {icon}: {}", res.status())));
+        }
+        write(icon, res.bytes())?;
+    }
     for file in ["/sitemap.xml", "/robots.txt"] {
         let body = get(file.to_owned(), 200).await?;
         // No demo on a static host.
@@ -117,6 +135,20 @@ pub fn with_base(html: &str, base: &str) -> String {
         return html.to_owned();
     }
     html.replace("\"/pkg/", &format!("\"{base}/pkg/"))
+        .replace("\"/paquets/", &format!("\"{base}/paquets/"))
+        .replace(
+            "\"/manifest.webmanifest\"",
+            &format!("\"{base}/manifest.webmanifest\""),
+        )
+        .replace("\"/sw.js\"", &format!("\"{base}/sw.js\""))
+}
+
+/// Every absolute URL of a JSON or JavaScript file (`"/…"`) behind `base`.
+pub fn with_base_everywhere(text: &str, base: &str) -> String {
+    if base.is_empty() {
+        return text.to_owned();
+    }
+    text.replace("\"/", &format!("\"{base}/"))
 }
 
 /// Every file under `dir`, recursively.
