@@ -20,5 +20,6 @@ struct Login {
 }
 ```
 
-Licensed under either of [Apache License 2.0](https://github.com/maxlestage/Paquets/blob/master/LICENSE-APACHE) or
-[MIT license](https://github.com/maxlestage/Paquets/blob/master/LICENSE-MIT) at your option.
+Proprietary software: © 2026 Maxime Nathan Lestage, all rights reserved. Free to use as a
+dependency of your own programs, commercial ones included; see
+[LICENSE](https://github.com/maxlestage/Paquets/blob/master/LICENSE).

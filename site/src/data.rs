@@ -8,7 +8,22 @@ pub const DOCS_RS: &str = "https://docs.rs/paquets";
 pub const HEROKU_DEPLOY: &str =
     "https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets";
 pub const HEROKU_BUTTON: &str = "https://www.herokucdn.com/deploy/button.svg";
-pub const AUTHOR: &str = "https://github.com/maxlestage";
+/// Who designed and built Paquets and its sister projects.
+pub const AUTHOR: &str = "Maxime Nathan Lestage";
+pub const AUTHOR_URL: &str = "https://github.com/maxlestage";
+/// The license, read online: proprietary, all rights reserved.
+pub const LICENSE: &str = "https://github.com/maxlestage/Paquets/blob/master/LICENSE";
+
+/// The sister projects of Paquets, by the same author: (name, website). The footer links
+/// them in this order; `i18n::Texts::footer_projects` describes each one in the same order.
+pub const ECOSYSTEM: [(&str, &str); 6] = [
+    ("Active", "https://maxlestage.github.io/Active/"),
+    ("Vitesse", "https://maxlestage.github.io/Vitesse/"),
+    ("Securite", "https://maxlestage.github.io/Securite/"),
+    ("Memoire", "https://maxlestage.github.io/Memoire/"),
+    ("Paquets", "https://maxlestage.github.io/Paquets/"),
+    ("FerroSwift", "https://maxlestage.github.io/FerroSwift/"),
+];
 
 /// The command shown (and copied) in the hero.
 pub const INSTALL: &str = "cargo install paquets";

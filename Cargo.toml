@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.88"
 description = "The simplest full-stack web framework for Rust: server, security, database, REST API, SEO pages and WebAssembly islands in one crate. Built on vitesse, securite, memoire-orm and active."
-authors = ["Maxime Lestage"]
-license = "MIT OR Apache-2.0"
+authors = ["Maxime Nathan Lestage"]
+license-file = "LICENSE"
 repository = "https://github.com/maxlestage/Paquets"
 homepage = "https://maxlestage.github.io/Paquets/"
 documentation = "https://docs.rs/paquets"
@@ -21,8 +21,7 @@ include = [
     "/tests",
     "/README.md",
     "/CHANGELOG.md",
-    "/LICENSE-MIT",
-    "/LICENSE-APACHE",
+    "/LICENSE",
 ]
 
 [[bin]]

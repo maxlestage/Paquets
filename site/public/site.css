@@ -3127,10 +3127,12 @@ html.menu-open .menu nav a {
 
 /* ----- Footer ------------------------------------------------------------------------- */
 
+/* The signature footer: the call to action and the install command, the link columns, the
+   sister projects, the author's signature, the giant wordmark and the legal line. */
 .footer {
   position: relative;
   z-index: 1;
-  padding: 90px var(--gutter) max(30px, env(safe-area-inset-bottom));
+  padding: 0 var(--gutter) max(30px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
   background: linear-gradient(to bottom, var(--bg), #040309);
   overflow: hidden;
@@ -3153,6 +3155,56 @@ html.menu-open .menu nav a {
   to { transform: scale(1.15); opacity: 0.7; }
 }
 
+.footer__cta {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 28px 40px;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 72px 0 56px;
+  border-bottom: 1px solid var(--border);
+}
+
+.footer__cta-link {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.25em;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 66px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  color: var(--text);
+}
+
+.footer__cta-link em {
+  font-style: normal;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.footer__cta-link .icon {
+  width: 0.8em;
+  height: 0.8em;
+  margin-left: 0.15em;
+  transition: transform 0.4s var(--ease-out), color 0.3s;
+}
+
+.footer__cta-link:hover .icon {
+  transform: translateX(8px) rotate(-45deg);
+  color: var(--cyan);
+}
+
+.footer__cta .install {
+  margin: 0;
+}
+
 .footer__top {
   position: relative;
   display: grid;
@@ -3160,6 +3212,7 @@ html.menu-open .menu nav a {
   gap: 56px;
   max-width: var(--max);
   margin: 0 auto;
+  padding-top: 64px;
 }
 
 .footer__brand {
@@ -3189,6 +3242,36 @@ html.menu-open .menu nav a {
   color: var(--muted);
 }
 
+/* Version, "100 % Rust", crates.io: small pills under the tagline. */
+.footer__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__badges li {
+  padding: 5px 10px;
+  border: 1px solid var(--border-2);
+  border-radius: 999px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.footer__badges li.hot {
+  border-color: rgba(34, 211, 238, 0.45);
+  color: var(--cyan);
+}
+
+.footer__badges a {
+  color: inherit;
+}
+
 .footer__lang {
   display: grid;
   justify-items: start;
@@ -3196,9 +3279,12 @@ html.menu-open .menu nav a {
   margin-top: 8px;
 }
 
-.footer__lang > span {
+.footer__lang > span,
+.footer__col h2,
+.footer__eco-head h2 {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 12.5px;
+  font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--dim);
@@ -3212,12 +3298,6 @@ html.menu-open .menu nav a {
 
 .footer__col h2 {
   margin-bottom: 18px;
-  font-family: var(--font-mono);
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--dim);
 }
 
 .footer__col ul {
@@ -3264,12 +3344,220 @@ html.menu-open .menu nav a {
   color: var(--cyan);
 }
 
+/* The sister projects: a hairline grid of tiles, the current one marked. */
+.footer__eco {
+  position: relative;
+  max-width: var(--max);
+  margin: 72px auto 0;
+}
+
+.footer__eco-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 32px;
+  margin-bottom: 22px;
+}
+
+.footer__eco-head h2 {
+  margin: 0;
+}
+
+.footer__eco-head p {
+  margin: 0;
+  max-width: 44em;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.footer__eco-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--border);
+  overflow: hidden;
+}
+
+.eco {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 14px;
+  align-items: start;
+  height: 100%;
+  padding: 24px 26px;
+  background: var(--bg-2);
+  color: var(--muted);
+  transition: background 0.4s, color 0.4s;
+}
+
+.eco__name {
+  grid-column: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.eco__text {
+  grid-column: 1;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.eco .icon {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  opacity: 0;
+  transform: translate(-6px, 6px) rotate(-45deg);
+  transition: opacity 0.3s, transform 0.4s var(--ease-out), color 0.3s;
+}
+
+.eco:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.eco:hover .icon {
+  opacity: 1;
+  transform: rotate(-45deg);
+  color: var(--cyan);
+}
+
+.eco--here {
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(109, 74, 255, 0.26), transparent 60%),
+    var(--bg-2);
+}
+
+.eco--here .icon {
+  display: none;
+}
+
+.eco__here {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  background: rgba(34, 211, 238, 0.08);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eco__here::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  animation: ping 2.4s ease-out infinite;
+}
+
+@keyframes ping {
+  from { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.6); }
+  to { box-shadow: 0 0 0 7px rgba(34, 211, 238, 0); }
+}
+
+/* The signature: who designed and built all this. */
+.footer__credits {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  max-width: var(--max);
+  margin: 72px auto 0;
+  padding-top: 64px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.footer__by {
+  margin: 0 0 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.footer__name {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.26em;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(34px, 6.4vw, 92px);
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  background: linear-gradient(
+    100deg,
+    var(--text) 0%,
+    var(--text) 34%,
+    var(--violet-2) 44%,
+    var(--cyan) 50%,
+    var(--pink) 56%,
+    var(--text) 66%,
+    var(--text) 100%
+  );
+  background-size: 300% 100%;
+  background-position: 50% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* A shine crosses the name when it enters the screen. */
+.footer__credits.in .footer__name {
+  animation: name-shine 1.8s var(--ease-out) both;
+}
+
+@keyframes name-shine {
+  from { background-position: 100% 0; }
+  to { background-position: 50% 0; }
+}
+
+.footer__name span {
+  display: inline-block;
+  transition: transform 0.5s var(--ease-out);
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+.footer__name:hover span {
+  transform: translateY(-4px);
+}
+
+.footer__crafted {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
 .footer__word {
   position: relative;
   display: flex;
   justify-content: space-between;
   max-width: var(--max);
-  margin: 80px auto 26px;
+  margin: 60px auto 26px;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: clamp(44px, 11.5vw, 166px);
@@ -3286,15 +3574,15 @@ html.menu-open .menu nav a {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  transform: translateY(100%) skewY(8deg);
-  opacity: 0;
   transition: transform 1.2s var(--ease-out), opacity 1s;
   transition-delay: calc(var(--i) * 70ms);
 }
 
-.footer__word.in span {
-  transform: none;
-  opacity: 1;
+/* The letters rise when the word enters the screen (without the browser code, they are
+   simply there). */
+.hydrated .footer__word:not(.in) span {
+  transform: translateY(100%) skewY(8deg);
+  opacity: 0;
 }
 
 .footer__word span:hover {
@@ -3335,12 +3623,12 @@ html.menu-open .menu nav a {
   50% { transform: translateY(-3px) rotate(-8deg); }
 }
 
-.footer__copy a {
+.footer__license {
   color: var(--muted);
   transition: color 0.3s;
 }
 
-.footer__copy a:hover {
+.footer__license:hover {
   color: var(--cyan);
 }
 
@@ -4749,6 +5037,10 @@ button.doc-search kbd {
     grid-template-columns: 1fr;
     gap: 48px;
   }
+
+  .footer__eco-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 960px) {
@@ -4975,6 +5267,23 @@ button.doc-search kbd {
 @media (max-width: 600px) {
   body {
     font-size: 16px;
+  }
+
+  .footer__eco-grid {
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: 16px;
+  }
+
+  .eco {
+    padding: 18px 20px;
+  }
+
+  .footer__cta {
+    padding: 48px 0 40px;
+  }
+
+  .footer__cta .install {
+    width: 100%;
   }
 
   .nav {
