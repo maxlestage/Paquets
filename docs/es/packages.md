@@ -40,7 +40,7 @@ app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Durat
 
 ## securite: el escudo
 
-[securite](https://maxlestage.github.io/Securite/) es un conjunto de 19 guards de seguridad, reunidos en un `Shield`. Su pipeline recomendado cuesta unos 6 µs por petición. Está escrito para el ecosistema tower (axum, hyper, tonic) y no contiene código `unsafe`.
+[securite](https://maxlestage.github.io/Securite/) es un conjunto de 19 guards de seguridad, reunidos en un `Shield`. Su pipeline recomendado cuesta unos 6 µs por petición. Está escrito para Vitesse (y para el ecosistema tower: hyper, tonic) y no contiene código `unsafe`.
 
 **En Paquets:** `App::new()` pone `paquets::shield().build()` delante de cada petición: el preset recomendado de securite, con la IP del cliente leída de `X-Forwarded-For` en Heroku. Paquets hace de puente entre las peticiones de vitesse y los guards de securite: el escudo ve la línea de la petición y las cabeceras, añade sus cabeceras a cada respuesta y transmite sus hallazgos a tus handlers (la IP del cliente, el usuario autenticado, el identificador de petición). Las páginas calculan su propia Content-Security-Policy con las funciones de hash de securite.
 
@@ -97,9 +97,9 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 Cada paquete se publica por separado y funciona sin Paquets:
 
 - **vitesse** para un servidor sin base de datos ni páginas, o con tus propias elecciones;
-- **securite** delante de un servicio axum, hyper o tonic: `.layer(Shield::recommended())`;
+- **securite** en una aplicación Vitesse (`app.middleware(Shield::recommended())`) o delante de un servicio hyper o tonic (`.layer(Shield::recommended())`);
 - **memoire-orm** en cualquier programa de Rust que guarde datos, una herramienta de línea de comandos o un worker;
-- **active** para un sitio estático, una aplicación del lado del cliente o páginas servidas por otro framework (su documentación tiene una guía para axum).
+- **active** para un sitio estático, una aplicación del lado del cliente o páginas servidas por otro framework (su documentación tiene una guía para Vitesse).
 
 Sus README explican cómo empezar. Los cuatro usan la edición 2024. Como Paquets, los cuatro paquetes son software propietario de Maxime Nathan Lestage, de uso libre como dependencias (consulta [¿Qué licencia tiene?](faq.md#qué-licencia-tiene)).
 
