@@ -153,9 +153,32 @@ async fn main() -> std::io::Result<()> {
 
 `serve()` does everything `run()` does, on the current runtime (`workers` and `thread_per_core` don't apply).
 
+## HTTPS in the server
+
+On Heroku and behind most proxies and CDNs, HTTPS is handled in front of the app, which keeps speaking plain HTTP: nothing to do. On your own server, the app can serve HTTPS itself with the `tls` feature (`http2` adds HTTP/2, negotiated with the browser):
+
+```toml
+[dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", features = ["tls", "http2"] }
+```
+
+```rust
+use paquets::vitesse::tls::Tls;
+
+fn main() -> std::io::Result<()> {
+    let mut app = App::new();
+    app.get("/", |_| async { "Hello over HTTPS" });
+    app.tls(Tls::from_pem_files("fullchain.pem", "privkey.pem")?);
+    app.port(443);
+    app.run() // 📦 Paquets · https://localhost:443
+}
+```
+
+`Tls::from_pem_files` reads a certificate chain and its private key, as written by Let's Encrypt (certbot). See Vitesse's [HTTPS guide](https://maxlestage.github.io/Vitesse/en/docs/https/) for certificates in memory, a redirect from port 80, and HTTP/3.
+
 ## Cargo features
 
-Databases, extra column types and HTTP/3 are Cargo features of the `paquets` crate: see [Installation](installation.md#cargo-features).
+Databases, extra column types, HTTPS, sessions, templates and the other options are Cargo features of the `paquets` crate: see [Installation](installation.md#cargo-features).
 
 ## Production checklist
 
@@ -164,7 +187,7 @@ Databases, extra column types and HTTP/3 are Cargo features of the `paquets` cra
 - [ ] Listen on `PORT` (automatic) and launch the program from the folder that contains `public/` and `pkg/`.
 - [ ] Behind a proxy other than Heroku's, tell the shield where the client IP is (see [Security](security.md#the-client-ip-behind-a-proxy)).
 - [ ] Keep secrets in environment variables.
-- [ ] Serve the site over HTTPS: Heroku does it on `*.herokuapp.com` and with its certificate management on custom domains; elsewhere, use a proxy or CDN.
+- [ ] Serve the site over HTTPS: Heroku does it on `*.herokuapp.com` and with its certificate management on custom domains; elsewhere, use a proxy or CDN, or the `tls` feature (see [HTTPS in the server](#https-in-the-server)).
 - [ ] Protect what changes data: a middleware, `Auth`, or sessions (see [Security](security.md#authentication)).
 - [ ] Run the tests on every push: the CI workflow does it (see [Automation](automation.md)).
 

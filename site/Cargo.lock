@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Active#64beea96abeb7f558fa55acf9647411350bbfe86"
+source = "git+https://github.com/maxlestage/Active#ef4fa22301918672a248ded24bdeb56a39bdc1fb"
 dependencies = [
  "wasm-bindgen",
  "web-sys",
@@ -541,7 +541,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#ec5edbaad804956f4e3c998575e0669c497444ad"
+source = "git+https://github.com/maxlestage/Memoire#02e875893814fe6c30339e74a881ebc61ca61998"
 dependencies = [
  "async-lock",
  "bytes",
@@ -562,7 +562,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#ec5edbaad804956f4e3c998575e0669c497444ad"
+source = "git+https://github.com/maxlestage/Memoire#02e875893814fe6c30339e74a881ebc61ca61998"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -804,6 +804,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "regex-lite"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cab834c73d247e67f4fae452806d17d3c7501756d98c8808d7c9c7aa7d18f973"
+
+[[package]]
 name = "ring"
 version = "0.17.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -897,7 +903,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Securite#35afd3c0e834bf3325bb0eeceea5e7c8f0e3adc3"
+source = "git+https://github.com/maxlestage/Securite#2da37eabe7fb71fc87e6eb813d176a5816b8e9eb"
 dependencies = [
  "aho-corasick",
  "base64 0.23.1",
@@ -1361,7 +1367,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vitesse"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Vitesse#173626a9f76efcf01bb5ab07443e7fb5e0efcdb9"
+source = "git+https://github.com/maxlestage/Vitesse#41c57df666ce7981f93b993cac8f82ada4523d54"
 dependencies = [
  "bytes",
  "form_urlencoded",
@@ -1372,6 +1378,7 @@ dependencies = [
  "http-body-util",
  "httparse",
  "pin-project-lite",
+ "regex-lite",
  "serde",
  "serde_json",
  "serde_urlencoded",

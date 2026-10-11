@@ -114,7 +114,7 @@ La Content-Security-Policy de la page n'autorise que vos propres fichiers. Tél�
 
 ### HTTPS est-il pris en charge ? Et HTTP/2 ?
 
-Le serveur parle HTTP/1.1 (et HTTP/3 avec la feature `http3`), sans TLS. HTTPS et HTTP/2 viennent de ce qui se trouve devant lui : le routeur de Heroku, un reverse proxy (Caddy, Nginx) ou un CDN. Le bouclier maintient ensuite les navigateurs sur HTTPS grâce à l'en-tête `Strict-Transport-Security`.
+Oui. Sur Heroku, HTTPS vient du routeur placé devant l'application, et rien n'a besoin de changer. Pour servir HTTPS depuis l'application elle-même, sur votre propre serveur, activez la feature `tls` et donnez-lui un certificat avec `app.tls(...)` ; ajoutez `http2` pour HTTP/2, et `http3` pour HTTP/3 sur QUIC (voir [Configuration](configuration.md#https-dans-le-serveur)). Le bouclier maintient ensuite les navigateurs sur HTTPS grâce à l'en-tête `Strict-Transport-Security`.
 
 ### Puis-je désactiver la sécurité ?
 

@@ -220,7 +220,7 @@ Only do this when another layer already protects the app (a WAF at your CDN, for
 
 - **It doesn't read request bodies.** The firewall inspects the URL, the query string and the headers. JSON and form bodies are your handlers' job: validate them (see [Requests and responses](requests-responses.md#json-bodies)). Two things already protect you there: Memoire sends every value as a bound parameter, so model queries can't be turned into SQL injection, and views escape all text, so data shown in a page can't inject HTML.
 - **It doesn't know your users.** Authentication and permissions are up to you (next section).
-- **It doesn't provide HTTPS by itself.** Paquets serves plain HTTP; Heroku, a reverse proxy or a CDN provides HTTPS in front of it. The `Strict-Transport-Security` header then keeps browsers on HTTPS.
+- **It doesn't provide HTTPS by itself.** Heroku, a reverse proxy or a CDN provides HTTPS in front of the app, or the server itself with the `tls` feature (see [Configuration](configuration.md#https-in-the-server)). The `Strict-Transport-Security` header then keeps browsers on HTTPS.
 
 ## Authentication
 
@@ -253,7 +253,33 @@ Every path under `/admin` now needs the user name and password; the others stay 
 
 ### Accounts and sessions
 
-For user accounts, the usual pattern is:
+With the `session` feature, Vitesse keeps a session for each visitor: the data stays on the server, the browser only holds a random id in a cookie. Give the app a secret of at least 32 bytes, add the middleware, and read or write the session with `req.session()`:
+
+```rust
+use paquets::vitesse::session::MemoryStore;
+
+let mut app = App::new();
+app.cookie_secret(std::env::var("SESSION_SECRET").expect("SESSION_SECRET"));
+app.middleware(middleware::session(MemoryStore::new()));
+
+app.post("/login", |req: Request| async move {
+    // ... check the user name and password ...
+    let session = req.session();
+    session.regenerate(); // a new id at login
+    session.insert("user_id", 42_i64)?;
+    Ok::<_, Error>(Redirect::see_other("/"))
+});
+app.get("/", |req: Request| async move {
+    match req.session().get::<i64>("user_id") {
+        Some(id) => format!("Hello user {id}"),
+        None => "Hello stranger".to_owned(),
+    }
+});
+```
+
+`MemoryStore` keeps the sessions in the server's memory: they are lost at restart and not shared between instances. `session.destroy()` logs out. Vitesse's [sessions guide](https://maxlestage.github.io/Vitesse/en/docs/sessions/) covers signed cookies, expiry and stores of your own.
+
+Without the feature, or to keep sessions in your database, the usual pattern is:
 
 1. store users in a model, with a password **hash** (use a dedicated crate such as `argon2`, never a plain hash or the password itself);
 2. at login, check the password, create a random session token (from a cryptographic random generator), store it in a `Session` model, and send it in a cookie: `res::redirect("/").cookie(Cookie::new("session", token))`;

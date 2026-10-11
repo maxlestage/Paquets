@@ -89,10 +89,10 @@ Lancez-le, et vous obtenez :
 
 Paquets est jeune (version 0.1). Gardez ces limites en tête avant de le choisir :
 
-- **Pas de TLS (HTTPS) ni de HTTP/2 dans le serveur lui-même.** Placez-le derrière le routeur d'une plateforme (Heroku s'en charge pour vous), un reverse proxy (Nginx, Caddy) ou un CDN, qui termine le HTTPS. HTTP/3 sur QUIC est disponible en option (feature `http3`).
+- **HTTPS, HTTP/2 et HTTP/3 sont des options.** Sur une plateforme comme Heroku, son routeur fournit HTTPS devant l'application. Pour le servir depuis l'application elle-même, activez la feature `tls` (et `http2`, `http3`) : voir [Configuration](configuration.md#https-dans-le-serveur).
 - **Pas de modification automatique du schéma.** Les tables sont créées quand elles manquent, mais ajouter un champ à un modèle ne modifie pas une table existante : écrivez une migration (voir [Base de données](database.md#modifier-une-table-plus-tard)).
 - **Les îlots demandent deux outils de plus** : la cible `wasm32-unknown-unknown` et `wasm-bindgen-cli`. `paquets dev` les installe pour vous la première fois. Les pages sans îlots n'ont besoin de rien.
-- **Pas de comptes utilisateurs intégrés.** Le bouclier protège chaque requête, mais la connexion des utilisateurs (mots de passe, sessions) reste à votre charge. Voir [Sécurité](security.md#authentification).
+- **Pas de comptes utilisateurs intégrés.** Le bouclier protège chaque requête et Vitesse tient les sessions (feature `session`), mais enregistrer les utilisateurs et vérifier leurs mots de passe reste à votre charge. Voir [Sécurité](security.md#comptes-et-sessions).
 - **Pas encore sur crates.io.** Tant que les quatre paquets et Paquets ne sont pas publiés, les projets dépendent du dépôt GitHub. Voir [Installation](installation.md) et [Publier sur crates.io](publish-crates-io.md).
 
 ## Organisation de cette documentation

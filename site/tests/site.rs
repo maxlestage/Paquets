@@ -110,6 +110,7 @@ async fn the_home_page_has_every_section() {
             "Memoire",
             "Paquets",
             "FerroSwift",
+            "Solidify",
         ] {
             assert!(
                 html.contains(&format!(

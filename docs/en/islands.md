@@ -121,6 +121,9 @@ Open the page and click the button. After changing an island, run `paquets dev` 
 | `state.with(\|v\| ...)` | read through a reference, without copying (`text.with(String::len)`) |
 | `state.set(value)` | replace the value |
 | `state.update(\|v\| ...)` | change the value in place (`*n += 1`, `list.push(...)`) |
+| `memo(\|\| ...)` | a value derived from other states, computed again only when they change, and that notifies only when its result changes (`memo(move \|\| items.with(Vec::len))`) |
+| `untrack(\|\| ...)` | read states without following them |
+| `on_cleanup(\|\| ...)` | run code when the part of the page that created it goes away (stop a timer, remove a listener) |
 
 ### Events
 
@@ -219,10 +222,66 @@ Props are part of the HTML: keep them small, and never put secrets in them.
 ## The rules of islands
 
 - **Everything comes from the props.** An island is a plain function (`fn(&str) -> Node`) that captures nothing. In the browser it has no access to your database or your server state: give it what it needs through its props. A view that depends on something only the server has (the time, a random number, a database value not passed in the props) produces a different HTML in the browser, which the browser then redraws, with a warning in its console: `active: re-rendering island (tag mismatch)`.
-- **Islands are independent.** Each island has its own states. If two parts of a page must react to each other (a filter and a list), make them one island.
+- **Islands are independent.** Each island has its own states. If two parts of a page must react to each other (a filter and a list), make them one island, or share a store (see [Keeping data in the browser](#keeping-data-in-the-browser)).
 - **The same markup on both sides.** Use `#[cfg(target_arch = "wasm32")]` only for behaviour, never to change what is rendered.
 - **Names must match.** An island whose name is not in `start()` simply stays static, without any error.
 - **Data from the server.** To read or send data after the page has loaded, call your API with the browser's `fetch` through `web-sys` and `wasm-bindgen-futures` (see [Active's events guide](https://maxlestage.github.io/Active/en/docs/events/)), or use a plain HTML form that posts to a route.
+
+## Keeping data in the browser
+
+With the `browser-storage` feature, islands can keep data in the visitor's browser, with the `web` module of Memoire (`paquets::orm::web`):
+
+- **`Store<S>`**, application state in the spirit of Pinia: `Store::new("cart")` returns the same store in every island of the page, saved in `localStorage` at every change, restored on the next visit and kept in step across tabs;
+- **`LocalStorageDb`**, a Memoire database in `localStorage`: models, queries and transactions, as on the server.
+
+The islands of `src/lib.rs` are compiled for both sides (rendered by the server, then hydrated in the browser), so turn the feature on in both dependencies:
+
+```toml
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", features = ["browser-storage"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["client", "browser-storage"] }
+```
+
+Two islands sharing a cart, the badge of the menu and the button of a product page:
+
+```rust
+use paquets::orm::web::Store;
+use paquets::prelude::*;
+
+#[data]
+#[derive(Default)]
+pub struct Cart {
+    pub items: Vec<String>,
+}
+
+/// The number of articles in the cart, kept up to date in every island and tab.
+pub fn cart_badge(_props: &str) -> Node {
+    let count = use_state(0);
+    // Effects only run in the browser: the server renders an empty cart.
+    effect(move || {
+        let cart = Store::<Cart>::new("cart");
+        count.set(cart.get(|c| c.items.len()));
+        let follow = cart.subscribe_local(move |c| count.set(c.items.len()));
+        on_cleanup(move || drop(follow));
+    });
+    span().class("badge").text_dyn(move || count.get().to_string()).into()
+}
+
+/// The button of a product page. The props are the product's name.
+pub fn add_to_cart(product: &str) -> Node {
+    let product = product.to_owned();
+    button()
+        .text("Add to cart")
+        .on_click(move |_| {
+            Store::<Cart>::new("cart").update(|c| c.items.push(product.clone()));
+        })
+        .into()
+}
+```
+
+The data stays in the browser: the server never sees it unless an island sends it (to your API, with `fetch`). See Memoire's [browser storage guide](https://maxlestage.github.io/Memoire/en/docs/browser-storage/) for versions and migrations, `SessionStorage` and `LocalStorageDb`.
 
 ## Building for production
 

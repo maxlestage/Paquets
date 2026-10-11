@@ -144,9 +144,18 @@ Les features activent ou désactivent des parties facultatives de Paquets. Les v
 | `chrono` | | les colonnes de date et d'heure (`chrono::NaiveDateTime`, `DateTime<Utc>`…) |
 | `uuid` | | les colonnes `uuid::Uuid` |
 | `json` | | les colonnes JSON (`serde_json::Value`, `Json<T>`) |
+| `encryption` | | les bases en mémoire gardées dans un fichier chiffré (voir [Base de données](database.md#une-base-en-mémoire-gardée-dans-un-fichier)) |
+| `tls` | | HTTPS dans le serveur lui-même : `app.tls(...)` (voir [Configuration](configuration.md#https-dans-le-serveur)) |
+| `http2` | | HTTP/2, négocié avec `tls`, et en clair (h2c) |
 | `http3` | | HTTP/3 sur QUIC, à côté de HTTP/1.1 |
+| `session` | | les cookies signés et les sessions côté serveur (voir [Sécurité](security.md#comptes-et-sessions)) |
+| `templates` | | les templates HTML avec minijinja : `app.views("views")`, `req.render(...)` |
+| `multipart` | | les envois de fichiers : `req.multipart()` (voir [Requêtes et réponses](requests-responses.md#envois-de-fichiers)) |
+| `compress` | | les réponses en Brotli ou en gzip : `middleware::compress()` (voir [Performances](performance.md#compression)) |
+| `tower` | | les couches tower comme middlewares : `middleware::layer(...)` |
 | `full` | | tout ce qui précède |
 | `client` | | le côté navigateur des îlots (uniquement pour la cible `wasm32-unknown-unknown`) |
+| `browser-storage` | | dans les îlots, un store d'état et une base de données gardés dans `localStorage` (voir [Îlots](islands.md#garder-des-données-dans-le-navigateur)) |
 
 Par exemple, pour utiliser MySQL et les dates :
 

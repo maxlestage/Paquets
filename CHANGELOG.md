@@ -15,10 +15,30 @@ project adheres to [Semantic Versioning](https://semver.org/).
   or redistribute. The MIT/Apache-2.0 dual license is withdrawn. Projects created by
   `paquets new` stay yours, under the license you choose.
 - Credits: Maxime Nathan Lestage is named as the author in the crate metadata, the README
-  and the website's footer, which now links the six projects of the ecosystem.
+  and the website's footer, which now links the seven projects of the ecosystem.
 - `paquets::VERSION`, the version of the crate.
+- Built on the latest Vitesse, Securite, memoire-orm and Active. `Db` passes Memoire's
+  `insert_rows` on to its backend, so `insert_many` stores rows in the in-memory engine
+  without copying them; the service worker of installable apps is versioned with
+  Active's `pwa::version`.
+- Credits: Solidify joins the projects linked by the README, the license and the
+  website's footer.
 
 ### Added
+- Vitesse's options as Cargo features, all in `full`: `tls` (HTTPS in the server, with
+  `App::tls`; the startup line then says `https://`), `http2`, `session` (signed cookies
+  and sessions), `templates` (minijinja), `multipart` (file uploads), `compress` (Brotli
+  or gzip responses) and `tower` (tower layers as middlewares).
+- `DATABASE_URL=memory://data/app.memoire`: the in-memory engine kept in a file and read
+  back at startup; the `encryption` feature encrypts such files with a password.
+- The `browser-storage` feature: Memoire's `web` module in islands, a Pinia-style
+  `Store` and `LocalStorageDb`, both kept in `localStorage`.
+- In the prelude: Active's `memo`, `untrack`, `on_cleanup`, `indexed` and `switch`, and
+  Memoire's `LoadRelated` (`users.load_children::<Post>(db)`).
+- Documentation, in English, French and Spanish: related rows, full-text search and
+  indexes over several columns, the in-memory database kept in a file, HTTPS in the
+  server, sessions, file uploads, compression, browser storage in islands, and Pratique,
+  Securite's everyday middlewares, with a Paquets app.
 - `Pwa::new(...).start_url("/{lang}/")`: one manifest per language, so an installed app
   opens in the language of the page it was installed from.
 - `app.pwa(Pwa::new(...))`: installable apps (PWA) with a web app manifest and an offline

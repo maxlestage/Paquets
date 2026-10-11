@@ -121,6 +121,9 @@ Ouvrez la page et cliquez sur le bouton. Après avoir modifié un îlot, relance
 | `state.with(\|v\| ...)` | lire à travers une référence, sans copie (`text.with(String::len)`) |
 | `state.set(valeur)` | remplacer la valeur |
 | `state.update(\|v\| ...)` | modifier la valeur sur place (`*n += 1`, `list.push(...)`) |
+| `memo(\|\| ...)` | une valeur dérivée d'autres états, recalculée seulement quand ils changent, et qui ne notifie que quand son résultat change (`memo(move \|\| items.with(Vec::len))`) |
+| `untrack(\|\| ...)` | lire des états sans les suivre |
+| `on_cleanup(\|\| ...)` | exécuter du code quand la partie de la page qui l'a créé disparaît (arrêter un minuteur, retirer un écouteur) |
 
 ### Événements
 
@@ -219,10 +222,66 @@ Les props font partie du HTML : gardez-les légères, et n'y mettez jamais de se
 ## Les règles des îlots
 
 - **Tout vient des props.** Un îlot est une simple fonction (`fn(&str) -> Node`) qui ne capture rien. Dans le navigateur, il n'a accès ni à votre base de données ni à l'état de votre serveur : donnez-lui ce dont il a besoin par ses props. Une vue qui dépend de quelque chose que seul le serveur possède (l'heure, un nombre aléatoire, une valeur de la base de données qui ne passe pas par les props) produit un HTML différent dans le navigateur, que celui-ci redessine alors, avec un avertissement dans sa console : `active: re-rendering island (tag mismatch)`.
-- **Les îlots sont indépendants.** Chaque îlot a ses propres états. Si deux parties d'une page doivent réagir l'une à l'autre (un filtre et une liste), faites-en un seul îlot.
+- **Les îlots sont indépendants.** Chaque îlot a ses propres états. Si deux parties d'une page doivent réagir l'une à l'autre (un filtre et une liste), faites-en un seul îlot, ou partagez un store (voir [Garder des données dans le navigateur](#garder-des-données-dans-le-navigateur)).
 - **Le même balisage des deux côtés.** N'utilisez `#[cfg(target_arch = "wasm32")]` que pour le comportement, jamais pour changer ce qui est rendu.
 - **Les noms doivent correspondre.** Un îlot dont le nom n'est pas dans `start()` reste tout simplement statique, sans la moindre erreur.
 - **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://maxlestage.github.io/Active/fr/docs/events/)), ou utilisez un simple formulaire HTML qui envoie ses données à une route.
+
+## Garder des données dans le navigateur
+
+Avec la feature `browser-storage`, les îlots peuvent garder des données dans le navigateur du visiteur, grâce au module `web` de Memoire (`paquets::orm::web`) :
+
+- **`Store<S>`**, un état d'application dans l'esprit de Pinia : `Store::new("cart")` renvoie le même store dans chaque îlot de la page, enregistré dans `localStorage` à chaque changement, restauré à la visite suivante et synchronisé entre les onglets ;
+- **`LocalStorageDb`**, une base Memoire dans `localStorage` : modèles, requêtes et transactions, comme sur le serveur.
+
+Les îlots de `src/lib.rs` sont compilés pour les deux côtés (rendus par le serveur, puis hydratés dans le navigateur) : activez donc la feature dans les deux dépendances :
+
+```toml
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", features = ["browser-storage"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["client", "browser-storage"] }
+```
+
+Deux îlots qui partagent un panier, le badge du menu et le bouton d'une page produit :
+
+```rust
+use paquets::orm::web::Store;
+use paquets::prelude::*;
+
+#[data]
+#[derive(Default)]
+pub struct Cart {
+    pub items: Vec<String>,
+}
+
+/// Le nombre d'articles du panier, tenu à jour dans chaque îlot et dans chaque onglet.
+pub fn cart_badge(_props: &str) -> Node {
+    let count = use_state(0);
+    // Les effets ne s'exécutent que dans le navigateur : le serveur rend un panier vide.
+    effect(move || {
+        let cart = Store::<Cart>::new("cart");
+        count.set(cart.get(|c| c.items.len()));
+        let follow = cart.subscribe_local(move |c| count.set(c.items.len()));
+        on_cleanup(move || drop(follow));
+    });
+    span().class("badge").text_dyn(move || count.get().to_string()).into()
+}
+
+/// Le bouton d'une page produit. Les props sont le nom du produit.
+pub fn add_to_cart(product: &str) -> Node {
+    let product = product.to_owned();
+    button()
+        .text("Ajouter au panier")
+        .on_click(move |_| {
+            Store::<Cart>::new("cart").update(|c| c.items.push(product.clone()));
+        })
+        .into()
+}
+```
+
+Les données restent dans le navigateur : le serveur ne les voit jamais, sauf si un îlot les envoie (à votre API, avec `fetch`). Voir [le guide du stockage dans le navigateur](https://maxlestage.github.io/Memoire/fr/docs/browser-storage/) de Memoire pour les versions et les migrations, `SessionStorage` et `LocalStorageDb`.
 
 ## Compiler pour la production
 

@@ -114,7 +114,7 @@ The page's Content-Security-Policy only allows your own files. Download the font
 
 ### Is HTTPS supported? HTTP/2?
 
-The server speaks HTTP/1.1 (and HTTP/3 with the `http3` feature), without TLS. HTTPS and HTTP/2 come from what is in front of it: Heroku's router, a reverse proxy (Caddy, Nginx) or a CDN. The shield then keeps browsers on HTTPS with the `Strict-Transport-Security` header.
+Yes. On Heroku, HTTPS comes from the router in front of the app, and nothing needs to change. To serve HTTPS from the app itself, on your own server, enable the `tls` feature and give it a certificate with `app.tls(...)`; add `http2` for HTTP/2, and `http3` for HTTP/3 over QUIC (see [Configuration](configuration.md#https-in-the-server)). The shield then keeps browsers on HTTPS with the `Strict-Transport-Security` header.
 
 ### Can I turn the security off?
 

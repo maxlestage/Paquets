@@ -144,7 +144,11 @@ async fn login(req: Request) -> Result<Redirect> {
 }
 ```
 
-Las subidas de archivos (`multipart/form-data`) no se analizan por ti: lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart. Consulta la [guía de Vitesse sobre las peticiones](https://maxlestage.github.io/Vitesse/es/docs/requests/).
+### Subida de archivos
+
+Con la feature `multipart`, `req.multipart()?` lee un formulario enviado con `enctype="multipart/form-data"`, campo a campo; responde `415` cuando la petición es de otro tipo. Los límites del cuerpo (2 MiB por defecto) también se aplican a las subidas: para aceptar archivos más grandes, sube los dos (consulta [Tamaño del cuerpo](#tamaño-del-cuerpo)). Consulta la [guía de Vitesse sobre la subida de archivos](https://maxlestage.github.io/Vitesse/es/docs/requests/#subida-de-archivos-multipart).
+
+Sin la feature, lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart.
 
 ## Tamaño del cuerpo
 

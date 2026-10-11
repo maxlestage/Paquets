@@ -164,7 +164,7 @@ app.security(
 
 Consulta la documentación de tu plataforma para saber exactamente qué cabecera define, y lee [Seguridad](security.md#la-ip-del-cliente-detrás-de-un-proxy) antes de confiar en una.
 
-HTTPS: Paquets sirve HTTP sin cifrar. Todas las plataformas anteriores proporcionan HTTPS delante del contenedor. En tu propio servidor, pon Caddy o Nginx delante, que además se encargan de los certificados y de la compresión.
+HTTPS: todas las plataformas anteriores proporcionan HTTPS delante del contenedor, que sirve HTTP sin cifrar. En tu propio servidor, pon Caddy o Nginx delante, que además renuevan los certificados, o deja que la aplicación sirva HTTPS ella misma con la feature `tls` (ver [Configuración](configuration.md#https-en-el-servidor)); la feature `compress` comprime sus respuestas (ver [Rendimiento](performance.md#compresión)).
 
 ## Una comprobación de salud
 

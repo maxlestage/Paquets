@@ -121,6 +121,9 @@ Abre la página y haz clic en el botón. Después de modificar una isla, vuelve 
 | `state.with(\|v\| ...)` | leer a través de una referencia, sin copiar (`text.with(String::len)`) |
 | `state.set(value)` | reemplazar el valor |
 | `state.update(\|v\| ...)` | cambiar el valor in situ (`*n += 1`, `list.push(...)`) |
+| `memo(\|\| ...)` | un valor derivado de otros estados, que solo se vuelve a calcular cuando ellos cambian y que solo notifica cuando cambia su resultado (`memo(move \|\| items.with(Vec::len))`) |
+| `untrack(\|\| ...)` | leer estados sin seguirlos |
+| `on_cleanup(\|\| ...)` | ejecutar código cuando desaparece la parte de la página que lo creó (detener un temporizador, quitar un listener) |
 
 ### Eventos
 
@@ -219,10 +222,66 @@ Las props forman parte del HTML: mantenlas pequeñas y nunca pongas secretos en 
 ## Las reglas de las islas
 
 - **Todo viene de las props.** Una isla es una función normal (`fn(&str) -> Node`) que no captura nada. En el navegador no tiene acceso a tu base de datos ni al estado de tu servidor: dale lo que necesite a través de sus props. Una vista que depende de algo que solo tiene el servidor (la hora, un número aleatorio, un valor de la base de datos que no se pasa en las props) produce un HTML distinto en el navegador, que el navegador vuelve a dibujar, con un aviso en su consola: `active: re-rendering island (tag mismatch)`.
-- **Las islas son independientes.** Cada isla tiene sus propios estados. Si dos partes de una página deben reaccionar la una a la otra (un filtro y una lista), conviértelas en una sola isla.
+- **Las islas son independientes.** Cada isla tiene sus propios estados. Si dos partes de una página deben reaccionar la una a la otra (un filtro y una lista), conviértelas en una sola isla, o comparte un store (consulta [Guardar datos en el navegador](#guardar-datos-en-el-navegador)).
 - **El mismo marcado en los dos lados.** Usa `#[cfg(target_arch = "wasm32")]` solo para el comportamiento, nunca para cambiar lo que se renderiza.
 - **Los nombres deben coincidir.** Una isla cuyo nombre no está en `start()` se queda estática, sin ningún error.
 - **Datos del servidor.** Para leer o enviar datos después de que la página se haya cargado, llama a tu API con el `fetch` del navegador a través de `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://maxlestage.github.io/Active/es/docs/events/)), o usa un formulario HTML normal que envíe los datos a una ruta.
+
+## Guardar datos en el navegador
+
+Con la feature `browser-storage`, las islas pueden guardar datos en el navegador del visitante, con el módulo `web` de Memoire (`paquets::orm::web`):
+
+- **`Store<S>`**, estado de la aplicación al estilo de Pinia: `Store::new("cart")` devuelve el mismo store en todas las islas de la página, guardado en `localStorage` en cada cambio, restaurado en la siguiente visita y sincronizado entre pestañas;
+- **`LocalStorageDb`**, una base de datos Memoire en `localStorage`: modelos, consultas y transacciones, como en el servidor.
+
+Las islas de `src/lib.rs` se compilan para los dos lados (el servidor las renderiza y luego se hidratan en el navegador), así que activa la feature en las dos dependencias:
+
+```toml
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", features = ["browser-storage"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["client", "browser-storage"] }
+```
+
+Dos islas que comparten un carrito, el badge del menú y el botón de la página de un producto:
+
+```rust
+use paquets::orm::web::Store;
+use paquets::prelude::*;
+
+#[data]
+#[derive(Default)]
+pub struct Cart {
+    pub items: Vec<String>,
+}
+
+/// El número de artículos del carrito, al día en todas las islas y todas las pestañas.
+pub fn cart_badge(_props: &str) -> Node {
+    let count = use_state(0);
+    // Los efectos solo se ejecutan en el navegador: el servidor renderiza un carrito vacío.
+    effect(move || {
+        let cart = Store::<Cart>::new("cart");
+        count.set(cart.get(|c| c.items.len()));
+        let follow = cart.subscribe_local(move |c| count.set(c.items.len()));
+        on_cleanup(move || drop(follow));
+    });
+    span().class("badge").text_dyn(move || count.get().to_string()).into()
+}
+
+/// El botón de la página de un producto. Las props son el nombre del producto.
+pub fn add_to_cart(product: &str) -> Node {
+    let product = product.to_owned();
+    button()
+        .text("Añadir al carrito")
+        .on_click(move |_| {
+            Store::<Cart>::new("cart").update(|c| c.items.push(product.clone()));
+        })
+        .into()
+}
+```
+
+Los datos se quedan en el navegador: el servidor nunca los ve, salvo que una isla los envíe (a tu API, con `fetch`). Consulta la [guía de almacenamiento del navegador](https://maxlestage.github.io/Memoire/es/docs/browser-storage/) de Memoire para las versiones y las migraciones, `SessionStorage` y `LocalStorageDb`.
 
 ## Compilar para producción
 

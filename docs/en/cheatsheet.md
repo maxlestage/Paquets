@@ -148,6 +148,7 @@ Theme classes: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted`,
 | `DATABASE_URL` | Database |
 |---|---|
 | not set, `memory` | in memory |
+| `memory://app.memoire` | in memory, kept in a file |
 | `sqlite://app.db` | SQLite file |
 | `postgres://…` | PostgreSQL (Heroku Postgres) |
 | `mysql://…`, `mariadb://…` | MySQL, MariaDB (feature `mysql`) |
@@ -213,6 +214,7 @@ See [Security](security.md).
 |---|---|
 | Island (in `src/lib.rs`) | `pub fn counter(props: &str) -> Node { ... }` |
 | State | `let n = use_state(0);` `n.get()`, `n.set(v)`, `n.update(\|n\| *n += 1)`, `n.with(\|v\| …)` |
+| Derived state | `let total = memo(move \|\| items.with(\|v\| v.len()));`, `untrack(\|\| …)`, `on_cleanup(\|\| …)` |
 | Events | `.on_click(\|e\| …)`, `.on_input(\|e\| …)`, `.on("keydown", \|e\| …)`; `e.value()`, `e.key()` |
 | Dynamic | `.text_dyn(\|\| …)`, `.attr_dyn(name, \|\| …)`, `.class_if(class, \|\| …)`, `.bool_attr(name, \|\| …)` |
 | Register | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |

@@ -153,9 +153,32 @@ async fn main() -> std::io::Result<()> {
 
 `serve()` hace todo lo que hace `run()`, en el runtime actual (`workers` y `thread_per_core` no se aplican).
 
+## HTTPS en el servidor
+
+En Heroku, y detrás de la mayoría de los proxies y las CDN, HTTPS se gestiona delante de la aplicación, que sigue hablando HTTP sin cifrar: no hay nada que hacer. En tu propio servidor, la aplicación puede servir HTTPS por sí misma con la feature `tls` (`http2` añade HTTP/2, negociado con el navegador):
+
+```toml
+[dependencies]
+paquets = { git = "https://github.com/maxlestage/Paquets", features = ["tls", "http2"] }
+```
+
+```rust
+use paquets::vitesse::tls::Tls;
+
+fn main() -> std::io::Result<()> {
+    let mut app = App::new();
+    app.get("/", |_| async { "Hola por HTTPS" });
+    app.tls(Tls::from_pem_files("fullchain.pem", "privkey.pem")?);
+    app.port(443);
+    app.run() // 📦 Paquets · https://localhost:443
+}
+```
+
+`Tls::from_pem_files` lee una cadena de certificados y su clave privada, tal como las escribe Let's Encrypt (certbot). Consulta la [guía de HTTPS](https://maxlestage.github.io/Vitesse/es/docs/https/) de Vitesse para los certificados en memoria, una redirección desde el puerto 80 y HTTP/3.
+
 ## Features de Cargo
 
-Las bases de datos, los tipos de columna adicionales y HTTP/3 son features de Cargo del crate `paquets`: consulta [Instalación](installation.md#features-de-cargo).
+Las bases de datos, los tipos de columna adicionales, HTTPS, las sesiones, las plantillas y las demás opciones son features de Cargo del crate `paquets`: consulta [Instalación](installation.md#features-de-cargo).
 
 ## Lista de comprobación para producción
 
@@ -164,7 +187,7 @@ Las bases de datos, los tipos de columna adicionales y HTTP/3 son features de Ca
 - [ ] Escucha en `PORT` (automático) y lanza el programa desde la carpeta que contiene `public/` y `pkg/`.
 - [ ] Detrás de un proxy que no sea el de Heroku, dile al escudo dónde está la IP del cliente (consulta [Seguridad](security.md#la-ip-del-cliente-detrás-de-un-proxy)).
 - [ ] Guarda los secretos en variables de entorno.
-- [ ] Sirve el sitio por HTTPS: Heroku lo hace en `*.herokuapp.com` y, con su gestión de certificados, en los dominios propios; en otros sitios, usa un proxy o una CDN.
+- [ ] Sirve el sitio por HTTPS: Heroku lo hace en `*.herokuapp.com` y, con su gestión de certificados, en los dominios propios; en otros sitios, usa un proxy o una CDN, o la feature `tls` (consulta [HTTPS en el servidor](#https-en-el-servidor)).
 - [ ] Protege lo que modifica datos: un middleware, `Auth` o sesiones (consulta [Seguridad](security.md#autenticación)).
 - [ ] Ejecuta las pruebas en cada push: el workflow de CI lo hace (consulta [Automatización](automation.md)).
 

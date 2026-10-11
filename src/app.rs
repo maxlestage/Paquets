@@ -93,6 +93,7 @@ pub struct App {
     tables: Vec<CreateTable>,
     startup: Vec<StartHook>,
     port: Option<u16>,
+    https: bool,
     pwa: Option<crate::Pwa>,
     api_paths: Vec<String>,
 }
@@ -139,6 +140,7 @@ impl App {
             tables: Vec::new(),
             startup: Vec::new(),
             port: None,
+            https: false,
             pwa: None,
             api_paths: Vec::new(),
         }
@@ -306,6 +308,27 @@ impl App {
         self
     }
 
+    /// Serves HTTPS with this certificate (and HTTP/2 with the `http2` feature), like
+    /// [`vitesse::App::tls`]. Needs the `tls` feature. Not for Heroku, which receives
+    /// HTTPS itself and sends plain HTTP to the app.
+    ///
+    /// ```no_run
+    /// # fn main() -> std::io::Result<()> {
+    /// use paquets::vitesse::tls::Tls;
+    ///
+    /// let mut app = paquets::App::new();
+    /// app.tls(Tls::from_pem_files("fullchain.pem", "privkey.pem")?);
+    /// app.port(443);
+    /// app.run()
+    /// # }
+    /// ```
+    #[cfg(feature = "tls")]
+    pub fn tls(&mut self, config: vitesse::tls::Tls) -> &mut Self {
+        self.https = true;
+        self.inner.tls(config);
+        self
+    }
+
     /// Turns off the request log.
     pub fn quiet(&mut self) -> &mut Self {
         let _ = self.logs.set(false);
@@ -441,8 +464,9 @@ impl App {
                 n => format!("on ({n} guards)"),
             };
             let islands = bundle.map_or("none".to_owned(), |(js, _)| js);
+            let scheme = if self.https { "https" } else { "http" };
             println!(
-                "📦 Paquets · http://localhost:{port}\n   database: {} · security: {security} · islands: {islands}",
+                "📦 Paquets · {scheme}://localhost:{port}\n   database: {} · security: {security} · islands: {islands}",
                 db.kind()
             );
         }
