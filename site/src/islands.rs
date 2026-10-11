@@ -276,7 +276,7 @@ pub struct Line {
     pub step: Option<usize>,
 }
 
-/// The whole journey, from `cargo install paquets` to production.
+/// The whole journey, from `cargo install --git https://github.com/maxlestage/Paquets paquets` to production.
 pub fn script(out: &[&str; 4]) -> Vec<Line> {
     let line = |kind, text: &str, step| Line {
         kind,
@@ -284,7 +284,11 @@ pub fn script(out: &[&str; 4]) -> Vec<Line> {
         step,
     };
     vec![
-        line(LineKind::Command, "cargo install paquets", None),
+        line(
+            LineKind::Command,
+            "cargo install --git https://github.com/maxlestage/Paquets paquets",
+            None,
+        ),
         line(LineKind::Dim, "   Compiling paquets v0.1.0", None),
         line(LineKind::Done, &format!("✓ {}", out[0]), None),
         line(LineKind::Command, "paquets new my-app", Some(0)),

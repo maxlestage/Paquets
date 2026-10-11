@@ -138,7 +138,7 @@ Rust compila cada dependencia una vez, con todas las optimizaciones en modo rele
 
 ### ¿Cómo actualizo Paquets?
 
-En un proyecto: `cargo update -p paquets` (y los cuatro paquetes se actualizan con él). La herramienta de línea de comandos: `cargo install paquets --locked --force` (o el mismo comando con `--git`). Lee antes el registro de cambios: antes de la 1.0, las versiones menores pueden cambiar la API.
+En un proyecto: `cargo update -p paquets` (y los cuatro paquetes se actualizan con él). La herramienta de línea de comandos: `cargo install --git https://github.com/maxlestage/Paquets paquets --locked --force` (o el mismo comando con `--git`). Lee antes el registro de cambios: antes de la 1.0, las versiones menores pueden cambiar la API.
 
 ### ¿Cómo informo de un bug o contribuyo?
 

@@ -4,8 +4,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-/// Where projects get Paquets from: crates.io.
-const SOURCE: &str = r#"version = "0.1""#;
+/// Where projects get Paquets from: its GitHub repository, until it is on crates.io.
+const SOURCE: &str = r#"git = "https://github.com/maxlestage/Paquets""#;
 
 struct Options {
     name: String,

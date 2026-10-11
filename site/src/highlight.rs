@@ -404,7 +404,10 @@ mod tests {
 
     #[test]
     fn highlights_shell_and_toml() {
-        let t = tokenize_simple("$ cargo install paquets # the CLI", "bash");
+        let t = tokenize_simple(
+            "$ cargo install --git https://github.com/maxlestage/Paquets paquets # the CLI",
+            "bash",
+        );
         assert_eq!(kinds(&t, Kind::Function), ["cargo"]);
         assert_eq!(kinds(&t, Kind::Comment), ["# the CLI"]);
         let t = tokenize_simple("[dependencies]\npaquets = \"0.1\"", "toml");

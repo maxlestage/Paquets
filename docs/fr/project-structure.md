@@ -83,10 +83,10 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-paquets = "0.1"
+paquets = { git = "https://github.com/maxlestage/Paquets" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-paquets = { version = "0.1", default-features = false, features = ["client"] }
+paquets = { git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["client"] }
 wasm-bindgen = "0.2"
 
 [dev-dependencies]
@@ -114,7 +114,7 @@ panic = "abort"
 | `[profile.release]` | Les optimisations du serveur de production : optimisation à l'édition de liens, binaire plus petit. |
 | `[profile.wasm-release]` | Utilisé par `paquets build` pour les îlots : optimisé pour la taille. |
 
-La ligne `paquets` a à la fois une `version` et une source `git`. Pendant le développement, Cargo utilise le dépôt GitHub. Une fois Paquets sur crates.io, vous pourrez la simplifier en `paquets = "0.1"` (en gardant `default-features = false, features = ["client"]` sur la ligne wasm32).
+La ligne `paquets` a à la fois une `version` et une source `git`. Pendant le développement, Cargo utilise le dépôt GitHub. Une fois Paquets sur crates.io, vous pourrez la simplifier en `paquets = { git = "https://github.com/maxlestage/Paquets" }` (en gardant `default-features = false, features = ["client"]` sur la ligne wasm32).
 
 ## public/ : les fichiers statiques
 

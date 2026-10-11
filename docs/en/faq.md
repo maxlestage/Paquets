@@ -138,7 +138,7 @@ Rust compiles every dependency once, with every optimisation in release mode, an
 
 ### How do I update Paquets?
 
-In a project: `cargo update -p paquets` (and the four packages come with it). The command line tool: `cargo install paquets --locked --force` (or the same command with `--git`). Read the changelog first: before 1.0, minor versions may change the API.
+In a project: `cargo update -p paquets` (and the four packages come with it). The command line tool: `cargo install --git https://github.com/maxlestage/Paquets paquets --locked --force` (or the same command with `--git`). Read the changelog first: before 1.0, minor versions may change the API.
 
 ### How do I report a bug or contribute?
 

@@ -196,7 +196,7 @@ fn head(num: &str, label: &str, title: &str, lead: Option<&str>) -> Element {
     root
 }
 
-/// `$ cargo install paquets` with a copy button.
+/// `$ cargo install --git https://github.com/maxlestage/Paquets paquets` with a copy button.
 fn install(ctx: &Ctx<'_>, class: &str, delay: &str) -> Element {
     let t = ctx.t();
     div()
@@ -537,7 +537,7 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
                 .attr("aria-label", "Paquets")
                 .child(li().class("hot").text(format!("v{}", paquets::VERSION)))
                 .child(li().text(t.footer_rust))
-                .child(li().child(external(a().href(CRATES_IO).text("crates.io")))),
+                .child(li().child(external(a().href(CRATES_IO).text("GitHub")))),
         )
         .child(
             div()

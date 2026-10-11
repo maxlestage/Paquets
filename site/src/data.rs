@@ -2,7 +2,7 @@
 //! four packages, the code samples (their comments are translated in
 //! `i18n`, marked `§0`, `§1`… here) and the figures.
 
-pub const CRATES_IO: &str = "https://crates.io/crates/paquets";
+pub const CRATES_IO: &str = "https://github.com/maxlestage/Paquets";
 pub const DOCS_RS: &str = "https://docs.rs/paquets";
 /// Who designed and built Paquets and its sister projects.
 pub const AUTHOR: &str = "Maxime Nathan Lestage";
@@ -21,7 +21,7 @@ pub const ECOSYSTEM: [(&str, &str); 6] = [
 ];
 
 /// The command shown (and copied) in the hero.
-pub const INSTALL: &str = "cargo install paquets";
+pub const INSTALL: &str = "cargo install --git https://github.com/maxlestage/Paquets paquets";
 
 /// One of the four packages Paquets is made of.
 pub struct Package {
@@ -246,7 +246,10 @@ pub const FEATURES: [(&str, &str); 8] = [
     ("spark", "island(\"counter\", ..)"),
     ("phone", "git push"),
     ("flask", "app().test().await"),
-    ("crate", "cargo add paquets"),
+    (
+        "crate",
+        "cargo add paquets --git https://github.com/maxlestage/Paquets",
+    ),
 ];
 
 /// The figures: value, decimals, prefix, suffix.

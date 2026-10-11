@@ -6,7 +6,7 @@ The whole of Paquets on one page. Every example assumes `use paquets::prelude::*
 
 | Task | Command |
 |---|---|
-| Install the tool | `cargo install paquets --locked` |
+| Install the tool | `cargo install --git https://github.com/maxlestage/Paquets paquets --locked` |
 | Create a project | `paquets new my-app` (`--minimal`: no islands) |
 | Run while developing | `paquets dev` |
 | Build for production | `paquets build` |
