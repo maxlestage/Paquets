@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-State lives in memory: it is lost when the server restarts, and each server has its own copy. Data that must last belongs in the [database](database.md). More patterns in [vitesse's state guide](https://github.com/maxlestage/Vitesse/blob/master/docs/en/state.md).
+State lives in memory: it is lost when the server restarts, and each server has its own copy. Data that must last belongs in the [database](database.md). More patterns in [vitesse's state guide](https://maxlestage.github.io/Vitesse/en/docs/state/).
 
 ## How the server runs
 

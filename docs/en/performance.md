@@ -6,7 +6,7 @@ Paquets is fast without tuning: its server, vitesse, is faster than actix-web an
 
 ### The server (vitesse)
 
-Requests per second on a 4 vCPU VM, the server pinned to 2 cores and the load generator ([wrk](https://github.com/wg/wrk)) to the other 2, 128 keep-alive connections. In brackets: the server's CPU time per request (lower is better).
+Requests per second on a 4 vCPU VM, the server pinned to 2 cores and the load generator (wrk) to the other 2, 128 keep-alive connections. In brackets: the server's CPU time per request (lower is better).
 
 | Scenario | axum 0.8 | actix-web 4 | **vitesse** |
 |---|---:|---:|---:|
@@ -17,7 +17,7 @@ Requests per second on a 4 vCPU VM, the server pinned to 2 cores and the load ge
 | `POST /echo` (reads and returns JSON) | 105,570 (18.8 µs) | 170,129 (11.7 µs) | **253,941 (7.6 µs)** |
 | `GET /` pipelined ×16 | 213,678 (9.3 µs) | 1,272,510 (1.6 µs) | **2,781,541 (0.64 µs)** |
 
-The methodology, the other frameworks measured (Express, Drogon) and the way to reproduce these numbers are in [vitesse's performance guide](https://github.com/maxlestage/Vitesse/blob/master/docs/en/performance.md).
+The methodology, the other frameworks measured (Express, Drogon) and the way to reproduce these numbers are in [vitesse's performance guide](https://maxlestage.github.io/Vitesse/en/docs/performance/).
 
 ### The shield (securite)
 
@@ -32,7 +32,7 @@ The whole recommended pipeline (request id, hygiene, method filter, body limit, 
 | Sycamore 0.9 | 33.0 µs | 45.8 kB | 227 ms |
 | Dioxus 0.7 | 24.2 µs | 170.4 kB | 339 ms |
 
-The smallest bundle of all, and server rendering 2.4 times faster than the other framework that merges SEO tags from components (Leptos with leptos_meta). A template engine without SEO merging, such as maud, renders faster (1.4 µs), but sends nothing to the browser. Details in [active's benchmarks](https://github.com/maxlestage/Active/blob/master/site/docs/en/benchmarks.md).
+The smallest bundle of all, and server rendering 2.4 times faster than the other framework that merges SEO tags from components (Leptos with leptos_meta). A template engine without SEO merging, such as maud, renders faster (1.4 µs), but sends nothing to the browser. Details in [active's benchmarks](https://maxlestage.github.io/Active/en/docs/benchmarks/).
 
 ### What this means for your app
 
@@ -116,7 +116,7 @@ One log line per request costs little, but writing to the terminal is not free u
 
 ## Measuring
 
-Build in release mode, then load the app with a tool such as [oha](https://github.com/hatoo/oha) or wrk:
+Build in release mode, then load the app with a tool such as [oha](https://crates.io/crates/oha) or wrk:
 
 ```sh
 paquets build

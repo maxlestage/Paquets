@@ -44,6 +44,6 @@ Tout ce qu'il faut pour créer des applications web full-stack avec Paquets 📦
 ## Autres ressources
 
 - Référence de l'API générée à partir du code source : https://docs.rs/paquets
-- Code source, issues et exemples : https://github.com/maxlestage/Paquets
-- Les quatre paquets : [vitesse](https://github.com/maxlestage/Vitesse), [securite](https://github.com/maxlestage/Securite), [memoire-orm](https://github.com/maxlestage/Memoire), [active](https://github.com/maxlestage/Active)
+- Code source, issues et exemples : https://maxlestage.github.io/Paquets/
+- Les quatre paquets : [vitesse](https://maxlestage.github.io/Vitesse/), [securite](https://maxlestage.github.io/Securite/), [memoire-orm](https://maxlestage.github.io/Memoire/), [active](https://maxlestage.github.io/Active/)
 - Aussi disponible en [anglais](../en/README.md) et en [espagnol](../es/README.md).

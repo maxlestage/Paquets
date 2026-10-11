@@ -6,7 +6,6 @@
 
 Servidor, seguridad, base de datos, API REST, páginas optimizadas para SEO e islas WebAssembly: una crate, un import, una `App`.
 
-[![CI](https://github.com/maxlestage/Paquets/actions/workflows/ci.yml/badge.svg)](https://github.com/maxlestage/Paquets/actions/workflows/ci.yml)
 [![crates.io](https://img.shields.io/crates/v/paquets.svg)](https://crates.io/crates/paquets)
 [![docs.rs](https://img.shields.io/docsrs/paquets)](https://docs.rs/paquets)
 [![Licencia: propietaria](https://img.shields.io/badge/license-proprietary-2a2a2e.svg)](#licencia)
@@ -64,10 +63,10 @@ Paquets reúne cuatro crates, cada una utilizable por separado:
 
 | Paquete | Papel | En Paquets |
 |---|---|---|
-| [**vitesse**](https://github.com/maxlestage/Vitesse) | Servidor HTTP al estilo de Express: rutas, middlewares, routers, WebSocket, HTTP/3 | `App` (se desreferencia a `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**securite**](https://github.com/maxlestage/Securite) | Middlewares de seguridad: WAF, límite de peticiones, CSRF, CORS, cabeceras y CSP, autenticación… | delante de cada petición, `app.security(...)` |
-| [**memoire-orm**](https://github.com/maxlestage/Memoire) | ORM asíncrono tipado, SQL generado al compilar, SQL y NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
-| [**active**](https://github.com/maxlestage/Active) | Front-end: componentes, estado, renderizado en servidor, SEO, islas WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
+| [**vitesse**](https://maxlestage.github.io/Vitesse/) | Servidor HTTP al estilo de Express: rutas, middlewares, routers, WebSocket, HTTP/3 | `App` (se desreferencia a `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**securite**](https://maxlestage.github.io/Securite/) | Middlewares de seguridad: WAF, límite de peticiones, CSRF, CORS, cabeceras y CSP, autenticación… | delante de cada petición, `app.security(...)` |
+| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | ORM asíncrono tipado, SQL generado al compilar, SQL y NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
+| [**active**](https://maxlestage.github.io/Active/) | Front-end: componentes, estado, renderizado en servidor, SEO, islas WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
 ## Empezar
 
@@ -78,9 +77,6 @@ cd mi-app
 paquets dev                       # http://localhost:3000
 ```
 
-Hasta la primera publicación en crates.io, instala el comando desde GitHub:
-`cargo install --git https://github.com/maxlestage/Paquets paquets --locked`.
-
 `paquets new` crea el servidor (`src/main.rs`: páginas, un modelo y su API), los componentes del
 navegador (`src/lib.rs`: una isla), un `Dockerfile`, los archivos de Heroku y unas GitHub Actions
 que prueban cada push y **fusionan automáticamente cada rama en verde con `master`**.
@@ -90,7 +86,7 @@ O añade Paquets a un proyecto existente:
 
 ```toml
 [dependencies]
-paquets = { version = "0.1", git = "https://github.com/maxlestage/Paquets" }
+paquets = "0.1"
 ```
 
 ## Un recorrido
@@ -163,9 +159,8 @@ Referencia de la API: [docs.rs/paquets](https://docs.rs/paquets).
 
 ## Desplegar desde el móvil
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
-
-1. Toca **Deploy to Heroku**, elige un nombre de aplicación y toca **Deploy app**. Heroku construye
+1. Abre `https://heroku.com/deploy?template=<la dirección de tu repositorio>` en tu móvil, elige
+   un nombre de aplicación y toca **Deploy app**. Heroku lee [`app.json`](app.json) y construye
    el [`Dockerfile`](Dockerfile): el sitio web, que es en sí una aplicación Paquets, con su demo en
    vivo (`/demo`, `/api/todos`).
 2. Despliegues automáticos de `master`: en GitHub, *Settings → Secrets and variables → Actions*,
@@ -232,5 +227,5 @@ derechos al autor, como indica la licencia.
 
 ## Créditos
 
-Diseñado y desarrollado por [Maxime Nathan Lestage](https://github.com/maxlestage),
+Diseñado y desarrollado por Maxime Nathan Lestage,
 dentro de una misma familia de proyectos Rust: [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/) y [FerroSwift](https://maxlestage.github.io/FerroSwift/).

@@ -6,7 +6,6 @@
 
 Serveur, sécurité, base de données, API REST, pages optimisées pour le SEO et îlots WebAssembly : une crate, un import, une `App`.
 
-[![CI](https://github.com/maxlestage/Paquets/actions/workflows/ci.yml/badge.svg)](https://github.com/maxlestage/Paquets/actions/workflows/ci.yml)
 [![crates.io](https://img.shields.io/crates/v/paquets.svg)](https://crates.io/crates/paquets)
 [![docs.rs](https://img.shields.io/docsrs/paquets)](https://docs.rs/paquets)
 [![Licence : propriétaire](https://img.shields.io/badge/license-proprietary-2a2a2e.svg)](#licence)
@@ -64,10 +63,10 @@ Paquets assemble quatre crates, chacune utilisable seule :
 
 | Paquet | Rôle | Dans Paquets |
 |---|---|---|
-| [**vitesse**](https://github.com/maxlestage/Vitesse) | Serveur HTTP dans le style d'Express : routes, middlewares, routeurs, WebSocket, HTTP/3 | `App` (se déréférence en `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**securite**](https://github.com/maxlestage/Securite) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
-| [**memoire-orm**](https://github.com/maxlestage/Memoire) | ORM asynchrone typé, SQL généré à la compilation, SQL et NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
-| [**active**](https://github.com/maxlestage/Active) | Front-end : composants, état, rendu serveur, SEO, îlots WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
+| [**vitesse**](https://maxlestage.github.io/Vitesse/) | Serveur HTTP dans le style d'Express : routes, middlewares, routeurs, WebSocket, HTTP/3 | `App` (se déréférence en `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**securite**](https://maxlestage.github.io/Securite/) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
+| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | ORM asynchrone typé, SQL généré à la compilation, SQL et NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
+| [**active**](https://maxlestage.github.io/Active/) | Front-end : composants, état, rendu serveur, SEO, îlots WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
 ## Démarrer
 
@@ -78,9 +77,6 @@ cd mon-app
 paquets dev                       # http://localhost:3000
 ```
 
-Avant la première publication sur crates.io, installez la commande depuis GitHub :
-`cargo install --git https://github.com/maxlestage/Paquets paquets --locked`.
-
 `paquets new` crée le serveur (`src/main.rs` : des pages, un modèle et son API), les composants du
 navigateur (`src/lib.rs` : un îlot), un `Dockerfile`, les fichiers Heroku, et des GitHub Actions
 qui testent chaque push et **fusionnent automatiquement chaque branche verte dans `master`**.
@@ -90,7 +86,7 @@ Ou ajoutez Paquets à un projet existant :
 
 ```toml
 [dependencies]
-paquets = { version = "0.1", git = "https://github.com/maxlestage/Paquets" }
+paquets = "0.1"
 ```
 
 ## Visite guidée
@@ -163,10 +159,9 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
 
 ## Déployer depuis un téléphone
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
-
-1. Appuyez sur **Deploy to Heroku**, choisissez un nom d'application, appuyez sur **Deploy app**.
-   Heroku construit le [`Dockerfile`](Dockerfile) : le site, qui est lui-même une application
+1. Ouvrez `https://heroku.com/deploy?template=<l'adresse de votre dépôt>` sur votre téléphone,
+   choisissez un nom d'application, appuyez sur **Deploy app**. Heroku lit [`app.json`](app.json)
+   et construit le [`Dockerfile`](Dockerfile) : le site, qui est lui-même une application
    Paquets, avec sa démo en direct (`/demo`, `/api/todos`).
 2. Déploiements automatiques de `master` : dans GitHub, *Settings → Secrets and variables →
    Actions*, ajoutez le secret `HEROKU_API_KEY` (Heroku → *Account settings* → *API Key*) et la
@@ -232,5 +227,5 @@ les droits à l'auteur, comme l'indique la licence.
 
 ## Crédits
 
-Conçu et développé par [Maxime Nathan Lestage](https://github.com/maxlestage),
+Conçu et développé par Maxime Nathan Lestage,
 au sein d'une même famille de projets Rust : [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/) et [FerroSwift](https://maxlestage.github.io/FerroSwift/).

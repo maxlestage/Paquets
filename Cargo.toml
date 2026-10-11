@@ -6,7 +6,6 @@ rust-version = "1.88"
 description = "The simplest full-stack web framework for Rust: server, security, database, REST API, SEO pages and WebAssembly islands in one crate. Built on vitesse, securite, memoire-orm and active."
 authors = ["Maxime Nathan Lestage"]
 license-file = "LICENSE"
-repository = "https://github.com/maxlestage/Paquets"
 homepage = "https://maxlestage.github.io/Paquets/"
 documentation = "https://docs.rs/paquets"
 readme = "README.md"

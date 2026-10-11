@@ -9,7 +9,6 @@ use pulldown_cmark::{
 };
 
 use crate::catalog;
-use crate::data::GITHUB;
 use crate::highlight::{self, escape};
 use crate::i18n::Lang;
 use crate::routes::{doc_href, link};
@@ -97,13 +96,12 @@ pub fn rewrite_link(dest: &str, lang: Lang) -> (String, bool) {
             if let Some((_, page)) = catalog::find(page) {
                 return (doc_href(lang, page.slug, anchor), false);
             }
+            // An unknown page: a link into the docs anyway, which the docs tests report.
+            return (doc_href(lang, page, anchor), false);
         }
     }
-    // Another file of the repository: opened on GitHub.
-    (
-        format!("{GITHUB}/blob/master/docs/{}/{dest}", lang.code()),
-        true,
-    )
+    // Another file of the repository: not linked, the source is not public.
+    (String::new(), false)
 }
 
 fn code_block(code: &str, language: &str, copy: &str, copied: &str) -> String {
@@ -143,6 +141,7 @@ pub fn render(markdown: &str, lang: Lang) -> Rendered {
     let mut first_paragraph = false;
     // For each open quote: is it a callout?
     let mut quotes: Vec<bool> = Vec::new();
+    let mut unlinked = false;
     let html_event = |s: String| Event::Html(CowStr::from(s));
 
     while let Some(event) = events.next() {
@@ -209,17 +208,28 @@ pub fn render(markdown: &str, lang: Lang) -> Rendered {
                 dest_url, title: t, ..
             }) => {
                 let (href, external) = rewrite_link(&dest_url, lang);
-                let mut tag = format!("<a href=\"{}\"", escape(&href));
-                if !t.is_empty() {
-                    tag.push_str(&format!(" title=\"{}\"", escape(&t)));
+                if href.is_empty() {
+                    // Not linked (a file of the repository): only the text stays.
+                    unlinked = true;
+                } else {
+                    let mut tag = format!("<a href=\"{}\"", escape(&href));
+                    if !t.is_empty() {
+                        tag.push_str(&format!(" title=\"{}\"", escape(&t)));
+                    }
+                    if external {
+                        tag.push_str(" target=\"_blank\" rel=\"noopener\"");
+                    }
+                    tag.push('>');
+                    out.push(Event::InlineHtml(CowStr::from(tag)));
                 }
-                if external {
-                    tag.push_str(" target=\"_blank\" rel=\"noopener\"");
-                }
-                tag.push('>');
-                out.push(Event::InlineHtml(CowStr::from(tag)));
             }
-            Event::End(TagEnd::Link) => out.push(Event::InlineHtml(CowStr::from("</a>"))),
+            Event::End(TagEnd::Link) => {
+                if unlinked {
+                    unlinked = false;
+                } else {
+                    out.push(Event::InlineHtml(CowStr::from("</a>")));
+                }
+            }
             Event::Start(Tag::Image {
                 dest_url, title: t, ..
             }) => {
@@ -235,11 +245,13 @@ pub fn render(markdown: &str, lang: Lang) -> Rendered {
                 let src = if dest_url.starts_with("http://") || dest_url.starts_with("https://") {
                     dest_url.to_string()
                 } else {
-                    format!(
-                        "{GITHUB}/raw/master/docs/{}/{}",
-                        lang.code(),
-                        dest_url.trim_start_matches("./")
-                    )
+                    // A file of the site (`site/public/`), by its path there.
+                    let path = dest_url.trim_start_matches("./").trim_start_matches("../");
+                    let path = path
+                        .strip_prefix("site/public/")
+                        .or_else(|| path.strip_prefix("site/"))
+                        .unwrap_or(path);
+                    link(&format!("/{path}"))
                 };
                 out.push(Event::InlineHtml(CowStr::from(format!(
                     "<img src=\"{}\" alt=\"{}\" title=\"{}\" loading=\"lazy\">",
@@ -351,14 +363,13 @@ mod tests {
         assert_eq!(rewrite_link("#plus-loin", l).0, "#plus-loin");
         assert_eq!(rewrite_link("../en/routing.md", l).0, "/fr/docs/routing/");
         assert_eq!(rewrite_link("README.md", l).0, "/fr/docs/");
-        let (href, external) = rewrite_link("../../examples/todo.rs", l);
-        assert!(external);
+        // Another file of the repository is not linked: the source is not public.
         assert_eq!(
-            href,
-            "https://github.com/maxlestage/Paquets/blob/master/docs/fr/../../examples/todo.rs"
+            rewrite_link("../../examples/todo.rs", l),
+            (String::new(), false)
         );
-        // An unknown page stays a link to GitHub rather than a dead link.
-        assert!(rewrite_link("nope.md", l).1);
+        // An unknown page is a link into the docs, which the docs tests report.
+        assert_eq!(rewrite_link("nope.md", l).0, "/fr/docs/nope/");
         assert_eq!(
             rewrite_link("https://docs.rs/paquets", l),
             ("https://docs.rs/paquets".to_owned(), true)
@@ -415,7 +426,7 @@ mod tests {
     }
 
     #[test]
-    fn renders_images_from_github() {
+    fn renders_images_from_the_site_and_keeps_repository_files_unlinked() {
         let r = render(
             "![The button](https://www.herokucdn.com/deploy/button.svg)",
             Lang::En,
@@ -423,7 +434,11 @@ mod tests {
         assert!(r.html.contains(
             "<img src=\"https://www.herokucdn.com/deploy/button.svg\" alt=\"The button\""
         ));
-        let r = render("![Logo](../../site/assets/logo.svg)", Lang::Es);
-        assert!(r.html.contains("src=\"https://github.com/maxlestage/Paquets/raw/master/docs/es/../../site/assets/logo.svg\""));
+        let r = render("![Logo](../../site/public/assets/logo.svg)", Lang::Es);
+        assert!(r.html.contains("src=\"/assets/logo.svg\""));
+        // A file of the repository is not linked: the source is not public.
+        let r = render("See [the example](../../examples/todo.rs).", Lang::En);
+        assert!(!r.html.contains("<a "), "{}", r.html);
+        assert!(r.html.contains("the example"));
     }
 }

@@ -70,7 +70,7 @@ Non : les composants sont de simples fonctions qui construisent une vue. Faites 
 
 ### Un îlot peut-il appeler mon API ?
 
-Oui, avec le `fetch` du navigateur, via les crates `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://github.com/maxlestage/Active/blob/master/site/docs/fr/events.md#travail-asynchrone-dans-les-gestionnaires)). Un îlot peut aussi contenir un simple formulaire HTML qui envoie ses données à l'une de vos routes.
+Oui, avec le `fetch` du navigateur, via les crates `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://maxlestage.github.io/Active/fr/docs/events/)). Un îlot peut aussi contenir un simple formulaire HTML qui envoie ses données à l'une de vos routes.
 
 ### Y a-t-il du rechargement à chaud ?
 
@@ -138,15 +138,15 @@ Rust compile chaque dépendance une fois, avec toutes les optimisations en mode 
 
 ### Comment mettre Paquets à jour ?
 
-Dans un projet : `cargo update -p paquets` (les quatre paquets suivent). Pour la ligne de commande : `cargo install paquets --locked --force` (ou la même commande avec `--git`). Lisez d'abord le [journal des modifications](https://github.com/maxlestage/Paquets/blob/master/CHANGELOG.md) : avant la 1.0, les versions mineures peuvent changer l'API.
+Dans un projet : `cargo update -p paquets` (les quatre paquets suivent). Pour la ligne de commande : `cargo install paquets --locked --force` (ou la même commande avec `--git`). Lisez d'abord le journal des modifications : avant la 1.0, les versions mineures peuvent changer l'API.
 
 ### Comment signaler un bug ou contribuer ?
 
-Ouvrez une issue sur [GitHub](https://github.com/maxlestage/Paquets/issues). Les pull requests sont les bienvenues ; lisez d'abord `CONTRIBUTING.md`. Un bug dans l'un des quatre paquets se signale de préférence dans son propre dépôt (voir [Les quatre paquets](packages.md)).
+Ouvrez une issue sur GitHub. Les pull requests sont les bienvenues ; lisez d'abord `CONTRIBUTING.md`. Un bug dans l'un des quatre paquets se signale de préférence dans son propre dépôt (voir [Les quatre paquets](packages.md)).
 
 ### Quelle licence ?
 
-Paquets, vitesse, securite, memoire-orm et active sont des logiciels propriétaires : © Maxime Nathan Lestage, tous droits réservés. Leur code source est publié sur crates.io et GitHub pour que vous puissiez le lire, l'auditer et le compiler, et vous pouvez les utiliser librement comme dépendances de vos propres programmes, y compris commerciaux. Les modifier ou redistribuer leur code source demande l'accord écrit de l'auteur. Les conditions complètes sont dans le fichier [LICENSE](https://github.com/maxlestage/Paquets/blob/master/LICENSE) de chaque dépôt. Ce que vous construisez avec eux, y compris les projets créés par `paquets new`, vous appartient.
+Paquets, vitesse, securite, memoire-orm et active sont des logiciels propriétaires : © Maxime Nathan Lestage, tous droits réservés. Leur code source est publié sur crates.io et GitHub pour que vous puissiez le lire, l'auditer et le compiler, et vous pouvez les utiliser librement comme dépendances de vos propres programmes, y compris commerciaux. Les modifier ou redistribuer leur code source demande l'accord écrit de l'auteur. Les conditions complètes sont dans le fichier [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de chaque dépôt. Ce que vous construisez avec eux, y compris les projets créés par `paquets new`, vous appartient.
 
 ## Étapes suivantes
 

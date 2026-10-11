@@ -6,7 +6,6 @@
 
 Server, security, database, REST API, SEO pages and WebAssembly islands: one crate, one import, one `App`.
 
-[![CI](https://github.com/maxlestage/Paquets/actions/workflows/ci.yml/badge.svg)](https://github.com/maxlestage/Paquets/actions/workflows/ci.yml)
 [![crates.io](https://img.shields.io/crates/v/paquets.svg)](https://crates.io/crates/paquets)
 [![docs.rs](https://img.shields.io/docsrs/paquets)](https://docs.rs/paquets)
 [![License: proprietary](https://img.shields.io/badge/license-proprietary-2a2a2e.svg)](#license)
@@ -63,10 +62,10 @@ Paquets assembles four crates, each usable on its own:
 
 | Package | Role | In Paquets |
 |---|---|---|
-| [**vitesse**](https://github.com/maxlestage/Vitesse) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**securite**](https://github.com/maxlestage/Securite) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
-| [**memoire-orm**](https://github.com/maxlestage/Memoire) | Type-safe async ORM with compile-time SQL, SQL and NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
-| [**active**](https://github.com/maxlestage/Active) | Front end: components, state, server rendering, SEO, WebAssembly islands | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
+| [**vitesse**](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**securite**](https://maxlestage.github.io/Securite/) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
+| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | Type-safe async ORM with compile-time SQL, SQL and NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
+| [**active**](https://maxlestage.github.io/Active/) | Front end: components, state, server rendering, SEO, WebAssembly islands | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
 ## Get started
 
@@ -77,9 +76,6 @@ cd my-app
 paquets dev                       # http://localhost:3000
 ```
 
-Until the first release on crates.io, install the command from GitHub:
-`cargo install --git https://github.com/maxlestage/Paquets paquets --locked`.
-
 `paquets new` creates the server (`src/main.rs`: pages, a model and its API), the browser
 components (`src/lib.rs`: an island), a `Dockerfile`, Heroku files, and GitHub Actions that test
 every push and **merge every green branch into `master` automatically**. `paquets build` makes
@@ -89,7 +85,7 @@ Or add Paquets to an existing project:
 
 ```toml
 [dependencies]
-paquets = { version = "0.1", git = "https://github.com/maxlestage/Paquets" }
+paquets = "0.1"
 ```
 
 ## A tour
@@ -161,9 +157,8 @@ API reference: [docs.rs/paquets](https://docs.rs/paquets).
 
 ## Deploy from your phone
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
-
-1. Tap **Deploy to Heroku**, choose an app name, tap **Deploy app**. Heroku builds the
+1. Open `https://heroku.com/deploy?template=<the address of your repository>` on your phone,
+   choose an app name, tap **Deploy app**. Heroku reads [`app.json`](app.json) and builds the
    [`Dockerfile`](Dockerfile): the website, which is itself a Paquets app, with its live demo
    (`/demo`, `/api/todos`).
 2. Automatic deploys of `master`: in GitHub, *Settings → Secrets and variables → Actions*, add the
@@ -230,5 +225,5 @@ to the author, as the license states.
 
 ## Credits
 
-Designed and developed by [Maxime Nathan Lestage](https://github.com/maxlestage),
+Designed and developed by Maxime Nathan Lestage,
 as part of one family of Rust projects: [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/) and [FerroSwift](https://maxlestage.github.io/FerroSwift/).
