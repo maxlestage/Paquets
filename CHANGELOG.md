@@ -7,6 +7,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- The shield of every app is securite's own Vitesse middleware (securite now protects
+  Vitesse applications natively): the bridge between tower and Vitesse that Paquets
+  carried is gone, with its `tower-layer`, `tower-service` and `http` dependencies.
 - License: Paquets is proprietary software by Maxime Nathan Lestage, all rights reserved
   (see `LICENSE`); it is free to use as a dependency, commercially too, but not to modify
   or redistribute. The MIT/Apache-2.0 dual license is withdrawn. Projects created by

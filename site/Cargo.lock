@@ -246,7 +246,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -608,15 +608,12 @@ name = "paquets"
 version = "0.1.0"
 dependencies = [
  "active",
- "http",
  "memoire-orm",
  "paquets-macros",
  "securite",
  "serde",
  "serde_json",
  "tokio",
- "tower-layer",
- "tower-service",
  "vitesse",
 ]
 
@@ -899,7 +896,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Securite#2e8547e1a56a2131700ae430c80bf4668e6d2071"
+source = "git+https://github.com/maxlestage/Securite#35afd3c0e834bf3325bb0eeceea5e7c8f0e3adc3"
 dependencies = [
  "aho-corasick",
  "base64 0.23.1",
@@ -915,6 +912,7 @@ dependencies = [
  "tower-layer",
  "tower-service",
  "tracing",
+ "vitesse",
 ]
 
 [[package]]

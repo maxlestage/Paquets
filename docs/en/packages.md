@@ -40,7 +40,7 @@ app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Durat
 
 ## securite: the shield
 
-[securite](https://maxlestage.github.io/Securite/) is a set of 19 security guards, assembled into a `Shield`. Its recommended pipeline costs about 6 µs per request. It is written for the tower ecosystem (axum, hyper, tonic) and contains no `unsafe` code.
+[securite](https://maxlestage.github.io/Securite/) is a set of 19 security guards, assembled into a `Shield`. Its recommended pipeline costs about 6 µs per request. It is written for Vitesse (and for the tower ecosystem: hyper, tonic) and contains no `unsafe` code.
 
 **In Paquets:** `App::new()` puts `paquets::shield().build()` in front of every request: securite's recommended preset, with the client IP read from `X-Forwarded-For` on Heroku. Paquets bridges vitesse's requests to securite's guards: the shield sees the request line and the headers, adds its headers to every response, and hands its findings to your handlers (the client IP, the authenticated user, the request id). Pages compute their own Content-Security-Policy with securite's hashing functions.
 
@@ -97,9 +97,9 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 Each package is published separately and works without Paquets:
 
 - **vitesse** for a server without a database or pages, or with your own choices;
-- **securite** in front of an axum, hyper or tonic service: `.layer(Shield::recommended())`;
+- **securite** in a Vitesse app (`app.middleware(Shield::recommended())`) or in front of a hyper or tonic service (`.layer(Shield::recommended())`);
 - **memoire-orm** in any Rust program that stores data, a command line tool or a worker;
-- **active** for a static site, a client-side app, or pages served by another framework (its documentation has an axum guide).
+- **active** for a static site, a client-side app, or pages served by another framework (its documentation has a Vitesse guide).
 
 Their READMEs explain how to start. All four use the 2024 edition. Like Paquets, the four packages are proprietary software by Maxime Nathan Lestage, free to use as dependencies (see [Which license?](faq.md#which-license)).
 

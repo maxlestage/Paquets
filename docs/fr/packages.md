@@ -40,7 +40,7 @@ app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Durat
 
 ## securite : le bouclier
 
-[securite](https://maxlestage.github.io/Securite/) est un ensemble de 19 guards de sécurité, assemblés dans un `Shield`. Sa chaîne recommandée coûte environ 6 µs par requête. Il est écrit pour l'écosystème tower (axum, hyper, tonic) et ne contient aucun code `unsafe`.
+[securite](https://maxlestage.github.io/Securite/) est un ensemble de 19 guards de sécurité, assemblés dans un `Shield`. Sa chaîne recommandée coûte environ 6 µs par requête. Il est écrit pour Vitesse (et pour l'écosystème tower : hyper, tonic) et ne contient aucun code `unsafe`.
 
 **Dans Paquets :** `App::new()` place `paquets::shield().build()` devant chaque requête : le préréglage recommandé de securite, avec l'IP du client lue dans `X-Forwarded-For` sur Heroku. Paquets fait le pont entre les requêtes de vitesse et les guards de securite : le bouclier voit la ligne de requête et les en-têtes, ajoute ses en-têtes à chaque réponse, et transmet ce qu'il a trouvé à vos handlers (l'IP du client, l'utilisateur authentifié, l'identifiant de requête). Les pages calculent leur propre Content-Security-Policy avec les fonctions de hachage de securite.
 
@@ -97,9 +97,9 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 Chaque paquet est publié séparément et fonctionne sans Paquets :
 
 - **vitesse** pour un serveur sans base de données ni pages, ou avec vos propres choix ;
-- **securite** devant un service axum, hyper ou tonic : `.layer(Shield::recommended())` ;
+- **securite** dans une application Vitesse (`app.middleware(Shield::recommended())`) ou devant un service hyper ou tonic (`.layer(Shield::recommended())`) ;
 - **memoire-orm** dans n'importe quel programme Rust qui stocke des données, un outil en ligne de commande ou un worker ;
-- **active** pour un site statique, une application côté client, ou des pages servies par un autre framework (sa documentation a un guide pour axum).
+- **active** pour un site statique, une application côté client, ou des pages servies par un autre framework (sa documentation a un guide pour Vitesse).
 
 Leurs README expliquent comment démarrer. Les quatre utilisent l'édition 2024. Comme Paquets, les quatre paquets sont des logiciels propriétaires de Maxime Nathan Lestage, libres d'utilisation comme dépendances (voir [Quelle licence ?](faq.md#quelle-licence-)).
 
