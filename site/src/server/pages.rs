@@ -6,8 +6,8 @@ use super::Site;
 use super::docs::Doc;
 use crate::catalog::{self, CATEGORIES, PAGES, pages_of};
 use crate::data::{
-    CRATES_IO, DOCS_RS, FEATURES, GITHUB, HEROKU_BUTTON, HEROKU_DEPLOY, INSTALL, JOURNEY,
-    MARQUEE_CODE, NUMBERS, PACKAGES,
+    AUTHOR, AUTHOR_URL, CRATES_IO, DOCS_RS, ECOSYSTEM, FEATURES, GITHUB, HEROKU_BUTTON,
+    HEROKU_DEPLOY, INSTALL, JOURNEY, LICENSE, MARQUEE_CODE, NUMBERS, PACKAGES,
 };
 use crate::i18n::{Lang, Texts, number};
 use crate::icons::{icon, logo};
@@ -260,7 +260,8 @@ fn layout(ctx: &Ctx<'_>, title: &str, description: &str, content: Element) -> Pa
         .base_url(ctx.origin.clone())
         .image("/assets/og-image.png")
         .og_type("website")
-        .locale(lang.locale());
+        .locale(lang.locale())
+        .meta_name("author", AUTHOR);
     if route.page == PageKind::NotFound {
         seo = seo.noindex(true);
     } else {
@@ -447,9 +448,13 @@ fn menu(ctx: &Ctx<'_>) -> Element {
         )
 }
 
+/// The signature footer, shared in spirit by every site of the ecosystem: the call to
+/// action and the install command, the link columns, the sister projects, the author's
+/// signature, the giant wordmark and the legal line.
 fn site_footer(ctx: &Ctx<'_>) -> Element {
     let t = ctx.t();
     let lang = ctx.lang();
+    let external = |link: Element| link.attr("target", "_blank").attr("rel", "noopener");
     // (text, link, external)
     let product: Vec<(&str, String, bool)> = ["packages", "code", "features", "numbers", "deploy"]
         .iter()
@@ -473,6 +478,7 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
         .zip(t.footer_resources)
         .map(|(href, text)| (text, (*href).to_owned(), true))
         .collect();
+    resources.push((t.footer_license, LICENSE.to_owned(), true));
     if ctx.site.live {
         resources.push((t.demo, "/demo".to_owned(), false));
     }
@@ -502,57 +508,120 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
                     .text(format!("{} ", t.totop)),
             ),
         );
+    let cta = div()
+        .class("footer__cta")
+        .attr("data-reveal", "")
+        .child(
+            a().class("footer__cta-link")
+                .href(doc_href(lang, "quick-start", None))
+                .child(span().text(t.footer_start))
+                .child(Node::from(" "))
+                .child(em().text("Paquets"))
+                .child(icon("arrow")),
+        )
+        .child(
+            install(ctx, "footer__install", "0ms")
+                .attr("aria-label", format!("{}: {INSTALL}", t.footer_install)),
+        );
+    let brand = div()
+        .class("footer__brand")
+        .attr("data-reveal", "")
+        .child(
+            a().class("footer__logo")
+                .href(ctx.home(""))
+                .attr("aria-label", t.brand_aria)
+                .child(logo())
+                .child(span().text("Paquets")),
+        )
+        .child(p().class("footer__tagline").text(t.footer_tagline))
+        .child(
+            ul().class("footer__badges")
+                .attr("aria-label", "Paquets")
+                .child(li().class("hot").text(format!("v{}", paquets::VERSION)))
+                .child(li().text(t.footer_rust))
+                .child(li().child(external(a().href(CRATES_IO).text("crates.io")))),
+        )
+        .child(
+            div()
+                .class("footer__lang")
+                .child(span().text(t.footer_lang))
+                .child(lang_switch(ctx)),
+        );
+    let cols = div()
+        .class("footer__cols")
+        .children(columns.into_iter().enumerate().map(|(c, (title, links))| {
+            div()
+                .class("footer__col")
+                .attr("data-reveal", "")
+                .style(format!("--d:{}ms", c * 80))
+                .child(h2().text(title))
+                .child(
+                    ul().children(links.into_iter().map(|(text, href, opens_tab)| {
+                        let link = a()
+                            .class("footer__link")
+                            .href(href)
+                            .child(span().text(text))
+                            .child(icon("arrow"));
+                        li().child(if opens_tab { external(link) } else { link })
+                    })),
+                )
+        }));
+    let ecosystem = nav()
+        .class("footer__eco")
+        .attr("aria-label", t.footer_ecosystem)
+        .attr("data-reveal", "")
+        .child(
+            div()
+                .class("footer__eco-head")
+                .child(h2().text(t.footer_ecosystem))
+                .child(p().text(t.footer_ecosystem_text)),
+        )
+        .child(
+            ul().class("footer__eco-grid")
+                .children(
+                    ECOSYSTEM
+                        .iter()
+                        .zip(t.footer_projects)
+                        .map(|((name, url), text)| {
+                            let here = *name == "Paquets";
+                            let mut title = span().class("eco__name").text(*name);
+                            if here {
+                                title = title.child(span().class("eco__here").text(t.footer_here));
+                            }
+                            let link = a()
+                                .class(if here { "eco eco--here" } else { "eco" })
+                                .href(*url)
+                                .child(title)
+                                .child(span().class("eco__text").text(text))
+                                .child(icon("arrow"));
+                            li().child(if here {
+                                link.attr("aria-current", "page")
+                            } else {
+                                external(link)
+                            })
+                        }),
+                ),
+        );
+    let credits = div()
+        .class("footer__credits")
+        .attr("data-reveal", "")
+        .child(p().class("footer__by").text(t.footer_by))
+        .child(external(
+            a().class("footer__name").href(AUTHOR_URL).children(
+                AUTHOR
+                    .split(' ')
+                    .enumerate()
+                    .map(|(i, word)| span().style(format!("--i:{i}")).text(word.to_owned())),
+            ),
+        ))
+        .child(p().class("footer__crafted").text(t.footer_crafted));
     footer()
         .class("footer")
         .child(div().class("footer__glow").attr("aria-hidden", "true"))
-        .child(
-            div()
-                .class("footer__top")
-                .child(
-                    div()
-                        .class("footer__brand")
-                        .attr("data-reveal", "")
-                        .child(
-                            a().class("footer__logo")
-                                .href(ctx.home(""))
-                                .attr("aria-label", t.brand_aria)
-                                .child(logo())
-                                .child(span().text("Paquets")),
-                        )
-                        .child(p().class("footer__tagline").text(t.footer_tagline))
-                        .child(
-                            div()
-                                .class("footer__lang")
-                                .child(span().text(t.footer_lang))
-                                .child(lang_switch(ctx)),
-                        ),
-                )
-                .child(
-                    div()
-                        .class("footer__cols")
-                        .children(columns.into_iter().enumerate().map(|(c, (title, links))| {
-                            div()
-                                .class("footer__col")
-                                .attr("data-reveal", "")
-                                .style(format!("--d:{}ms", c * 80))
-                                .child(h2().text(title))
-                                .child(ul().children(links.into_iter().map(
-                                    |(text, href, external)| {
-                                        let link = a()
-                                            .class("footer__link")
-                                            .href(href)
-                                            .child(span().text(text))
-                                            .child(icon("arrow"));
-                                        li().child(if external {
-                                            link.attr("target", "_blank").attr("rel", "noopener")
-                                        } else {
-                                            link
-                                        })
-                                    },
-                                )))
-                        })),
-                ),
-        )
+        .child(cta)
+        .child(div().class("footer__top").child(brand).child(cols))
+        .child(ecosystem)
+        .child(credits)
         .child(
             div()
                 .class("footer__word")
@@ -568,21 +637,16 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
         .child(
             div()
                 .class("footer__bottom")
+                .child(p().class("footer__copy").text(t.footer_rights))
+                .child(external(
+                    a().class("footer__license")
+                        .href(LICENSE)
+                        .text(t.footer_proprietary),
+                ))
                 .child(
                     p().class("footer__made")
                         .child(span().class("footer__heart").text("📦"))
                         .text(t.footer_made),
-                )
-                .child(
-                    p().class("footer__copy")
-                        .text("© 2026 ")
-                        .child(
-                            a().href(crate::data::AUTHOR)
-                                .attr("target", "_blank")
-                                .attr("rel", "noopener")
-                                .text("Maxime Lestage"),
-                        )
-                        .text(" — MIT OR Apache-2.0"),
                 )
                 .child(
                     a().class("totop")

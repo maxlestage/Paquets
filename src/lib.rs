@@ -124,6 +124,9 @@ pub use shield::{default_shield, shield};
 #[cfg(not(target_arch = "wasm32"))]
 pub use active::pwa::Manifest as Pwa;
 
+/// The version of this crate, e.g. `"0.1.0"`.
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 /// Front end: views, state, SEO tags, islands ([active](https://github.com/maxlestage/Active)).
 pub use active;
 /// Database: models, queries, transactions, migrations ([memoire-orm](https://github.com/maxlestage/Memoire)).

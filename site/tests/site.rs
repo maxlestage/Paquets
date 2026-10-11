@@ -96,7 +96,36 @@ async fn the_home_page_has_every_section() {
         );
         assert!(html.contains("cargo install paquets"));
         assert!(html.contains("© 2026"));
-        assert!(html.contains("MIT OR Apache-2.0"));
+        // The signature footer: the author, the license, the ecosystem.
+        assert!(html.contains(r#"class="footer__name""#));
+        assert!(html.contains("Maxime Nathan Lestage"));
+        assert!(
+            html.contains("All rights reserved")
+                || html.contains("Tous droits réservés")
+                || html.contains("Todos los derechos reservados")
+        );
+        assert!(
+            html.contains(r#"href="https://github.com/maxlestage/Paquets/blob/master/LICENSE""#)
+        );
+        assert!(!html.contains("MIT OR Apache-2.0"));
+        assert!(html.contains(&format!("v{}", paquets::VERSION)));
+        for project in [
+            "Active",
+            "Vitesse",
+            "Securite",
+            "Memoire",
+            "Paquets",
+            "FerroSwift",
+        ] {
+            assert!(
+                html.contains(&format!(
+                    r#"href="https://maxlestage.github.io/{project}/""#
+                )),
+                "{project}"
+            );
+        }
+        assert!(html.contains(r#"aria-current="page""#));
+        assert!(html.contains(r#"<meta name="author" content="Maxime Nathan Lestage"/>"#));
         // The preloader plays once per visit (a cookie remembers it).
         assert!(html.contains("class=\"loader\""));
         assert!(
