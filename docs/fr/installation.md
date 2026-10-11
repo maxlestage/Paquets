@@ -45,13 +45,6 @@ La commande `paquets` crée les projets, les lance et les compile pour la produc
 cargo install paquets --locked
 ```
 
-> [!NOTE]
-> Tant que Paquets n'est pas publié sur crates.io (voir [Publier sur crates.io](publish-crates-io.md)), installez-la plutôt depuis le dépôt GitHub :
->
-> ```sh
-> cargo install --git https://github.com/maxlestage/Paquets paquets --locked
-> ```
-
 `--locked` compile l'outil avec exactement les versions de dépendances avec lesquelles il a été testé.
 
 La première installation prend quelques minutes, le temps que Cargo compile l'outil et ses dépendances. Vérifiez ensuite :
@@ -116,11 +109,11 @@ paquets = "0.1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
-Tant que Paquets n'est pas sur crates.io, faites pointer Cargo vers le dépôt :
+Ajoutez Paquets à `Cargo.toml` :
 
 ```toml
 [dependencies]
-paquets = { version = "0.1", git = "https://github.com/maxlestage/Paquets" }
+paquets = "0.1"
 ```
 
 Remplacez ensuite `src/main.rs` par une première application :

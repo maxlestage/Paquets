@@ -1,6 +1,6 @@
 # Base de données
 
-Paquets enregistre les données avec [memoire-orm](https://github.com/maxlestage/Memoire), un ORM typé : une struct Rust décrit une table, et les requêtes s'écrivent en Rust, vérifiées par le compilateur. Le même code fonctionne en mémoire, sur SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : la base de données est choisie par une URL. Cette page couvre les modèles, le choix de la base, la lecture et l'écriture, les transactions, les changements de schéma et le SQL brut.
+Paquets enregistre les données avec [memoire-orm](https://maxlestage.github.io/Memoire/), un ORM typé : une struct Rust décrit une table, et les requêtes s'écrivent en Rust, vérifiées par le compilateur. Le même code fonctionne en mémoire, sur SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : la base de données est choisie par une URL. Cette page couvre les modèles, le choix de la base, la lecture et l'écriture, les transactions, les changements de schéma et le SQL brut.
 
 ## Modèles
 
@@ -320,7 +320,7 @@ Ajoutez ensuite `priority: i32` à la struct. Le fonctionnement, et les règles 
 - N'appelez pas `create_table::<M>()` dans ces migrations pour un modèle enregistré avec `app.api` ou `app.model` : sa table a déjà été créée avant l'exécution de `on_start`, et la migration échouerait avec « table already exists ».
 
 > [!NOTE]
-> SQLite et MySQL ne prennent pas en charge `ADD COLUMN IF NOT EXISTS`. Pour eux, lancez vous-même les migrations **avant** que l'application ne crée ses tables : ouvrez la base de données avec `Db::connect(&url).await?`, lancez le `Migrator` (avec des étapes `create_table` construites à partir de copies figées de vos structs), puis confiez la base à l'application avec `app.database(db)` et démarrez-la avec `app.serve().await` dans `#[tokio::main]`. Le [guide des migrations](https://github.com/maxlestage/Memoire/blob/master/docs/fr/migrations.md) de memoire explique en détail les structs figées.
+> SQLite et MySQL ne prennent pas en charge `ADD COLUMN IF NOT EXISTS`. Pour eux, lancez vous-même les migrations **avant** que l'application ne crée ses tables : ouvrez la base de données avec `Db::connect(&url).await?`, lancez le `Migrator` (avec des étapes `create_table` construites à partir de copies figées de vos structs), puis confiez la base à l'application avec `app.database(db)` et démarrez-la avec `app.serve().await` dans `#[tokio::main]`. Le [guide des migrations](https://maxlestage.github.io/Memoire/fr/docs/migrations/) de memoire explique en détail les structs figées.
 
 ## SQL brut
 
@@ -370,7 +370,7 @@ Avec PostgreSQL, le pool ouvre jusqu'à 4 connexions par cœur de processeur qua
 
 ## Pour aller plus loin
 
-La documentation de memoire va plus loin : [modèles](https://github.com/maxlestage/Memoire/blob/master/docs/fr/models.md), [requêtes](https://github.com/maxlestage/Memoire/blob/master/docs/fr/queries.md) (jointures, agrégats, group by), [relations](https://github.com/maxlestage/Memoire/blob/master/docs/fr/relations.md), [transactions](https://github.com/maxlestage/Memoire/blob/master/docs/fr/transactions.md), [migrations](https://github.com/maxlestage/Memoire/blob/master/docs/fr/migrations.md) et une page par base de données. Tout fonctionne avec `req.db()` : elle accepte toutes les méthodes de modèle et toutes les requêtes. Dans Paquets, memoire est réexporté sous `paquets::orm`.
+La documentation de memoire va plus loin : [modèles](https://maxlestage.github.io/Memoire/fr/docs/models/), [requêtes](https://maxlestage.github.io/Memoire/fr/docs/queries/) (jointures, agrégats, group by), [relations](https://maxlestage.github.io/Memoire/fr/docs/relations/), [transactions](https://maxlestage.github.io/Memoire/fr/docs/transactions/), [migrations](https://maxlestage.github.io/Memoire/fr/docs/migrations/) et une page par base de données. Tout fonctionne avec `req.db()` : elle accepte toutes les méthodes de modèle et toutes les requêtes. Dans Paquets, memoire est réexporté sous `paquets::orm`.
 
 ## Étapes suivantes
 

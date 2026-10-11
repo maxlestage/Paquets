@@ -238,4 +238,4 @@ Como `main` devuelve `std::io::Result<()>`, el programa muestra el error y termi
 
 - [Pruebas](testing.md): comprueba tus errores en las pruebas.
 - [Seguridad](security.md): las respuestas del escudo.
-- [La guía de errores de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/es/errors.md): más sobre los errores, `on_error` y los pánicos.
+- [La guía de errores de vitesse](https://maxlestage.github.io/Vitesse/es/docs/errors/): más sobre los errores, `on_error` y los pánicos.

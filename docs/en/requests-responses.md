@@ -144,7 +144,7 @@ async fn login(req: Request) -> Result<Redirect> {
 }
 ```
 
-File uploads (`multipart/form-data`) are not parsed for you: read the raw body with `req.take_body()` and give it to a multipart crate. See [vitesse's guide to requests](https://github.com/maxlestage/Vitesse/blob/master/docs/en/requests.md#streaming-with-take_body).
+File uploads (`multipart/form-data`) are not parsed for you: read the raw body with `req.take_body()` and give it to a multipart crate. See [vitesse's guide to requests](https://maxlestage.github.io/Vitesse/en/docs/requests/).
 
 ## Body size
 
@@ -262,7 +262,7 @@ app.get("/export.csv", |_| async { Csv("id,name\n1,Ada\n".into()) });
 
 ## Learn more
 
-- [vitesse: Reading requests](https://github.com/maxlestage/Vitesse/blob/master/docs/en/requests.md) and [Sending responses](https://github.com/maxlestage/Vitesse/blob/master/docs/en/responses.md): every method, streaming bodies, Server-Sent Events.
+- [vitesse: Reading requests](https://maxlestage.github.io/Vitesse/en/docs/requests/) and [Sending responses](https://maxlestage.github.io/Vitesse/en/docs/responses/): every method, streaming bodies, Server-Sent Events.
 - [Errors](errors.md): what `?` does with each kind of error.
 
 ## Next steps

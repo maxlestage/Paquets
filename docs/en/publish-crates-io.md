@@ -6,19 +6,19 @@
 
 crates.io only accepts packages whose dependencies are **also on crates.io**: a published package can't depend on a Git repository. Paquets depends on its four packages, so they must be published before it.
 
-That is why Paquets' `Cargo.toml` gives each package both a `version` and a `git` source:
+That is why, until they are all published, Paquets' `Cargo.toml` gives each package both a `version` and the `git` source of its repository, for example:
 
 ```toml
 [dependencies]
-active = { version = "0.1", git = "https://github.com/maxlestage/Active" }
-memoire-orm = { version = "0.1", git = "https://github.com/maxlestage/Memoire", default-features = false, features = ["memory"] }
+active = "0.1"
+memoire-orm = { version = "0.1", default-features = false, features = ["memory"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-vitesse = { version = "0.1", git = "https://github.com/maxlestage/Vitesse" }
-securite = { version = "0.1", git = "https://github.com/maxlestage/Securite", default-features = false }
+vitesse = "0.1"
+securite = { version = "0.1", default-features = false }
 ```
 
-- While you develop, Cargo uses the `git` source: the latest code of each repository.
+- While you develop, Cargo uses the `git` source (the address of the repository, left out below): the latest code of each repository.
 - When you publish, `cargo publish` removes the `git` source and keeps the `version`: the published `paquets` depends on `vitesse 0.1` **from crates.io**. If that version isn't there, crates.io refuses the upload.
 
 ## The publication order
@@ -27,12 +27,12 @@ Seven crates are published from five repositories. Each repository has its own r
 
 | Order | Crate | Repository | Workflow (Actions tab) |
 |---|---|---|---|
-| 1 | `memoire-orm-derive` | [Memoire](https://github.com/maxlestage/Memoire) | **Publish to crates.io** (publishes both Memoire crates, the derive first) |
-| 2 | `memoire-orm` | [Memoire](https://github.com/maxlestage/Memoire) | same run |
-| 3 | `securite` | [Securite](https://github.com/maxlestage/Securite) | **Publish crate** |
-| 4 | `vitesse` | [Vitesse](https://github.com/maxlestage/Vitesse) | **Release** |
-| 5 | `active` | [Active](https://github.com/maxlestage/Active) | **Release** |
-| 6 | `paquets-macros`, then `paquets` | [Paquets](https://github.com/maxlestage/Paquets) | **Release** |
+| 1 | `memoire-orm-derive` | [Memoire](https://maxlestage.github.io/Memoire/) | **Publish to crates.io** (publishes both Memoire crates, the derive first) |
+| 2 | `memoire-orm` | [Memoire](https://maxlestage.github.io/Memoire/) | same run |
+| 3 | `securite` | [Securite](https://maxlestage.github.io/Securite/) | **Publish crate** |
+| 4 | `vitesse` | [Vitesse](https://maxlestage.github.io/Vitesse/) | **Release** |
+| 5 | `active` | [Active](https://maxlestage.github.io/Active/) | **Release** |
+| 6 | `paquets-macros`, then `paquets` | [Paquets](https://maxlestage.github.io/Paquets/) | **Release** |
 
 `memoire-orm` needs `memoire-orm-derive`, and the Memoire workflow publishes them in that order. The four repositories of steps 1 to 5 don't depend on each other: you can release them in any order, as long as all of them are on crates.io before step 6. Paquets' workflow checks it, and says which crates are missing.
 

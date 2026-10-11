@@ -238,4 +238,4 @@ Because `main` returns `std::io::Result<()>`, the program prints the error and e
 
 - [Testing](testing.md): check your errors in tests.
 - [Security](security.md): the responses of the shield.
-- [vitesse's error guide](https://github.com/maxlestage/Vitesse/blob/master/docs/en/errors.md): more about errors, `on_error` and panics.
+- [vitesse's error guide](https://maxlestage.github.io/Vitesse/en/docs/errors/): more about errors, `on_error` and panics.

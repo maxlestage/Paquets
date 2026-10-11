@@ -267,7 +267,7 @@ async fn article(_req: Request) -> Page {
 | `.og_type(...)`, `.locale(...)`, `.twitter(handle)` | las demás etiquetas Open Graph y Twitter |
 | `.meta_name(name, content)`, `.meta_property(...)` | cualquier otra etiqueta `<meta>` |
 
-Un `Seo` también se puede colocar dentro de una vista (`.child(Seo::new().title(...))`): todos los `Seo` de la página se fusionan, gana el valor más profundo y no se duplican etiquetas. Así, un layout puede fijar valores para todo el sitio que cada página completa. Consulta la [guía de SEO de active](https://github.com/maxlestage/Active/blob/master/site/docs/es/seo.md).
+Un `Seo` también se puede colocar dentro de una vista (`.child(Seo::new().title(...))`): todos los `Seo` de la página se fusionan, gana el valor más profundo y no se duplican etiquetas. Así, un layout puede fijar valores para todo el sitio que cada página completa. Consulta la [guía de SEO de active](https://maxlestage.github.io/Active/es/docs/seo/).
 
 ## La Content-Security-Policy
 
@@ -347,7 +347,7 @@ app.pwa(
 
 ## Más información
 
-Las vistas vienen de [active](https://github.com/maxlestage/Active). Su documentación trata en profundidad los [componentes y las vistas](https://github.com/maxlestage/Active/blob/master/site/docs/es/components.md), el [SEO](https://github.com/maxlestage/Active/blob/master/site/docs/es/seo.md) y los [datos estructurados](https://github.com/maxlestage/Active/blob/master/site/docs/es/structured-data.md).
+Las vistas vienen de [active](https://maxlestage.github.io/Active/). Su documentación trata en profundidad los [componentes y las vistas](https://maxlestage.github.io/Active/es/docs/components/), el [SEO](https://maxlestage.github.io/Active/es/docs/seo/) y los [datos estructurados](https://maxlestage.github.io/Active/es/docs/structured-data/).
 
 ## Próximos pasos
 

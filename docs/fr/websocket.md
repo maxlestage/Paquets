@@ -1,6 +1,6 @@
 # WebSocket
 
-Une WebSocket garde une connexion ouverte dans les deux sens : le serveur peut donc envoyer des messages à tout moment. Discussion en direct, notifications, tableaux de bord en temps réel, jeux multijoueurs… Paquets la prend en charge d'office avec `app.ws(chemin, handler)`, issu de [vitesse](https://github.com/maxlestage/Vitesse). Cette page construit un serveur d'écho, puis un salon de discussion, et couvre la sécurité, le déploiement et les tests.
+Une WebSocket garde une connexion ouverte dans les deux sens : le serveur peut donc envoyer des messages à tout moment. Discussion en direct, notifications, tableaux de bord en temps réel, jeux multijoueurs… Paquets la prend en charge d'office avec `app.ws(chemin, handler)`, issu de [vitesse](https://maxlestage.github.io/Vitesse/). Cette page construit un serveur d'écho, puis un salon de discussion, et couvre la sécurité, le déploiement et les tests.
 
 ## Un serveur d'écho
 
@@ -27,7 +27,7 @@ fn main() -> std::io::Result<()> {
 
 Le handler reçoit la requête et la socket ouverte, et la connexion vit aussi longtemps que le handler s'exécute. Pas de callbacks : une WebSocket, c'est une boucle. `socket.recv().await` attend le message suivant sans bloquer quoi que ce soit d'autre.
 
-Pour l'essayer, utilisez [websocat](https://github.com/vi/websocat), un client WebSocket pour le terminal (`cargo install websocat`) :
+Pour l'essayer, utilisez [websocat](https://crates.io/crates/websocat), un client WebSocket pour le terminal (`cargo install websocat`) :
 
 ```sh
 websocat ws://localhost:3000/echo
@@ -218,7 +218,7 @@ Les navigateurs ne peuvent pas ajouter d'en-tête `Authorization` à une connexi
 ## En production
 
 - **Heroku** prend en charge WebSocket (utilisez `wss://` avec l'adresse HTTPS de votre application). Son routeur ferme une connexion qui reste silencieuse pendant environ 55 secondes : pour les connexions qui peuvent rester inactives, envoyez un ping depuis le serveur toutes les 30 secondes environ (`tx.send(ws::Message::Ping(Default::default()))` depuis une tâche, comme dans le salon de discussion) ; les navigateurs répondent automatiquement.
-- **Derrière Nginx**, le proxy doit transmettre l'en-tête `Upgrade` : voir [le guide WebSocket de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/fr/websocket.md#derrière-un-reverse-proxy). Caddy s'en charge automatiquement.
+- **Derrière Nginx**, le proxy doit transmettre l'en-tête `Upgrade` : voir [le guide WebSocket de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/websocket/). Caddy s'en charge automatiquement.
 - **Les redémarrages** : quand le serveur s'arrête (un déploiement, `SIGTERM`), les connexions ouvertes sont coupées. Faites en sorte que les clients se reconnectent automatiquement, ce dont ils ont besoin de toute façon pour les coupures réseau.
 - **HTTP/1.1 uniquement** : WebSocket ne fonctionne pas sur HTTP/3.
 
@@ -270,7 +270,7 @@ mod tests {
 
 ## Pour aller plus loin
 
-[Le guide WebSocket de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/fr/websocket.md) détaille les sous-protocoles, les limites de taille des messages (`ws::Upgrade`), `Stream` et `Sink`, et le comportement derrière les proxys.
+[Le guide WebSocket de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/websocket/) détaille les sous-protocoles, les limites de taille des messages (`ws::Upgrade`), `Stream` et `Sink`, et le comportement derrière les proxys.
 
 ## Étapes suivantes
 

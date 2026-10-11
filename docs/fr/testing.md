@@ -282,4 +282,4 @@ Le workflow `ci.yml` d'un projet généré lance `cargo test` à chaque push, av
 
 - [Erreurs](errors.md) : à quoi ressemble chaque erreur, pour la tester.
 - [Automatisation](automation.md) : les tests à chaque push.
-- [Le guide des tests de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/fr/testing.md) : d'autres exemples avec le même client de test.
+- [Le guide des tests de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/testing/) : d'autres exemples avec le même client de test.

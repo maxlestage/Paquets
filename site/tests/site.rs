@@ -88,12 +88,6 @@ async fn the_home_page_has_every_section() {
             );
         }
         assert!(html.contains(t.hero_lead));
-        assert!(html.contains("https://www.herokucdn.com/deploy/button.svg"));
-        assert!(
-            html.contains(
-                "https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets"
-            )
-        );
         assert!(html.contains("cargo install paquets"));
         assert!(html.contains("© 2026"));
         // The signature footer: the author, the license, the ecosystem.
@@ -104,9 +98,9 @@ async fn the_home_page_has_every_section() {
                 || html.contains("Tous droits réservés")
                 || html.contains("Todos los derechos reservados")
         );
-        assert!(
-            html.contains(r#"href="https://github.com/maxlestage/Paquets/blob/master/LICENSE""#)
-        );
+        assert!(html.contains(r#"href="/LICENSE.txt""#));
+        // No link to GitHub anywhere: the project is not open source.
+        assert!(!html.contains("github.com"));
         assert!(!html.contains("MIT OR Apache-2.0"));
         assert!(html.contains(&format!("v{}", paquets::VERSION)));
         for project in [
@@ -155,7 +149,7 @@ async fn docs_pages_have_navigation() {
         html.contains("href=\"/fr/docs/project-structure/\""),
         "previous page"
     );
-    assert!(html.contains("https://github.com/maxlestage/Paquets/edit/master/docs/fr/routing.md"));
+    assert!(!html.contains("github.com"));
     let hub = client.get("/es/docs/").await.text();
     for page in &PAGES {
         assert!(
@@ -231,6 +225,10 @@ async fn static_files_are_served() {
     let logo = client.get("/assets/logo.svg").await;
     assert_eq!(logo.status(), 200);
     assert!(logo.text().contains("<svg"));
+    // The license is served by the site, identical to the repository's.
+    let license = client.get("/LICENSE.txt").await;
+    assert_eq!(license.status(), 200);
+    assert_eq!(license.text(), include_str!("../../LICENSE"));
 }
 
 #[tokio::test]

@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-L'état vit en mémoire : il est perdu au redémarrage du serveur, et chaque serveur en a sa propre copie. Les données qui doivent durer ont leur place dans la [base de données](database.md). D'autres façons de faire dans [le guide de l'état de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/fr/state.md).
+L'état vit en mémoire : il est perdu au redémarrage du serveur, et chaque serveur en a sa propre copie. Les données qui doivent durer ont leur place dans la [base de données](database.md). D'autres façons de faire dans [le guide de l'état de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/state/).
 
 ## Le fonctionnement du serveur
 

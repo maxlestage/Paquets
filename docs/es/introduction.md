@@ -8,10 +8,10 @@ Paquets («paquetes» en francés) es una biblioteca de Rust para crear sitios w
 
 | Paquete | Qué hace en Paquets |
 |---|---|
-| [vitesse](https://github.com/maxlestage/Vitesse) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
-| [securite](https://github.com/maxlestage/Securite) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
-| [memoire-orm](https://github.com/maxlestage/Memoire) | La base de datos: modelos y consultas con tipado seguro, en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
-| [active](https://github.com/maxlestage/Active) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
+| [vitesse](https://maxlestage.github.io/Vitesse/) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
+| [securite](https://maxlestage.github.io/Securite/) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
+| [memoire-orm](https://maxlestage.github.io/Memoire/) | La base de datos: modelos y consultas con tipado seguro, en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
+| [active](https://maxlestage.github.io/Active/) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
 
 No necesitas aprender cuatro bibliotecas para empezar. Paquets las conecta, elige buenos valores por defecto y expone una sola API, pequeña. Cuando necesites más, cada paquete está a un import de distancia (consulta [Los cuatro paquetes](packages.md)).
 
