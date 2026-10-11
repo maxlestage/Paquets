@@ -70,7 +70,7 @@ No: components are plain functions that build a view. Do the asynchronous work (
 
 ### Can an island call my API?
 
-Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [active's events guide](https://github.com/maxlestage/Active/blob/master/site/docs/en/events.md#async-work-in-handlers)). An island can also contain a plain HTML form that posts to one of your routes.
+Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [active's events guide](https://maxlestage.github.io/Active/en/docs/events/)). An island can also contain a plain HTML form that posts to one of your routes.
 
 ### Is there hot reload?
 
@@ -138,15 +138,15 @@ Rust compiles every dependency once, with every optimisation in release mode, an
 
 ### How do I update Paquets?
 
-In a project: `cargo update -p paquets` (and the four packages come with it). The command line tool: `cargo install paquets --locked --force` (or the same command with `--git`). Read the [changelog](https://github.com/maxlestage/Paquets/blob/master/CHANGELOG.md) first: before 1.0, minor versions may change the API.
+In a project: `cargo update -p paquets` (and the four packages come with it). The command line tool: `cargo install paquets --locked --force` (or the same command with `--git`). Read the changelog first: before 1.0, minor versions may change the API.
 
 ### How do I report a bug or contribute?
 
-Open an issue on [GitHub](https://github.com/maxlestage/Paquets/issues). Pull requests are welcome; read `CONTRIBUTING.md` first. A bug in one of the four packages is best reported in its own repository (see [The four packages](packages.md)).
+Open an issue on GitHub. Pull requests are welcome; read `CONTRIBUTING.md` first. A bug in one of the four packages is best reported in its own repository (see [The four packages](packages.md)).
 
 ### Which license?
 
-Paquets, vitesse, securite, memoire-orm and active are proprietary software: © Maxime Nathan Lestage, all rights reserved. Their source is published on crates.io and GitHub so that you can read, audit and build it, and you may use them freely as dependencies of your own programs, commercial ones included. Modifying them or redistributing their source needs the author's written permission. The full terms are in each repository's [LICENSE](https://github.com/maxlestage/Paquets/blob/master/LICENSE). What you build with them, including the projects created by `paquets new`, is yours.
+Paquets, vitesse, securite, memoire-orm and active are proprietary software: © Maxime Nathan Lestage, all rights reserved. Their source is published on crates.io and GitHub so that you can read, audit and build it, and you may use them freely as dependencies of your own programs, commercial ones included. Modifying them or redistributing their source needs the author's written permission. The full terms are in each repository's [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt). What you build with them, including the projects created by `paquets new`, is yours.
 
 ## Next steps
 

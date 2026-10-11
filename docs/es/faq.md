@@ -70,7 +70,7 @@ No: los componentes son funciones normales que construyen una vista. Haz primero
 
 ### ¿Una isla puede llamar a mi API?
 
-Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de active](https://github.com/maxlestage/Active/blob/master/site/docs/es/events.md#trabajo-asíncrono-en-los-manejadores)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
+Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de active](https://maxlestage.github.io/Active/es/docs/events/)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
 
 ### ¿Hay recarga en caliente (hot reload)?
 
@@ -138,15 +138,15 @@ Rust compila cada dependencia una vez, con todas las optimizaciones en modo rele
 
 ### ¿Cómo actualizo Paquets?
 
-En un proyecto: `cargo update -p paquets` (y los cuatro paquetes se actualizan con él). La herramienta de línea de comandos: `cargo install paquets --locked --force` (o el mismo comando con `--git`). Lee antes el [registro de cambios](https://github.com/maxlestage/Paquets/blob/master/CHANGELOG.md): antes de la 1.0, las versiones menores pueden cambiar la API.
+En un proyecto: `cargo update -p paquets` (y los cuatro paquetes se actualizan con él). La herramienta de línea de comandos: `cargo install paquets --locked --force` (o el mismo comando con `--git`). Lee antes el registro de cambios: antes de la 1.0, las versiones menores pueden cambiar la API.
 
 ### ¿Cómo informo de un bug o contribuyo?
 
-Abre una issue en [GitHub](https://github.com/maxlestage/Paquets/issues). Las pull requests son bienvenidas; lee antes `CONTRIBUTING.md`. Un bug en uno de los cuatro paquetes es mejor notificarlo en su propio repositorio (consulta [Los cuatro paquetes](packages.md)).
+Abre una issue en GitHub. Las pull requests son bienvenidas; lee antes `CONTRIBUTING.md`. Un bug en uno de los cuatro paquetes es mejor notificarlo en su propio repositorio (consulta [Los cuatro paquetes](packages.md)).
 
 ### ¿Qué licencia tiene?
 
-Paquets, vitesse, securite, memoire-orm y active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://github.com/maxlestage/Paquets/blob/master/LICENSE) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
+Paquets, vitesse, securite, memoire-orm y active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
 
 ## Próximos pasos
 

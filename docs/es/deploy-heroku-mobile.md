@@ -29,9 +29,7 @@ En el repositorio de Paquets, el `Dockerfile` construye el sitio web de Paquets,
 
 ## 1. La forma más rápida: el botón Deploy to Heroku
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets)
-
-1. Toca el botón de arriba (también está en el README del repositorio), o abre esta dirección: `https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets`. Inicia sesión en Heroku si te lo pide.
+1. Toca el botón de arriba (también está en el README del repositorio), o abre esta dirección: `https://dashboard.heroku.com/new-app`. Inicia sesión en Heroku si te lo pide.
 2. Heroku muestra un formulario para crear la aplicación:
    - **App name**: por ejemplo `my-paquets`. Los nombres son únicos en todo Heroku y se escriben con letras minúsculas, números y guiones. Puedes dejarlo vacío y dejar que Heroku elija uno.
    - **Choose a region**: Estados Unidos o Europa.
@@ -71,7 +69,7 @@ Eso es todo. Heroku crea la base de datos, define la config var `DATABASE_URL` y
 
 Para modificar el código, necesitas tu propia copia del repositorio en GitHub:
 
-1. Abre https://github.com/maxlestage/Paquets (la app de GitHub sirve), toca **Fork** y luego **Create fork**.
+1. Abre https://maxlestage.github.io/Paquets/ (la app de GitHub sirve), toca **Fork** y luego **Create fork**.
 2. Despliega tu fork escribiendo esta dirección en tu navegador, con tu nombre de usuario de GitHub en lugar de `<you>`:
 
    ```text
@@ -166,7 +164,7 @@ Heroku solo publica las construcciones que tienen éxito: si una construcción f
 
 Un proyecto creado con `paquets new my-app` contiene los mismos archivos (`app.json`, `heroku.yml`, `Dockerfile` y los dos workflows), así que todos los pasos de esta guía se le aplican.
 
-Crear el proyecto requiere Rust, una sola vez: en cualquier ordenador, o en un entorno de desarrollo en la nube que funcione en un navegador, como [GitHub Codespaces](https://github.com/features/codespaces). Ejecuta `paquets new my-app` y publica la carpeta como un repositorio nuevo de GitHub (por ejemplo `gh repo create my-app --private --source=my-app --push`). A partir de ahí, todo funciona desde tu teléfono:
+Crear el proyecto requiere Rust, una sola vez: en cualquier ordenador, o en un entorno de desarrollo en la nube que funcione en un navegador, como GitHub Codespaces. Ejecuta `paquets new my-app` y publica la carpeta como un repositorio nuevo de GitHub (por ejemplo `gh repo create my-app --private --source=my-app --push`). A partir de ahí, todo funciona desde tu teléfono:
 
 - **Primer despliegue**: el botón Deploy con la dirección de tu repositorio, `https://heroku.com/deploy?template=https://github.com/<you>/my-app` (para un repositorio privado, usa en su lugar la sección 4: el botón necesita un repositorio público).
 - **Despliegues automáticos**: el secreto `HEROKU_API_KEY` y la variable `HEROKU_APP_NAME`, como en la sección 4.

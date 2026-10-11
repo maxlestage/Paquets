@@ -51,6 +51,8 @@ async fn exports_every_page_behind_the_base_path() {
         "fr/docs/index.html",
         "es/docs/quick-start/index.html",
         "404.html",
+        "en/404/index.html",
+        "fr/404/index.html",
         "sitemap.xml",
         "robots.txt",
         "search/en.txt",
@@ -70,6 +72,13 @@ async fn exports_every_page_behind_the_base_path() {
     assert!(search.contains("\t/Paquets/fr/docs/routing/\t"));
     let robots = std::fs::read_to_string(out.join("robots.txt")).unwrap();
     assert!(robots.contains("Sitemap: https://maxlestage.github.io/Paquets/sitemap.xml"));
+    // The root and `404.html` pick the language in the browser.
+    let root = std::fs::read_to_string(out.join("index.html")).unwrap();
+    assert!(root.contains("navigator.languages"));
+    assert!(root.contains(r#"href="/Paquets/fr/""#));
+    let missing = std::fs::read_to_string(out.join("404.html")).unwrap();
+    assert!(missing.contains("navigator.languages") && missing.contains(r#""404/""#));
+    assert!(missing.contains(r#"href="/Paquets/es/404/""#));
 
     // Every link of every page stays under the base path.
     let mut all = Vec::new();

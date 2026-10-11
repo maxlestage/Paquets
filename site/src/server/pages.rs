@@ -6,8 +6,8 @@ use super::Site;
 use super::docs::Doc;
 use crate::catalog::{self, CATEGORIES, PAGES, pages_of};
 use crate::data::{
-    AUTHOR, AUTHOR_URL, CRATES_IO, DOCS_RS, ECOSYSTEM, FEATURES, GITHUB, HEROKU_BUTTON,
-    HEROKU_DEPLOY, INSTALL, JOURNEY, LICENSE, MARQUEE_CODE, NUMBERS, PACKAGES,
+    AUTHOR, CRATES_IO, DOCS_RS, ECOSYSTEM, FEATURES, INSTALL, JOURNEY, LICENSE_PATH, MARQUEE_CODE,
+    NUMBERS, PACKAGES,
 };
 use crate::i18n::{Lang, Texts, number};
 use crate::icons::{icon, logo};
@@ -383,11 +383,6 @@ fn navbar(ctx: &Ctx<'_>) -> Element {
             .child(island("search", ctx.lang().code(), crate::islands::search))
             .child(lang_switch(ctx))
             .child(
-                magnetic(GITHUB, "btn--ghost nav__cta", true)
-                    .attr("aria-label", "GitHub")
-                    .child(inner([icon("github").into(), span().text("GitHub").into()])),
-            )
-            .child(
                 button()
                     .class("nav__burger")
                     .attr("type", "button")
@@ -415,7 +410,6 @@ fn menu(ctx: &Ctx<'_>) -> Element {
         t.docs_title,
         false,
     ));
-    links.push((GITHUB.to_owned(), "GitHub", true));
     div()
         .class("menu")
         .child(div().class("menu__glow").attr("aria-hidden", "true"))
@@ -471,14 +465,18 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
         .collect();
     let packages: Vec<(&str, String, bool)> = PACKAGES
         .iter()
-        .map(|p| (p.name, p.repo.to_owned(), true))
+        .map(|p| (p.name, p.site.to_owned(), true))
         .collect();
-    let mut resources: Vec<(&str, String, bool)> = [GITHUB, CRATES_IO, DOCS_RS, HEROKU_DEPLOY]
-        .iter()
-        .zip(t.footer_resources)
-        .map(|(href, text)| (text, (*href).to_owned(), true))
-        .collect();
-    resources.push((t.footer_license, LICENSE.to_owned(), true));
+    let mut resources: Vec<(&str, String, bool)> = vec![
+        (t.footer_resources[0], CRATES_IO.to_owned(), true),
+        (t.footer_resources[1], DOCS_RS.to_owned(), true),
+        (
+            t.footer_resources[2],
+            doc_href(lang, "deploy-heroku-mobile", None),
+            false,
+        ),
+        (t.footer_license, link(LICENSE_PATH), true),
+    ];
     if ctx.site.live {
         resources.push((t.demo, "/demo".to_owned(), false));
     }
@@ -606,14 +604,14 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
         .class("footer__credits")
         .attr("data-reveal", "")
         .child(p().class("footer__by").text(t.footer_by))
-        .child(external(
-            a().class("footer__name").href(AUTHOR_URL).children(
+        .child(
+            p().class("footer__name").children(
                 AUTHOR
                     .split(' ')
                     .enumerate()
                     .map(|(i, word)| span().style(format!("--i:{i}")).text(word.to_owned())),
             ),
-        ))
+        )
         .child(p().class("footer__crafted").text(t.footer_crafted));
     footer()
         .class("footer")
@@ -640,7 +638,7 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
                 .child(p().class("footer__copy").text(t.footer_rights))
                 .child(external(
                     a().class("footer__license")
-                        .href(LICENSE)
+                        .href(link(LICENSE_PATH))
                         .text(t.footer_proprietary),
                 ))
                 .child(
@@ -753,24 +751,18 @@ fn hero(ctx: &Ctx<'_>) -> Element {
                                 .text(t.hero_lead),
                         )
                         .child(
-                            div()
-                                .class("hero__ctas intro")
-                                .style("--d:1150ms")
-                                .child(
-                                    magnetic(
-                                        &doc_href(ctx.lang(), "quick-start", None),
-                                        "btn--primary btn--lg",
-                                        false,
-                                    )
-                                    .attr("data-cursor", "Go")
-                                    .child(inner([
-                                        span().text(t.hero_start).into(),
-                                        icon("arrow").into(),
-                                    ])),
+                            div().class("hero__ctas intro").style("--d:1150ms").child(
+                                magnetic(
+                                    &doc_href(ctx.lang(), "quick-start", None),
+                                    "btn--primary btn--lg",
+                                    false,
                                 )
-                                .child(magnetic(GITHUB, "btn--ghost btn--lg", true).child(inner(
-                                    [icon("github").into(), span().text(t.hero_github).into()],
-                                ))),
+                                .attr("data-cursor", "Go")
+                                .child(inner([
+                                    span().text(t.hero_start).into(),
+                                    icon("arrow").into(),
+                                ])),
+                            ),
                         )
                         .child(install(ctx, "intro", "1300ms")),
                 )
@@ -902,11 +894,11 @@ fn packages(ctx: &Ctx<'_>) -> Element {
                         )
                         .child(
                             a().class("pkg-card__link")
-                                .href(pkg.repo)
+                                .href(pkg.site)
                                 .attr("target", "_blank")
                                 .attr("rel", "noopener")
-                                .child(icon("github"))
-                                .child(span().text(t.pkg_repo))
+                                .child(icon("globe"))
+                                .child(span().text(t.pkg_site))
                                 .child(icon("external")),
                         ),
                 )
@@ -1240,24 +1232,15 @@ fn deploy(ctx: &Ctx<'_>) -> Element {
                                 .attr("data-reveal", "")
                                 .style("--d:260ms")
                                 .child(
-                                    a().class("heroku-button")
-                                        .href(HEROKU_DEPLOY)
-                                        .attr("target", "_blank")
-                                        .attr("rel", "noopener")
-                                        .child(
-                                            img()
-                                                .attr("src", HEROKU_BUTTON)
-                                                .attr("alt", t.deploy_button_alt)
-                                                .attr("width", "147")
-                                                .attr("height", "32")
-                                                .attr("loading", "lazy"),
-                                        ),
-                                )
-                                .child(
-                                    a().class("link-arrow")
-                                        .href(doc_href(ctx.lang(), "deploy-heroku-mobile", None))
-                                        .child(span().text(t.deploy_guide))
-                                        .child(icon("arrow")),
+                                    magnetic(
+                                        &doc_href(ctx.lang(), "deploy-heroku-mobile", None),
+                                        "btn--primary btn--lg",
+                                        false,
+                                    )
+                                    .child(inner([
+                                        span().text(t.deploy_guide).into(),
+                                        icon("arrow").into(),
+                                    ])),
                                 ),
                         )
                         .child(
@@ -1339,11 +1322,7 @@ fn cta(ctx: &Ctx<'_>) -> Element {
                 span().text(t.cta_start).into(),
                 icon("arrow").into(),
             ])),
-        )
-        .child(magnetic(GITHUB, "btn--ghost btn--lg", true).child(inner([
-            icon("github").into(),
-            span().text(t.cta_star).into(),
-        ])));
+        );
     if ctx.site.live {
         actions = actions.child(
             magnetic("/demo", "btn--ghost btn--lg", false)
@@ -1596,21 +1575,7 @@ pub fn doc(ctx: &Ctx<'_>, slug: &'static str) -> Page {
     if let Some(next) = next {
         pager_nav = pager_nav.child(pager(next, t.docs_next, "doc-pager__link--next"));
     }
-    article = article
-        .child(
-            div().class("doc-foot").child(
-                a().class("doc-edit")
-                    .href(format!(
-                        "{GITHUB}/edit/master/docs/{}/{slug}.md",
-                        lang.code()
-                    ))
-                    .attr("target", "_blank")
-                    .attr("rel", "noopener")
-                    .child(icon("edit"))
-                    .child(span().text(t.docs_edit)),
-            ),
-        )
-        .child(pager_nav);
+    article = article.child(pager_nav);
     let toc = doc
         .map(|d| &d.toc)
         .filter(|toc| !toc.is_empty())
@@ -1699,6 +1664,80 @@ pub fn not_found(ctx: &Ctx<'_>) -> Page {
                 ),
         );
     layout(ctx, &format!("404 — {}", t.nf_title), t.nf_text, content).status(404)
+}
+
+/// A JavaScript string literal that cannot close the `<script>` element.
+fn js_string(s: &str) -> String {
+    let mut out = String::from("\"");
+    for c in s.chars() {
+        match c {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '<' => out.push_str("\\u003c"),
+            '\n' => out.push_str("\\n"),
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+    out
+}
+
+/// The script of the pages a static host serves without knowing the visitor's language:
+/// goes to `/{lang}/{target}` for the language of the address (`/fr/…` on an unknown
+/// page), else the browser's, else English. Without JavaScript, a `<meta>` sends to
+/// English.
+fn language_redirect(target: &str) -> String {
+    let codes: Vec<String> = Lang::ALL.iter().map(|l| js_string(l.code())).collect();
+    format!(
+        concat!(
+            "<script>(function(){{var b={base},L=[{codes}],c=null;",
+            "var s=location.pathname.slice(b.length).split('/').filter(Boolean)[0];",
+            "if(L.indexOf(s)>=0)c=s;",
+            "var l=navigator.languages||[navigator.language||''];",
+            "for(var i=0;i<l.length&&!c;i++){{var x=String(l[i]).slice(0,2).toLowerCase();",
+            "if(L.indexOf(x)>=0)c=x}}",
+            "location.replace(b+'/'+(c||'en')+'/'+{target}+location.search+location.hash)}})()</script>",
+            r#"<noscript><meta http-equiv="refresh" content="0; url={fallback}"/></noscript>"#,
+        ),
+        base = js_string(base()),
+        codes = codes.join(","),
+        target = js_string(target),
+        fallback = link(&format!("/en/{target}")),
+    )
+}
+
+/// The page a static host serves at the root (`target` empty) and for an unknown address
+/// (`target` = `404/`): it goes to the visitor's language by itself and links every
+/// language for the others.
+pub fn language_picker(site: &Site, origin: &str, target: &str) -> Page {
+    let ctx = Ctx {
+        site,
+        route: Route::new(Lang::En, PageKind::NotFound),
+        origin: origin.to_owned(),
+        intro: false,
+    };
+    let t = ctx.t();
+    let content = main()
+        .class("nf")
+        .child(div().class("nf__glow").attr("aria-hidden", "true"))
+        .child(
+            p().class("eyebrow")
+                .child(span().class("eyebrow__num").text("📦"))
+                .text("Paquets"),
+        )
+        .child(h1().class("nf__title").text(t.footer_lang))
+        .child(p().class("nf__text").text(t.meta_title))
+        .child(div().class("nf__actions").children(Lang::ALL.map(|l| {
+            magnetic(
+                &link(&format!("/{}/{target}", l.code())),
+                "btn--ghost btn--lg",
+                false,
+            )
+            .attr("hreflang", l.code())
+            .attr("lang", l.code())
+            .child(inner([span().text(l.name()).into(), icon("arrow").into()]))
+        })));
+    layout(&ctx, "Paquets", t.meta_title, content).head(language_redirect(target))
 }
 
 /// The page of a route.

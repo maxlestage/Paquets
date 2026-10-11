@@ -8,10 +8,10 @@ La commande `paquets` crée les projets, les lance pendant le développement, le
 cargo install paquets --locked
 ```
 
-Tant que Paquets n'est pas sur crates.io, installez-la depuis GitHub :
+Installez-la avec cargo :
 
 ```sh
-cargo install --git https://github.com/maxlestage/Paquets paquets --locked
+cargo install paquets --locked
 ```
 
 Voir [Installation](installation.md) pour Rust lui-même et les outils facultatifs.

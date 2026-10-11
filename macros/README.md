@@ -1,6 +1,6 @@
 # paquets-macros
 
-Attribute macros of [Paquets](https://github.com/maxlestage/Paquets), the simplest
+Attribute macros of [Paquets](https://maxlestage.github.io/Paquets/), the simplest
 full-stack web framework for Rust. Depend on `paquets`, which re-exports them:
 
 ```rust
@@ -22,4 +22,4 @@ struct Login {
 
 Proprietary software: © 2026 Maxime Nathan Lestage, all rights reserved. Free to use as a
 dependency of your own programs, commercial ones included; see
-[LICENSE](https://github.com/maxlestage/Paquets/blob/master/LICENSE).
+[LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt).

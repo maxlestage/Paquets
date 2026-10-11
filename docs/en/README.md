@@ -44,6 +44,6 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 ## More resources
 
 - API reference generated from the source code: https://docs.rs/paquets
-- Source code, issues and examples: https://github.com/maxlestage/Paquets
-- The four packages: [vitesse](https://github.com/maxlestage/Vitesse), [securite](https://github.com/maxlestage/Securite), [memoire-orm](https://github.com/maxlestage/Memoire), [active](https://github.com/maxlestage/Active)
+- Source code, issues and examples: https://maxlestage.github.io/Paquets/
+- The four packages: [vitesse](https://maxlestage.github.io/Vitesse/), [securite](https://maxlestage.github.io/Securite/), [memoire-orm](https://maxlestage.github.io/Memoire/), [active](https://maxlestage.github.io/Active/)
 - Also available in [French](../fr/README.md) and [Spanish](../es/README.md).

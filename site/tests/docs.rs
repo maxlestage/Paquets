@@ -107,19 +107,6 @@ fn every_link_between_pages_resolves() {
                     problems.push(format!("{here}: anchor «#{anchor}» not found"));
                 }
             }
-            // A link to `something.md` outside the index would leave the site for
-            // GitHub: probably a typo.
-            for link in rendered
-                .html
-                .split("href=\"https://github.com/maxlestage/Paquets/blob/master/docs/")
-                .skip(1)
-            {
-                let target = link.split('"').next().unwrap_or_default();
-                let file = target.split('#').next().unwrap_or_default();
-                if file.ends_with(".md") && !file.contains("../") {
-                    problems.push(format!("{here}: link to unknown page «{target}»"));
-                }
-            }
         }
     }
     assert!(problems.is_empty(), "\n{}", problems.join("\n"));

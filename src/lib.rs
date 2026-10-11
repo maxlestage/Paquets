@@ -32,10 +32,10 @@
 //!
 //! | Package | Role in Paquets | Re-exported as |
 //! |---|---|---|
-//! | [vitesse](https://github.com/maxlestage/Vitesse) | HTTP server in the style of Express: routes, middlewares, WebSocket | [`vitesse`], [`App`] dereferences to `vitesse::App` |
-//! | [securite](https://github.com/maxlestage/Securite) | security in front of every request: WAF, rate limit, CSRF, headers… | [`securite`], [`App::security`] |
-//! | [memoire-orm](https://github.com/maxlestage/Memoire) | database: memory, SQLite, PostgreSQL, MySQL, Redis, MongoDB | [`orm`], [`Db`], [`macro@model`] |
-//! | [active](https://github.com/maxlestage/Active) | pages rendered on the server, SEO tags, WebAssembly islands | [`active`], [`Page`] |
+//! | [vitesse](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, WebSocket | [`vitesse`], [`App`] dereferences to `vitesse::App` |
+//! | [securite](https://maxlestage.github.io/Securite/) | security in front of every request: WAF, rate limit, CSRF, headers… | [`securite`], [`App::security`] |
+//! | [memoire-orm](https://maxlestage.github.io/Memoire/) | database: memory, SQLite, PostgreSQL, MySQL, Redis, MongoDB | [`orm`], [`Db`], [`macro@model`] |
+//! | [active](https://maxlestage.github.io/Active/) | pages rendered on the server, SEO tags, WebAssembly islands | [`active`], [`Page`] |
 //!
 //! ## In handlers
 //!
@@ -68,7 +68,7 @@
 //!
 //! The complete documentation, in English, French and Spanish, is on the
 //! [Paquets website](https://maxlestage.github.io/Paquets/) and in the
-//! [`docs/` folder](https://github.com/maxlestage/Paquets/tree/master/docs) of the
+//! [`docs/` folder](https://maxlestage.github.io/Paquets/en/docs/) of the
 //! repository: getting started, every concept, deployment to Heroku from a phone,
 //! publishing on crates.io.
 //!
@@ -127,16 +127,16 @@ pub use active::pwa::Manifest as Pwa;
 /// The version of this crate, e.g. `"0.1.0"`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/// Front end: views, state, SEO tags, islands ([active](https://github.com/maxlestage/Active)).
+/// Front end: views, state, SEO tags, islands ([active](https://maxlestage.github.io/Active/)).
 pub use active;
-/// Database: models, queries, transactions, migrations ([memoire-orm](https://github.com/maxlestage/Memoire)).
+/// Database: models, queries, transactions, migrations ([memoire-orm](https://maxlestage.github.io/Memoire/)).
 pub use memoire_orm as orm;
-/// Security middlewares ([securite](https://github.com/maxlestage/Securite)).
+/// Security middlewares ([securite](https://maxlestage.github.io/Securite/)).
 #[cfg(not(target_arch = "wasm32"))]
 pub use securite;
 pub use serde;
 pub use serde_json;
-/// HTTP server ([vitesse](https://github.com/maxlestage/Vitesse)).
+/// HTTP server ([vitesse](https://maxlestage.github.io/Vitesse/)).
 #[cfg(not(target_arch = "wasm32"))]
 pub use vitesse;
 /// Testing an application without opening a port: see [`App::test`].

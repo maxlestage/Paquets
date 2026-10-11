@@ -267,7 +267,7 @@ async fn article(_req: Request) -> Page {
 | `.og_type(...)`, `.locale(...)`, `.twitter(handle)` | the other Open Graph and Twitter tags |
 | `.meta_name(name, content)`, `.meta_property(...)` | any other `<meta>` tag |
 
-A `Seo` can also be placed inside a view (`.child(Seo::new().title(...))`): every `Seo` of the page is merged, the deepest value winning, without duplicate tags. A layout can therefore set site-wide values that each page completes. See [active's SEO guide](https://github.com/maxlestage/Active/blob/master/site/docs/en/seo.md).
+A `Seo` can also be placed inside a view (`.child(Seo::new().title(...))`): every `Seo` of the page is merged, the deepest value winning, without duplicate tags. A layout can therefore set site-wide values that each page completes. See [active's SEO guide](https://maxlestage.github.io/Active/en/docs/seo/).
 
 ## The Content-Security-Policy
 
@@ -347,7 +347,7 @@ app.pwa(
 
 ## Learn more
 
-Views come from [active](https://github.com/maxlestage/Active). Its documentation covers [components and views](https://github.com/maxlestage/Active/blob/master/site/docs/en/components.md), [SEO](https://github.com/maxlestage/Active/blob/master/site/docs/en/seo.md) and [structured data](https://github.com/maxlestage/Active/blob/master/site/docs/en/structured-data.md) in depth.
+Views come from [active](https://maxlestage.github.io/Active/). Its documentation covers [components and views](https://maxlestage.github.io/Active/en/docs/components/), [SEO](https://maxlestage.github.io/Active/en/docs/seo/) and [structured data](https://maxlestage.github.io/Active/en/docs/structured-data/) in depth.
 
 ## Next steps
 

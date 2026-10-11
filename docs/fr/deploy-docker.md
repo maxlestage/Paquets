@@ -181,8 +181,8 @@ et faites pointer le health check de la plateforme vers `/health`.
 Chaque `docker build` recompile vos dépendances dès que quoi que ce soit change dans le projet. Quand les constructions deviennent lentes :
 
 - gardez le `.dockerignore` ci-dessus ;
-- dans le `Dockerfile`, remplacez `cargo install wasm-bindgen-cli` par le téléchargement d'un binaire précompilé depuis les [releases de wasm-bindgen](https://github.com/wasm-bindgen/wasm-bindgen/releases) (le `Dockerfile` du dépôt de Paquets fait exactement cela) ;
-- mettez en cache les dépendances compilées dans une couche séparée avec un outil comme [cargo-chef](https://github.com/LukeMathWalker/cargo-chef).
+- dans le `Dockerfile`, remplacez `cargo install wasm-bindgen-cli` par le téléchargement d'un binaire précompilé depuis les [releases de wasm-bindgen](https://crates.io/crates/wasm-bindgen) (le `Dockerfile` du dépôt de Paquets fait exactement cela) ;
+- mettez en cache les dépendances compilées dans une couche séparée avec un outil comme [cargo-chef](https://crates.io/crates/cargo-chef).
 
 ## Étapes suivantes
 

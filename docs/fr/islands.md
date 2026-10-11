@@ -222,7 +222,7 @@ Les props font partie du HTML : gardez-les légères, et n'y mettez jamais de se
 - **Les îlots sont indépendants.** Chaque îlot a ses propres états. Si deux parties d'une page doivent réagir l'une à l'autre (un filtre et une liste), faites-en un seul îlot.
 - **Le même balisage des deux côtés.** N'utilisez `#[cfg(target_arch = "wasm32")]` que pour le comportement, jamais pour changer ce qui est rendu.
 - **Les noms doivent correspondre.** Un îlot dont le nom n'est pas dans `start()` reste tout simplement statique, sans la moindre erreur.
-- **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://github.com/maxlestage/Active/blob/master/site/docs/fr/events.md#travail-asynchrone-dans-les-gestionnaires)), ou utilisez un simple formulaire HTML qui envoie ses données à une route.
+- **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://maxlestage.github.io/Active/fr/docs/events/)), ou utilisez un simple formulaire HTML qui envoie ses données à une route.
 
 ## Compiler pour la production
 
@@ -259,7 +259,7 @@ lto = true
 panic = "abort"
 ```
 
-Retirez `paquets` de la section `[dependencies]` ordinaire : gardez-le uniquement dans les deux sections par cible. (Tant que Paquets n'est pas sur crates.io, ajoutez `git = "https://github.com/maxlestage/Paquets"` aux deux lignes.)
+Retirez `paquets` de la section `[dependencies]` ordinaire : gardez-le uniquement dans les deux sections par cible.
 
 **2. `src/lib.rs`** : les îlots et la fonction `start()` présentée plus haut.
 
@@ -293,7 +293,7 @@ Le fichier `.wasm` porte le nom du paquet, avec `-` remplacé par `_`.
 
 ## Pour aller plus loin
 
-Les îlots, les états et les événements viennent d'[active](https://github.com/maxlestage/Active). Sa documentation va plus loin : [îlots](https://github.com/maxlestage/Active/blob/master/site/docs/fr/islands.md), [état et effets](https://github.com/maxlestage/Active/blob/master/site/docs/fr/state.md), [événements](https://github.com/maxlestage/Active/blob/master/site/docs/fr/events.md), et [applications côté client](https://github.com/maxlestage/Active/blob/master/site/docs/fr/client-app.md) (`paquets::mount_to`, `navigate` et `location` avec la feature `client`).
+Les îlots, les états et les événements viennent d'[active](https://maxlestage.github.io/Active/). Sa documentation va plus loin : [îlots](https://maxlestage.github.io/Active/fr/docs/islands/), [état et effets](https://maxlestage.github.io/Active/fr/docs/state/), [événements](https://maxlestage.github.io/Active/fr/docs/events/), et [applications côté client](https://maxlestage.github.io/Active/fr/docs/client-app/) (`paquets::mount_to`, `navigate` et `location` avec la feature `client`).
 
 ## Étapes suivantes
 

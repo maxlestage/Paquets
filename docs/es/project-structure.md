@@ -83,10 +83,10 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-paquets = { version = "0.1", git = "https://github.com/maxlestage/Paquets" }
+paquets = "0.1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-paquets = { version = "0.1", git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["client"] }
+paquets = { version = "0.1", default-features = false, features = ["client"] }
 wasm-bindgen = "0.2"
 
 [dev-dependencies]

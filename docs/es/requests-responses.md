@@ -144,7 +144,7 @@ async fn login(req: Request) -> Result<Redirect> {
 }
 ```
 
-Las subidas de archivos (`multipart/form-data`) no se analizan por ti: lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart. Consulta la [guía de vitesse sobre las peticiones](https://github.com/maxlestage/Vitesse/blob/master/docs/es/requests.md#streaming-con-take_body).
+Las subidas de archivos (`multipart/form-data`) no se analizan por ti: lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart. Consulta la [guía de vitesse sobre las peticiones](https://maxlestage.github.io/Vitesse/es/docs/requests/).
 
 ## Tamaño del cuerpo
 
@@ -262,7 +262,7 @@ app.get("/export.csv", |_| async { Csv("id,name\n1,Ada\n".into()) });
 
 ## Más información
 
-- [vitesse: Leer la petición](https://github.com/maxlestage/Vitesse/blob/master/docs/es/requests.md) y [Responder](https://github.com/maxlestage/Vitesse/blob/master/docs/es/responses.md): todos los métodos, cuerpos en streaming, Server-Sent Events.
+- [vitesse: Leer la petición](https://maxlestage.github.io/Vitesse/es/docs/requests/) y [Responder](https://maxlestage.github.io/Vitesse/es/docs/responses/): todos los métodos, cuerpos en streaming, Server-Sent Events.
 - [Errores](errors.md): lo que hace `?` con cada tipo de error.
 
 ## Próximos pasos

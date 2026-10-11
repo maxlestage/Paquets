@@ -2,15 +2,15 @@
 //! static host. Every page comes from the server itself, through Paquets' in-memory
 //! test client (`app.test()`), so both are identical.
 //!
-//! What a static host cannot do is replaced: `/` is the English home page instead of
-//! a redirection by `Accept-Language`, `404.html` is the English "not found" page,
-//! and the live demo is left out.
+//! What a static host cannot do is replaced: `/` and `404.html` pick the language in the
+//! browser instead of a redirection by `Accept-Language`, every language has its "not
+//! found" page, and the live demo is left out.
 
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use super::{Site, app, site_dir};
+use super::{Site, app, pages, site_dir};
 use crate::i18n::Lang;
 use crate::routes::{Route, base, set_base};
 
@@ -41,7 +41,7 @@ pub async fn export(out: &Path, base_path: &str, site_url: Option<String>) -> io
         .filter(|u| !u.trim().is_empty())
         .unwrap_or_else(|| default_site_url(base));
     let site = Arc::new(Site::load(false, Some(site_url)));
-    let mut app = app(site);
+    let mut app = app(site.clone());
     // Static files have no server to protect, and the export asks for every page at
     // once (the rate limit would stop it).
     app.security(None);
@@ -78,10 +78,20 @@ pub async fn export(out: &Path, base_path: &str, site_url: Option<String>) -> io
             with_base(&html, base).as_bytes(),
         )?;
     }
-    let home = get(Route::new(Lang::En, crate::routes::Page::Home).path(), 200).await?;
-    write("index.html", with_base(&home, base).as_bytes())?;
-    let missing = get("/en/404/".to_owned(), 404).await?;
-    write("404.html", with_base(&missing, base).as_bytes())?;
+    // The root and the unknown addresses: the page picks the language itself, then shows
+    // the "not found" page of that language.
+    let origin = site.site_url.clone().unwrap_or_default();
+    for (file, target) in [("index.html", ""), ("404.html", "404/")] {
+        let html = pages::language_picker(&site, &origin, target).render();
+        write(file, with_base(&html, base).as_bytes())?;
+    }
+    for lang in Lang::ALL {
+        let missing = get(format!("/{}/404/", lang.code()), 404).await?;
+        write(
+            &format!("/{}/404/index.html", lang.code()),
+            with_base(&missing, base).as_bytes(),
+        )?;
+    }
     for lang in Lang::ALL {
         let index = format!("/search/{}.txt", lang.code());
         write(&index, get(index.clone(), 200).await?.as_bytes())?;
