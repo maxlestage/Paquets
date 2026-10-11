@@ -101,7 +101,7 @@ Chaque paquet est publié séparément et fonctionne sans Paquets :
 - **memoire-orm** dans n'importe quel programme Rust qui stocke des données, un outil en ligne de commande ou un worker ;
 - **active** pour un site statique, une application côté client, ou des pages servies par un autre framework (sa documentation a un guide pour axum).
 
-Leurs README expliquent comment démarrer. Les quatre utilisent l'édition 2024. Paquets, vitesse, securite et memoire-orm sont sous licence MIT ou Apache-2.0, active sous licence MIT.
+Leurs README expliquent comment démarrer. Les quatre utilisent l'édition 2024. Comme Paquets, les quatre paquets sont des logiciels propriétaires de Maxime Nathan Lestage, libres d'utilisation comme dépendances (voir [Quelle licence ?](faq.md#quelle-licence-)).
 
 ## Versions
 

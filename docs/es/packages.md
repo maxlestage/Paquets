@@ -101,7 +101,7 @@ Cada paquete se publica por separado y funciona sin Paquets:
 - **memoire-orm** en cualquier programa de Rust que guarde datos, una herramienta de línea de comandos o un worker;
 - **active** para un sitio estático, una aplicación del lado del cliente o páginas servidas por otro framework (su documentación tiene una guía para axum).
 
-Sus README explican cómo empezar. Los cuatro usan la edición 2024. Paquets, vitesse, securite y memoire-orm tienen licencia MIT o Apache-2.0, y active, licencia MIT.
+Sus README explican cómo empezar. Los cuatro usan la edición 2024. Como Paquets, los cuatro paquetes son software propietario de Maxime Nathan Lestage, de uso libre como dependencias (consulta [¿Qué licencia tiene?](faq.md#qué-licencia-tiene)).
 
 ## Versiones
 

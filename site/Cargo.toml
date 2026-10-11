@@ -3,7 +3,7 @@ name = "paquets-site"
 version = "0.1.0"
 edition = "2024"
 publish = false
-license = "MIT OR Apache-2.0"
+license-file = "../LICENSE"
 description = "The website and documentation of Paquets, written with Paquets (and active)."
 
 # Standalone crate: not part of the Paquets build (the root Cargo.toml excludes `site`).
