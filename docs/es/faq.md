@@ -33,7 +33,7 @@ No para las páginas, las APIs y las islas: todo es Rust, incluidas las partes i
 
 ### ¿Es gratuito?
 
-Paquets es de código abierto, con licencia MIT o Apache-2.0. El alojamiento es otra cuestión: Heroku no tiene plan gratuito (un dyno Eco cuesta unos 5 $ al mes; consulta [Desplegar en Heroku](deploy-heroku-mobile.md)). La imagen Docker funciona en cualquier proveedor, incluido tu propio servidor.
+Paquets puede usarse libremente como dependencia, también en proyectos comerciales (es software propietario: consulta [¿Qué licencia tiene?](#qué-licencia-tiene)). El alojamiento es otra cuestión: Heroku no tiene plan gratuito (un dyno Eco cuesta unos 5 $ al mes; consulta [Desplegar en Heroku](deploy-heroku-mobile.md)). La imagen Docker funciona en cualquier proveedor, incluido tu propio servidor.
 
 ## Escribir código
 
@@ -146,7 +146,7 @@ Abre una issue en [GitHub](https://github.com/maxlestage/Paquets/issues). Las pu
 
 ### ¿Qué licencia tiene?
 
-MIT o Apache-2.0, a tu elección, para Paquets, vitesse, securite y memoire-orm; MIT para active.
+Paquets, vitesse, securite, memoire-orm y active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://github.com/maxlestage/Paquets/blob/master/LICENSE) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
 
 ## Próximos pasos
 
