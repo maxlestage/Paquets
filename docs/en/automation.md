@@ -83,7 +83,7 @@ If the push to `master` is refused (`403` or "protected branch"), see [Branch pr
 
 ## GitHub Pages: the website
 
-The Paquets website (in `site/`) is a Paquets app: pages rendered on the server with active, islands in WebAssembly, and a live demo. For GitHub Pages, which only serves files, the **Pages** workflow builds the islands, then exports every page to static files with the site's own server code:
+The Paquets website (in `site/`) is a Paquets app: pages rendered on the server with Active, islands in WebAssembly, and a live demo. For GitHub Pages, which only serves files, the **Pages** workflow builds the islands, then exports every page to static files with the site's own server code:
 
 ```sh
 cd site

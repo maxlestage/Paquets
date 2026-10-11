@@ -76,6 +76,16 @@ async fn exports_every_page_behind_the_base_path() {
     let root = std::fs::read_to_string(out.join("index.html")).unwrap();
     assert!(root.contains("navigator.languages"));
     assert!(root.contains(r#"href="/Paquets/fr/""#));
+    // French without JavaScript, and when the browser speaks none of the languages.
+    assert!(root.contains(r#"content="0; url=/Paquets/fr/""#), "{root}");
+    assert!(root.contains("(c||'fr')"));
+    // The installed app opens in the language of the page it was installed from.
+    assert!(home.contains(r#"<link rel="manifest" href="/Paquets/fr/manifest.webmanifest"/>"#));
+    let manifest = std::fs::read_to_string(out.join("fr/manifest.webmanifest")).unwrap();
+    assert!(
+        manifest.contains(r#""start_url":"/Paquets/fr/""#),
+        "{manifest}"
+    );
     let missing = std::fs::read_to_string(out.join("404.html")).unwrap();
     assert!(missing.contains("navigator.languages") && missing.contains(r#""404/""#));
     assert!(missing.contains(r#"href="/Paquets/es/404/""#));

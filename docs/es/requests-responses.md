@@ -144,7 +144,7 @@ async fn login(req: Request) -> Result<Redirect> {
 }
 ```
 
-Las subidas de archivos (`multipart/form-data`) no se analizan por ti: lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart. Consulta la [guía de vitesse sobre las peticiones](https://maxlestage.github.io/Vitesse/es/docs/requests/).
+Las subidas de archivos (`multipart/form-data`) no se analizan por ti: lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart. Consulta la [guía de Vitesse sobre las peticiones](https://maxlestage.github.io/Vitesse/es/docs/requests/).
 
 ## Tamaño del cuerpo
 

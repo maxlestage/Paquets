@@ -10,7 +10,7 @@ Un framework de Rust que te da, con un solo crate y una sola `App`, un servidor 
 
 ### ¿Está listo para producción?
 
-Paquets es joven (versión 0.1). Está construido sobre cuatro paquetes que se prueban por separado (vitesse, securite, memoire-orm, active), y sus valores por defecto están pensados para producción: escudo de seguridad, apagado ordenado, base de datos tomada de `DATABASE_URL`, compilaciones release en el `Dockerfile`. Pero su API todavía puede cambiar entre versiones 0.x, y no tiene años de uso a sus espaldas. Pruébalo en un proyecto en el que puedas seguir su evolución, y lee los límites en la [Introducción](introduction.md#lo-que-paquets-todavía-no-hace).
+Paquets es joven (versión 0.1). Está construido sobre cuatro paquetes que se prueban por separado (Vitesse, Securite, memoire-orm, Active), y sus valores por defecto están pensados para producción: escudo de seguridad, apagado ordenado, base de datos tomada de `DATABASE_URL`, compilaciones release en el `Dockerfile`. Pero su API todavía puede cambiar entre versiones 0.x, y no tiene años de uso a sus espaldas. Pruébalo en un proyecto en el que puedas seguir su evolución, y lee los límites en la [Introducción](introduction.md#lo-que-paquets-todavía-no-hace).
 
 ### ¿Por qué no axum, actix-web o Leptos?
 
@@ -62,7 +62,7 @@ Para los datos que deben durar, usa la [base de datos](database.md). Para los aj
 
 ### ¿Cómo inicio la sesión de los usuarios?
 
-Paquets no incluye cuentas de usuario. Según lo que necesites: un token compartido para una API, el guard `Auth` de securite para una sección de administración, o sesiones guardadas en tu base de datos. Consulta [Seguridad](security.md#autenticación).
+Paquets no incluye cuentas de usuario. Según lo que necesites: un token compartido para una API, el guard `Auth` de Securite para una sección de administración, o sesiones guardadas en tu base de datos. Consulta [Seguridad](security.md#autenticación).
 
 ### ¿Los componentes pueden ser asíncronos?
 
@@ -70,7 +70,7 @@ No: los componentes son funciones normales que construyen una vista. Haz primero
 
 ### ¿Una isla puede llamar a mi API?
 
-Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de active](https://maxlestage.github.io/Active/es/docs/events/)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
+Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://maxlestage.github.io/Active/es/docs/events/)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
 
 ### ¿Hay recarga en caliente (hot reload)?
 
@@ -146,7 +146,7 @@ Abre una issue en GitHub. Las pull requests son bienvenidas; lee antes `CONTRIBU
 
 ### ¿Qué licencia tiene?
 
-Paquets, vitesse, securite, memoire-orm y active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
+Paquets, Vitesse, Securite, memoire-orm y Active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
 
 ## Próximos pasos
 

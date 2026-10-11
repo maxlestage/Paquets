@@ -144,7 +144,7 @@ async fn login(req: Request) -> Result<Redirect> {
 }
 ```
 
-File uploads (`multipart/form-data`) are not parsed for you: read the raw body with `req.take_body()` and give it to a multipart crate. See [vitesse's guide to requests](https://maxlestage.github.io/Vitesse/en/docs/requests/).
+File uploads (`multipart/form-data`) are not parsed for you: read the raw body with `req.take_body()` and give it to a multipart crate. See [Vitesse's guide to requests](https://maxlestage.github.io/Vitesse/en/docs/requests/).
 
 ## Body size
 

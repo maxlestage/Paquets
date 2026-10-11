@@ -35,7 +35,7 @@ Paquets doesn't read `.env` files. If you like them, the [`dotenvy`](https://cra
 | `app.api::<M>(path)` | a REST API and a table for a model | — |
 | `app.model::<M>()` | a table for a model | — |
 
-`App` also gives access to every method of vitesse's app:
+`App` also gives access to every method of Vitesse's app:
 
 | Method | Effect | Default |
 |---|---|---|
@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-State lives in memory: it is lost when the server restarts, and each server has its own copy. Data that must last belongs in the [database](database.md). More patterns in [vitesse's state guide](https://maxlestage.github.io/Vitesse/en/docs/state/).
+State lives in memory: it is lost when the server restarts, and each server has its own copy. Data that must last belongs in the [database](database.md). More patterns in [Vitesse's state guide](https://maxlestage.github.io/Vitesse/en/docs/state/).
 
 ## How the server runs
 
@@ -120,7 +120,7 @@ State lives in memory: it is lost when the server restarts, and each server has 
 ```
 
 - It listens on **every network interface** (`0.0.0.0`), which is what containers and hosts such as Heroku need.
-- With the in-memory database or SQLite, it runs **one thread per CPU core**, each with its own event loop: vitesse's fastest mode. `app.workers(n)` and `app.thread_per_core(false)` apply in this mode.
+- With the in-memory database or SQLite, it runs **one thread per CPU core**, each with its own event loop: Vitesse's fastest mode. `app.workers(n)` and `app.thread_per_core(false)` apply in this mode.
 - With a database server (PostgreSQL, MySQL, Redis, MongoDB), it runs on a tokio runtime with one thread per core, shared by the database connections. `workers` and `thread_per_core` don't apply.
 - On `Ctrl+C` or `SIGTERM`, it stops accepting connections and gives the requests in progress up to 10 seconds to finish (graceful shutdown). Heroku and Docker send `SIGTERM` before stopping a container.
 

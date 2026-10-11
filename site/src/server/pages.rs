@@ -269,7 +269,7 @@ fn layout(ctx: &Ctx<'_>, title: &str, description: &str, content: Element) -> Pa
         for l in Lang::ALL {
             seo = seo.alternate(l.code(), route.with_lang(l).path());
         }
-        seo = seo.alternate("x-default", route.with_lang(Lang::En).path());
+        seo = seo.alternate("x-default", route.with_lang(Lang::Fr).path());
     }
     let icon_href = link("/assets/logo.svg");
     let head = format!(
@@ -907,7 +907,7 @@ fn packages(ctx: &Ctx<'_>) -> Element {
         span()
             .class("equation__term equation__term--brand")
             .style("--i:0")
-            .text("paquets")
+            .text("Paquets")
             .into(),
         span().class("equation__op").style("--i:1").text("=").into(),
     ];
@@ -1684,8 +1684,8 @@ fn js_string(s: &str) -> String {
 
 /// The script of the pages a static host serves without knowing the visitor's language:
 /// goes to `/{lang}/{target}` for the language of the address (`/fr/…` on an unknown
-/// page), else the browser's, else English. Without JavaScript, a `<meta>` sends to
-/// English.
+/// page), else the browser's, else French. Without JavaScript, a `<meta>` sends to
+/// French.
 fn language_redirect(target: &str) -> String {
     let codes: Vec<String> = Lang::ALL.iter().map(|l| js_string(l.code())).collect();
     format!(
@@ -1696,13 +1696,13 @@ fn language_redirect(target: &str) -> String {
             "var l=navigator.languages||[navigator.language||''];",
             "for(var i=0;i<l.length&&!c;i++){{var x=String(l[i]).slice(0,2).toLowerCase();",
             "if(L.indexOf(x)>=0)c=x}}",
-            "location.replace(b+'/'+(c||'en')+'/'+{target}+location.search+location.hash)}})()</script>",
+            "location.replace(b+'/'+(c||'fr')+'/'+{target}+location.search+location.hash)}})()</script>",
             r#"<noscript><meta http-equiv="refresh" content="0; url={fallback}"/></noscript>"#,
         ),
         base = js_string(base()),
         codes = codes.join(","),
         target = js_string(target),
-        fallback = link(&format!("/en/{target}")),
+        fallback = link(&format!("/fr/{target}")),
     )
 }
 
@@ -1712,7 +1712,7 @@ fn language_redirect(target: &str) -> String {
 pub fn language_picker(site: &Site, origin: &str, target: &str) -> Page {
     let ctx = Ctx {
         site,
-        route: Route::new(Lang::En, PageKind::NotFound),
+        route: Route::new(Lang::Fr, PageKind::NotFound),
         origin: origin.to_owned(),
         intro: false,
     };

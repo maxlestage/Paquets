@@ -1,14 +1,14 @@
 # Performances
 
-Paquets est rapide sans réglage : son serveur, vitesse, est plus rapide qu'actix-web et axum sur la même machine, son bouclier de sécurité coûte quelques microsecondes par requête, et les pages n'envoient aucun code au navigateur, sauf si elles contiennent des îlots. Cette page donne les chiffres, explique comment le serveur utilise votre processeur, et liste ce qui garde votre propre application rapide.
+Paquets est rapide sans réglage : son serveur, Vitesse, est plus rapide qu'actix-web et axum sur la même machine, son bouclier de sécurité coûte quelques microsecondes par requête, et les pages n'envoient aucun code au navigateur, sauf si elles contiennent des îlots. Cette page donne les chiffres, explique comment le serveur utilise votre processeur, et liste ce qui garde votre propre application rapide.
 
 ## Les chiffres
 
-### Le serveur (vitesse)
+### Le serveur (Vitesse)
 
 Requêtes par seconde sur une VM à 4 vCPU, le serveur épinglé sur 2 cœurs et le générateur de charge (wrk) sur les 2 autres, 128 connexions keep-alive. Entre parenthèses : le temps CPU du serveur par requête (plus c'est bas, mieux c'est).
 
-| Scénario | axum 0.8 | actix-web 4 | **vitesse** |
+| Scénario | axum 0.8 | actix-web 4 | **Vitesse** |
 |---|---:|---:|---:|
 | `GET /` (texte) | 168 165 (11,7 µs) | 274 195 (7,1 µs) | **291 415 (6,1 µs)** |
 | `GET /json` | 165 988 (11,9 µs) | 248 987 (7,9 µs) | **313 438 (5,9 µs)** |
@@ -17,13 +17,13 @@ Requêtes par seconde sur une VM à 4 vCPU, le serveur épinglé sur 2 cœurs et
 | `POST /echo` (lit et renvoie du JSON) | 105 570 (18,8 µs) | 170 129 (11,7 µs) | **253 941 (7,6 µs)** |
 | `GET /` pipeliné ×16 | 213 678 (9,3 µs) | 1 272 510 (1,6 µs) | **2 781 541 (0,64 µs)** |
 
-La méthodologie, les autres frameworks mesurés (Express, Drogon) et la façon de reproduire ces chiffres se trouvent dans [le guide des performances de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/performance/).
+La méthodologie, les autres frameworks mesurés (Express, Drogon) et la façon de reproduire ces chiffres se trouvent dans [le guide des performances de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/performance/).
 
-### Le bouclier (securite)
+### Le bouclier (Securite)
 
 Toute la chaîne recommandée (identifiant de requête, hygiène, filtre de méthodes, limite de corps, limitation de débit, blocage des robots, pare-feu, CSRF, en-têtes de sécurité, durcissement des cookies) coûte environ **6 µs** par requête.
 
-### Pages et îlots (active)
+### Pages et îlots (Active)
 
 | | Rendu serveur d'une page produit | WebAssembly + chargeur pour un compteur (compressé) | Interactif avec 100 ms de latence |
 |---|---:|---:|---:|
@@ -40,7 +40,7 @@ Ces benchmarks mesurent chaque paquet seul, sur des handlers triviaux. Dans une 
 
 ## Comment le serveur utilise votre processeur
 
-- Avec la base de données en mémoire ou SQLite, `app.run()` démarre **un thread par cœur de processeur**, chacun avec sa propre boucle d'événements et sa propre socket d'écoute. Le noyau répartit les connexions entre les threads, et une requête ne change jamais de thread. C'est le mode le plus rapide de vitesse.
+- Avec la base de données en mémoire ou SQLite, `app.run()` démarre **un thread par cœur de processeur**, chacun avec sa propre boucle d'événements et sa propre socket d'écoute. Le noyau répartit les connexions entre les threads, et une requête ne change jamais de thread. C'est le mode le plus rapide de Vitesse.
 - Avec un serveur de base de données (PostgreSQL…), l'application tourne sur le runtime multithread de tokio, partagé avec les connexions à la base, et les threads inactifs prennent du travail aux threads occupés.
 
 Dans les deux modes, un handler qui bloque son thread (un long calcul, une lecture de fichier bloquante, `std::thread::sleep`) retarde toutes les autres requêtes de ce thread. Gardez des handlers asynchrones, et sortez les calculs lourds de la boucle d'événements :
@@ -88,7 +88,7 @@ async fn posts_with_authors(req: Request) -> Result<Json<Vec<(String, String)>>>
 ```
 
 - **Regroupez les écritures** dans une transaction, ou utilisez `insert_many`, `update_many` et `delete_many`.
-- memoire construit le SQL des opérations par clé primaire (`get`, `insert`, `update`, `delete`) à la compilation : elles ne coûtent aucune génération de SQL à l'exécution.
+- Memoire construit le SQL des opérations par clé primaire (`get`, `insert`, `update`, `delete`) à la compilation : elles ne coûtent aucune génération de SQL à l'exécution.
 
 ### Pages
 
@@ -108,7 +108,7 @@ app.serve_dir("/assets", ServeDir::new("assets").max_age(Duration::from_secs(31_
 
 ### Compression
 
-vitesse ne compresse pas les réponses. Le texte se compresse très bien (HTML, JSON, CSS, WebAssembly) : placez donc un CDN (Cloudflare, Fastly…) ou un reverse proxy devant l'application si la bande passante compte. Le routeur de Heroku ne compresse pas non plus.
+Vitesse ne compresse pas les réponses. Le texte se compresse très bien (HTML, JSON, CSS, WebAssembly) : placez donc un CDN (Cloudflare, Fastly…) ou un reverse proxy devant l'application si la bande passante compte. Le routeur de Heroku ne compresse pas non plus.
 
 ### Journaux
 

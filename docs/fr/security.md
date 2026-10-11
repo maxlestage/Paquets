@@ -1,6 +1,6 @@
 # Sécurité
 
-Chaque application Paquets est protégée dès sa première ligne : `App::new()` place le bouclier recommandé de [securite](https://maxlestage.github.io/Securite/) devant chaque requête. Les attaques sont bloquées avant que votre code ne s'exécute, et chaque réponse reçoit les en-têtes de sécurité dont les navigateurs ont besoin. Cette page explique ce que fait le bouclier, comment le modifier, et ce qui reste à votre charge, comme la connexion des utilisateurs.
+Chaque application Paquets est protégée dès sa première ligne : `App::new()` place le bouclier recommandé de [Securite](https://maxlestage.github.io/Securite/) devant chaque requête. Les attaques sont bloquées avant que votre code ne s'exécute, et chaque réponse reçoit les en-têtes de sécurité dont les navigateurs ont besoin. Cette page explique ce que fait le bouclier, comment le modifier, et ce qui reste à votre charge, comme la connexion des utilisateurs.
 
 ## Ce que fait le bouclier
 
@@ -103,7 +103,7 @@ app.security(
 ```
 
 > [!WARNING]
-> Ne faites confiance à un en-tête de transfert que si votre application n'est joignable **que** par le proxy qui le définit. Sinon, n'importe qui peut envoyer l'en-tête et choisir son adresse. Voir le [guide de l'IP du client](https://maxlestage.github.io/Securite/fr/docs/client-ip/) de securite.
+> Ne faites confiance à un en-tête de transfert que si votre application n'est joignable **que** par le proxy qui le définit. Sinon, n'importe qui peut envoyer l'en-tête et choisir son adresse. Voir le [guide de l'IP du client](https://maxlestage.github.io/Securite/fr/docs/client-ip/) de Securite.
 
 Les handlers peuvent lire l'adresse trouvée par le bouclier avec `req.extensions().get::<ClientIp>()` (voir [Requêtes et réponses](requests-responses.md#ladresse-ip-du-client)).
 
@@ -192,7 +192,7 @@ app.security(
 
 ### Préréglages
 
-securite propose trois préréglages. `paquets::shield()` est le préréglage recommandé, plus la détection de Heroku :
+Securite propose trois préréglages. `paquets::shield()` est le préréglage recommandé, plus la détection de Heroku :
 
 | Préréglage | Pour | Différences avec le préréglage recommandé |
 |---|---|---|
@@ -218,7 +218,7 @@ Ne le faites que si une autre couche protège déjà l'application (un WAF au ni
 
 ## Ce que le bouclier ne fait pas
 
-- **Il ne lit pas le corps des requêtes.** Le pare-feu inspecte l'URL, la query string et les en-têtes. Les corps JSON et les formulaires relèvent de vos handlers : validez-les (voir [Requêtes et réponses](requests-responses.md#corps-json)). Deux choses vous protègent déjà de ce côté : memoire envoie chaque valeur comme paramètre lié, les requêtes des modèles ne peuvent donc pas être détournées en injection SQL ; et les vues échappent tout le texte, les données affichées dans une page ne peuvent donc pas injecter de HTML.
+- **Il ne lit pas le corps des requêtes.** Le pare-feu inspecte l'URL, la query string et les en-têtes. Les corps JSON et les formulaires relèvent de vos handlers : validez-les (voir [Requêtes et réponses](requests-responses.md#corps-json)). Deux choses vous protègent déjà de ce côté : Memoire envoie chaque valeur comme paramètre lié, les requêtes des modèles ne peuvent donc pas être détournées en injection SQL ; et les vues échappent tout le texte, les données affichées dans une page ne peuvent donc pas injecter de HTML.
 - **Il ne connaît pas vos utilisateurs.** L'authentification et les permissions sont à votre charge (section suivante).
 - **Il ne fournit pas HTTPS à lui seul.** Paquets sert du HTTP simple ; c'est Heroku, un reverse proxy ou un CDN placé devant qui fournit HTTPS. L'en-tête `Strict-Transport-Security` maintient ensuite les navigateurs sur HTTPS.
 
@@ -232,7 +232,7 @@ Pour une API utilisée par vos propres scripts ou applications, vérifiez un jet
 
 ### Un mot de passe pour une section d'administration
 
-Le guard `Auth` de securite protège des chemins avec l'authentification HTTP Basic (le navigateur affiche une boîte de connexion), des jetons bearer ou des clés d'API :
+Le guard `Auth` de Securite protège des chemins avec l'authentification HTTP Basic (le navigateur affiche une boîte de connexion), des jetons bearer ou des clés d'API :
 
 ```rust
 use paquets::securite::prelude::*;
@@ -249,7 +249,7 @@ app.get("/admin", |req: Request| async move {
 });
 ```
 
-Tous les chemins sous `/admin` demandent désormais le nom d'utilisateur et le mot de passe ; les autres restent publics. Lisez le mot de passe depuis une variable d'environnement (`std::env::var("ADMIN_PASSWORD")`) plutôt que de l'écrire dans le code. Le [guide de l'authentification](https://maxlestage.github.io/Securite/fr/docs/auth/) de securite couvre les jetons, les clés d'API et les vérifications sur mesure comme JWT.
+Tous les chemins sous `/admin` demandent désormais le nom d'utilisateur et le mot de passe ; les autres restent publics. Lisez le mot de passe depuis une variable d'environnement (`std::env::var("ADMIN_PASSWORD")`) plutôt que de l'écrire dans le code. Le [guide de l'authentification](https://maxlestage.github.io/Securite/fr/docs/auth/) de Securite couvre les jetons, les clés d'API et les vérifications sur mesure comme JWT.
 
 ### Comptes et sessions
 
@@ -263,7 +263,7 @@ Le bouclier s'occupe du reste : le cookie reçoit `Secure`, `HttpOnly` et `SameS
 
 ## Pour aller plus loin
 
-La documentation de securite a une page par guard : [WAF](https://maxlestage.github.io/Securite/fr/docs/waf/), [limitation de débit](https://maxlestage.github.io/Securite/fr/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/fr/docs/csrf/), [en-têtes de sécurité](https://maxlestage.github.io/Securite/fr/docs/security-headers/), [préréglages](https://maxlestage.github.io/Securite/fr/docs/shield-presets/), et bien d'autres : filtre d'IP, filtre d'hôte, bannissements automatiques, signatures de webhooks. Dans Paquets, securite est réexporté sous `paquets::securite`.
+La documentation de Securite a une page par guard : [WAF](https://maxlestage.github.io/Securite/fr/docs/waf/), [limitation de débit](https://maxlestage.github.io/Securite/fr/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/fr/docs/csrf/), [en-têtes de sécurité](https://maxlestage.github.io/Securite/fr/docs/security-headers/), [préréglages](https://maxlestage.github.io/Securite/fr/docs/shield-presets/), et bien d'autres : filtre d'IP, filtre d'hôte, bannissements automatiques, signatures de webhooks. Dans Paquets, Securite est réexporté sous `paquets::securite`.
 
 ## Étapes suivantes
 

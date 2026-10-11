@@ -43,7 +43,7 @@ struct Todo {
 
 ### Attributs de colonne
 
-Les attributs de memoire s'appliquent aux champs, dans `#[memoire(...)]` :
+Les attributs de Memoire s'appliquent aux champs, dans `#[memoire(...)]` :
 
 ```rust
 #[model(table = "users")]
@@ -207,7 +207,7 @@ async fn todo_list(req: Request) -> Result<Page> {
 }
 ```
 
-La valeur renvoyée par `paginate` est le type `Page` propre à memoire (`paquets::orm::Page`), pas la `Page` HTML : vous n'utilisez que ses champs.
+La valeur renvoyée par `paginate` est le type `Page` propre à Memoire (`paquets::orm::Page`), pas la `Page` HTML : vous n'utilisez que ses champs.
 
 ## Écrire des données
 
@@ -295,7 +295,7 @@ Si le hook renvoie une erreur, l'application ne démarre pas, et le message comm
 
 Les tables sont créées quand elles manquent, mais **jamais modifiées**. Si vous ajoutez un champ à un modèle dont la table existe déjà (dans un fichier SQLite ou sur Heroku Postgres), la colonne manque, et les requêtes sur ce modèle échouent avec une `500`. Avec la base de données en mémoire (développement, tests), il n'y a rien à faire : la table est recréée à chaque démarrage.
 
-Pour une base existante, utilisez une **migration** : une modification numérotée, enregistrée dans la base de données pour ne s'exécuter qu'une seule fois. Le `Migrator` de memoire s'en charge, et `on_start` est l'endroit où le lancer. Cet exemple ajoute une colonne `priority` à la table `todo` sur PostgreSQL :
+Pour une base existante, utilisez une **migration** : une modification numérotée, enregistrée dans la base de données pour ne s'exécuter qu'une seule fois. Le `Migrator` de Memoire s'en charge, et `on_start` est l'endroit où le lancer. Cet exemple ajoute une colonne `priority` à la table `todo` sur PostgreSQL :
 
 ```rust
 use paquets::orm::{Dialect, Migration, Migrator};
@@ -320,7 +320,7 @@ Ajoutez ensuite `priority: i32` à la struct. Le fonctionnement, et les règles 
 - N'appelez pas `create_table::<M>()` dans ces migrations pour un modèle enregistré avec `app.api` ou `app.model` : sa table a déjà été créée avant l'exécution de `on_start`, et la migration échouerait avec « table already exists ».
 
 > [!NOTE]
-> SQLite et MySQL ne prennent pas en charge `ADD COLUMN IF NOT EXISTS`. Pour eux, lancez vous-même les migrations **avant** que l'application ne crée ses tables : ouvrez la base de données avec `Db::connect(&url).await?`, lancez le `Migrator` (avec des étapes `create_table` construites à partir de copies figées de vos structs), puis confiez la base à l'application avec `app.database(db)` et démarrez-la avec `app.serve().await` dans `#[tokio::main]`. Le [guide des migrations](https://maxlestage.github.io/Memoire/fr/docs/migrations/) de memoire explique en détail les structs figées.
+> SQLite et MySQL ne prennent pas en charge `ADD COLUMN IF NOT EXISTS`. Pour eux, lancez vous-même les migrations **avant** que l'application ne crée ses tables : ouvrez la base de données avec `Db::connect(&url).await?`, lancez le `Migrator` (avec des étapes `create_table` construites à partir de copies figées de vos structs), puis confiez la base à l'application avec `app.database(db)` et démarrez-la avec `app.serve().await` dans `#[tokio::main]`. Le [guide des migrations](https://maxlestage.github.io/Memoire/fr/docs/migrations/) de Memoire explique en détail les structs figées.
 
 ## SQL brut
 
@@ -352,7 +352,7 @@ Les erreurs de base de données deviennent des statuts HTTP quand elles atteigne
 | `NULL` dans un champ qui n'est pas une `Option`, valeur invalide | `400 Bad Request` |
 | tout le reste (connexion perdue, table ou colonne manquante…) | `500 Internal Server Error` ; les détails partent dans les journaux du serveur, jamais vers le client |
 
-Pour réagir vous-même à une erreur, examinez-la avant le `?` : `Todo::find` renvoie `None` au lieu d'une erreur, et les erreurs de memoire ont `is_not_found()`, `is_unique_violation()` et `is_conflict()`. Voir [Erreurs](errors.md).
+Pour réagir vous-même à une erreur, examinez-la avant le `?` : `Todo::find` renvoie `None` au lieu d'une erreur, et les erreurs de Memoire ont `is_not_found()`, `is_unique_violation()` et `is_conflict()`. Voir [Erreurs](errors.md).
 
 ## Quelle base de données choisir ?
 
@@ -366,11 +366,11 @@ Pour réagir vous-même à une erreur, examinez-la avant le `?` : `Todo::find` r
 > [!WARNING]
 > N'utilisez pas SQLite sur Heroku : le système de fichiers d'un dyno est temporaire, et le fichier est perdu à chaque déploiement et à chaque redémarrage (au moins une fois par jour). Ajoutez plutôt l'add-on Heroku Postgres (voir [Déployer sur Heroku](deploy-heroku-mobile.md#2-ajouter-une-base-de-données)).
 
-Avec PostgreSQL, le pool ouvre jusqu'à 4 connexions par cœur de processeur quand le trafic le demande. Les petites offres hébergées limitent le nombre de connexions (souvent à 20) : pour choisir vous-même la taille du pool, ouvrez-le avec memoire (`PgPool::connect_with(&url, 10)`) et passez-le avec `app.database(Db::from(pool))` depuis un `main` asynchrone (voir [Configuration](configuration.md#initialisation-asynchrone)).
+Avec PostgreSQL, le pool ouvre jusqu'à 4 connexions par cœur de processeur quand le trafic le demande. Les petites offres hébergées limitent le nombre de connexions (souvent à 20) : pour choisir vous-même la taille du pool, ouvrez-le avec Memoire (`PgPool::connect_with(&url, 10)`) et passez-le avec `app.database(Db::from(pool))` depuis un `main` asynchrone (voir [Configuration](configuration.md#initialisation-asynchrone)).
 
 ## Pour aller plus loin
 
-La documentation de memoire va plus loin : [modèles](https://maxlestage.github.io/Memoire/fr/docs/models/), [requêtes](https://maxlestage.github.io/Memoire/fr/docs/queries/) (jointures, agrégats, group by), [relations](https://maxlestage.github.io/Memoire/fr/docs/relations/), [transactions](https://maxlestage.github.io/Memoire/fr/docs/transactions/), [migrations](https://maxlestage.github.io/Memoire/fr/docs/migrations/) et une page par base de données. Tout fonctionne avec `req.db()` : elle accepte toutes les méthodes de modèle et toutes les requêtes. Dans Paquets, memoire est réexporté sous `paquets::orm`.
+La documentation de Memoire va plus loin : [modèles](https://maxlestage.github.io/Memoire/fr/docs/models/), [requêtes](https://maxlestage.github.io/Memoire/fr/docs/queries/) (jointures, agrégats, group by), [relations](https://maxlestage.github.io/Memoire/fr/docs/relations/), [transactions](https://maxlestage.github.io/Memoire/fr/docs/transactions/), [migrations](https://maxlestage.github.io/Memoire/fr/docs/migrations/) et une page par base de données. Tout fonctionne avec `req.db()` : elle accepte toutes les méthodes de modèle et toutes les requêtes. Dans Paquets, Memoire est réexporté sous `paquets::orm`.
 
 ## Étapes suivantes
 

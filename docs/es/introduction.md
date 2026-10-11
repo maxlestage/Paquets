@@ -8,10 +8,10 @@ Paquets («paquetes» en francés) es una biblioteca de Rust para crear sitios w
 
 | Paquete | Qué hace en Paquets |
 |---|---|
-| [vitesse](https://maxlestage.github.io/Vitesse/) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
-| [securite](https://maxlestage.github.io/Securite/) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
+| [Vitesse](https://maxlestage.github.io/Vitesse/) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
+| [Securite](https://maxlestage.github.io/Securite/) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
 | [memoire-orm](https://maxlestage.github.io/Memoire/) | La base de datos: modelos y consultas con tipado seguro, en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
-| [active](https://maxlestage.github.io/Active/) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
+| [Active](https://maxlestage.github.io/Active/) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
 
 No necesitas aprender cuatro bibliotecas para empezar. Paquets las conecta, elige buenos valores por defecto y expone una sola API, pequeña. Cuando necesites más, cada paquete está a un import de distancia (consulta [Los cuatro paquetes](packages.md)).
 
@@ -64,7 +64,7 @@ Ejecútalo y obtendrás:
 | Funcionalidad | Comportamiento por defecto | Se cambia con |
 |---|---|---|
 | Servidor | Puerto tomado de la variable `PORT` (Heroku), `3000` si no existe. `Ctrl+C` o `SIGTERM` lo detienen de forma ordenada. | `app.port(8080)` |
-| Seguridad | El escudo recomendado de securite en cada petición: identificadores de petición, comprobaciones del protocolo, límite de 2 MiB para el cuerpo, límite de tasa de 20 peticiones por segundo por IP, bloqueador de bots, cortafuegos, protección CSRF, cabeceras de seguridad, cookies reforzadas. | `app.security(...)` |
+| Seguridad | El escudo recomendado de Securite en cada petición: identificadores de petición, comprobaciones del protocolo, límite de 2 MiB para el cuerpo, límite de tasa de 20 peticiones por segundo por IP, bloqueador de bots, cortafuegos, protección CSRF, cabeceras de seguridad, cookies reforzadas. | `app.security(...)` |
 | Base de datos | Tomada de la variable `DATABASE_URL`; en memoria cuando no está definida. Las tablas de tus modelos se crean al arrancar. | `app.database(...)` |
 | Páginas | HTML renderizado en el servidor con etiquetas SEO, un tema integrado y una Content-Security-Policy que permite exactamente lo que contiene la página. | Métodos de `Page` |
 | Archivos estáticos | La carpeta `public/` se sirve en la raíz del sitio. | `app.static_dir(...)` |
@@ -75,7 +75,7 @@ Ejecútalo y obtendrás:
 
 - **Sencillez.** Una dependencia, un import (`use paquets::prelude::*;`), una `App`. Un handler es una función `async` que recibe una petición y devuelve una respuesta. Los errores son valores, y `?` los convierte en el estado HTTP correcto.
 - **Seguro por defecto.** Ataques como la inyección SQL en la URL, la falsificación de peticiones entre sitios (CSRF), el clickjacking o la fuerza bruta se bloquean antes de que se ejecute tu código. Tienes que desactivar la protección, no activarla.
-- **Rápido.** vitesse atiende unas 291 000 peticiones por segundo en `GET /` con 2 núcleos de CPU, más que actix-web y axum en la misma máquina, y 2.78 millones por segundo con pipelining. Todo el pipeline de securite cuesta unos 6 µs por petición. El bundle de isla más pequeño (un contador) pesa 36.8 kB comprimido. Consulta [Rendimiento](performance.md).
+- **Rápido.** Vitesse atiende unas 291 000 peticiones por segundo en `GET /` con 2 núcleos de CPU, más que actix-web y axum en la misma máquina, y 2.78 millones por segundo con pipelining. Todo el pipeline de Securite cuesta unos 6 µs por petición. El bundle de isla más pequeño (un contador) pesa 36.8 kB comprimido. Consulta [Rendimiento](performance.md).
 - **Tipado seguro de la base de datos a la página.** Una columna mal escrita, una comparación entre un número y una cadena o un campo que falta en una respuesta son errores de compilación, no bugs en producción.
 - **Fácil de desplegar.** Un proyecto creado con `paquets new` contiene un `Dockerfile`, los archivos para desplegar en Heroku con un solo toque y workflows de GitHub. Puedes desplegar, redesplegar y leer tus logs [desde un teléfono](deploy-heroku-mobile.md).
 

@@ -222,7 +222,7 @@ Props are part of the HTML: keep them small, and never put secrets in them.
 - **Islands are independent.** Each island has its own states. If two parts of a page must react to each other (a filter and a list), make them one island.
 - **The same markup on both sides.** Use `#[cfg(target_arch = "wasm32")]` only for behaviour, never to change what is rendered.
 - **Names must match.** An island whose name is not in `start()` simply stays static, without any error.
-- **Data from the server.** To read or send data after the page has loaded, call your API with the browser's `fetch` through `web-sys` and `wasm-bindgen-futures` (see [active's events guide](https://maxlestage.github.io/Active/en/docs/events/)), or use a plain HTML form that posts to a route.
+- **Data from the server.** To read or send data after the page has loaded, call your API with the browser's `fetch` through `web-sys` and `wasm-bindgen-futures` (see [Active's events guide](https://maxlestage.github.io/Active/en/docs/events/)), or use a plain HTML form that posts to a route.
 
 ## Building for production
 
@@ -293,7 +293,7 @@ The `.wasm` file is named after the package, with `-` replaced by `_`.
 
 ## Learn more
 
-Islands, states and events come from [active](https://maxlestage.github.io/Active/). Its documentation goes further: [islands](https://maxlestage.github.io/Active/en/docs/islands/), [state and effects](https://maxlestage.github.io/Active/en/docs/state/), [events](https://maxlestage.github.io/Active/en/docs/events/), and [client-side apps](https://maxlestage.github.io/Active/en/docs/client-app/) (`paquets::mount_to`, `navigate` and `location` with the `client` feature).
+Islands, states and events come from [Active](https://maxlestage.github.io/Active/). Its documentation goes further: [islands](https://maxlestage.github.io/Active/en/docs/islands/), [state and effects](https://maxlestage.github.io/Active/en/docs/state/), [events](https://maxlestage.github.io/Active/en/docs/events/), and [client-side apps](https://maxlestage.github.io/Active/en/docs/client-app/) (`paquets::mount_to`, `navigate` and `location` with the `client` feature).
 
 ## Next steps
 

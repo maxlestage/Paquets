@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-El estado vive en memoria: se pierde cuando el servidor se reinicia, y cada servidor tiene su propia copia. Los datos que deben durar van en la [base de datos](database.md). Más patrones en la [guía de estado de vitesse](https://maxlestage.github.io/Vitesse/es/docs/state/).
+El estado vive en memoria: se pierde cuando el servidor se reinicia, y cada servidor tiene su propia copia. Los datos que deben durar van en la [base de datos](database.md). Más patrones en la [guía de estado de Vitesse](https://maxlestage.github.io/Vitesse/es/docs/state/).
 
 ## Cómo funciona el servidor
 
@@ -120,7 +120,7 @@ El estado vive en memoria: se pierde cuando el servidor se reinicia, y cada serv
 ```
 
 - Escucha en **todas las interfaces de red** (`0.0.0.0`), que es lo que necesitan los contenedores y los proveedores como Heroku.
-- Con la base de datos en memoria o SQLite, ejecuta **un hilo por núcleo de CPU**, cada uno con su propio bucle de eventos: el modo más rápido de vitesse. `app.workers(n)` y `app.thread_per_core(false)` se aplican en este modo.
+- Con la base de datos en memoria o SQLite, ejecuta **un hilo por núcleo de CPU**, cada uno con su propio bucle de eventos: el modo más rápido de Vitesse. `app.workers(n)` y `app.thread_per_core(false)` se aplican en este modo.
 - Con un servidor de base de datos (PostgreSQL, MySQL, Redis, MongoDB), funciona sobre un runtime de tokio con un hilo por núcleo, compartido con las conexiones a la base de datos. `workers` y `thread_per_core` no se aplican.
 - Con `Ctrl+C` o `SIGTERM`, deja de aceptar conexiones y da hasta 10 segundos a las peticiones en curso para terminar (apagado ordenado). Heroku y Docker envían `SIGTERM` antes de detener un contenedor.
 

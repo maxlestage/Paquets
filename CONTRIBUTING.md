@@ -32,8 +32,8 @@ pull request. Notable changes go in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## The four packages
 
-Paquets assembles [vitesse](https://maxlestage.github.io/Vitesse/),
-[securite](https://maxlestage.github.io/Securite/),
+Paquets assembles [Vitesse](https://maxlestage.github.io/Vitesse/),
+[Securite](https://maxlestage.github.io/Securite/),
 [memoire-orm](https://maxlestage.github.io/Memoire/) and
-[active](https://maxlestage.github.io/Active/). A bug in one of them is best fixed in its
+[Active](https://maxlestage.github.io/Active/). A bug in one of them is best fixed in its
 own repository; Paquets then picks it up with `cargo update`.

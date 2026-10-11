@@ -293,7 +293,7 @@ Le fichier `.wasm` porte le nom du paquet, avec `-` remplacé par `_`.
 
 ## Pour aller plus loin
 
-Les îlots, les états et les événements viennent d'[active](https://maxlestage.github.io/Active/). Sa documentation va plus loin : [îlots](https://maxlestage.github.io/Active/fr/docs/islands/), [état et effets](https://maxlestage.github.io/Active/fr/docs/state/), [événements](https://maxlestage.github.io/Active/fr/docs/events/), et [applications côté client](https://maxlestage.github.io/Active/fr/docs/client-app/) (`paquets::mount_to`, `navigate` et `location` avec la feature `client`).
+Les îlots, les états et les événements viennent d'[Active](https://maxlestage.github.io/Active/). Sa documentation va plus loin : [îlots](https://maxlestage.github.io/Active/fr/docs/islands/), [état et effets](https://maxlestage.github.io/Active/fr/docs/state/), [événements](https://maxlestage.github.io/Active/fr/docs/events/), et [applications côté client](https://maxlestage.github.io/Active/fr/docs/client-app/) (`paquets::mount_to`, `navigate` et `location` avec la feature `client`).
 
 ## Étapes suivantes
 

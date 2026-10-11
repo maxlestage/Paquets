@@ -83,7 +83,7 @@ Si le push sur `master` est refusé (`403` ou « protected branch »), voir [Pro
 
 ## GitHub Pages : le site
 
-Le site de Paquets (dans `site/`) est une application Paquets : des pages rendues par le serveur avec active, des îlots en WebAssembly, et une démo en direct. Pour GitHub Pages, qui ne sert que des fichiers, le workflow **Pages** compile les îlots, puis exporte chaque page en fichiers statiques avec le propre code serveur du site :
+Le site de Paquets (dans `site/`) est une application Paquets : des pages rendues par le serveur avec Active, des îlots en WebAssembly, et une démo en direct. Pour GitHub Pages, qui ne sert que des fichiers, le workflow **Pages** compile les îlots, puis exporte chaque page en fichiers statiques avec le propre code serveur du site :
 
 ```sh
 cd site

@@ -2,7 +2,7 @@
 
 The website and documentation hub of [Paquets](https://maxlestage.github.io/Paquets/),
 written **with Paquets**: the server is a `paquets::App`, the pages are `paquets::Page`s
-built with [active](https://maxlestage.github.io/Active/) views, and the interactive
+built with [Active](https://maxlestage.github.io/Active/) views, and the interactive
 parts are active islands compiled to WebAssembly. English, French and Spanish.
 
 | Part | Where |

@@ -62,8 +62,8 @@ Paquets assembles four crates, each usable on its own:
 
 | Package | Role | In Paquets |
 |---|---|---|
-| [**vitesse**](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**securite**](https://maxlestage.github.io/Securite/) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
+| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**Securite**](https://maxlestage.github.io/Securite/) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
 | [**memoire-orm**](https://maxlestage.github.io/Memoire/) | Type-safe async ORM with compile-time SQL, SQL and NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
 | [**active**](https://maxlestage.github.io/Active/) | Front end: components, state, server rendering, SEO, WebAssembly islands | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
@@ -189,7 +189,7 @@ everything is green, the branch is **merged into `master` automatically** (excep
 2. GitHub → *Releases* → *Draft a new release* → tag `v0.1.0` → *Publish release*.
 
 [`release.yml`](.github/workflows/release.yml) publishes `paquets-macros`, then `paquets`. crates.io
-only accepts dependencies that are on crates.io, so vitesse, securite, memoire-orm and active are
+only accepts dependencies that are on crates.io, so Vitesse, Securite, memoire-orm and Active are
 published first, each from its own repository in the same way; the workflow checks it. Guide:
 [docs/en/publish-crates-io.md](docs/en/publish-crates-io.md).
 
@@ -208,7 +208,7 @@ cd site && cargo run                       # the website, itself a Paquets app (
 | [`macros/`](macros) | `#[model]` and `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` and `todo` (the app deployed on Heroku) |
 | [`docs/`](docs) | the documentation, in English, French and Spanish |
-| [`site/`](site) | the website: a Paquets app (pages rendered by active, islands in WebAssembly), exported to static files for GitHub Pages |
+| [`site/`](site) | the website: a Paquets app (pages rendered by Active, islands in WebAssembly), exported to static files for GitHub Pages |
 
 ## License
 

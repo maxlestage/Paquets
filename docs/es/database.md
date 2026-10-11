@@ -43,7 +43,7 @@ struct Todo {
 
 ### Atributos de columna
 
-Los atributos de memoire funcionan en los campos, dentro de `#[memoire(...)]`:
+Los atributos de Memoire funcionan en los campos, dentro de `#[memoire(...)]`:
 
 ```rust
 #[model(table = "users")]
@@ -207,7 +207,7 @@ async fn todo_list(req: Request) -> Result<Page> {
 }
 ```
 
-El valor que devuelve `paginate` es el tipo `Page` propio de memoire (`paquets::orm::Page`), no la `Page` HTML: solo usas sus campos.
+El valor que devuelve `paginate` es el tipo `Page` propio de Memoire (`paquets::orm::Page`), no la `Page` HTML: solo usas sus campos.
 
 ## Escribir datos
 
@@ -295,7 +295,7 @@ Si el hook devuelve un error, la aplicación no arranca y el mensaje empieza por
 
 Las tablas se crean cuando no existen, pero **nunca se modifican**. Si añades un campo a un modelo cuya tabla ya existe (en un archivo SQLite o en Heroku Postgres), falta la columna, y las consultas sobre ese modelo fallan con un `500`. Con la base de datos en memoria (desarrollo, pruebas) no hay nada que hacer: la tabla se vuelve a crear en cada arranque.
 
-Para una base de datos existente, usa una **migración**: un cambio numerado, registrado en la base de datos para que solo se ejecute una vez. El `Migrator` de memoire se encarga de ello, y `on_start` es el sitio donde ejecutarlo. Este ejemplo añade una columna `priority` a la tabla `todo` en PostgreSQL:
+Para una base de datos existente, usa una **migración**: un cambio numerado, registrado en la base de datos para que solo se ejecute una vez. El `Migrator` de Memoire se encarga de ello, y `on_start` es el sitio donde ejecutarlo. Este ejemplo añade una columna `priority` a la tabla `todo` en PostgreSQL:
 
 ```rust
 use paquets::orm::{Dialect, Migration, Migrator};
@@ -320,7 +320,7 @@ Después añade `priority: i32` al struct. Cómo funciona y qué reglas seguir:
 - No uses `create_table::<M>()` en estas migraciones para un modelo registrado con `app.api` o `app.model`: su tabla ya se creó antes de que se ejecute `on_start`, y la migración fallaría con «table already exists».
 
 > [!NOTE]
-> SQLite y MySQL no admiten `ADD COLUMN IF NOT EXISTS`. Para ellas, ejecuta tú las migraciones **antes** de que la aplicación cree sus tablas: abre la base de datos con `Db::connect(&url).await?`, ejecuta el `Migrator` (con pasos `create_table` construidos a partir de copias congeladas de tus structs), pásale luego la base de datos a la aplicación con `app.database(db)` y arráncala con `app.serve().await` dentro de `#[tokio::main]`. La [guía de migraciones](https://maxlestage.github.io/Memoire/es/docs/migrations/) de memoire explica en detalle los structs congelados.
+> SQLite y MySQL no admiten `ADD COLUMN IF NOT EXISTS`. Para ellas, ejecuta tú las migraciones **antes** de que la aplicación cree sus tablas: abre la base de datos con `Db::connect(&url).await?`, ejecuta el `Migrator` (con pasos `create_table` construidos a partir de copias congeladas de tus structs), pásale luego la base de datos a la aplicación con `app.database(db)` y arráncala con `app.serve().await` dentro de `#[tokio::main]`. La [guía de migraciones](https://maxlestage.github.io/Memoire/es/docs/migrations/) de Memoire explica en detalle los structs congelados.
 
 ## SQL sin procesar
 
@@ -352,7 +352,7 @@ Los errores de la base de datos se convierten en estados HTTP cuando llegan a un
 | `NULL` en un campo que no es `Option`, valor no válido | `400 Bad Request` |
 | cualquier otra cosa (conexión perdida, tabla o columna que falta…) | `500 Internal Server Error`; los detalles van a los logs del servidor, nunca al cliente |
 
-Si prefieres reaccionar tú mismo a un error, compruébalo con un `match` antes del `?`: `Todo::find` devuelve `None` en lugar de un error, y los errores de memoire tienen `is_not_found()`, `is_unique_violation()` e `is_conflict()`. Consulta [Errores](errors.md).
+Si prefieres reaccionar tú mismo a un error, compruébalo con un `match` antes del `?`: `Todo::find` devuelve `None` en lugar de un error, y los errores de Memoire tienen `is_not_found()`, `is_unique_violation()` e `is_conflict()`. Consulta [Errores](errors.md).
 
 ## ¿Qué base de datos usar?
 
@@ -366,11 +366,11 @@ Si prefieres reaccionar tú mismo a un error, compruébalo con un `match` antes 
 > [!WARNING]
 > No uses SQLite en Heroku: el sistema de archivos de un dyno es temporal, y el archivo se pierde en cada despliegue y en cada reinicio (al menos una vez al día). Añade en su lugar el add-on Heroku Postgres (consulta [Desplegar en Heroku](deploy-heroku-mobile.md#2-añadir-una-base-de-datos)).
 
-Con PostgreSQL, el pool abre hasta 4 conexiones por núcleo de CPU cuando el tráfico lo necesita. Los planes alojados pequeños limitan las conexiones (a menudo a 20): para elegir tú el tamaño del pool, abre el pool con memoire (`PgPool::connect_with(&url, 10)`) y pásalo con `app.database(Db::from(pool))` desde un `main` asíncrono (consulta [Configuración](configuration.md#inicialización-asíncrona)).
+Con PostgreSQL, el pool abre hasta 4 conexiones por núcleo de CPU cuando el tráfico lo necesita. Los planes alojados pequeños limitan las conexiones (a menudo a 20): para elegir tú el tamaño del pool, abre el pool con Memoire (`PgPool::connect_with(&url, 10)`) y pásalo con `app.database(Db::from(pool))` desde un `main` asíncrono (consulta [Configuración](configuration.md#inicialización-asíncrona)).
 
 ## Más información
 
-La documentación de memoire va más allá: [modelos](https://maxlestage.github.io/Memoire/es/docs/models/), [consultas](https://maxlestage.github.io/Memoire/es/docs/queries/) (joins, agregados, group by), [relaciones](https://maxlestage.github.io/Memoire/es/docs/relations/), [transacciones](https://maxlestage.github.io/Memoire/es/docs/transactions/), [migraciones](https://maxlestage.github.io/Memoire/es/docs/migrations/) y una página por base de datos. Todo funciona con `req.db()`: acepta todos los métodos de los modelos y todas las consultas. En Paquets, memoire se reexporta como `paquets::orm`.
+La documentación de Memoire va más allá: [modelos](https://maxlestage.github.io/Memoire/es/docs/models/), [consultas](https://maxlestage.github.io/Memoire/es/docs/queries/) (joins, agregados, group by), [relaciones](https://maxlestage.github.io/Memoire/es/docs/relations/), [transacciones](https://maxlestage.github.io/Memoire/es/docs/transactions/), [migraciones](https://maxlestage.github.io/Memoire/es/docs/migrations/) y una página por base de datos. Todo funciona con `req.db()`: acepta todos los métodos de los modelos y todas las consultas. En Paquets, Memoire se reexporta como `paquets::orm`.
 
 ## Próximos pasos
 

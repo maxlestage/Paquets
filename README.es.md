@@ -63,8 +63,8 @@ Paquets reúne cuatro crates, cada una utilizable por separado:
 
 | Paquete | Papel | En Paquets |
 |---|---|---|
-| [**vitesse**](https://maxlestage.github.io/Vitesse/) | Servidor HTTP al estilo de Express: rutas, middlewares, routers, WebSocket, HTTP/3 | `App` (se desreferencia a `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**securite**](https://maxlestage.github.io/Securite/) | Middlewares de seguridad: WAF, límite de peticiones, CSRF, CORS, cabeceras y CSP, autenticación… | delante de cada petición, `app.security(...)` |
+| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | Servidor HTTP al estilo de Express: rutas, middlewares, routers, WebSocket, HTTP/3 | `App` (se desreferencia a `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**Securite**](https://maxlestage.github.io/Securite/) | Middlewares de seguridad: WAF, límite de peticiones, CSRF, CORS, cabeceras y CSP, autenticación… | delante de cada petición, `app.security(...)` |
 | [**memoire-orm**](https://maxlestage.github.io/Memoire/) | ORM asíncrono tipado, SQL generado al compilar, SQL y NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
 | [**active**](https://maxlestage.github.io/Active/) | Front-end: componentes, estado, renderizado en servidor, SEO, islas WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
@@ -191,8 +191,8 @@ features), pruebas, documentación, versión mínima de Rust, los proyectos gene
 2. GitHub → *Releases* → *Draft a new release* → etiqueta `v0.1.0` → *Publish release*.
 
 [`release.yml`](.github/workflows/release.yml) publica `paquets-macros` y después `paquets`.
-crates.io solo acepta dependencias publicadas en crates.io, así que vitesse, securite, memoire-orm
-y active se publican antes, cada una desde su repositorio y de la misma manera; el workflow lo
+crates.io solo acepta dependencias publicadas en crates.io, así que vitesse, Securite, memoire-orm
+y Active se publican antes, cada una desde su repositorio y de la misma manera; el workflow lo
 comprueba. Guía: [docs/es/publish-crates-io.md](docs/es/publish-crates-io.md).
 
 ## Desarrollo
@@ -210,7 +210,7 @@ cd site && cargo run                       # el sitio web, que es una aplicació
 | [`macros/`](macros) | `#[model]` y `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` y `todo` (la aplicación desplegada en Heroku) |
 | [`docs/`](docs) | la documentación, en inglés, francés y español |
-| [`site/`](site) | el sitio web: una aplicación Paquets (páginas renderizadas por active, islas en WebAssembly), exportada a archivos estáticos para GitHub Pages |
+| [`site/`](site) | el sitio web: una aplicación Paquets (páginas renderizadas por Active, islas en WebAssembly), exportada a archivos estáticos para GitHub Pages |
 
 ## Licencia
 

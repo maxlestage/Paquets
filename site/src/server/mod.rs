@@ -193,7 +193,7 @@ fn sitemap(site: &Site, req: &Request) -> Response {
         }
         xml.push_str(&format!(
             r#"<xhtml:link rel="alternate" hreflang="x-default" href="{origin}{}"/></url>"#,
-            route.with_lang(Lang::En).path()
+            route.with_lang(Lang::Fr).path()
         ));
         xml.push('\n');
     }
@@ -238,7 +238,7 @@ pub fn app(site: Arc<Site>) -> App {
         Pwa::new("Paquets")
             .short_name("Paquets")
             .description("The simplest full-stack framework for Rust.")
-            .start_url("/en/")
+            .start_url("/{lang}/")
             .theme_color("#07060d")
             .background_color("#07060d")
             .categories(["developer", "productivity"]),

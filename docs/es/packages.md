@@ -1,13 +1,13 @@
 # Los cuatro paquetes
 
-Paquets está construido sobre cuatro paquetes del mismo autor: vitesse, securite, memoire-orm y active. Cada uno es una biblioteca completa que también puedes usar por separado. Paquets los conecta, elige los valores por defecto y los reexporta, de modo que basta con una dependencia y un import. Esta página muestra lo que aporta cada paquete, cómo lo usa Paquets y cómo llegar a las partes que el prelude no incluye.
+Paquets está construido sobre cuatro paquetes del mismo autor: Vitesse, Securite, memoire-orm y Active. Cada uno es una biblioteca completa que también puedes usar por separado. Paquets los conecta, elige los valores por defecto y los reexporta, de modo que basta con una dependencia y un import. Esta página muestra lo que aporta cada paquete, cómo lo usa Paquets y cómo llegar a las partes que el prelude no incluye.
 
 ## Visión general
 
 | Paquete | Función | Reexportado como | Repositorio | Documentación |
 |---|---|---|---|---|
-| **vitesse** | servidor HTTP al estilo de Express.js: rutas, middleware, routers, WebSocket, HTTP/3, cliente de pruebas | `paquets::vitesse` | [maxlestage/Vitesse](https://maxlestage.github.io/Vitesse/) | [documentación](https://maxlestage.github.io/Vitesse/es/docs/README/) |
-| **securite** | middleware de seguridad: WAF, límite de tasa, CSRF, CORS, cabeceras de seguridad y CSP, bloqueador de bots, autenticación… | `paquets::securite` | [maxlestage/Securite](https://maxlestage.github.io/Securite/) | [documentación](https://maxlestage.github.io/Securite/es/docs/introduction/) |
+| **Vitesse** | servidor HTTP al estilo de Express.js: rutas, middleware, routers, WebSocket, HTTP/3, cliente de pruebas | `paquets::vitesse` | [maxlestage/Vitesse](https://maxlestage.github.io/Vitesse/) | [documentación](https://maxlestage.github.io/Vitesse/es/docs/README/) |
+| **Securite** | middleware de seguridad: WAF, límite de tasa, CSRF, CORS, cabeceras de seguridad y CSP, bloqueador de bots, autenticación… | `paquets::securite` | [maxlestage/Securite](https://maxlestage.github.io/Securite/) | [documentación](https://maxlestage.github.io/Securite/es/docs/introduction/) |
 | **memoire-orm** | ORM asíncrono con tipado seguro, SQL construido en tiempo de compilación: memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://maxlestage.github.io/Memoire/) | [documentación](https://maxlestage.github.io/Memoire/es/docs/introduction/) |
 | **active** | front end: componentes como funciones de Rust, `use_state`, renderizado en el servidor con etiquetas SEO completas, islas WebAssembly | `paquets::active` | [maxlestage/Active](https://maxlestage.github.io/Active/) | [documentación](https://maxlestage.github.io/Active/es/docs/introduction/) |
 
@@ -15,9 +15,9 @@ Paquets también reexporta `paquets::serde` y `paquets::serde_json` (y `json!` e
 
 ## vitesse: el servidor
 
-[vitesse](https://maxlestage.github.io/Vitesse/) («velocidad» en francés) es el servidor HTTP, con su propio motor HTTP/1.1 sobre tokio. Atiende unas 291 000 peticiones por segundo con 2 núcleos en `GET /`, más que actix-web y axum en la misma máquina, y 2.78 millones con pipelining.
+[Vitesse](https://maxlestage.github.io/Vitesse/) («velocidad» en francés) es el servidor HTTP, con su propio motor HTTP/1.1 sobre tokio. Atiende unas 291 000 peticiones por segundo con 2 núcleos en `GET /`, más que actix-web y axum en la misma máquina, y 2.78 millones con pipelining.
 
-**En Paquets:** `App` contiene una `vitesse::App` y da acceso a todos sus métodos (se desreferencia a ella): `get`, `post`, `ws`, `middleware`, `mount`, `state`, `fallback`, `on_error`, `body_limit`, `static_dir`, `workers`… Los handlers reciben una `vitesse::Request` y devuelven cualquier cosa que implemente `vitesse::IntoResponse`. El cliente de pruebas de `app.test()` es el `TestClient` de vitesse.
+**En Paquets:** `App` contiene una `vitesse::App` y da acceso a todos sus métodos (se desreferencia a ella): `get`, `post`, `ws`, `middleware`, `mount`, `state`, `fallback`, `on_error`, `body_limit`, `static_dir`, `workers`… Los handlers reciben una `vitesse::Request` y devuelven cualquier cosa que implemente `vitesse::IntoResponse`. El cliente de pruebas de `app.test()` es el `TestClient` de Vitesse.
 
 **En el prelude:** `Request`, `Response`, `IntoResponse`, `Json`, `Html`, `Redirect`, `Cookie`, `StatusCode`, `Method`, `Router`, `Next`, `HandlerExt` y los módulos `res`, `middleware` y `ws`.
 
@@ -33,16 +33,16 @@ app.middleware(middleware::timeout(Duration::from_secs(10)));
 app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Duration::from_secs(3600)));
 ```
 
-- `paquets::vitesse::tokio`: el runtime de tokio sobre el que funciona vitesse (`tokio::spawn`, `tokio::sync`, `tokio::time`…), sin añadir tokio a tus dependencias;
-- `paquets::vitesse::Error`: el tipo de error propio de vitesse, envuelto por `paquets::Error` (`err.into_inner()` lo devuelve);
+- `paquets::vitesse::tokio`: el runtime de tokio sobre el que funciona Vitesse (`tokio::spawn`, `tokio::sync`, `tokio::time`…), sin añadir tokio a tus dependencias;
+- `paquets::vitesse::Error`: el tipo de error propio de Vitesse, envuelto por `paquets::Error` (`err.into_inner()` lo devuelve);
 - `paquets::vitesse::ws::Upgrade`: handshakes WebSocket con subprotocolos y límites de tamaño;
-- HTTP/3 con la feature `http3` (consulta la [guía de HTTP/3 de vitesse](https://maxlestage.github.io/Vitesse/es/docs/http3/)).
+- HTTP/3 con la feature `http3` (consulta la [guía de HTTP/3 de Vitesse](https://maxlestage.github.io/Vitesse/es/docs/http3/)).
 
 ## securite: el escudo
 
-[securite](https://maxlestage.github.io/Securite/) es un conjunto de 19 guards de seguridad, reunidos en un `Shield`. Su pipeline recomendado cuesta unos 6 µs por petición. Está escrito para Vitesse (y para el ecosistema tower: hyper, tonic) y no contiene código `unsafe`.
+[Securite](https://maxlestage.github.io/Securite/) es un conjunto de 19 guards de seguridad, reunidos en un `Shield`. Su pipeline recomendado cuesta unos 6 µs por petición. Está escrito para Vitesse (y para el ecosistema tower: hyper, tonic) y no contiene código `unsafe`.
 
-**En Paquets:** `App::new()` pone `paquets::shield().build()` delante de cada petición: el preset recomendado de securite, con la IP del cliente leída de `X-Forwarded-For` en Heroku. Paquets hace de puente entre las peticiones de vitesse y los guards de securite: el escudo ve la línea de la petición y las cabeceras, añade sus cabeceras a cada respuesta y transmite sus hallazgos a tus handlers (la IP del cliente, el usuario autenticado, el identificador de petición). Las páginas calculan su propia Content-Security-Policy con las funciones de hash de securite.
+**En Paquets:** `App::new()` pone `paquets::shield().build()` delante de cada petición: el preset recomendado de Securite, con la IP del cliente leída de `X-Forwarded-For` en Heroku. Paquets hace de puente entre las peticiones de Vitesse y los guards de securite: el escudo ve la línea de la petición y las cabeceras, añade sus cabeceras a cada respuesta y transmite sus hallazgos a tus handlers (la IP del cliente, el usuario autenticado, el identificador de petición). Las páginas calculan su propia Content-Security-Policy con las funciones de hash de Securite.
 
 **Para usarlo:**
 
@@ -70,13 +70,13 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 
 ## active: el front end
 
-[active](https://maxlestage.github.io/Active/) construye las vistas con una función por etiqueta HTML, las renderiza en el servidor con etiquetas SEO completas y convierte las partes marcadas de una página en islas WebAssembly. No tiene macros, ni lenguaje de plantillas, ni dependencias del lado del servidor; su bundle del contador pesa 36.8 kB comprimido.
+[Active](https://maxlestage.github.io/Active/) construye las vistas con una función por etiqueta HTML, las renderiza en el servidor con etiquetas SEO completas y convierte las partes marcadas de una página en islas WebAssembly. No tiene macros, ni lenguaje de plantillas, ni dependencias del lado del servidor; su bundle del contador pesa 36.8 kB comprimido.
 
-**En Paquets:** `Page` envuelve el `Document` de active: le añade el tema, la Content-Security-Policy y la carga del bundle de las islas (que se encuentra en `pkg/` al arrancar). Las islas son las islas de active, hidratadas en el navegador por `paquets::hydrate` (feature `client`).
+**En Paquets:** `Page` envuelve el `Document` de active: le añade el tema, la Content-Security-Policy y la carga del bundle de las islas (que se encuentra en `pkg/` al arrancar). Las islas son las islas de Active, hidratadas en el navegador por `paquets::hydrate` (feature `client`).
 
 **En el prelude:** todas las funciones de etiquetas HTML (`div()`, `p()`, `a()`…) y el módulo `html` (para `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn` y `keyed`.
 
-**Más allá del prelude**, a través de `paquets::active`: `Document` para renderizar una página sin el tema ni la política de seguridad de `Page`, por ejemplo para exportar archivos estáticos. Con la feature `client` (lado navegador): `paquets::hydrate`, `paquets::mount_to` y `paquets::mount` para las aplicaciones renderizadas por completo en el navegador, y `paquets::navigate`, `paquets::location`, `paquets::query` y `paquets::query_param` para el enrutamiento sin recargar la página. Consulta [Islas](islands.md) y la [documentación de active](https://maxlestage.github.io/Active/es/docs/introduction/).
+**Más allá del prelude**, a través de `paquets::active`: `Document` para renderizar una página sin el tema ni la política de seguridad de `Page`, por ejemplo para exportar archivos estáticos. Con la feature `client` (lado navegador): `paquets::hydrate`, `paquets::mount_to` y `paquets::mount` para las aplicaciones renderizadas por completo en el navegador, y `paquets::navigate`, `paquets::location`, `paquets::query` y `paquets::query_param` para el enrutamiento sin recargar la página. Consulta [Islas](islands.md) y la [documentación de Active](https://maxlestage.github.io/Active/es/docs/introduction/).
 
 ## Correspondencia de los nombres
 
@@ -88,16 +88,16 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 | `paquets::shield()` | `securite::ShieldBuilder::recommended()` con la IP del cliente de Heroku |
 | `#[model]` | `#[derive(memoire_orm::Model, Serialize, Deserialize, Clone, Debug)]` con `#[memoire(crate = "::paquets::orm")]` |
 | `#[data]` | `#[derive(Serialize, Deserialize, Clone, Debug)]` |
-| `Db`, `req.db()` | cualquier backend de memoire, tras un único tipo |
+| `Db`, `req.db()` | cualquier backend de Memoire, tras un único tipo |
 | `Page` | `active::Document`, más el tema, la CSP y el bundle |
-| `paquets::Error`, `Result<T>` | `vitesse::Error`, con el estado correcto para los errores de memoire |
+| `paquets::Error`, `Result<T>` | `vitesse::Error`, con el estado correcto para los errores de Memoire |
 
 ## Usar un paquete por separado
 
 Cada paquete se publica por separado y funciona sin Paquets:
 
-- **vitesse** para un servidor sin base de datos ni páginas, o con tus propias elecciones;
-- **securite** en una aplicación Vitesse (`app.middleware(Shield::recommended())`) o delante de un servicio hyper o tonic (`.layer(Shield::recommended())`);
+- **Vitesse** para un servidor sin base de datos ni páginas, o con tus propias elecciones;
+- **Securite** en una aplicación Vitesse (`app.middleware(Shield::recommended())`) o delante de un servicio hyper o tonic (`.layer(Shield::recommended())`);
 - **memoire-orm** en cualquier programa de Rust que guarde datos, una herramienta de línea de comandos o un worker;
 - **active** para un sitio estático, una aplicación del lado del cliente o páginas servidas por otro framework (su documentación tiene una guía para Vitesse).
 
@@ -105,7 +105,7 @@ Sus README explican cómo empezar. Los cuatro usan la edición 2024. Como Paquet
 
 ## Versiones
 
-Paquets 0.1 depende de vitesse 0.1, securite 0.1, memoire-orm 0.1 y active 0.1. Mientras no estén en crates.io, Cargo los toma de sus repositorios de GitHub; consulta [Publicar en crates.io](publish-crates-io.md) para ver el orden de publicación.
+Paquets 0.1 depende de Vitesse 0.1, Securite 0.1, memoire-orm 0.1 y Active 0.1. Mientras no estén en crates.io, Cargo los toma de sus repositorios de GitHub; consulta [Publicar en crates.io](publish-crates-io.md) para ver el orden de publicación.
 
 ## Próximos pasos
 
