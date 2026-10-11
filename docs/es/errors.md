@@ -96,7 +96,7 @@ app.get("/double/:n", |req: Request| async move {
 
 ## Elegir tu propio mensaje para un error de la base de datos
 
-`?` da a los errores de la base de datos un mensaje genérico. Para dar uno mejor, comprueba el error con un `match` antes del `?`. Los errores de memoire tienen `is_not_found()`, `is_unique_violation()` e `is_conflict()`:
+`?` da a los errores de la base de datos un mensaje genérico. Para dar uno mejor, comprueba el error con un `match` antes del `?`. Los errores de Memoire tienen `is_not_found()`, `is_unique_violation()` e `is_conflict()`:
 
 ```rust
 #[model]
@@ -124,7 +124,7 @@ async fn sign_up(req: Request) -> Result<(StatusCode, Json<Member>)> {
 
 ## Tus propios tipos de error
 
-Los errores de negocio a menudo merecen su propio tipo. Conviértelo al tipo de error de vitesse, y `?` hace el resto:
+Los errores de negocio a menudo merecen su propio tipo. Conviértelo al tipo de error de Vitesse, y `?` hace el resto:
 
 ```rust
 #[derive(Debug)]
@@ -238,4 +238,4 @@ Como `main` devuelve `std::io::Result<()>`, el programa muestra el error y termi
 
 - [Pruebas](testing.md): comprueba tus errores en las pruebas.
 - [Seguridad](security.md): las respuestas del escudo.
-- [La guía de errores de vitesse](https://maxlestage.github.io/Vitesse/es/docs/errors/): más sobre los errores, `on_error` y los pánicos.
+- [La guía de errores de Vitesse](https://maxlestage.github.io/Vitesse/es/docs/errors/): más sobre los errores, `on_error` y los pánicos.

@@ -1,6 +1,6 @@
 # WebSocket
 
-A WebSocket keeps a connection open in both directions, so the server can send messages at any time: chat, notifications, live dashboards, multiplayer games. Paquets supports it out of the box with `app.ws(path, handler)`, from [vitesse](https://maxlestage.github.io/Vitesse/). This page builds an echo server, then a chat room, and covers security, deployment and testing.
+A WebSocket keeps a connection open in both directions, so the server can send messages at any time: chat, notifications, live dashboards, multiplayer games. Paquets supports it out of the box with `app.ws(path, handler)`, from [Vitesse](https://maxlestage.github.io/Vitesse/). This page builds an echo server, then a chat room, and covers security, deployment and testing.
 
 ## An echo server
 
@@ -142,7 +142,7 @@ How it works:
 - each connection subscribes to the room and splits its socket in two: a task forwards the room's messages to the client, while the handler's loop sends what the client says to the room;
 - when the client leaves, the loop ends: the handler stops the forwarding task and announces the departure.
 
-tokio is re-exported by vitesse (`paquets::vitesse::tokio`), so you don't need to add it to your dependencies.
+tokio is re-exported by Vitesse (`paquets::vitesse::tokio`), so you don't need to add it to your dependencies.
 
 Try it with two terminals: `websocat ws://localhost:3000/chat/ada` and `websocat ws://localhost:3000/chat/grace`.
 
@@ -218,7 +218,7 @@ Browsers can't add an `Authorization` header to a WebSocket connection: authenti
 ## In production
 
 - **Heroku** supports WebSocket (use `wss://` with your app's HTTPS address). Its router closes a connection that stays silent for about 55 seconds: for connections that can be idle, send a ping from the server every 30 seconds or so (`tx.send(ws::Message::Ping(Default::default()))` from a task, as in the chat room); browsers answer automatically.
-- **Behind Nginx**, the proxy must forward the `Upgrade` header: see [vitesse's WebSocket guide](https://maxlestage.github.io/Vitesse/en/docs/websocket/). Caddy handles it automatically.
+- **Behind Nginx**, the proxy must forward the `Upgrade` header: see [Vitesse's WebSocket guide](https://maxlestage.github.io/Vitesse/en/docs/websocket/). Caddy handles it automatically.
 - **Restarts**: when the server stops (a deployment, `SIGTERM`), open connections are cut. Make clients reconnect automatically, which they need anyway for network drops.
 - **HTTP/1.1 only**: WebSocket doesn't run over HTTP/3.
 
@@ -270,7 +270,7 @@ mod tests {
 
 ## Learn more
 
-[vitesse's WebSocket guide](https://maxlestage.github.io/Vitesse/en/docs/websocket/) covers subprotocols, message size limits (`ws::Upgrade`), `Stream` and `Sink`, and the behaviour behind proxies in detail.
+[Vitesse's WebSocket guide](https://maxlestage.github.io/Vitesse/en/docs/websocket/) covers subprotocols, message size limits (`ws::Upgrade`), `Stream` and `Sink`, and the behaviour behind proxies in detail.
 
 ## Next steps
 

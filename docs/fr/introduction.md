@@ -8,10 +8,10 @@ Paquets est une bibliothèque Rust pour créer des sites et des API web. Il asse
 
 | Paquet | Son rôle dans Paquets |
 |---|---|
-| [vitesse](https://maxlestage.github.io/Vitesse/) | Le serveur HTTP, avec une API dans le style d'Express.js : `app.get(...)`, `req.param(...)`, middlewares, routeurs, WebSocket. |
-| [securite](https://maxlestage.github.io/Securite/) | Le bouclier de sécurité devant chaque requête : pare-feu, limitation de débit, protection CSRF, en-têtes de sécurité, et bien plus. |
+| [Vitesse](https://maxlestage.github.io/Vitesse/) | Le serveur HTTP, avec une API dans le style d'Express.js : `app.get(...)`, `req.param(...)`, middlewares, routeurs, WebSocket. |
+| [Securite](https://maxlestage.github.io/Securite/) | Le bouclier de sécurité devant chaque requête : pare-feu, limitation de débit, protection CSRF, en-têtes de sécurité, et bien plus. |
 | [memoire-orm](https://maxlestage.github.io/Memoire/) | La base de données : modèles et requêtes typés, en mémoire, SQLite, PostgreSQL, MySQL, Redis ou MongoDB. |
-| [active](https://maxlestage.github.io/Active/) | Le front-end : des vues écrites comme des fonctions Rust, le rendu serveur avec les balises SEO, et les îlots WebAssembly. |
+| [Active](https://maxlestage.github.io/Active/) | Le front-end : des vues écrites comme des fonctions Rust, le rendu serveur avec les balises SEO, et les îlots WebAssembly. |
 
 Pas besoin d'apprendre quatre bibliothèques pour commencer. Paquets les relie, choisit de bons réglages par défaut et expose une seule petite API. Quand il vous en faut plus, chaque paquet n'est qu'à un import de distance (voir [Les quatre paquets](packages.md)).
 
@@ -64,7 +64,7 @@ Lancez-le, et vous obtenez :
 | Fonctionnalité | Comportement par défaut | Pour le changer |
 |---|---|---|
 | Serveur | Le port de la variable `PORT` (Heroku), sinon `3000`. `Ctrl+C` ou `SIGTERM` l'arrête proprement. | `app.port(8080)` |
-| Sécurité | Le bouclier recommandé de securite sur chaque requête : identifiants de requête, contrôles du protocole, corps limité à 2 Mio, limite de 20 requêtes par seconde et par IP, blocage des robots, pare-feu, protection CSRF, en-têtes de sécurité, cookies durcis. | `app.security(...)` |
+| Sécurité | Le bouclier recommandé de Securite sur chaque requête : identifiants de requête, contrôles du protocole, corps limité à 2 Mio, limite de 20 requêtes par seconde et par IP, blocage des robots, pare-feu, protection CSRF, en-têtes de sécurité, cookies durcis. | `app.security(...)` |
 | Base de données | D'après la variable `DATABASE_URL` ; en mémoire si elle n'est pas définie. Les tables de vos modèles sont créées au démarrage. | `app.database(...)` |
 | Pages | Du HTML rendu par le serveur avec les balises SEO, un thème intégré et une Content-Security-Policy qui autorise exactement ce que contient la page. | les méthodes de `Page` |
 | Fichiers statiques | Le dossier `public/` est servi à la racine du site. | `app.static_dir(...)` |
@@ -75,7 +75,7 @@ Lancez-le, et vous obtenez :
 
 - **La simplicité.** Une dépendance, un import (`use paquets::prelude::*;`), une `App`. Un handler est une fonction `async` qui prend une requête et renvoie une réponse. Les erreurs sont des valeurs, et `?` les transforme en bon statut HTTP.
 - **Sécurisé par défaut.** Les attaques comme l'injection SQL dans l'URL, la falsification de requête intersite (CSRF), le clickjacking ou la force brute sont bloquées avant que votre code ne s'exécute. C'est la protection qu'il faut désactiver, pas l'inverse.
-- **Rapide.** vitesse traite environ 291 000 requêtes par seconde pour `GET /` sur 2 cœurs, plus qu'actix-web et axum sur la même machine, et 2,78 millions par seconde avec le pipelining. Toute la chaîne de securite coûte environ 6 µs par requête. Le plus petit bundle d'îlot (un compteur) pèse 36,8 ko compressé. Voir [Performances](performance.md).
+- **Rapide.** Vitesse traite environ 291 000 requêtes par seconde pour `GET /` sur 2 cœurs, plus qu'actix-web et axum sur la même machine, et 2,78 millions par seconde avec le pipelining. Toute la chaîne de Securite coûte environ 6 µs par requête. Le plus petit bundle d'îlot (un compteur) pèse 36,8 ko compressé. Voir [Performances](performance.md).
 - **Typé de la base de données jusqu'à la page.** Une colonne mal orthographiée, une comparaison entre un nombre et une chaîne ou un champ manquant dans une réponse est une erreur de compilation, pas un bug en production.
 - **Facile à déployer.** Un projet créé avec `paquets new` contient un `Dockerfile`, les fichiers pour déployer sur Heroku d'un simple geste et des workflows GitHub. Vous pouvez déployer, redéployer et lire vos journaux [depuis un téléphone](deploy-heroku-mobile.md).
 

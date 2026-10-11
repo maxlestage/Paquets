@@ -278,6 +278,12 @@ impl App {
     /// [`App::api`] always come from the network. Without icons in the manifest, the
     /// Paquets box is used.
     ///
+    /// A site in several languages writes `{lang}` in the start URL,
+    /// `.start_url("/{lang}/")`: each language gets its own manifest
+    /// (`/fr/manifest.webmanifest`), linked by the pages in that language
+    /// ([`Page::lang`](crate::Page::lang)), so the installed app opens in the language
+    /// of the page it was installed from.
+    ///
     /// ```
     /// use paquets::prelude::*;
     ///

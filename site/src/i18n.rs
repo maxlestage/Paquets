@@ -51,7 +51,7 @@ impl Lang {
     }
 }
 
-/// The preferred supported language of an `Accept-Language` header, English by default.
+/// The preferred supported language of an `Accept-Language` header, French by default.
 pub fn pick_lang(header: &str) -> Lang {
     let mut ranked: Vec<(Lang, f32)> = header
         .split(',')
@@ -67,7 +67,7 @@ pub fn pick_lang(header: &str) -> Lang {
         .filter(|(_, q)| *q > 0.0)
         .collect();
     ranked.sort_by(|a, b| b.1.total_cmp(&a.1));
-    ranked.first().map_or(Lang::En, |r| r.0)
+    ranked.first().map_or(Lang::Fr, |r| r.0)
 }
 
 /// Formats a number for the language: `2 781 541` / `2,781,541` /
@@ -481,7 +481,7 @@ pub const EN: Texts = Texts {
     hero_accent: 0,
     hero_lead: "One crate, one import, one App. A fast server, security by default, any database, a REST API, SEO pages and WebAssembly islands — already wired together.",
     hero_start: "Get started",
-    hero_scene: "Four cubes — vitesse, securite, memoire-orm and active — fly into a single box: Paquets.",
+    hero_scene: "Four cubes — Vitesse, Securite, memoire-orm and Active — fly into a single box: Paquets.",
     copy: "Copy",
     copied: "Copied!",
     copy_aria: "Copy the command",
@@ -700,7 +700,7 @@ pub const EN: Texts = Texts {
     footer_cols: ["Product", "Documentation", "Packages", "Resources"],
     footer_product: ["Packages", "Code", "Features", "Numbers", "Deploy"],
     footer_resources: ["crates.io", "docs.rs", "Deploy to Heroku"],
-    footer_made: "Built with Paquets — Rust, active & WebAssembly",
+    footer_made: "Built with Paquets — Rust, Active & WebAssembly",
     footer_lang: "Language",
     footer_start: "Start building with",
     footer_install: "Install in one line",
@@ -762,7 +762,7 @@ pub const FR: Texts = Texts {
     hero_accent: 2,
     hero_lead: "Une crate, un import, une App. Un serveur rapide, la sécurité par défaut, la base de données de votre choix, une API REST, des pages SEO et des îlots WebAssembly — déjà branchés ensemble.",
     hero_start: "Commencer",
-    hero_scene: "Quatre cubes — vitesse, securite, memoire-orm et active — s'envolent dans une seule boîte : Paquets.",
+    hero_scene: "Quatre cubes — Vitesse, Securite, memoire-orm et Active — s'envolent dans une seule boîte : Paquets.",
     copy: "Copier",
     copied: "Copié !",
     copy_aria: "Copier la commande",
@@ -987,7 +987,7 @@ pub const FR: Texts = Texts {
     footer_cols: ["Produit", "Documentation", "Paquets", "Ressources"],
     footer_product: ["Paquets", "Code", "Fonctionnalités", "Chiffres", "Déployer"],
     footer_resources: ["crates.io", "docs.rs", "Déployer sur Heroku"],
-    footer_made: "Construit avec Paquets — Rust, active et WebAssembly",
+    footer_made: "Construit avec Paquets — Rust, Active et WebAssembly",
     footer_lang: "Langue",
     footer_start: "Commencez avec",
     footer_install: "S'installe en une ligne",
@@ -1049,7 +1049,7 @@ pub const ES: Texts = Texts {
     hero_accent: 2,
     hero_lead: "Un crate, un import, una App. Un servidor rápido, seguridad por defecto, la base de datos que quieras, una API REST, páginas SEO e islas WebAssembly — ya conectados entre sí.",
     hero_start: "Empezar",
-    hero_scene: "Cuatro cubos — vitesse, securite, memoire-orm y active — vuelan dentro de una sola caja: Paquets.",
+    hero_scene: "Cuatro cubos — Vitesse, Securite, memoire-orm y Active — vuelan dentro de una sola caja: Paquets.",
     copy: "Copiar",
     copied: "¡Copiado!",
     copy_aria: "Copiar el comando",
@@ -1274,7 +1274,7 @@ pub const ES: Texts = Texts {
     footer_cols: ["Producto", "Documentación", "Paquetes", "Recursos"],
     footer_product: ["Paquetes", "Código", "Funciones", "Cifras", "Desplegar"],
     footer_resources: ["crates.io", "docs.rs", "Desplegar en Heroku"],
-    footer_made: "Hecho con Paquets — Rust, active y WebAssembly",
+    footer_made: "Hecho con Paquets — Rust, Active y WebAssembly",
     footer_lang: "Idioma",
     footer_start: "Empieza con",
     footer_install: "Se instala en una línea",
@@ -1352,8 +1352,9 @@ mod tests {
     fn picks_the_preferred_language() {
         assert_eq!(pick_lang("fr-FR,fr;q=0.9,en;q=0.8"), Lang::Fr);
         assert_eq!(pick_lang("de-DE, es;q=0.5, en;q=0.4"), Lang::Es);
-        assert_eq!(pick_lang("de, it"), Lang::En);
-        assert_eq!(pick_lang(""), Lang::En);
+        // French when the browser speaks none of the site's languages.
+        assert_eq!(pick_lang("de, it"), Lang::Fr);
+        assert_eq!(pick_lang(""), Lang::Fr);
         assert_eq!(pick_lang("fr;q=0, en"), Lang::En);
     }
 

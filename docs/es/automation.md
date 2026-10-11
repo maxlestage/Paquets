@@ -83,7 +83,7 @@ Si se rechaza el push a `master` (`403` o «protected branch»), consulta [Prote
 
 ## GitHub Pages: el sitio web
 
-El sitio web de Paquets (en `site/`) es una aplicación Paquets: páginas renderizadas en el servidor con active, islas en WebAssembly y una demo en vivo. Para GitHub Pages, que solo sirve archivos, el workflow **Pages** compila las islas y luego exporta todas las páginas a archivos estáticos con el propio código de servidor del sitio:
+El sitio web de Paquets (en `site/`) es una aplicación Paquets: páginas renderizadas en el servidor con Active, islas en WebAssembly y una demo en vivo. Para GitHub Pages, que solo sirve archivos, el workflow **Pages** compila las islas y luego exporta todas las páginas a archivos estáticos con el propio código de servidor del sitio:
 
 ```sh
 cd site

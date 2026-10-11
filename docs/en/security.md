@@ -1,6 +1,6 @@
 # Security
 
-Every Paquets app is protected from its first line: `App::new()` puts the recommended shield of [securite](https://maxlestage.github.io/Securite/) in front of every request. Attacks are blocked before your code runs, and every response gets the security headers browsers need. This page explains what the shield does, how to change it, and what remains your job, such as logging users in.
+Every Paquets app is protected from its first line: `App::new()` puts the recommended shield of [Securite](https://maxlestage.github.io/Securite/) in front of every request. Attacks are blocked before your code runs, and every response gets the security headers browsers need. This page explains what the shield does, how to change it, and what remains your job, such as logging users in.
 
 ## What the shield does
 
@@ -103,7 +103,7 @@ app.security(
 ```
 
 > [!WARNING]
-> Only trust a forwarding header when your app can be reached **only** through the proxy that sets it. Otherwise anyone can send the header and choose their address. See securite's [client IP guide](https://maxlestage.github.io/Securite/en/docs/client-ip/).
+> Only trust a forwarding header when your app can be reached **only** through the proxy that sets it. Otherwise anyone can send the header and choose their address. See Securite's [client IP guide](https://maxlestage.github.io/Securite/en/docs/client-ip/).
 
 Handlers can read the address the shield found with `req.extensions().get::<ClientIp>()` (see [Requests and responses](requests-responses.md#the-clients-ip-address)).
 
@@ -192,7 +192,7 @@ app.security(
 
 ### Presets
 
-securite has three presets. `paquets::shield()` is the recommended one, plus the Heroku detection:
+Securite has three presets. `paquets::shield()` is the recommended one, plus the Heroku detection:
 
 | Preset | For | Differences with the recommended preset |
 |---|---|---|
@@ -218,7 +218,7 @@ Only do this when another layer already protects the app (a WAF at your CDN, for
 
 ## What the shield doesn't do
 
-- **It doesn't read request bodies.** The firewall inspects the URL, the query string and the headers. JSON and form bodies are your handlers' job: validate them (see [Requests and responses](requests-responses.md#json-bodies)). Two things already protect you there: memoire sends every value as a bound parameter, so model queries can't be turned into SQL injection, and views escape all text, so data shown in a page can't inject HTML.
+- **It doesn't read request bodies.** The firewall inspects the URL, the query string and the headers. JSON and form bodies are your handlers' job: validate them (see [Requests and responses](requests-responses.md#json-bodies)). Two things already protect you there: Memoire sends every value as a bound parameter, so model queries can't be turned into SQL injection, and views escape all text, so data shown in a page can't inject HTML.
 - **It doesn't know your users.** Authentication and permissions are up to you (next section).
 - **It doesn't provide HTTPS by itself.** Paquets serves plain HTTP; Heroku, a reverse proxy or a CDN provides HTTPS in front of it. The `Strict-Transport-Security` header then keeps browsers on HTTPS.
 
@@ -232,7 +232,7 @@ For an API used by your own scripts or apps, check a secret token in a middlewar
 
 ### A password for an admin section
 
-securite's `Auth` guard protects paths with HTTP Basic authentication (the browser shows a login box), bearer tokens or API keys:
+Securite's `Auth` guard protects paths with HTTP Basic authentication (the browser shows a login box), bearer tokens or API keys:
 
 ```rust
 use paquets::securite::prelude::*;
@@ -249,7 +249,7 @@ app.get("/admin", |req: Request| async move {
 });
 ```
 
-Every path under `/admin` now needs the user name and password; the others stay public. Read the password from an environment variable (`std::env::var("ADMIN_PASSWORD")`) rather than writing it in the code. securite's [authentication guide](https://maxlestage.github.io/Securite/en/docs/auth/) covers tokens, API keys and custom checks such as JWT.
+Every path under `/admin` now needs the user name and password; the others stay public. Read the password from an environment variable (`std::env::var("ADMIN_PASSWORD")`) rather than writing it in the code. Securite's [authentication guide](https://maxlestage.github.io/Securite/en/docs/auth/) covers tokens, API keys and custom checks such as JWT.
 
 ### Accounts and sessions
 
@@ -263,7 +263,7 @@ The shield takes care of the rest: the cookie gets `Secure`, `HttpOnly` and `Sam
 
 ## Learn more
 
-securite's documentation has one page per guard: [WAF](https://maxlestage.github.io/Securite/en/docs/waf/), [rate limit](https://maxlestage.github.io/Securite/en/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/en/docs/csrf/), [security headers](https://maxlestage.github.io/Securite/en/docs/security-headers/), [presets](https://maxlestage.github.io/Securite/en/docs/shield-presets/), and more: IP filter, host filter, automatic bans, webhook signatures. In Paquets, securite is re-exported as `paquets::securite`.
+Securite's documentation has one page per guard: [WAF](https://maxlestage.github.io/Securite/en/docs/waf/), [rate limit](https://maxlestage.github.io/Securite/en/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/en/docs/csrf/), [security headers](https://maxlestage.github.io/Securite/en/docs/security-headers/), [presets](https://maxlestage.github.io/Securite/en/docs/shield-presets/), and more: IP filter, host filter, automatic bans, webhook signatures. In Paquets, Securite is re-exported as `paquets::securite`.
 
 ## Next steps
 

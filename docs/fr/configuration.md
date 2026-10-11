@@ -35,7 +35,7 @@ Paquets ne lit pas les fichiers `.env`. Si vous y tenez, la crate [`dotenvy`](ht
 | `app.api::<M>(chemin)` | une API REST et une table pour un modèle | — |
 | `app.model::<M>()` | une table pour un modèle | — |
 
-`App` donne aussi accès à toutes les méthodes de l'application de vitesse :
+`App` donne aussi accès à toutes les méthodes de l'application de Vitesse :
 
 | Méthode | Effet | Par défaut |
 |---|---|---|
@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-L'état vit en mémoire : il est perdu au redémarrage du serveur, et chaque serveur en a sa propre copie. Les données qui doivent durer ont leur place dans la [base de données](database.md). D'autres façons de faire dans [le guide de l'état de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/state/).
+L'état vit en mémoire : il est perdu au redémarrage du serveur, et chaque serveur en a sa propre copie. Les données qui doivent durer ont leur place dans la [base de données](database.md). D'autres façons de faire dans [le guide de l'état de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/state/).
 
 ## Le fonctionnement du serveur
 
@@ -120,7 +120,7 @@ L'état vit en mémoire : il est perdu au redémarrage du serveur, et chaque ser
 ```
 
 - Il écoute sur **toutes les interfaces réseau** (`0.0.0.0`), ce dont ont besoin les conteneurs et les hébergeurs comme Heroku.
-- Avec la base de données en mémoire ou SQLite, il fait tourner **un thread par cœur de processeur**, chacun avec sa propre boucle d'événements : le mode le plus rapide de vitesse. `app.workers(n)` et `app.thread_per_core(false)` s'appliquent dans ce mode.
+- Avec la base de données en mémoire ou SQLite, il fait tourner **un thread par cœur de processeur**, chacun avec sa propre boucle d'événements : le mode le plus rapide de Vitesse. `app.workers(n)` et `app.thread_per_core(false)` s'appliquent dans ce mode.
 - Avec un serveur de base de données (PostgreSQL, MySQL, Redis, MongoDB), il tourne sur un runtime tokio avec un thread par cœur, partagé avec les connexions à la base. `workers` et `thread_per_core` ne s'appliquent pas.
 - Sur `Ctrl+C` ou `SIGTERM`, il cesse d'accepter des connexions et laisse jusqu'à 10 secondes aux requêtes en cours pour se terminer (arrêt propre). Heroku et Docker envoient `SIGTERM` avant d'arrêter un conteneur.
 

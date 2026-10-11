@@ -43,7 +43,7 @@ struct Todo {
 
 ### Column attributes
 
-memoire's attributes work on fields, inside `#[memoire(...)]`:
+Memoire's attributes work on fields, inside `#[memoire(...)]`:
 
 ```rust
 #[model(table = "users")]
@@ -207,7 +207,7 @@ async fn todo_list(req: Request) -> Result<Page> {
 }
 ```
 
-The value returned by `paginate` is memoire's own `Page` type (`paquets::orm::Page`), not the HTML `Page`: you only use its fields.
+The value returned by `paginate` is Memoire's own `Page` type (`paquets::orm::Page`), not the HTML `Page`: you only use its fields.
 
 ## Writing data
 
@@ -295,7 +295,7 @@ If the hook returns an error, the app doesn't start, and the message begins with
 
 Tables are created when they are missing, but **never altered**. If you add a field to a model whose table already exists (in a SQLite file or on Heroku Postgres), the column is missing, and queries on that model fail with a `500`. With the in-memory database (development, tests) there is nothing to do: the table is recreated at every start.
 
-For an existing database, use a **migration**: a numbered change, recorded in the database so that it runs only once. memoire's `Migrator` does this, and `on_start` is the place to run it. This example adds a `priority` column to the `todo` table on PostgreSQL:
+For an existing database, use a **migration**: a numbered change, recorded in the database so that it runs only once. Memoire's `Migrator` does this, and `on_start` is the place to run it. This example adds a `priority` column to the `todo` table on PostgreSQL:
 
 ```rust
 use paquets::orm::{Dialect, Migration, Migrator};
@@ -320,7 +320,7 @@ Then add `priority: i32` to the struct. How it works, and the rules to follow:
 - Don't `create_table::<M>()` in these migrations for a model registered with `app.api` or `app.model`: its table was already created before `on_start` runs, and the migration would fail with "table already exists".
 
 > [!NOTE]
-> SQLite and MySQL don't support `ADD COLUMN IF NOT EXISTS`. For them, run the migrations yourself **before** the app creates its tables: open the database with `Db::connect(&url).await?`, run the `Migrator` (with `create_table` steps built from frozen copies of your structs), then hand the database to the app with `app.database(db)` and start it with `app.serve().await` inside `#[tokio::main]`. memoire's [migrations guide](https://maxlestage.github.io/Memoire/en/docs/migrations/) explains frozen structs in detail.
+> SQLite and MySQL don't support `ADD COLUMN IF NOT EXISTS`. For them, run the migrations yourself **before** the app creates its tables: open the database with `Db::connect(&url).await?`, run the `Migrator` (with `create_table` steps built from frozen copies of your structs), then hand the database to the app with `app.database(db)` and start it with `app.serve().await` inside `#[tokio::main]`. Memoire's [migrations guide](https://maxlestage.github.io/Memoire/en/docs/migrations/) explains frozen structs in detail.
 
 ## Raw SQL
 
@@ -352,7 +352,7 @@ Database errors become HTTP statuses when they reach a handler through `?`:
 | `NULL` in a non-`Option` field, invalid value | `400 Bad Request` |
 | anything else (connection lost, missing table or column…) | `500 Internal Server Error`; the details go to the server logs, never to the client |
 
-To react to an error yourself instead, match on it before `?`: `Todo::find` returns `None` instead of an error, and memoire's errors have `is_not_found()`, `is_unique_violation()` and `is_conflict()`. See [Errors](errors.md).
+To react to an error yourself instead, match on it before `?`: `Todo::find` returns `None` instead of an error, and Memoire's errors have `is_not_found()`, `is_unique_violation()` and `is_conflict()`. See [Errors](errors.md).
 
 ## Which database should I use?
 
@@ -366,11 +366,11 @@ To react to an error yourself instead, match on it before `?`: `Todo::find` retu
 > [!WARNING]
 > Don't use SQLite on Heroku: the file system of a dyno is temporary, and the file is lost at every deployment and restart (at least once a day). Add the Heroku Postgres add-on instead (see [Deploy to Heroku](deploy-heroku-mobile.md#2-add-a-database)).
 
-With PostgreSQL, the pool opens up to 4 connections per CPU core when the traffic needs them. Small hosted plans limit connections (often to 20): to choose the pool size yourself, open the pool with memoire (`PgPool::connect_with(&url, 10)`), and pass it with `app.database(Db::from(pool))` from an async `main` (see [Configuration](configuration.md#async-initialisation)).
+With PostgreSQL, the pool opens up to 4 connections per CPU core when the traffic needs them. Small hosted plans limit connections (often to 20): to choose the pool size yourself, open the pool with Memoire (`PgPool::connect_with(&url, 10)`), and pass it with `app.database(Db::from(pool))` from an async `main` (see [Configuration](configuration.md#async-initialisation)).
 
 ## Learn more
 
-memoire's documentation goes further: [models](https://maxlestage.github.io/Memoire/en/docs/models/), [queries](https://maxlestage.github.io/Memoire/en/docs/queries/) (joins, aggregates, group by), [relations](https://maxlestage.github.io/Memoire/en/docs/relations/), [transactions](https://maxlestage.github.io/Memoire/en/docs/transactions/), [migrations](https://maxlestage.github.io/Memoire/en/docs/migrations/) and one page per database. Everything works with `req.db()`: it accepts every model method and query. In Paquets, memoire is re-exported as `paquets::orm`.
+Memoire's documentation goes further: [models](https://maxlestage.github.io/Memoire/en/docs/models/), [queries](https://maxlestage.github.io/Memoire/en/docs/queries/) (joins, aggregates, group by), [relations](https://maxlestage.github.io/Memoire/en/docs/relations/), [transactions](https://maxlestage.github.io/Memoire/en/docs/transactions/), [migrations](https://maxlestage.github.io/Memoire/en/docs/migrations/) and one page per database. Everything works with `req.db()`: it accepts every model method and query. In Paquets, Memoire is re-exported as `paquets::orm`.
 
 ## Next steps
 

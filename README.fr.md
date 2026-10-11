@@ -63,8 +63,8 @@ Paquets assemble quatre crates, chacune utilisable seule :
 
 | Paquet | Rôle | Dans Paquets |
 |---|---|---|
-| [**vitesse**](https://maxlestage.github.io/Vitesse/) | Serveur HTTP dans le style d'Express : routes, middlewares, routeurs, WebSocket, HTTP/3 | `App` (se déréférence en `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**securite**](https://maxlestage.github.io/Securite/) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
+| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | Serveur HTTP dans le style d'Express : routes, middlewares, routeurs, WebSocket, HTTP/3 | `App` (se déréférence en `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**Securite**](https://maxlestage.github.io/Securite/) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
 | [**memoire-orm**](https://maxlestage.github.io/Memoire/) | ORM asynchrone typé, SQL généré à la compilation, SQL et NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
 | [**active**](https://maxlestage.github.io/Active/) | Front-end : composants, état, rendu serveur, SEO, îlots WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
@@ -191,7 +191,7 @@ toutes les features), tests, documentation, version minimale de Rust, projets g�
 2. GitHub → *Releases* → *Draft a new release* → tag `v0.1.0` → *Publish release*.
 
 [`release.yml`](.github/workflows/release.yml) publie `paquets-macros`, puis `paquets`. crates.io
-n'accepte que des dépendances publiées sur crates.io : vitesse, securite, memoire-orm et active sont
+n'accepte que des dépendances publiées sur crates.io : Vitesse, Securite, memoire-orm et Active sont
 donc publiés d'abord, chacun depuis son dépôt, de la même façon ; le workflow le vérifie. Guide :
 [docs/fr/publish-crates-io.md](docs/fr/publish-crates-io.md).
 
@@ -210,7 +210,7 @@ cd site && cargo run                       # le site, lui-même une application 
 | [`macros/`](macros) | `#[model]` et `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` et `todo` (l'application déployée sur Heroku) |
 | [`docs/`](docs) | la documentation, en anglais, français et espagnol |
-| [`site/`](site) | le site : une application Paquets (pages rendues par active, îlots en WebAssembly), exportée en fichiers statiques pour GitHub Pages |
+| [`site/`](site) | le site : une application Paquets (pages rendues par Active, îlots en WebAssembly), exportée en fichiers statiques pour GitHub Pages |
 
 ## Licence
 

@@ -169,7 +169,15 @@ async fn redirections_and_missing_pages() {
         .await;
     assert_eq!(res.status(), 302);
     assert_eq!(res.header("location"), Some("/es/"));
+    // French when the browser speaks none of the site's languages.
     let res = client.get("/").await;
+    assert_eq!(res.header("location"), Some("/fr/"));
+    let res = client.get("/").header("accept-language", "de-DE").await;
+    assert_eq!(res.header("location"), Some("/fr/"));
+    let res = client
+        .get("/")
+        .header("accept-language", "en-US,en;q=0.9")
+        .await;
     assert_eq!(res.header("location"), Some("/en/"));
     let res = client.get("/fr/docs").await;
     assert_eq!(res.status(), 301);
@@ -255,20 +263,28 @@ async fn the_live_demo_works() {
 #[tokio::test]
 async fn the_site_is_an_installable_app() {
     let client = client().await;
-    let res = client.get("/manifest.webmanifest").await;
-    assert_eq!(res.status(), 200);
-    let manifest = res.text();
-    assert!(manifest.contains(r#""name":"Paquets""#), "{manifest}");
-    assert!(manifest.contains(r#""start_url":"/en/""#), "{manifest}");
+    // One manifest per language: the installed app opens in the language of the page.
+    for lang in ["fr", "en", "es"] {
+        let res = client.get(&format!("/{lang}/manifest.webmanifest")).await;
+        assert_eq!(res.status(), 200);
+        let manifest = res.text();
+        assert!(manifest.contains(r#""name":"Paquets""#), "{manifest}");
+        assert!(
+            manifest.contains(&format!(r#""start_url":"/{lang}/""#)),
+            "{manifest}"
+        );
+    }
     let worker = client.get("/sw.js").await.text();
-    assert!(worker.contains(r#"const OFFLINE = "/en/";"#), "{worker}");
+    assert!(!worker.contains("{lang}"), "{worker}");
     assert!(worker.contains("/pkg/paquets_site_bg.wasm") || !std::path::Path::new("pkg").is_dir());
     assert!(
         worker.contains(r#"const NETWORK_ONLY = ["/api/todos"];"#),
         "{worker}"
     );
     let home = client.get("/fr/").await.text();
-    assert!(home.contains(r#"<link rel="manifest" href="/manifest.webmanifest"/>"#));
+    assert!(home.contains(r#"<link rel="manifest" href="/fr/manifest.webmanifest"/>"#));
+    let home = client.get("/es/").await.text();
+    assert!(home.contains(r#"<link rel="manifest" href="/es/manifest.webmanifest"/>"#));
     assert!(home.contains(r#"navigator.serviceWorker.register("/sw.js")"#));
     assert_eq!(home.matches(r#"name="theme-color""#).count(), 1);
     assert_eq!(client.get("/paquets/icon-512.png").await.status(), 200);

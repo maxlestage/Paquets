@@ -267,7 +267,7 @@ async fn article(_req: Request) -> Page {
 | `.og_type(...)`, `.locale(...)`, `.twitter(handle)` | las demás etiquetas Open Graph y Twitter |
 | `.meta_name(name, content)`, `.meta_property(...)` | cualquier otra etiqueta `<meta>` |
 
-Un `Seo` también se puede colocar dentro de una vista (`.child(Seo::new().title(...))`): todos los `Seo` de la página se fusionan, gana el valor más profundo y no se duplican etiquetas. Así, un layout puede fijar valores para todo el sitio que cada página completa. Consulta la [guía de SEO de active](https://maxlestage.github.io/Active/es/docs/seo/).
+Un `Seo` también se puede colocar dentro de una vista (`.child(Seo::new().title(...))`): todos los `Seo` de la página se fusionan, gana el valor más profundo y no se duplican etiquetas. Así, un layout puede fijar valores para todo el sitio que cada página completa. Consulta la [guía de SEO de Active](https://maxlestage.github.io/Active/es/docs/seo/).
 
 ## La Content-Security-Policy
 
@@ -342,12 +342,13 @@ app.pwa(
 - La aplicación sirve el manifiesto de aplicación web en `/manifest.webmanifest` y un service worker en `/sw.js`; cada `Page` los enlaza (con el color del tema, el título en la pantalla de inicio y el icono de Apple), y la política de la página permite el script de registro.
 - Sin conexión: la página de inicio, el bundle de las islas y los iconos se descargan al instalar. Las páginas vienen primero de la red y, sin red, de la caché; las API REST de `app.api` vienen siempre de la red.
 - Sin iconos, se usa la caja de Paquets. Tus propios iconos (al menos un PNG de 192×192 y otro de 512×512 en `public/`): `.icon("/icon-192.png", "192x192", "image/png").icon("/icon-512.png", "512x512", "image/png").maskable_icon("/icon-maskable.png", "512x512", "image/png")`.
-- `.start_url("/demo")` abre otra página; `.description(...)`, `.lang("es")`, `.display("fullscreen")`… completan el manifiesto (lo construye [el módulo `pwa` de active](https://docs.rs/active/latest/active/pwa/index.html)).
+- `.start_url("/{lang}/")` da a un sitio en varios idiomas un manifiesto por idioma (`/es/manifest.webmanifest`, enlazado por las páginas cuyo `Page::lang` es `es`): la aplicación instalada se abre en el idioma de la página desde la que se instaló.
+- `.start_url("/demo")` abre otra página; `.description(...)`, `.lang("es")`, `.display("fullscreen")`… completan el manifiesto (lo construye [el módulo `pwa` de Active](https://docs.rs/active/latest/active/pwa/index.html)).
 - Los navegadores solo instalan una PWA servida por HTTPS (o en `localhost`): Heroku da HTTPS a cada aplicación. En el móvil, abre el sitio y luego *Añadir a pantalla de inicio* (menú de compartir de Safari) o *Instalar aplicación* (menú de Chrome).
 
 ## Más información
 
-Las vistas vienen de [active](https://maxlestage.github.io/Active/). Su documentación trata en profundidad los [componentes y las vistas](https://maxlestage.github.io/Active/es/docs/components/), el [SEO](https://maxlestage.github.io/Active/es/docs/seo/) y los [datos estructurados](https://maxlestage.github.io/Active/es/docs/structured-data/).
+Las vistas vienen de [Active](https://maxlestage.github.io/Active/). Su documentación trata en profundidad los [componentes y las vistas](https://maxlestage.github.io/Active/es/docs/components/), el [SEO](https://maxlestage.github.io/Active/es/docs/seo/) y los [datos estructurados](https://maxlestage.github.io/Active/es/docs/structured-data/).
 
 ## Próximos pasos
 

@@ -38,12 +38,12 @@ Tout ce qu'il faut pour créer des applications web full-stack avec Paquets 📦
 
 - [Ligne de commande](cli.md) : `paquets new`, `dev`, `build` et `doctor`.
 - [Aide-mémoire](cheatsheet.md) : toute l'API sur une seule page.
-- [Les quatre paquets](packages.md) : vitesse, securite, memoire-orm et active, et comment Paquets s'en sert.
+- [Les quatre paquets](packages.md) : Vitesse, Securite, memoire-orm et Active, et comment Paquets s'en sert.
 - [FAQ](faq.md) : les questions fréquentes et leurs réponses.
 
 ## Autres ressources
 
 - Référence de l'API générée à partir du code source : https://docs.rs/paquets
 - Code source, issues et exemples : https://maxlestage.github.io/Paquets/
-- Les quatre paquets : [vitesse](https://maxlestage.github.io/Vitesse/), [securite](https://maxlestage.github.io/Securite/), [memoire-orm](https://maxlestage.github.io/Memoire/), [active](https://maxlestage.github.io/Active/)
+- Les quatre paquets : [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [memoire-orm](https://maxlestage.github.io/Memoire/), [Active](https://maxlestage.github.io/Active/)
 - Aussi disponible en [anglais](../en/README.md) et en [espagnol](../es/README.md).

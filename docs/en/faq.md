@@ -10,7 +10,7 @@ A Rust framework that gives you, with one crate and one `App`, a fast server, se
 
 ### Is it ready for production?
 
-Paquets is young (version 0.1). It is built on four packages that are tested on their own (vitesse, securite, memoire-orm, active), and its defaults are made for production: security shield, graceful shutdown, a database from `DATABASE_URL`, release builds in the `Dockerfile`. But its API may still change between 0.x versions, and it doesn't have years of use behind it. Try it on a project where you can follow its evolution, and read the limits in the [Introduction](introduction.md#what-paquets-doesnt-do-yet).
+Paquets is young (version 0.1). It is built on four packages that are tested on their own (Vitesse, Securite, memoire-orm, Active), and its defaults are made for production: security shield, graceful shutdown, a database from `DATABASE_URL`, release builds in the `Dockerfile`. But its API may still change between 0.x versions, and it doesn't have years of use behind it. Try it on a project where you can follow its evolution, and read the limits in the [Introduction](introduction.md#what-paquets-doesnt-do-yet).
 
 ### Why not axum, actix-web or Leptos?
 
@@ -62,7 +62,7 @@ For data that must last, use the [database](database.md). For settings, caches a
 
 ### How do I log users in?
 
-Paquets doesn't include user accounts. Depending on your needs: a shared token for an API, securite's `Auth` guard for an admin section, or sessions stored in your database. See [Security](security.md#authentication).
+Paquets doesn't include user accounts. Depending on your needs: a shared token for an API, Securite's `Auth` guard for an admin section, or sessions stored in your database. See [Security](security.md#authentication).
 
 ### Can components be async?
 
@@ -70,7 +70,7 @@ No: components are plain functions that build a view. Do the asynchronous work (
 
 ### Can an island call my API?
 
-Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [active's events guide](https://maxlestage.github.io/Active/en/docs/events/)). An island can also contain a plain HTML form that posts to one of your routes.
+Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [Active's events guide](https://maxlestage.github.io/Active/en/docs/events/)). An island can also contain a plain HTML form that posts to one of your routes.
 
 ### Is there hot reload?
 
@@ -146,7 +146,7 @@ Open an issue on GitHub. Pull requests are welcome; read `CONTRIBUTING.md` first
 
 ### Which license?
 
-Paquets, vitesse, securite, memoire-orm and active are proprietary software: © Maxime Nathan Lestage, all rights reserved. Their source is published on crates.io and GitHub so that you can read, audit and build it, and you may use them freely as dependencies of your own programs, commercial ones included. Modifying them or redistributing their source needs the author's written permission. The full terms are in each repository's [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt). What you build with them, including the projects created by `paquets new`, is yours.
+Paquets, Vitesse, Securite, memoire-orm and Active are proprietary software: © Maxime Nathan Lestage, all rights reserved. Their source is published on crates.io and GitHub so that you can read, audit and build it, and you may use them freely as dependencies of your own programs, commercial ones included. Modifying them or redistributing their source needs the author's written permission. The full terms are in each repository's [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt). What you build with them, including the projects created by `paquets new`, is yours.
 
 ## Next steps
 

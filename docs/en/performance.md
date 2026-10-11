@@ -1,14 +1,14 @@
 # Performance
 
-Paquets is fast without tuning: its server, vitesse, is faster than actix-web and axum on the same machine, its security shield costs a few microseconds per request, and pages ship no code to the browser unless they contain islands. This page gives the numbers, explains how the server uses your CPU, and lists what keeps your own app fast.
+Paquets is fast without tuning: its server, Vitesse, is faster than actix-web and axum on the same machine, its security shield costs a few microseconds per request, and pages ship no code to the browser unless they contain islands. This page gives the numbers, explains how the server uses your CPU, and lists what keeps your own app fast.
 
 ## The numbers
 
-### The server (vitesse)
+### The server (Vitesse)
 
 Requests per second on a 4 vCPU VM, the server pinned to 2 cores and the load generator (wrk) to the other 2, 128 keep-alive connections. In brackets: the server's CPU time per request (lower is better).
 
-| Scenario | axum 0.8 | actix-web 4 | **vitesse** |
+| Scenario | axum 0.8 | actix-web 4 | **Vitesse** |
 |---|---:|---:|---:|
 | `GET /` (text) | 168,165 (11.7 µs) | 274,195 (7.1 µs) | **291,415 (6.1 µs)** |
 | `GET /json` | 165,988 (11.9 µs) | 248,987 (7.9 µs) | **313,438 (5.9 µs)** |
@@ -17,13 +17,13 @@ Requests per second on a 4 vCPU VM, the server pinned to 2 cores and the load ge
 | `POST /echo` (reads and returns JSON) | 105,570 (18.8 µs) | 170,129 (11.7 µs) | **253,941 (7.6 µs)** |
 | `GET /` pipelined ×16 | 213,678 (9.3 µs) | 1,272,510 (1.6 µs) | **2,781,541 (0.64 µs)** |
 
-The methodology, the other frameworks measured (Express, Drogon) and the way to reproduce these numbers are in [vitesse's performance guide](https://maxlestage.github.io/Vitesse/en/docs/performance/).
+The methodology, the other frameworks measured (Express, Drogon) and the way to reproduce these numbers are in [Vitesse's performance guide](https://maxlestage.github.io/Vitesse/en/docs/performance/).
 
-### The shield (securite)
+### The shield (Securite)
 
 The whole recommended pipeline (request id, hygiene, method filter, body limit, rate limit, bot blocker, firewall, CSRF, security headers, cookie hardening) costs about **6 µs** per request.
 
-### Pages and islands (active)
+### Pages and islands (Active)
 
 | | Server rendering of a product page | WebAssembly + loader for a counter (compressed) | Interactive at 100 ms of latency |
 |---|---:|---:|---:|
@@ -32,7 +32,7 @@ The whole recommended pipeline (request id, hygiene, method filter, body limit, 
 | Sycamore 0.9 | 33.0 µs | 45.8 kB | 227 ms |
 | Dioxus 0.7 | 24.2 µs | 170.4 kB | 339 ms |
 
-The smallest bundle of all, and server rendering 2.4 times faster than the other framework that merges SEO tags from components (Leptos with leptos_meta). A template engine without SEO merging, such as maud, renders faster (1.4 µs), but sends nothing to the browser. Details in [active's benchmarks](https://maxlestage.github.io/Active/en/docs/benchmarks/).
+The smallest bundle of all, and server rendering 2.4 times faster than the other framework that merges SEO tags from components (Leptos with leptos_meta). A template engine without SEO merging, such as maud, renders faster (1.4 µs), but sends nothing to the browser. Details in [Active's benchmarks](https://maxlestage.github.io/Active/en/docs/benchmarks/).
 
 ### What this means for your app
 
@@ -40,7 +40,7 @@ These benchmarks measure each package alone, on trivial handlers. In a real Paqu
 
 ## How the server uses your CPU
 
-- With the in-memory database or SQLite, `app.run()` starts **one thread per CPU core**, each with its own event loop and its own listening socket. The kernel spreads connections across threads, and a request never changes thread. This is vitesse's fastest mode.
+- With the in-memory database or SQLite, `app.run()` starts **one thread per CPU core**, each with its own event loop and its own listening socket. The kernel spreads connections across threads, and a request never changes thread. This is Vitesse's fastest mode.
 - With a database server (PostgreSQL…), the app runs on tokio's multi-threaded runtime, shared with the database connections, and idle threads take work from busy ones.
 
 In both modes, a handler that blocks its thread (a long computation, a blocking file read, `std::thread::sleep`) delays every other request of that thread. Keep handlers asynchronous, and move heavy computations off the event loop:
@@ -88,7 +88,7 @@ async fn posts_with_authors(req: Request) -> Result<Json<Vec<(String, String)>>>
 ```
 
 - **Group writes** in a transaction, or use `insert_many`, `update_many` and `delete_many`.
-- memoire builds the SQL of primary-key operations (`get`, `insert`, `update`, `delete`) at compile time: they cost no SQL generation at run time.
+- Memoire builds the SQL of primary-key operations (`get`, `insert`, `update`, `delete`) at compile time: they cost no SQL generation at run time.
 
 ### Pages
 
@@ -108,7 +108,7 @@ app.serve_dir("/assets", ServeDir::new("assets").max_age(Duration::from_secs(31_
 
 ### Compression
 
-vitesse doesn't compress responses. Text compresses very well (HTML, JSON, CSS, WebAssembly), so put a CDN (Cloudflare, Fastly…) or a reverse proxy in front of the app if bandwidth matters. Heroku's router doesn't compress either.
+Vitesse doesn't compress responses. Text compresses very well (HTML, JSON, CSS, WebAssembly), so put a CDN (Cloudflare, Fastly…) or a reverse proxy in front of the app if bandwidth matters. Heroku's router doesn't compress either.
 
 ### Logs
 

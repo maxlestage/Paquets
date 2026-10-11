@@ -7,7 +7,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
-- The shield of every app is securite's own Vitesse middleware (securite now protects
+- The shield of every app is Securite's own Vitesse middleware (Securite now protects
   Vitesse applications natively): the bridge between tower and Vitesse that Paquets
   carried is gone, with its `tower-layer`, `tower-service` and `http` dependencies.
 - License: Paquets is proprietary software by Maxime Nathan Lestage, all rights reserved
@@ -19,14 +19,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `paquets::VERSION`, the version of the crate.
 
 ### Added
+- `Pwa::new(...).start_url("/{lang}/")`: one manifest per language, so an installed app
+  opens in the language of the page it was installed from.
 - `app.pwa(Pwa::new(...))`: installable apps (PWA) with a web app manifest and an offline
-  service worker (active's `pwa` module), linked by every page; the default icons are the
+  service worker (Active's `pwa` module), linked by every page; the default icons are the
   Paquets box. Projects created by `paquets new` are installable, and so is the website.
 
 ## [0.1.0] - 2026-10-10
 
 ### Added
-- `App`: a vitesse application with securite's shield, a request log, the database of
+- `App`: a Vitesse application with Securite's shield, a request log, the database of
   `DATABASE_URL`, static files from `public/` and the islands bundle from `pkg/`; the port
   from `PORT`. `app.run()`, `app.serve().await`, `app.test().await`.
 - `app.api::<M>(path)`: a REST API for a model (list with `limit`/`offset` and
@@ -43,6 +45,6 @@ project adheres to [Semantic Versioning](https://semver.org/).
   dependencies.
 - The `paquets` command: `new` (complete project with Dockerfile, Heroku files and GitHub
   Actions that merge green branches into master), `dev`, `build`, `doctor`.
-- Website built with Paquets itself (active pages, WebAssembly islands, static export
+- Website built with Paquets itself (Active pages, WebAssembly islands, static export
   for GitHub Pages), documentation in English, French and Spanish,
   Heroku deployment from a phone, GitHub Pages, crates.io release workflow.

@@ -44,6 +44,30 @@ pub(crate) fn manifest() -> Option<&'static Manifest> {
     MANIFEST.get()
 }
 
+/// The address of the manifest a page in `lang` links: with `{lang}` in the start URL
+/// (`.start_url("/{lang}/")`), each language has its own manifest, so the installed app
+/// opens in the language of the page it was installed from.
+pub(crate) fn manifest_url(lang: &str) -> String {
+    match MANIFEST.get() {
+        Some(manifest) if localized(manifest) && valid_lang(lang) => {
+            format!("/{lang}{MANIFEST_URL}")
+        }
+        _ => MANIFEST_URL.to_owned(),
+    }
+}
+
+/// Whether the start URL has a `{lang}` placeholder.
+fn localized(manifest: &Manifest) -> bool {
+    start_page(manifest).contains("{lang}")
+}
+
+/// A language code (`fr`, `pt-BR`…), safe to put in a URL and in JSON.
+fn valid_lang(lang: &str) -> bool {
+    !lang.is_empty()
+        && lang.len() <= 12
+        && lang.chars().all(|c| c.is_ascii_alphanumeric() || c == '-')
+}
+
 /// Registers the manifest, the worker (and the default icons) on the app.
 pub(crate) fn install(
     app: &mut vitesse::App,
@@ -70,14 +94,27 @@ pub(crate) fn install(
 
     let json = manifest.to_json();
     let worker = worker(&manifest, &json, bundle, network_only);
+    if localized(&manifest) {
+        // `/fr/manifest.webmanifest`: the app starts on the French page.
+        let template = json.clone();
+        app.get(
+            &format!("/:lang{MANIFEST_URL}"),
+            move |req: vitesse::Request| {
+                let lang = req.param("lang").unwrap_or("").to_owned();
+                let json = template.replace("{lang}", &lang);
+                async move {
+                    if !valid_lang(&lang) {
+                        return Response::new().status(404);
+                    }
+                    manifest_response(json)
+                }
+            },
+        );
+    }
+    let json = json.replace("{lang}", "en");
     app.get(MANIFEST_URL, move |_| {
         let json = json.clone();
-        async move {
-            Response::new()
-                .header(header::CONTENT_TYPE, "application/manifest+json")
-                .header(header::CACHE_CONTROL, "no-cache")
-                .send(json)
-        }
+        async move { manifest_response(json) }
     });
     app.get(WORKER_URL, move |_| {
         let worker = worker.clone();
@@ -91,7 +128,14 @@ pub(crate) fn install(
     let _ = MANIFEST.set(manifest);
 }
 
-/// The service worker: the start page, the islands bundle and the icons available
+fn manifest_response(json: String) -> Response {
+    Response::new()
+        .header(header::CONTENT_TYPE, "application/manifest+json")
+        .header(header::CACHE_CONTROL, "no-cache")
+        .send(json)
+}
+
+/// The service worker: the start page (each page visited, with a localized start URL), the islands bundle and the icons available
 /// offline; the REST APIs always from the network. Its version changes with the
 /// manifest and the bundle, so a deployment replaces the old caches.
 fn worker(
@@ -101,7 +145,10 @@ fn worker(
     network_only: &[String],
 ) -> String {
     let start = start_page(manifest);
-    let mut precache = vec![start.clone()];
+    // A localized start page is kept when it is visited (the page the app is installed
+    // from), like every page.
+    let start = (!start.contains("{lang}")).then_some(start);
+    let mut precache: Vec<String> = start.iter().cloned().collect();
     let mut fingerprint = Fnv::default();
     fingerprint.write(env!("CARGO_PKG_VERSION").as_bytes());
     fingerprint.write(json.as_bytes());
@@ -119,8 +166,10 @@ fn worker(
         }
     }
     let mut worker = ServiceWorker::new(slug(manifest.name()), format!("{:x}", fingerprint.0))
-        .precache(precache)
-        .offline_page(start);
+        .precache(precache);
+    if let Some(start) = start {
+        worker = worker.offline_page(start);
+    }
     for path in network_only {
         worker = worker.network_only(path.clone());
     }

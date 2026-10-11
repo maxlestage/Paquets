@@ -342,12 +342,13 @@ app.pwa(
 - L'application sert le manifeste d'application web à `/manifest.webmanifest` et un service worker à `/sw.js` ; chaque `Page` les référence (avec la couleur du thème, le titre sur l'écran d'accueil et l'icône Apple), et la politique de la page autorise le script d'enregistrement.
 - Hors ligne : la page de départ, le bundle des îlots et les icônes sont téléchargés à l'installation. Les pages viennent d'abord du réseau, puis du cache quand le réseau est coupé ; les API REST de `app.api` viennent toujours du réseau.
 - Sans icônes, c'est la boîte de Paquets qui est utilisée. Vos propres icônes (au moins un PNG de 192×192 et un de 512×512 dans `public/`) : `.icon("/icon-192.png", "192x192", "image/png").icon("/icon-512.png", "512x512", "image/png").maskable_icon("/icon-maskable.png", "512x512", "image/png")`.
+- `.start_url("/{lang}/")` donne à un site en plusieurs langues un manifeste par langue (`/fr/manifest.webmanifest`, lié par les pages dont `Page::lang` vaut `fr`) : l'application installée s'ouvre dans la langue de la page depuis laquelle elle a été installée.
 - `.start_url("/demo")` ouvre une autre page ; `.description(...)`, `.lang("fr")`, `.display("fullscreen")`… complètent le manifeste (c'est [le module `pwa` d'active](https://docs.rs/active/latest/active/pwa/index.html) qui le construit).
 - Les navigateurs n'installent une PWA que servie en HTTPS (ou sur `localhost`) : Heroku donne le HTTPS à chaque application. Sur un téléphone, ouvrez le site, puis *Sur l'écran d'accueil* (menu de partage de Safari) ou *Installer l'application* (menu de Chrome).
 
 ## Pour aller plus loin
 
-Les vues viennent d'[active](https://maxlestage.github.io/Active/). Sa documentation approfondit [les composants et les vues](https://maxlestage.github.io/Active/fr/docs/components/), [le SEO](https://maxlestage.github.io/Active/fr/docs/seo/) et [les données structurées](https://maxlestage.github.io/Active/fr/docs/structured-data/).
+Les vues viennent d'[Active](https://maxlestage.github.io/Active/). Sa documentation approfondit [les composants et les vues](https://maxlestage.github.io/Active/fr/docs/components/), [le SEO](https://maxlestage.github.io/Active/fr/docs/seo/) et [les données structurées](https://maxlestage.github.io/Active/fr/docs/structured-data/).
 
 ## Étapes suivantes
 

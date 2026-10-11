@@ -96,7 +96,7 @@ app.get("/double/:n", |req: Request| async move {
 
 ## Choisir votre propre message pour une erreur de base de données
 
-`?` donne aux erreurs de base de données un message générique. Pour en donner un meilleur, examinez l'erreur avant le `?`. Les erreurs de memoire ont `is_not_found()`, `is_unique_violation()` et `is_conflict()` :
+`?` donne aux erreurs de base de données un message générique. Pour en donner un meilleur, examinez l'erreur avant le `?`. Les erreurs de Memoire ont `is_not_found()`, `is_unique_violation()` et `is_conflict()` :
 
 ```rust
 #[model]
@@ -124,7 +124,7 @@ async fn sign_up(req: Request) -> Result<(StatusCode, Json<Member>)> {
 
 ## Vos propres types d'erreur
 
-Les erreurs métier méritent souvent leur propre type. Convertissez-le dans le type d'erreur de vitesse, et `?` fait le reste :
+Les erreurs métier méritent souvent leur propre type. Convertissez-le dans le type d'erreur de Vitesse, et `?` fait le reste :
 
 ```rust
 #[derive(Debug)]
@@ -238,4 +238,4 @@ Comme `main` renvoie un `std::io::Result<()>`, le programme affiche l'erreur et 
 
 - [Tests](testing.md) : vérifier vos erreurs dans des tests.
 - [Sécurité](security.md) : les réponses du bouclier.
-- [Le guide des erreurs de vitesse](https://maxlestage.github.io/Vitesse/fr/docs/errors/) : plus de détails sur les erreurs, `on_error` et les paniques.
+- [Le guide des erreurs de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/errors/) : plus de détails sur les erreurs, `on_error` et les paniques.

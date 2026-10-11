@@ -136,7 +136,8 @@ impl Page {
     /// Nothing else inline can run, even if some HTML slipped into the body.
     fn render_with_policy(self) -> (String, String) {
         let seo = Seo::new().title(self.title).merged(&self.seo);
-        let mut document = Document::new(self.body).lang(self.lang).seo(seo);
+        let lang = self.lang;
+        let mut document = Document::new(self.body).lang(lang.clone()).seo(seo);
         // `active` always writes this style for islands.
         let mut styles = vec![cached(&ACTIVE_STYLE, || style_hash(ACTIVE_STYLE_CSS))];
         let mut scripts = Vec::new();
@@ -166,7 +167,7 @@ impl Page {
         }
         if let Some(manifest) = crate::pwa::manifest() {
             document = document
-                .manifest(crate::pwa::MANIFEST_URL, manifest)
+                .manifest(&crate::pwa::manifest_url(&lang), manifest)
                 .service_worker(crate::pwa::WORKER_URL);
             scripts.push(cached(&REGISTER_HASH, || {
                 let script = active::pwa::register_script(crate::pwa::WORKER_URL);

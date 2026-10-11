@@ -98,9 +98,16 @@ pub async fn export(out: &Path, base_path: &str, site_url: Option<String>) -> io
     }
     // The PWA: the manifest and the service worker list absolute URLs, the icons are
     // served by Paquets itself.
-    for file in ["/manifest.webmanifest", "/sw.js"] {
-        let body = get(file.to_owned(), 200).await?;
-        write(file, with_base_everywhere(&body, base).as_bytes())?;
+    let mut pwa_files = vec!["/manifest.webmanifest".to_owned(), "/sw.js".to_owned()];
+    // One manifest per language: the installed app opens in the language of the page.
+    pwa_files.extend(
+        Lang::ALL
+            .iter()
+            .map(|l| format!("/{}/manifest.webmanifest", l.code())),
+    );
+    for file in pwa_files {
+        let body = get(file.clone(), 200).await?;
+        write(&file, with_base_everywhere(&body, base).as_bytes())?;
     }
     for icon in [
         "/paquets/icon-192.png",
@@ -151,6 +158,18 @@ pub fn with_base(html: &str, base: &str) -> String {
             &format!("\"{base}/manifest.webmanifest\""),
         )
         .replace("\"/sw.js\"", &format!("\"{base}/sw.js\""))
+        .replace(
+            "\"/en/manifest.webmanifest\"",
+            &format!("\"{base}/en/manifest.webmanifest\""),
+        )
+        .replace(
+            "\"/fr/manifest.webmanifest\"",
+            &format!("\"{base}/fr/manifest.webmanifest\""),
+        )
+        .replace(
+            "\"/es/manifest.webmanifest\"",
+            &format!("\"{base}/es/manifest.webmanifest\""),
+        )
 }
 
 /// Every absolute URL of a JSON or JavaScript file (`"/…"`) behind `base`.

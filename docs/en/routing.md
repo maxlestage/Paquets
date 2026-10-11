@@ -1,6 +1,6 @@
 # Routing
 
-Routing decides which code answers a request, based on its method (`GET`, `POST`…) and its path (`/users/42`). Paquets uses the router of [vitesse](https://maxlestage.github.io/Vitesse/), with the vocabulary of Express.js: `app.get(path, handler)`, parameters written `:id`, middleware with `next`. This page covers routes, parameters, routers, middleware, the 404 page and static files.
+Routing decides which code answers a request, based on its method (`GET`, `POST`…) and its path (`/users/42`). Paquets uses the router of [Vitesse](https://maxlestage.github.io/Vitesse/), with the vocabulary of Express.js: `app.get(path, handler)`, parameters written `:id`, middleware with `next`. This page covers routes, parameters, routers, middleware, the 404 page and static files.
 
 ## Your first routes
 
@@ -222,11 +222,11 @@ Files in the `public/` folder are served at the root of the site, with no code. 
 app.static_dir("/downloads", "files"); // files/report.pdf → /downloads/report.pdf
 ```
 
-Paths are relative to the folder the server is launched from. Static files get the right `Content-Type`, `ETag` and `Last-Modified` headers, `304 Not Modified` and range requests (video). Hidden files (`.env`, `.git/`) and `..` paths are refused. More options in [vitesse's static files guide](https://maxlestage.github.io/Vitesse/en/docs/static-files/).
+Paths are relative to the folder the server is launched from. Static files get the right `Content-Type`, `ETag` and `Last-Modified` headers, `304 Not Modified` and range requests (video). Hidden files (`.env`, `.git/`) and `..` paths are refused. More options in [Vitesse's static files guide](https://maxlestage.github.io/Vitesse/en/docs/static-files/).
 
 ## Learn more
 
-vitesse's documentation covers routing in more depth: [routing](https://maxlestage.github.io/Vitesse/en/docs/routing/), [middleware](https://maxlestage.github.io/Vitesse/en/docs/middleware/) (including the built-in `logger`, `cors` and `timeout`) and [routers](https://maxlestage.github.io/Vitesse/en/docs/routers/). Everything there works in Paquets: `App` gives access to every method of vitesse's app.
+Vitesse's documentation covers routing in more depth: [routing](https://maxlestage.github.io/Vitesse/en/docs/routing/), [middleware](https://maxlestage.github.io/Vitesse/en/docs/middleware/) (including the built-in `logger`, `cors` and `timeout`) and [routers](https://maxlestage.github.io/Vitesse/en/docs/routers/). Everything there works in Paquets: `App` gives access to every method of Vitesse's app.
 
 ## Next steps
 

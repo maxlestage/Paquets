@@ -8,10 +8,10 @@ Paquets (French for "packages") is a Rust library for building websites and web 
 
 | Package | What it does in Paquets |
 |---|---|
-| [vitesse](https://maxlestage.github.io/Vitesse/) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
-| [securite](https://maxlestage.github.io/Securite/) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
+| [Vitesse](https://maxlestage.github.io/Vitesse/) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
+| [Securite](https://maxlestage.github.io/Securite/) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
 | [memoire-orm](https://maxlestage.github.io/Memoire/) | The database: type-safe models and queries, in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
-| [active](https://maxlestage.github.io/Active/) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
+| [Active](https://maxlestage.github.io/Active/) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
 
 You don't need to learn four libraries to start. Paquets connects them, chooses good defaults, and exposes one small API. When you need more, every package is one import away (see [The four packages](packages.md)).
 
@@ -64,7 +64,7 @@ Run it and you get:
 | Feature | Default behaviour | Change it with |
 |---|---|---|
 | Server | Port from the `PORT` variable (Heroku), `3000` otherwise. `Ctrl+C` or `SIGTERM` stops it gracefully. | `app.port(8080)` |
-| Security | securite's recommended shield on every request: request ids, protocol checks, 2 MiB body limit, rate limit of 20 requests per second per IP, bot blocker, firewall, CSRF protection, security headers, hardened cookies. | `app.security(...)` |
+| Security | Securite's recommended shield on every request: request ids, protocol checks, 2 MiB body limit, rate limit of 20 requests per second per IP, bot blocker, firewall, CSRF protection, security headers, hardened cookies. | `app.security(...)` |
 | Database | From the `DATABASE_URL` variable; in memory when it is not set. Tables of your models are created at startup. | `app.database(...)` |
 | Pages | Server-rendered HTML with SEO tags, a built-in theme and a Content-Security-Policy that allows exactly what the page contains. | `Page` methods |
 | Static files | The `public/` folder is served at the root of the site. | `app.static_dir(...)` |
@@ -75,7 +75,7 @@ Run it and you get:
 
 - **Simplicity.** One dependency, one import (`use paquets::prelude::*;`), one `App`. A handler is an `async` function that takes a request and returns a response. Errors are values, and `?` turns them into the right HTTP status.
 - **Secure by default.** Attacks such as SQL injection in the URL, cross-site request forgery, clickjacking or brute force are blocked before your code runs. You have to opt out, not opt in.
-- **Fast.** vitesse handles about 291,000 requests per second for `GET /` on 2 CPU cores, more than actix-web and axum on the same machine, and 2.78 million per second with pipelining. securite's whole pipeline costs about 6 µs per request. The smallest island bundle (a counter) weighs 36.8 kB compressed. See [Performance](performance.md).
+- **Fast.** Vitesse handles about 291,000 requests per second for `GET /` on 2 CPU cores, more than actix-web and axum on the same machine, and 2.78 million per second with pipelining. Securite's whole pipeline costs about 6 µs per request. The smallest island bundle (a counter) weighs 36.8 kB compressed. See [Performance](performance.md).
 - **Type-safe from the database to the page.** A misspelled column, a comparison between a number and a string, or a missing field in a response is a compile error, not a bug in production.
 - **Easy to deploy.** A project created with `paquets new` contains a `Dockerfile`, the files for a one-tap Heroku deployment and GitHub workflows. You can deploy, redeploy and read your logs [from a phone](deploy-heroku-mobile.md).
 

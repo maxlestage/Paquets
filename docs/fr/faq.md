@@ -10,7 +10,7 @@ Un framework Rust qui vous donne, avec une seule crate et une seule `App`, un se
 
 ### Est-ce prêt pour la production ?
 
-Paquets est jeune (version 0.1). Il repose sur quatre paquets testés chacun de leur côté (vitesse, securite, memoire-orm, active), et ses réglages par défaut sont pensés pour la production : bouclier de sécurité, arrêt propre, base de données issue de `DATABASE_URL`, compilations release dans le `Dockerfile`. Mais son API peut encore changer d'une version 0.x à l'autre, et il n'a pas des années d'utilisation derrière lui. Essayez-le sur un projet où vous pouvez suivre son évolution, et lisez les limites dans l'[Introduction](introduction.md#ce-que-paquets-ne-fait-pas-encore).
+Paquets est jeune (version 0.1). Il repose sur quatre paquets testés chacun de leur côté (Vitesse, Securite, memoire-orm, Active), et ses réglages par défaut sont pensés pour la production : bouclier de sécurité, arrêt propre, base de données issue de `DATABASE_URL`, compilations release dans le `Dockerfile`. Mais son API peut encore changer d'une version 0.x à l'autre, et il n'a pas des années d'utilisation derrière lui. Essayez-le sur un projet où vous pouvez suivre son évolution, et lisez les limites dans l'[Introduction](introduction.md#ce-que-paquets-ne-fait-pas-encore).
 
 ### Pourquoi pas axum, actix-web ou Leptos ?
 
@@ -62,7 +62,7 @@ Pour des données qui doivent durer, utilisez la [base de données](database.md)
 
 ### Comment connecter les utilisateurs ?
 
-Paquets n'inclut pas de comptes utilisateurs. Selon vos besoins : un jeton partagé pour une API, le guard `Auth` de securite pour une section d'administration, ou des sessions enregistrées dans votre base de données. Voir [Sécurité](security.md#authentification).
+Paquets n'inclut pas de comptes utilisateurs. Selon vos besoins : un jeton partagé pour une API, le guard `Auth` de Securite pour une section d'administration, ou des sessions enregistrées dans votre base de données. Voir [Sécurité](security.md#authentification).
 
 ### Les composants peuvent-ils être asynchrones ?
 
@@ -146,7 +146,7 @@ Ouvrez une issue sur GitHub. Les pull requests sont les bienvenues ; lisez d'abo
 
 ### Quelle licence ?
 
-Paquets, vitesse, securite, memoire-orm et active sont des logiciels propriétaires : © Maxime Nathan Lestage, tous droits réservés. Leur code source est publié sur crates.io et GitHub pour que vous puissiez le lire, l'auditer et le compiler, et vous pouvez les utiliser librement comme dépendances de vos propres programmes, y compris commerciaux. Les modifier ou redistribuer leur code source demande l'accord écrit de l'auteur. Les conditions complètes sont dans le fichier [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de chaque dépôt. Ce que vous construisez avec eux, y compris les projets créés par `paquets new`, vous appartient.
+Paquets, Vitesse, Securite, memoire-orm et Active sont des logiciels propriétaires : © Maxime Nathan Lestage, tous droits réservés. Leur code source est publié sur crates.io et GitHub pour que vous puissiez le lire, l'auditer et le compiler, et vous pouvez les utiliser librement comme dépendances de vos propres programmes, y compris commerciaux. Les modifier ou redistribuer leur code source demande l'accord écrit de l'auteur. Les conditions complètes sont dans le fichier [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de chaque dépôt. Ce que vous construisez avec eux, y compris les projets créés par `paquets new`, vous appartient.
 
 ## Étapes suivantes
 

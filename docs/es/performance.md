@@ -1,14 +1,14 @@
 # Rendimiento
 
-Paquets es rápido sin ajustes: su servidor, vitesse, es más rápido que actix-web y axum en la misma máquina, su escudo de seguridad cuesta unos pocos microsegundos por petición, y las páginas no envían ningún código al navegador salvo que contengan islas. Esta página da las cifras, explica cómo usa el servidor tu CPU y enumera lo que mantiene rápida tu propia aplicación.
+Paquets es rápido sin ajustes: su servidor, Vitesse, es más rápido que actix-web y axum en la misma máquina, su escudo de seguridad cuesta unos pocos microsegundos por petición, y las páginas no envían ningún código al navegador salvo que contengan islas. Esta página da las cifras, explica cómo usa el servidor tu CPU y enumera lo que mantiene rápida tu propia aplicación.
 
 ## Las cifras
 
-### El servidor (vitesse)
+### El servidor (Vitesse)
 
 Peticiones por segundo en una VM de 4 vCPU, con el servidor fijado en 2 núcleos y el generador de carga (wrk) en los otros 2, con 128 conexiones keep-alive. Entre paréntesis: el tiempo de CPU del servidor por petición (cuanto menos, mejor).
 
-| Escenario | axum 0.8 | actix-web 4 | **vitesse** |
+| Escenario | axum 0.8 | actix-web 4 | **Vitesse** |
 |---|---:|---:|---:|
 | `GET /` (texto) | 168 165 (11.7 µs) | 274 195 (7.1 µs) | **291 415 (6.1 µs)** |
 | `GET /json` | 165 988 (11.9 µs) | 248 987 (7.9 µs) | **313 438 (5.9 µs)** |
@@ -17,13 +17,13 @@ Peticiones por segundo en una VM de 4 vCPU, con el servidor fijado en 2 núcleos
 | `POST /echo` (lee y devuelve JSON) | 105 570 (18.8 µs) | 170 129 (11.7 µs) | **253 941 (7.6 µs)** |
 | `GET /` en pipeline ×16 | 213 678 (9.3 µs) | 1 272 510 (1.6 µs) | **2 781 541 (0.64 µs)** |
 
-La metodología, los otros frameworks medidos (Express, Drogon) y la forma de reproducir estas cifras están en la [guía de rendimiento de vitesse](https://maxlestage.github.io/Vitesse/es/docs/performance/).
+La metodología, los otros frameworks medidos (Express, Drogon) y la forma de reproducir estas cifras están en la [guía de rendimiento de Vitesse](https://maxlestage.github.io/Vitesse/es/docs/performance/).
 
-### El escudo (securite)
+### El escudo (Securite)
 
 Todo el pipeline recomendado (identificador de petición, higiene, filtro de métodos, límite del cuerpo, límite de tasa, bloqueador de bots, cortafuegos, CSRF, cabeceras de seguridad, refuerzo de cookies) cuesta unos **6 µs** por petición.
 
-### Páginas e islas (active)
+### Páginas e islas (Active)
 
 | | Renderizado en el servidor de una página de producto | WebAssembly + cargador para un contador (comprimido) | Interactivo con 100 ms de latencia |
 |---|---:|---:|---:|
@@ -32,7 +32,7 @@ Todo el pipeline recomendado (identificador de petición, higiene, filtro de mé
 | Sycamore 0.9 | 33.0 µs | 45.8 kB | 227 ms |
 | Dioxus 0.7 | 24.2 µs | 170.4 kB | 339 ms |
 
-El bundle más pequeño de todos, y un renderizado en el servidor 2.4 veces más rápido que el del otro framework que fusiona las etiquetas SEO de los componentes (Leptos con leptos_meta). Un motor de plantillas sin fusión de SEO, como maud, renderiza más rápido (1.4 µs), pero no envía nada al navegador. Los detalles están en los [benchmarks de active](https://maxlestage.github.io/Active/es/docs/benchmarks/).
+El bundle más pequeño de todos, y un renderizado en el servidor 2.4 veces más rápido que el del otro framework que fusiona las etiquetas SEO de los componentes (Leptos con leptos_meta). Un motor de plantillas sin fusión de SEO, como maud, renderiza más rápido (1.4 µs), pero no envía nada al navegador. Los detalles están en los [benchmarks de Active](https://maxlestage.github.io/Active/es/docs/benchmarks/).
 
 ### Lo que esto significa para tu aplicación
 
@@ -40,7 +40,7 @@ Estos benchmarks miden cada paquete por separado, con handlers triviales. En una
 
 ## Cómo usa el servidor tu CPU
 
-- Con la base de datos en memoria o SQLite, `app.run()` arranca **un hilo por núcleo de CPU**, cada uno con su propio bucle de eventos y su propio socket de escucha. El kernel reparte las conexiones entre los hilos, y una petición nunca cambia de hilo. Es el modo más rápido de vitesse.
+- Con la base de datos en memoria o SQLite, `app.run()` arranca **un hilo por núcleo de CPU**, cada uno con su propio bucle de eventos y su propio socket de escucha. El kernel reparte las conexiones entre los hilos, y una petición nunca cambia de hilo. Es el modo más rápido de Vitesse.
 - Con un servidor de base de datos (PostgreSQL…), la aplicación funciona sobre el runtime multihilo de tokio, compartido con las conexiones a la base de datos, y los hilos libres toman trabajo de los ocupados.
 
 En los dos modos, un handler que bloquea su hilo (un cálculo largo, una lectura de archivo bloqueante, `std::thread::sleep`) retrasa todas las demás peticiones de ese hilo. Mantén los handlers asíncronos y saca los cálculos pesados del bucle de eventos:
@@ -88,7 +88,7 @@ async fn posts_with_authors(req: Request) -> Result<Json<Vec<(String, String)>>>
 ```
 
 - **Agrupa las escrituras** en una transacción, o usa `insert_many`, `update_many` y `delete_many`.
-- memoire construye en tiempo de compilación el SQL de las operaciones por clave primaria (`get`, `insert`, `update`, `delete`): no cuestan ninguna generación de SQL en tiempo de ejecución.
+- Memoire construye en tiempo de compilación el SQL de las operaciones por clave primaria (`get`, `insert`, `update`, `delete`): no cuestan ninguna generación de SQL en tiempo de ejecución.
 
 ### Páginas
 
@@ -108,7 +108,7 @@ app.serve_dir("/assets", ServeDir::new("assets").max_age(Duration::from_secs(31_
 
 ### Compresión
 
-vitesse no comprime las respuestas. El texto se comprime muy bien (HTML, JSON, CSS, WebAssembly), así que pon una CDN (Cloudflare, Fastly…) o un proxy inverso delante de la aplicación si el ancho de banda importa. El router de Heroku tampoco comprime.
+Vitesse no comprime las respuestas. El texto se comprime muy bien (HTML, JSON, CSS, WebAssembly), así que pon una CDN (Cloudflare, Fastly…) o un proxy inverso delante de la aplicación si el ancho de banda importa. El router de Heroku tampoco comprime.
 
 ### Logs
 

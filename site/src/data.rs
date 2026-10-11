@@ -39,7 +39,7 @@ pub struct Package {
 
 pub const PACKAGES: [Package; 4] = [
     Package {
-        name: "vitesse",
+        name: "Vitesse",
         site: "https://maxlestage.github.io/Vitesse/",
         glyph: "V",
         color: "#ffc24b",
@@ -47,7 +47,7 @@ pub const PACKAGES: [Package; 4] = [
         icon: "bolt",
     },
     Package {
-        name: "securite",
+        name: "Securite",
         site: "https://maxlestage.github.io/Securite/",
         glyph: "S",
         color: "#ff4fa3",
@@ -55,7 +55,7 @@ pub const PACKAGES: [Package; 4] = [
         icon: "shield",
     },
     Package {
-        name: "memoire-orm",
+        name: "Memoire",
         site: "https://maxlestage.github.io/Memoire/",
         glyph: "M",
         color: "#8b6dff",
@@ -63,7 +63,7 @@ pub const PACKAGES: [Package; 4] = [
         icon: "db",
     },
     Package {
-        name: "active",
+        name: "Active",
         site: "https://maxlestage.github.io/Active/",
         glyph: "A",
         color: "#22d3ee",
