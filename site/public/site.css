@@ -53,6 +53,8 @@
 }
 
 html {
+  /* Never a horizontal scroll, on phones too: nothing may stick out of the screen. */
+  overflow-x: clip;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   background: var(--bg);
