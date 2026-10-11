@@ -1,6 +1,6 @@
 # WebSocket
 
-Un WebSocket mantiene una conexión abierta en los dos sentidos, de modo que el servidor puede enviar mensajes en cualquier momento: chat, notificaciones, paneles en directo, juegos multijugador. Paquets lo admite de serie con `app.ws(path, handler)`, que viene de [vitesse](https://github.com/maxlestage/Vitesse). Esta página construye un servidor de eco y luego una sala de chat, y trata la seguridad, el despliegue y las pruebas.
+Un WebSocket mantiene una conexión abierta en los dos sentidos, de modo que el servidor puede enviar mensajes en cualquier momento: chat, notificaciones, paneles en directo, juegos multijugador. Paquets lo admite de serie con `app.ws(path, handler)`, que viene de [vitesse](https://maxlestage.github.io/Vitesse/). Esta página construye un servidor de eco y luego una sala de chat, y trata la seguridad, el despliegue y las pruebas.
 
 ## Un servidor de eco
 
@@ -27,7 +27,7 @@ fn main() -> std::io::Result<()> {
 
 El handler recibe la petición y el socket abierto, y la conexión vive mientras el handler se ejecuta. En lugar de callbacks, un WebSocket es un bucle: `socket.recv().await` espera el siguiente mensaje sin bloquear nada más.
 
-Para probarlo, usa [websocat](https://github.com/vi/websocat), un cliente WebSocket para la terminal (`cargo install websocat`):
+Para probarlo, usa [websocat](https://crates.io/crates/websocat), un cliente WebSocket para la terminal (`cargo install websocat`):
 
 ```sh
 websocat ws://localhost:3000/echo
@@ -218,7 +218,7 @@ Los navegadores no pueden añadir una cabecera `Authorization` a una conexión W
 ## En producción
 
 - **Heroku** admite WebSocket (usa `wss://` con la dirección HTTPS de tu aplicación). Su router cierra una conexión que permanece en silencio unos 55 segundos: para las conexiones que pueden quedarse inactivas, envía un ping desde el servidor más o menos cada 30 segundos (`tx.send(ws::Message::Ping(Default::default()))` desde una tarea, como en la sala de chat); los navegadores responden automáticamente.
-- **Detrás de Nginx**, el proxy debe reenviar la cabecera `Upgrade`: consulta la [guía de WebSocket de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/es/websocket.md#detrás-de-un-proxy-inverso). Caddy lo gestiona automáticamente.
+- **Detrás de Nginx**, el proxy debe reenviar la cabecera `Upgrade`: consulta la [guía de WebSocket de vitesse](https://maxlestage.github.io/Vitesse/es/docs/websocket/). Caddy lo gestiona automáticamente.
 - **Reinicios**: cuando el servidor se detiene (un despliegue, `SIGTERM`), las conexiones abiertas se cortan. Haz que los clientes se reconecten automáticamente, algo que de todos modos necesitan para los cortes de red.
 - **Solo HTTP/1.1**: WebSocket no funciona sobre HTTP/3.
 
@@ -270,7 +270,7 @@ mod tests {
 
 ## Más información
 
-La [guía de WebSocket de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/es/websocket.md) trata en detalle los subprotocolos, los límites de tamaño de los mensajes (`ws::Upgrade`), `Stream` y `Sink`, y el comportamiento detrás de un proxy.
+La [guía de WebSocket de vitesse](https://maxlestage.github.io/Vitesse/es/docs/websocket/) trata en detalle los subprotocolos, los límites de tamaño de los mensajes (`ws::Upgrade`), `Stream` y `Sink`, y el comportamiento detrás de un proxy.
 
 ## Próximos pasos
 

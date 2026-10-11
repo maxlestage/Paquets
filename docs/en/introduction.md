@@ -8,10 +8,10 @@ Paquets (French for "packages") is a Rust library for building websites and web 
 
 | Package | What it does in Paquets |
 |---|---|
-| [vitesse](https://github.com/maxlestage/Vitesse) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
-| [securite](https://github.com/maxlestage/Securite) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
-| [memoire-orm](https://github.com/maxlestage/Memoire) | The database: type-safe models and queries, in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
-| [active](https://github.com/maxlestage/Active) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
+| [vitesse](https://maxlestage.github.io/Vitesse/) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
+| [securite](https://maxlestage.github.io/Securite/) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
+| [memoire-orm](https://maxlestage.github.io/Memoire/) | The database: type-safe models and queries, in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
+| [active](https://maxlestage.github.io/Active/) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
 
 You don't need to learn four libraries to start. Paquets connects them, chooses good defaults, and exposes one small API. When you need more, every package is one import away (see [The four packages](packages.md)).
 

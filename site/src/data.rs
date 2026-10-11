@@ -2,17 +2,12 @@
 //! four packages, the code samples (their comments are translated in
 //! `i18n`, marked `§0`, `§1`… here) and the figures.
 
-pub const GITHUB: &str = "https://github.com/maxlestage/Paquets";
 pub const CRATES_IO: &str = "https://crates.io/crates/paquets";
 pub const DOCS_RS: &str = "https://docs.rs/paquets";
-pub const HEROKU_DEPLOY: &str =
-    "https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets";
-pub const HEROKU_BUTTON: &str = "https://www.herokucdn.com/deploy/button.svg";
 /// Who designed and built Paquets and its sister projects.
 pub const AUTHOR: &str = "Maxime Nathan Lestage";
-pub const AUTHOR_URL: &str = "https://github.com/maxlestage";
-/// The license, read online: proprietary, all rights reserved.
-pub const LICENSE: &str = "https://github.com/maxlestage/Paquets/blob/master/LICENSE";
+/// The license, served by the site (`public/LICENSE.txt`): proprietary, all rights reserved.
+pub const LICENSE_PATH: &str = "/LICENSE.txt";
 
 /// The sister projects of Paquets, by the same author: (name, website). The footer links
 /// them in this order; `i18n::Texts::footer_projects` describes each one in the same order.
@@ -31,7 +26,8 @@ pub const INSTALL: &str = "cargo install paquets";
 /// One of the four packages Paquets is made of.
 pub struct Package {
     pub name: &'static str,
-    pub repo: &'static str,
+    /// Its website.
+    pub site: &'static str,
     /// The letter on the faces of its cube.
     pub glyph: &'static str,
     /// Its accent color.
@@ -44,7 +40,7 @@ pub struct Package {
 pub const PACKAGES: [Package; 4] = [
     Package {
         name: "vitesse",
-        repo: "https://github.com/maxlestage/Vitesse",
+        site: "https://maxlestage.github.io/Vitesse/",
         glyph: "V",
         color: "#ffc24b",
         figure: "291k req/s",
@@ -52,7 +48,7 @@ pub const PACKAGES: [Package; 4] = [
     },
     Package {
         name: "securite",
-        repo: "https://github.com/maxlestage/Securite",
+        site: "https://maxlestage.github.io/Securite/",
         glyph: "S",
         color: "#ff4fa3",
         figure: "≈ 6 µs",
@@ -60,7 +56,7 @@ pub const PACKAGES: [Package; 4] = [
     },
     Package {
         name: "memoire-orm",
-        repo: "https://github.com/maxlestage/Memoire",
+        site: "https://maxlestage.github.io/Memoire/",
         glyph: "M",
         color: "#8b6dff",
         figure: "6 DB",
@@ -68,7 +64,7 @@ pub const PACKAGES: [Package; 4] = [
     },
     Package {
         name: "active",
-        repo: "https://github.com/maxlestage/Active",
+        site: "https://maxlestage.github.io/Active/",
         glyph: "A",
         color: "#22d3ee",
         figure: "36.8 kB",

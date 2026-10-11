@@ -6,16 +6,16 @@ Paquets está construido sobre cuatro paquetes del mismo autor: vitesse, securit
 
 | Paquete | Función | Reexportado como | Repositorio | Documentación |
 |---|---|---|---|---|
-| **vitesse** | servidor HTTP al estilo de Express.js: rutas, middleware, routers, WebSocket, HTTP/3, cliente de pruebas | `paquets::vitesse` | [maxlestage/Vitesse](https://github.com/maxlestage/Vitesse) | [documentación](https://github.com/maxlestage/Vitesse/blob/master/docs/es/README.md) |
-| **securite** | middleware de seguridad: WAF, límite de tasa, CSRF, CORS, cabeceras de seguridad y CSP, bloqueador de bots, autenticación… | `paquets::securite` | [maxlestage/Securite](https://github.com/maxlestage/Securite) | [documentación](https://github.com/maxlestage/Securite/blob/master/docs/es/introduction.md) |
-| **memoire-orm** | ORM asíncrono con tipado seguro, SQL construido en tiempo de compilación: memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://github.com/maxlestage/Memoire) | [documentación](https://github.com/maxlestage/Memoire/blob/master/docs/es/introduction.md) |
-| **active** | front end: componentes como funciones de Rust, `use_state`, renderizado en el servidor con etiquetas SEO completas, islas WebAssembly | `paquets::active` | [maxlestage/Active](https://github.com/maxlestage/Active) | [documentación](https://github.com/maxlestage/Active/blob/master/site/docs/es/introduction.md) |
+| **vitesse** | servidor HTTP al estilo de Express.js: rutas, middleware, routers, WebSocket, HTTP/3, cliente de pruebas | `paquets::vitesse` | [maxlestage/Vitesse](https://maxlestage.github.io/Vitesse/) | [documentación](https://maxlestage.github.io/Vitesse/es/docs/README/) |
+| **securite** | middleware de seguridad: WAF, límite de tasa, CSRF, CORS, cabeceras de seguridad y CSP, bloqueador de bots, autenticación… | `paquets::securite` | [maxlestage/Securite](https://maxlestage.github.io/Securite/) | [documentación](https://maxlestage.github.io/Securite/es/docs/introduction/) |
+| **memoire-orm** | ORM asíncrono con tipado seguro, SQL construido en tiempo de compilación: memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://maxlestage.github.io/Memoire/) | [documentación](https://maxlestage.github.io/Memoire/es/docs/introduction/) |
+| **active** | front end: componentes como funciones de Rust, `use_state`, renderizado en el servidor con etiquetas SEO completas, islas WebAssembly | `paquets::active` | [maxlestage/Active](https://maxlestage.github.io/Active/) | [documentación](https://maxlestage.github.io/Active/es/docs/introduction/) |
 
 Paquets también reexporta `paquets::serde` y `paquets::serde_json` (y `json!` en el prelude), para que `#[model]` y `#[data]` funcionen sin añadir serde a tu `Cargo.toml`, y `paquets::test`, los tipos del cliente de pruebas.
 
 ## vitesse: el servidor
 
-[vitesse](https://github.com/maxlestage/Vitesse) («velocidad» en francés) es el servidor HTTP, con su propio motor HTTP/1.1 sobre tokio. Atiende unas 291 000 peticiones por segundo con 2 núcleos en `GET /`, más que actix-web y axum en la misma máquina, y 2.78 millones con pipelining.
+[vitesse](https://maxlestage.github.io/Vitesse/) («velocidad» en francés) es el servidor HTTP, con su propio motor HTTP/1.1 sobre tokio. Atiende unas 291 000 peticiones por segundo con 2 núcleos en `GET /`, más que actix-web y axum en la misma máquina, y 2.78 millones con pipelining.
 
 **En Paquets:** `App` contiene una `vitesse::App` y da acceso a todos sus métodos (se desreferencia a ella): `get`, `post`, `ws`, `middleware`, `mount`, `state`, `fallback`, `on_error`, `body_limit`, `static_dir`, `workers`… Los handlers reciben una `vitesse::Request` y devuelven cualquier cosa que implemente `vitesse::IntoResponse`. El cliente de pruebas de `app.test()` es el `TestClient` de vitesse.
 
@@ -36,11 +36,11 @@ app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Durat
 - `paquets::vitesse::tokio`: el runtime de tokio sobre el que funciona vitesse (`tokio::spawn`, `tokio::sync`, `tokio::time`…), sin añadir tokio a tus dependencias;
 - `paquets::vitesse::Error`: el tipo de error propio de vitesse, envuelto por `paquets::Error` (`err.into_inner()` lo devuelve);
 - `paquets::vitesse::ws::Upgrade`: handshakes WebSocket con subprotocolos y límites de tamaño;
-- HTTP/3 con la feature `http3` (consulta la [guía de HTTP/3 de vitesse](https://github.com/maxlestage/Vitesse/blob/master/docs/es/http3.md)).
+- HTTP/3 con la feature `http3` (consulta la [guía de HTTP/3 de vitesse](https://maxlestage.github.io/Vitesse/es/docs/http3/)).
 
 ## securite: el escudo
 
-[securite](https://github.com/maxlestage/Securite) es un conjunto de 19 guards de seguridad, reunidos en un `Shield`. Su pipeline recomendado cuesta unos 6 µs por petición. Está escrito para el ecosistema tower (axum, hyper, tonic) y no contiene código `unsafe`.
+[securite](https://maxlestage.github.io/Securite/) es un conjunto de 19 guards de seguridad, reunidos en un `Shield`. Su pipeline recomendado cuesta unos 6 µs por petición. Está escrito para el ecosistema tower (axum, hyper, tonic) y no contiene código `unsafe`.
 
 **En Paquets:** `App::new()` pone `paquets::shield().build()` delante de cada petición: el preset recomendado de securite, con la IP del cliente leída de `X-Forwarded-For` en Heroku. Paquets hace de puente entre las peticiones de vitesse y los guards de securite: el escudo ve la línea de la petición y las cabeceras, añade sus cabeceras a cada respuesta y transmite sus hallazgos a tus handlers (la IP del cliente, el usuario autenticado, el identificador de petición). Las páginas calculan su propia Content-Security-Policy con las funciones de hash de securite.
 
@@ -56,7 +56,7 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 
 ## memoire-orm: la base de datos
 
-[memoire-orm](https://github.com/maxlestage/Memoire) asocia structs de Rust a tablas y permite escribir las consultas en Rust, comprobadas por el compilador. El SQL de las operaciones por clave primaria se construye en tiempo de compilación, y el mismo código funciona en seis backends.
+[memoire-orm](https://maxlestage.github.io/Memoire/) asocia structs de Rust a tablas y permite escribir las consultas en Rust, comprobadas por el compilador. El SQL de las operaciones por clave primaria se construye en tiempo de compilación, y el mismo código funciona en seis backends.
 
 **En Paquets:**
 
@@ -70,13 +70,13 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 
 ## active: el front end
 
-[active](https://github.com/maxlestage/Active) construye las vistas con una función por etiqueta HTML, las renderiza en el servidor con etiquetas SEO completas y convierte las partes marcadas de una página en islas WebAssembly. No tiene macros, ni lenguaje de plantillas, ni dependencias del lado del servidor; su bundle del contador pesa 36.8 kB comprimido.
+[active](https://maxlestage.github.io/Active/) construye las vistas con una función por etiqueta HTML, las renderiza en el servidor con etiquetas SEO completas y convierte las partes marcadas de una página en islas WebAssembly. No tiene macros, ni lenguaje de plantillas, ni dependencias del lado del servidor; su bundle del contador pesa 36.8 kB comprimido.
 
 **En Paquets:** `Page` envuelve el `Document` de active: le añade el tema, la Content-Security-Policy y la carga del bundle de las islas (que se encuentra en `pkg/` al arrancar). Las islas son las islas de active, hidratadas en el navegador por `paquets::hydrate` (feature `client`).
 
 **En el prelude:** todas las funciones de etiquetas HTML (`div()`, `p()`, `a()`…) y el módulo `html` (para `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn` y `keyed`.
 
-**Más allá del prelude**, a través de `paquets::active`: `Document` para renderizar una página sin el tema ni la política de seguridad de `Page`, por ejemplo para exportar archivos estáticos. Con la feature `client` (lado navegador): `paquets::hydrate`, `paquets::mount_to` y `paquets::mount` para las aplicaciones renderizadas por completo en el navegador, y `paquets::navigate`, `paquets::location`, `paquets::query` y `paquets::query_param` para el enrutamiento sin recargar la página. Consulta [Islas](islands.md) y la [documentación de active](https://github.com/maxlestage/Active/blob/master/site/docs/es/introduction.md).
+**Más allá del prelude**, a través de `paquets::active`: `Document` para renderizar una página sin el tema ni la política de seguridad de `Page`, por ejemplo para exportar archivos estáticos. Con la feature `client` (lado navegador): `paquets::hydrate`, `paquets::mount_to` y `paquets::mount` para las aplicaciones renderizadas por completo en el navegador, y `paquets::navigate`, `paquets::location`, `paquets::query` y `paquets::query_param` para el enrutamiento sin recargar la página. Consulta [Islas](islands.md) y la [documentación de active](https://maxlestage.github.io/Active/es/docs/introduction/).
 
 ## Correspondencia de los nombres
 

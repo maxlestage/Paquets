@@ -1,6 +1,6 @@
 # Seguridad
 
-Toda aplicación Paquets está protegida desde su primera línea: `App::new()` pone el escudo recomendado de [securite](https://github.com/maxlestage/Securite) delante de cada petición. Los ataques se bloquean antes de que se ejecute tu código, y cada respuesta recibe las cabeceras de seguridad que necesitan los navegadores. Esta página explica qué hace el escudo, cómo modificarlo y qué sigue siendo tarea tuya, como el inicio de sesión de los usuarios.
+Toda aplicación Paquets está protegida desde su primera línea: `App::new()` pone el escudo recomendado de [securite](https://maxlestage.github.io/Securite/) delante de cada petición. Los ataques se bloquean antes de que se ejecute tu código, y cada respuesta recibe las cabeceras de seguridad que necesitan los navegadores. Esta página explica qué hace el escudo, cómo modificarlo y qué sigue siendo tarea tuya, como el inicio de sesión de los usuarios.
 
 ## Qué hace el escudo
 
@@ -103,7 +103,7 @@ app.security(
 ```
 
 > [!WARNING]
-> Confía en una cabecera de reenvío solo cuando tu aplicación sea accesible **únicamente** a través del proxy que la define. Si no, cualquiera puede enviar la cabecera y elegir su dirección. Consulta la [guía de la IP del cliente](https://github.com/maxlestage/Securite/blob/master/docs/es/client-ip.md) de securite.
+> Confía en una cabecera de reenvío solo cuando tu aplicación sea accesible **únicamente** a través del proxy que la define. Si no, cualquiera puede enviar la cabecera y elegir su dirección. Consulta la [guía de la IP del cliente](https://maxlestage.github.io/Securite/es/docs/client-ip/) de securite.
 
 Los handlers pueden leer la dirección que encontró el escudo con `req.extensions().get::<ClientIp>()` (consulta [Peticiones y respuestas](requests-responses.md#la-dirección-ip-del-cliente)).
 
@@ -249,7 +249,7 @@ app.get("/admin", |req: Request| async move {
 });
 ```
 
-Ahora todas las rutas bajo `/admin` necesitan el nombre de usuario y la contraseña; las demás siguen siendo públicas. Lee la contraseña de una variable de entorno (`std::env::var("ADMIN_PASSWORD")`) en lugar de escribirla en el código. La [guía de autenticación](https://github.com/maxlestage/Securite/blob/master/docs/es/auth.md) de securite trata los tokens, las claves de API y las comprobaciones personalizadas como JWT.
+Ahora todas las rutas bajo `/admin` necesitan el nombre de usuario y la contraseña; las demás siguen siendo públicas. Lee la contraseña de una variable de entorno (`std::env::var("ADMIN_PASSWORD")`) en lugar de escribirla en el código. La [guía de autenticación](https://maxlestage.github.io/Securite/es/docs/auth/) de securite trata los tokens, las claves de API y las comprobaciones personalizadas como JWT.
 
 ### Cuentas y sesiones
 
@@ -263,7 +263,7 @@ El escudo se encarga del resto: la cookie recibe `Secure`, `HttpOnly` y `SameSit
 
 ## Más información
 
-La documentación de securite tiene una página por guard: [WAF](https://github.com/maxlestage/Securite/blob/master/docs/es/waf.md), [límite de tasa](https://github.com/maxlestage/Securite/blob/master/docs/es/rate-limit.md), [CSRF](https://github.com/maxlestage/Securite/blob/master/docs/es/csrf.md), [cabeceras de seguridad](https://github.com/maxlestage/Securite/blob/master/docs/es/security-headers.md), [presets](https://github.com/maxlestage/Securite/blob/master/docs/es/shield-presets.md), y más: filtro de IP, filtro de hosts, bloqueos automáticos, firmas de webhooks. En Paquets, securite se reexporta como `paquets::securite`.
+La documentación de securite tiene una página por guard: [WAF](https://maxlestage.github.io/Securite/es/docs/waf/), [límite de tasa](https://maxlestage.github.io/Securite/es/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/es/docs/csrf/), [cabeceras de seguridad](https://maxlestage.github.io/Securite/es/docs/security-headers/), [presets](https://maxlestage.github.io/Securite/es/docs/shield-presets/), y más: filtro de IP, filtro de hosts, bloqueos automáticos, firmas de webhooks. En Paquets, securite se reexporta como `paquets::securite`.
 
 ## Próximos pasos
 

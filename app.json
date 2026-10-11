@@ -1,10 +1,15 @@
 {
   "name": "Paquets",
   "description": "The simplest full-stack framework for Rust. Deploys the Paquets website, itself a Paquets app, with its live demo (pages, REST API, database, security).",
-  "repository": "https://github.com/maxlestage/Paquets",
   "website": "https://maxlestage.github.io/Paquets/",
   "logo": "https://maxlestage.github.io/Paquets/assets/logo.svg",
-  "keywords": ["rust", "web", "framework", "fullstack", "wasm"],
+  "keywords": [
+    "rust",
+    "web",
+    "framework",
+    "fullstack",
+    "wasm"
+  ],
   "stack": "container",
   "success_url": "/"
 }

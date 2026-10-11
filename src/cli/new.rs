@@ -4,9 +4,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-/// Where projects get Paquets from: the repository, with the version cargo will use
-/// once the crate is on crates.io.
-const SOURCE: &str = r#"version = "0.1", git = "https://github.com/maxlestage/Paquets""#;
+/// Where projects get Paquets from: crates.io.
+const SOURCE: &str = r#"version = "0.1""#;
 
 struct Options {
     name: String,
