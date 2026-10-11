@@ -144,7 +144,11 @@ async fn login(req: Request) -> Result<Redirect> {
 }
 ```
 
-Les envois de fichiers (`multipart/form-data`) ne sont pas analysés pour vous : lisez le corps brut avec `req.take_body()` et passez-le à une crate multipart. Voir [le guide des requêtes de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/requests/).
+### Envois de fichiers
+
+Avec la feature `multipart`, `req.multipart()?` lit un formulaire envoyé avec `enctype="multipart/form-data"`, un champ à la fois ; il répond `415` quand la requête est d'un autre type. Les limites de corps (2 Mio par défaut) s'appliquent aussi aux envois : pour accepter des fichiers plus gros, relevez les deux (voir [Taille du corps](#taille-du-corps)). Voir [le guide des envois de fichiers de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/requests/#envois-de-fichiers-multipart).
+
+Sans la feature, lisez le corps brut avec `req.take_body()` et passez-le à une crate multipart.
 
 ## Taille du corps
 

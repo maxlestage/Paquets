@@ -211,7 +211,7 @@ pub struct Texts {
     pub footer_ecosystem: &'static str,
     pub footer_ecosystem_text: &'static str,
     pub footer_here: &'static str,
-    pub footer_projects: [&'static str; 6],
+    pub footer_projects: [&'static str; 7],
     /// The signature: "Designed and built by", then where it was made.
     pub footer_by: &'static str,
     pub footer_crafted: &'static str,
@@ -504,7 +504,7 @@ pub const EN: Texts = Texts {
     packages: [
         PkgText {
             role: "HTTP server",
-            text: "An Express-style API: app.get, req.param, middleware, Router, WebSocket, HTTP/3. Faster than actix-web and axum.",
+            text: "An Express-style API: app.get, req.param, middleware, Router, WebSocket, sessions, HTTPS up to HTTP/3. Faster than actix-web and axum.",
             figure: "requests per second on GET /",
         },
         PkgText {
@@ -514,7 +514,7 @@ pub const EN: Texts = Texts {
         },
         PkgText {
             role: "Type-safe ORM",
-            text: "Async models and queries checked at compile time, on memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis and MongoDB.",
+            text: "Async models and queries checked at compile time, relations and full-text search, on memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis and MongoDB.",
             figure: "databases, one API",
         },
         PkgText {
@@ -707,7 +707,7 @@ pub const EN: Texts = Texts {
     footer_rust: "100 % Rust",
     footer_license: "License",
     footer_ecosystem: "Ecosystem",
-    footer_ecosystem_text: "Six Rust projects by one author, made to work together: from the front end to the database, and even to iPhone apps.",
+    footer_ecosystem_text: "Seven Rust projects by one author, made to work together: from the front end to the database, from TypeScript to iPhone apps.",
     footer_here: "You are here",
     footer_projects: [
         "Front-end: components, SSR, WebAssembly islands",
@@ -716,6 +716,7 @@ pub const EN: Texts = Texts {
         "Async, type-safe ORM, SQL & NoSQL",
         "The full-stack framework that unites them",
         "SwiftUI apps written in Rust",
+        "TypeScript & JavaScript translated to Rust",
     ],
     footer_by: "Designed & built by",
     footer_crafted: "Crafted in Rust, in France",
@@ -785,7 +786,7 @@ pub const FR: Texts = Texts {
     packages: [
         PkgText {
             role: "Serveur HTTP",
-            text: "Une API à la Express : app.get, req.param, middlewares, Router, WebSocket, HTTP/3. Plus rapide qu'actix-web et axum.",
+            text: "Une API à la Express : app.get, req.param, middlewares, Router, WebSocket, sessions, HTTPS jusqu'à HTTP/3. Plus rapide qu'actix-web et axum.",
             figure: "requêtes par seconde sur GET /",
         },
         PkgText {
@@ -795,7 +796,7 @@ pub const FR: Texts = Texts {
         },
         PkgText {
             role: "ORM typé",
-            text: "Modèles et requêtes asynchrones vérifiés à la compilation, en mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis et MongoDB.",
+            text: "Modèles et requêtes asynchrones vérifiés à la compilation, relations et recherche plein texte, en mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis et MongoDB.",
             figure: "bases de données, une seule API",
         },
         PkgText {
@@ -994,7 +995,7 @@ pub const FR: Texts = Texts {
     footer_rust: "100 % Rust",
     footer_license: "Licence",
     footer_ecosystem: "Écosystème",
-    footer_ecosystem_text: "Six projets Rust d'un même auteur, faits pour travailler ensemble : du front-end à la base de données, et jusqu'aux apps iPhone.",
+    footer_ecosystem_text: "Sept projets Rust d'un même auteur, faits pour travailler ensemble : du front-end à la base de données, du TypeScript aux apps iPhone.",
     footer_here: "Vous êtes ici",
     footer_projects: [
         "Front-end : composants, SSR, îlots WebAssembly",
@@ -1003,6 +1004,7 @@ pub const FR: Texts = Texts {
         "ORM asynchrone typé, SQL et NoSQL",
         "Le framework full-stack qui les réunit",
         "Des apps SwiftUI écrites en Rust",
+        "TypeScript et JavaScript traduits en Rust",
     ],
     footer_by: "Conçu et développé par",
     footer_crafted: "Fabriqué en Rust, en France",
@@ -1072,7 +1074,7 @@ pub const ES: Texts = Texts {
     packages: [
         PkgText {
             role: "Servidor HTTP",
-            text: "Una API al estilo Express: app.get, req.param, middlewares, Router, WebSocket, HTTP/3. Más rápido que actix-web y axum.",
+            text: "Una API al estilo Express: app.get, req.param, middlewares, Router, WebSocket, sesiones, HTTPS hasta HTTP/3. Más rápido que actix-web y axum.",
             figure: "peticiones por segundo en GET /",
         },
         PkgText {
@@ -1082,7 +1084,7 @@ pub const ES: Texts = Texts {
         },
         PkgText {
             role: "ORM con tipos",
-            text: "Modelos y consultas asíncronos comprobados al compilar, en memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis y MongoDB.",
+            text: "Modelos y consultas asíncronos comprobados al compilar, relaciones y búsqueda de texto completo, en memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis y MongoDB.",
             figure: "bases de datos, una sola API",
         },
         PkgText {
@@ -1281,7 +1283,7 @@ pub const ES: Texts = Texts {
     footer_rust: "100 % Rust",
     footer_license: "Licencia",
     footer_ecosystem: "Ecosistema",
-    footer_ecosystem_text: "Seis proyectos Rust de un mismo autor, hechos para trabajar juntos: del front-end a la base de datos, y hasta apps para iPhone.",
+    footer_ecosystem_text: "Siete proyectos Rust de un mismo autor, hechos para trabajar juntos: del front-end a la base de datos, del TypeScript a las apps para iPhone.",
     footer_here: "Estás aquí",
     footer_projects: [
         "Front-end: componentes, SSR, islas WebAssembly",
@@ -1290,6 +1292,7 @@ pub const ES: Texts = Texts {
         "ORM asíncrono tipado, SQL y NoSQL",
         "El framework full-stack que los une",
         "Apps SwiftUI escritas en Rust",
+        "TypeScript y JavaScript traducidos a Rust",
     ],
     footer_by: "Diseñado y desarrollado por",
     footer_crafted: "Hecho en Rust, en Francia",

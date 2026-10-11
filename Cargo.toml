@@ -46,13 +46,50 @@ chrono = ["memoire-orm/chrono"]
 uuid = ["memoire-orm/uuid"]
 ## JSON columns (`serde_json::Value`, `Json<T>`).
 json = ["memoire-orm/json"]
+## In-memory databases stored in an encrypted file (`MemoryDb::open_with` and a password).
+encryption = ["memoire-orm/encryption"]
+## HTTPS (TLS 1.2 and 1.3, rustls): `app.tls(...)`.
+tls = ["vitesse/tls"]
+## HTTP/2: negotiated by ALPN with `tls`, and in clear text (h2c).
+http2 = ["vitesse/http2"]
 ## HTTP/3 over QUIC, next to HTTP/1.1.
 http3 = ["vitesse/http3"]
+## Signed cookies and server-side sessions: `app.cookie_secret(...)`, `middleware::session(...)`.
+session = ["vitesse/session"]
+## HTML templates with minijinja: `app.views("views")`, `req.render(...)`.
+templates = ["vitesse/templates"]
+## File uploads: `req.multipart()`.
+multipart = ["vitesse/multipart"]
+## Brotli or gzip responses: `middleware::compress()`.
+compress = ["vitesse/compress"]
+## tower layers as middlewares: `middleware::layer(...)`.
+tower = ["vitesse/tower"]
 ## Every database and option.
-full = ["sqlite", "postgres", "mysql", "redis", "mongodb", "chrono", "uuid", "json", "http3"]
+full = [
+    "sqlite",
+    "postgres",
+    "mysql",
+    "redis",
+    "mongodb",
+    "chrono",
+    "uuid",
+    "json",
+    "encryption",
+    "tls",
+    "http2",
+    "http3",
+    "session",
+    "templates",
+    "multipart",
+    "compress",
+    "tower",
+]
 ## Browser side, for `wasm32-unknown-unknown`: hydrate islands, mount
 ## client-side apps, route without reloading.
 client = ["active/client"]
+## Browser storage in islands: `paquets::orm::web::Store` (application state saved in
+## `localStorage`) and `LocalStorageDb` (a Memoire database in `localStorage`).
+browser-storage = ["memoire-orm/web"]
 
 [workspace]
 members = ["macros"]

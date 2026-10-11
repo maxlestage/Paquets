@@ -108,7 +108,13 @@ app.serve_dir("/assets", ServeDir::new("assets").max_age(Duration::from_secs(31_
 
 ### Compression
 
-Vitesse doesn't compress responses. Text compresses very well (HTML, JSON, CSS, WebAssembly), so put a CDN (Cloudflare, Fastly…) or a reverse proxy in front of the app if bandwidth matters. Heroku's router doesn't compress either.
+Text compresses very well (HTML, JSON, CSS, WebAssembly), and Heroku's router doesn't compress. With the `compress` feature, the app does it itself:
+
+```rust
+app.middleware(middleware::compress());
+```
+
+Responses of 1 KiB or more that are text, JSON, SVG or WebAssembly are sent in Brotli to the browsers that accept it, in gzip to the others; images and archives pass through. The encoding runs on a blocking thread. A CDN (Cloudflare, Fastly…) in front of the app does the same and caches the result.
 
 ### Logs
 

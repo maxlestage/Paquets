@@ -4,7 +4,7 @@ use std::fmt;
 
 use memoire_orm::{
     Database, Dialect, ExecResult, Executor, FromRow, MemoryDb, MemoryTransaction, Query, Result,
-    Transaction,
+    TableSchema, Transaction, Value,
 };
 
 #[cfg(feature = "mongodb")]
@@ -49,6 +49,7 @@ use memoire_orm::{SqliteDb, SqliteTransaction};
 /// | URL | Backend | Cargo feature |
 /// |---|---|---|
 /// | *(none)*, `memory` | in memory, emptied when the server stops | always |
+/// | `memory://data/app.memoire` | in memory, stored in a file and read back at startup | always |
 /// | `sqlite://app.db`, `app.db`, `sqlite::memory:` | SQLite file | `sqlite` (default) |
 /// | `postgres://…` | PostgreSQL, TLS when the server offers it | `postgres` (default) |
 /// | `mysql://…`, `mariadb://…` | MySQL / MariaDB | `mysql` |
@@ -114,7 +115,17 @@ impl Db {
         let url = url.trim();
         let scheme = url.split_once(':').map_or("", |(s, _)| s);
         match Self::kind_of(url) {
-            "memory" => Ok(Db::memory()),
+            "memory" => match memory_file(url) {
+                Some(path) => {
+                    // `memory://data/app.memoire`: the folder is created like the file.
+                    if let Some(dir) = std::path::Path::new(path).parent() {
+                        std::fs::create_dir_all(dir)
+                            .map_err(|e| memoire_orm::Error::Database(Box::new(e)))?;
+                    }
+                    Ok(Db::Memory(MemoryDb::open(path)?))
+                }
+                None => Ok(Db::memory()),
+            },
             #[cfg(feature = "sqlite")]
             "sqlite" => {
                 let path = url
@@ -190,6 +201,12 @@ impl Db {
     }
 }
 
+/// The file of `memory://path`: `None` for a database that is only in memory.
+fn memory_file(url: &str) -> Option<&str> {
+    let (_, path) = url.split_once("://")?;
+    (!path.is_empty()).then_some(path)
+}
+
 impl Default for Db {
     fn default() -> Self {
         Db::memory()
@@ -257,6 +274,10 @@ impl Executor for Db {
 
     async fn execute(&self, query: Query<'_>) -> Result<ExecResult> {
         each!(self, Db, d => d.execute(query).await)
+    }
+
+    async fn insert_rows(&self, table: &'static TableSchema, rows: Vec<Vec<Value>>) -> Result<u64> {
+        each!(self, Db, d => d.insert_rows(table, rows).await)
     }
 }
 
@@ -339,6 +360,10 @@ impl Executor for DbTransaction {
     async fn execute(&self, query: Query<'_>) -> Result<ExecResult> {
         each!(self, DbTransaction, d => d.execute(query).await)
     }
+
+    async fn insert_rows(&self, table: &'static TableSchema, rows: Vec<Vec<Value>>) -> Result<u64> {
+        each!(self, DbTransaction, d => d.insert_rows(table, rows).await)
+    }
 }
 
 impl Transaction for DbTransaction {
@@ -359,6 +384,7 @@ mod tests {
     fn urls_name_their_backend() {
         assert_eq!(Db::kind_of(""), "memory");
         assert_eq!(Db::kind_of("memory"), "memory");
+        assert_eq!(Db::kind_of("memory://data/app.memoire"), "memory");
         assert_eq!(Db::kind_of("sqlite://app.db"), "sqlite");
         assert_eq!(Db::kind_of("sqlite::memory:"), "sqlite");
         assert_eq!(Db::kind_of("data/app.sqlite3"), "sqlite");
@@ -382,5 +408,40 @@ mod tests {
             let err = Db::connect("ftp://nope").await.unwrap_err();
             assert!(err.to_string().contains("unknown database URL scheme"));
         });
+    }
+
+    #[test]
+    fn a_memory_database_can_live_in_a_file() {
+        use memoire_orm::Model;
+
+        #[derive(memoire_orm::Model, Clone, Debug)]
+        #[memoire(table = "notes")]
+        struct Note {
+            id: i64,
+            text: String,
+        }
+
+        let dir = std::env::temp_dir().join(format!("paquets-memory-{}", std::process::id()));
+        let url = format!(
+            "memory://{}",
+            dir.join("data").join("app.memoire").display()
+        );
+        assert_eq!(memory_file("memory://"), None);
+        assert_eq!(memory_file("memory"), None);
+        memoire_orm::block_on(async {
+            let db = Db::connect(&url).await.unwrap();
+            db.create_table_if_not_exists::<Note>().await.unwrap();
+            let notes = [Note {
+                id: 1,
+                text: "kept".into(),
+            }];
+            Note::insert_many(&db, &notes).await.unwrap();
+            drop(db);
+
+            let db = Db::connect(&url).await.unwrap();
+            db.create_table_if_not_exists::<Note>().await.unwrap();
+            assert_eq!(Note::get(&db, 1).await.unwrap().text, "kept");
+        });
+        std::fs::remove_dir_all(dir).unwrap();
     }
 }

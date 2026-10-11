@@ -62,9 +62,9 @@ Paquets assembles four crates, each usable on its own:
 
 | Package | Role | In Paquets |
 |---|---|---|
-| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, sessions, HTTPS, HTTP/2 and HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
 | [**Securite**](https://maxlestage.github.io/Securite/) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
-| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | Type-safe async ORM with compile-time SQL, SQL and NoSQL | `#[model]`, `req.db()`, `app.api::<M>()` |
+| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | Type-safe async ORM with compile-time SQL, SQL and NoSQL, relations and full-text search | `#[model]`, `req.db()`, `app.api::<M>()` |
 | [**active**](https://maxlestage.github.io/Active/) | Front end: components, state, server rendering, SEO, WebAssembly islands | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
 ## Get started
@@ -226,4 +226,4 @@ to the author, as the license states.
 ## Credits
 
 Designed and developed by Maxime Nathan Lestage,
-as part of one family of Rust projects: [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/) and [FerroSwift](https://maxlestage.github.io/FerroSwift/).
+as part of one family of Rust projects: [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/), [FerroSwift](https://maxlestage.github.io/FerroSwift/) and [Solidify](https://maxlestage.github.io/Solidify/).

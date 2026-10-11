@@ -5,7 +5,7 @@
 use std::path::Path;
 use std::sync::OnceLock;
 
-use active::pwa::{Manifest, ServiceWorker};
+use active::pwa::{Manifest, ServiceWorker, version};
 use vitesse::{Response, header};
 
 /// The manifest given to [`App::pwa`](crate::App::pwa), once the app has started.
@@ -149,24 +149,26 @@ fn worker(
     // from), like every page.
     let start = (!start.contains("{lang}")).then_some(start);
     let mut precache: Vec<String> = start.iter().cloned().collect();
-    let mut fingerprint = Fnv::default();
-    fingerprint.write(env!("CARGO_PKG_VERSION").as_bytes());
-    fingerprint.write(json.as_bytes());
+    let mut fingerprint = vec![
+        env!("CARGO_PKG_VERSION").as_bytes().to_vec(),
+        json.as_bytes().to_vec(),
+    ];
     if let Some((js, wasm)) = bundle {
         for url in [js, wasm] {
             precache.push(url.clone());
             if let Ok(bytes) = std::fs::read(Path::new(url.trim_start_matches('/'))) {
-                fingerprint.write(&bytes);
+                fingerprint.push(bytes);
             }
         }
     }
+    // The worker saves a URL given twice only once.
     for icon in manifest.icons() {
-        if icon.src.starts_with('/') && !precache.contains(&icon.src) {
+        if icon.src.starts_with('/') {
             precache.push(icon.src.clone());
         }
     }
-    let mut worker = ServiceWorker::new(slug(manifest.name()), format!("{:x}", fingerprint.0))
-        .precache(precache);
+    let mut worker =
+        ServiceWorker::new(slug(manifest.name()), version(&fingerprint)).precache(precache);
     if let Some(start) = start {
         worker = worker.offline_page(start);
     }
@@ -206,23 +208,6 @@ fn slug(name: &str) -> String {
         "app".to_owned()
     } else {
         out.to_owned()
-    }
-}
-
-/// FNV-1a: enough to tell two versions of the files apart.
-struct Fnv(u64);
-
-impl Default for Fnv {
-    fn default() -> Self {
-        Fnv(0xcbf2_9ce4_8422_2325)
-    }
-}
-
-impl Fnv {
-    fn write(&mut self, bytes: &[u8]) {
-        for &b in bytes {
-            self.0 = (self.0 ^ u64::from(b)).wrapping_mul(0x0100_0000_01b3);
-        }
     }
 }
 

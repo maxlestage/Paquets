@@ -6,7 +6,7 @@ Paquets repose sur quatre paquets du même auteur : Vitesse, Securite, memoire-o
 
 | Paquet | Rôle | Réexporté sous | Dépôt | Documentation |
 |---|---|---|---|---|
-| **Vitesse** | serveur HTTP dans le style d'Express.js : routes, middlewares, routeurs, WebSocket, HTTP/3, client de test | `paquets::vitesse` | [maxlestage/Vitesse](https://maxlestage.github.io/Vitesse/) | [docs](https://maxlestage.github.io/Vitesse/fr/docs/README/) |
+| **Vitesse** | serveur HTTP dans le style d'Express.js : routes, middlewares, routeurs, WebSocket, HTTPS, HTTP/2 et HTTP/3, sessions, templates, client de test | `paquets::vitesse` | [maxlestage/Vitesse](https://maxlestage.github.io/Vitesse/) | [docs](https://maxlestage.github.io/Vitesse/fr/docs/README/) |
 | **Securite** | middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes de sécurité et CSP, blocage des robots, authentification… | `paquets::securite` | [maxlestage/Securite](https://maxlestage.github.io/Securite/) | [docs](https://maxlestage.github.io/Securite/fr/docs/introduction/) |
 | **memoire-orm** | ORM asynchrone typé, SQL généré à la compilation : mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://maxlestage.github.io/Memoire/) | [docs](https://maxlestage.github.io/Memoire/fr/docs/introduction/) |
 | **active** | front-end : composants écrits comme des fonctions Rust, `use_state`, rendu serveur avec toutes les balises SEO, îlots WebAssembly | `paquets::active` | [maxlestage/Active](https://maxlestage.github.io/Active/) | [docs](https://maxlestage.github.io/Active/fr/docs/introduction/) |
@@ -36,7 +36,21 @@ app.serve_dir("/assets", paquets::vitesse::ServeDir::new("assets").max_age(Durat
 - `paquets::vitesse::tokio` : le runtime tokio sur lequel tourne Vitesse (`tokio::spawn`, `tokio::sync`, `tokio::time`…), sans ajouter tokio à vos dépendances ;
 - `paquets::vitesse::Error` : le type d'erreur propre à Vitesse, enveloppé par `paquets::Error` (`err.into_inner()` vous le rend) ;
 - `paquets::vitesse::ws::Upgrade` : les poignées de main WebSocket avec sous-protocoles et limites de taille ;
-- HTTP/3 avec la feature `http3` (voir [le guide HTTP/3 de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/http3/)).
+- `paquets::vitesse::sse` : les Server-Sent Events, un flux d'événements vers le navigateur ;
+- les middlewares `request_id`, `basic_auth`, `bearer_auth`, `concurrency_limit` et `rate_limit`, à côté de `cors`, `timeout`, `logger` et `helmet`.
+
+Les options de Vitesse sont des features Cargo de Paquets, avec les mêmes noms :
+
+| Feature | Apporte | Guide de Vitesse |
+|---|---|---|
+| `tls`, `http2`, `http3` | HTTPS dans le serveur (`app.tls(...)`), HTTP/2, HTTP/3 sur QUIC | [HTTPS](https://maxlestage.github.io/Vitesse/fr/docs/https/), [HTTP/3](https://maxlestage.github.io/Vitesse/fr/docs/http3/) |
+| `session` | les cookies signés (`app.cookie_secret(...)`) et les sessions (`middleware::session(...)`, `req.session()`) | [Sessions](https://maxlestage.github.io/Vitesse/fr/docs/sessions/) |
+| `templates` | les templates minijinja : `app.views("views")`, `req.render("page.html", json!({...}))` | [Templates](https://maxlestage.github.io/Vitesse/fr/docs/templates/) |
+| `multipart` | les envois de fichiers : `req.multipart()` | [Requêtes](https://maxlestage.github.io/Vitesse/fr/docs/requests/) |
+| `compress` | les réponses en Brotli ou en gzip (`middleware::compress()`), les corps de requête compressés (`middleware::decompress()`) | [Middlewares](https://maxlestage.github.io/Vitesse/fr/docs/middleware/) |
+| `tower` | les couches tower comme middlewares : `middleware::layer(...)` | [Middlewares](https://maxlestage.github.io/Vitesse/fr/docs/middleware/) |
+
+Les pages rendues avec `req.render` reçoivent la Content-Security-Policy du bouclier, qui refuse les scripts et les styles en ligne : placez-les dans `public/`, ou construisez la page avec `Page`, qui autorise les siens (voir [Sécurité](security.md#les-en-têtes-de-sécurité-et-la-content-security-policy)).
 
 ## Securite : le bouclier
 
@@ -54,6 +68,22 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 
 `paquets::securite::prelude::*` importe tous les guards (`RateLimit`, `Waf`, `Csrf`, `Cors`, `Auth`, `IpFilter`, `HostFilter`, `SecurityHeaders`…), `Shield`, `ShieldBuilder`, `ClientIpSource`, `ErrorFormat`, `ClientIp` et `Principal`. `paquets::securite::headers::ContentSecurityPolicy` construit des politiques. Voir [Sécurité](security.md).
 
+**Sa crate sœur, Pratique.** Le dépôt de Securite contient aussi `pratique`, des middlewares Vitesse du quotidien qui n'ont rien à voir avec la sécurité : `ETag` et `304`, `Cache-Control`, un cache de réponses, les journaux d'accès, les métriques Prometheus, les sondes de santé, le mode maintenance, les redirections, les barres obliques finales, la langue du visiteur. Ils fonctionnent tels quels avec une application Paquets, puisque `App` est une application Vitesse :
+
+```toml
+[dependencies]
+pratique = { git = "https://github.com/maxlestage/Securite" }
+```
+
+```rust
+use pratique::prelude::*;
+
+app.middleware(Health::new().version(env!("CARGO_PKG_VERSION"))); // GET /health
+app.middleware(ETag::new());
+```
+
+Voir la [documentation de Pratique](https://maxlestage.github.io/Securite/fr/docs/pratique/).
+
 ## memoire-orm : la base de données
 
 [memoire-orm](https://maxlestage.github.io/Memoire/) fait correspondre des structs Rust à des tables, et permet d'écrire les requêtes en Rust, vérifiées par le compilateur. Le SQL des opérations par clé primaire est généré à la compilation, et le même code fonctionne sur six backends.
@@ -64,9 +94,11 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 - `Db` est une poignée unique pour tous les backends, choisie par `DATABASE_URL`, qui implémente les traits `Executor` et `Database` de Memoire : toutes les méthodes de modèle et toutes les requêtes acceptent `req.db()` ;
 - `app.api::<M>()` et `app.model::<M>()` créent les tables au démarrage ; les erreurs de base de données deviennent des `404`, `409` ou `400` grâce à `?`.
 
-**Dans le prélude :** les traits `Model`, `Executor`, `Database` et `Transaction`, qui donnent leurs méthodes aux modèles et à la base de données.
+**Dans le prélude :** les traits `Model`, `Executor`, `Database` et `Transaction`, qui donnent leurs méthodes aux modèles et à la base de données, et `LoadRelated`, qui charge les lignes liées d'une liste en une requête par niveau (`users.load_children::<Post>(db)`).
 
-**Au-delà du prélude**, via `paquets::orm` : `Migrator` et `Migration`, `Dialect`, la macro `params!` pour le SQL brut, `Page` (le résultat de `paginate`), les colonnes `Json<T>`, et les backends eux-mêmes (`SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), pour ouvrir une base de données avec vos propres réglages et la passer à `app.database(Db::from(...))`. Voir [Base de données](database.md).
+**Ce que Memoire apporte depuis peu**, le tout disponible via `req.db()` : les relations lues dans les clés étrangères ([Lignes liées](database.md#lignes-liées)), la recherche plein texte avec `Column::matches`, les index sur plusieurs colonnes, `find_many` et `update_only`, une base en mémoire gardée dans un fichier (`DATABASE_URL=memory://app.memoire`, chiffrée avec la feature `encryption`), et le stockage dans le navigateur pour les îlots (feature `browser-storage`, voir [Îlots](islands.md#garder-des-données-dans-le-navigateur)).
+
+**Au-delà du prélude**, via `paquets::orm` : `Migrator` et `Migration`, `Dialect`, la macro `params!` pour le SQL brut, `Page` (le résultat de `paginate`), les colonnes `Json<T>`, `Observed` (une poignée qui annonce chaque écriture faite à travers elle), `StorageOptions`, et les backends eux-mêmes (`SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), pour ouvrir une base de données avec vos propres réglages et la passer à `app.database(Db::from(...))`. Voir [Base de données](database.md).
 
 ## Active : le front-end
 
@@ -74,7 +106,7 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 
 **Dans Paquets :** `Page` enveloppe le `Document` d'active : elle y ajoute le thème, la Content-Security-Policy et le chargement du bundle des îlots (trouvé dans `pkg/` au démarrage). Les îlots sont ceux d'active, hydratés dans le navigateur par `paquets::hydrate` (feature `client`).
 
-**Dans le prélude :** toutes les fonctions de balises HTML (`div()`, `p()`, `a()`…) et le module `html` (pour `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn` et `keyed`.
+**Dans le prélude :** toutes les fonctions de balises HTML (`div()`, `p()`, `a()`…) et le module `html` (pour `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `memo` (un état dérivé qui ne notifie que quand sa valeur change), `untrack`, `on_cleanup`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn`, `keyed`, `indexed` (une liste dont les lignes suivent leur position) et `switch` (une vue qui garde sa page pendant que les paramètres de la page changent).
 
 **Au-delà du prélude**, via `paquets::active` : `Document`, pour rendre une page sans le thème ni la politique de sécurité de `Page`, par exemple pour exporter des fichiers statiques. Avec la feature `client` (côté navigateur) : `paquets::hydrate`, `paquets::mount_to` et `paquets::mount` pour les applications entièrement rendues dans le navigateur, `paquets::navigate`, `paquets::location`, `paquets::query` et `paquets::query_param` pour le routage sans rechargement. Voir [Îlots](islands.md) et [la documentation d'active](https://maxlestage.github.io/Active/fr/docs/introduction/).
 

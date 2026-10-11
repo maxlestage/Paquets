@@ -67,7 +67,21 @@ struct User {
 | `#[memoire(default = "0")]` | un valor por defecto SQL, que se usa cuando añades la columna a una tabla existente |
 | `#[memoire(references = "users(id)", on_delete = "cascade")]` | una clave foránea |
 | `#[memoire(primary_key)]` | otro campo como clave primaria, por ejemplo un `slug: String` |
+| `#[memoire(fulltext)]` | prepara una columna de texto para la [búsqueda de texto completo](#consultas) con `matches`: un índice GIN en PostgreSQL, un índice de palabras en memoria |
 | `#[memoire(skip)]` | un campo que no se guarda (su tipo debe implementar `Default`) |
+
+En el struct, `#[memoire(unique(a, b))]` y `#[memoire(index(a, b))]` abarcan varias columnas a la vez, y se pueden repetir. `unique(user_id, team_id)` rechaza una segunda fila con el mismo par (`409 Conflict`), mientras que cada columna por separado puede repetirse:
+
+```rust
+#[model(table = "memberships")]
+#[memoire(unique(user_id, team_id), index(team_id, role))]
+struct Membership {
+    id: i64,
+    user_id: i64,
+    team_id: i64,
+    role: String,
+}
+```
 
 ### Campos opcionales en JSON
 
@@ -91,6 +105,7 @@ La base de datos se elige con la variable de entorno `DATABASE_URL` al arrancar 
 | `DATABASE_URL` | Base de datos | Feature de Cargo |
 |---|---|---|
 | *(sin definir)* o `memory` | en memoria, se vacía cuando el servidor se detiene | siempre disponible |
+| `memory://data/app.memoire` | en memoria, guardada en un archivo y leída de nuevo al arrancar | siempre disponible |
 | `sqlite://app.db`, `app.db`, `sqlite::memory:` | un archivo SQLite, que se crea si no existe | `sqlite` (por defecto) |
 | `postgres://user:password@host:5432/name` | PostgreSQL, con TLS cuando el servidor lo ofrece | `postgres` (por defecto) |
 | `mysql://…`, `mariadb://…` | MySQL o MariaDB | `mysql` |
@@ -119,6 +134,23 @@ Si la URL es incorrecta o no se puede llegar al servidor, la aplicación no arra
 
 > [!NOTE]
 > Las pruebas creadas con `app.test()` siempre usan una base de datos en memoria nueva, salvo que la propia prueba llame a `app.database(...)`. Ahí `DATABASE_URL` se ignora, así que las pruebas nunca tocan tus datos.
+
+### Una base de datos en memoria guardada en un archivo
+
+`DATABASE_URL=memory://data/app.memoire` conserva la velocidad del motor en memoria (datos, índices y transacciones en memoria) y además escribe cada cambio confirmado en el archivo, que se vuelve a leer cuando la aplicación arranca de nuevo. El archivo (y su carpeta) se crea si no existe y se compacta de vez en cuando. Las tablas vuelven cuando se usa su modelo, y sus columnas se reconocen por el nombre.
+
+Con la feature `encryption`, el archivo se puede cifrar con una contraseña (AES-256-GCM, una clave derivada con Argon2id). Ábrelo tú mismo y pásalo a la aplicación:
+
+```rust
+use paquets::orm::{MemoryDb, StorageOptions};
+
+let password = std::env::var("DB_PASSWORD").expect("DB_PASSWORD");
+let db = MemoryDb::open_with("data/app.memoire", StorageOptions::new().password(password))
+    .map_err(std::io::Error::other)?;
+app.database(Db::from(db));
+```
+
+Como SQLite, necesita un disco persistente: no en Heroku. Consulta [el motor en memoria de Memoire](https://maxlestage.github.io/Memoire/es/docs/memory/) para la durabilidad (`StorageOptions::sync`) y la compactación.
 
 ## Las tablas se crean al arrancar
 
@@ -149,6 +181,7 @@ async fn show(req: Request) -> Result<Json<Todo>> {
 | `Todo::all(db).await?` | `Vec<Todo>`: todas las filas |
 | `Todo::get(db, id).await?` | `Todo`, o un error «no encontrado» (`404` en un handler) |
 | `Todo::find(db, id).await?` | `Option<Todo>` |
+| `Todo::find_many(db, [1, 2, 3]).await?` | `Vec<Todo>`: las filas de esas claves, en una sola consulta |
 | `Todo::count(db).await?` | `u64` |
 | `todo.reload(db).await?` | actualiza un struct desde la base de datos |
 
@@ -180,6 +213,7 @@ Las constantes de columna están tipadas: `Todo::DONE.eq("yes")` no compila, por
 | entre | `User::VISITS.between(1, 10)` |
 | nulo | `User::BIO.is_null()`, `.is_not_null()` |
 | texto | `.contains("x")`, `.starts_with("x")`, `.ends_with("x")`, `.icontains("x")` (sin distinguir mayúsculas), `.like("%x%")` |
+| búsqueda de texto completo | `Book::TITLE.matches("rust orm")`: las filas cuyo texto contiene todas las palabras, como palabras completas, sin distinguir mayúsculas, en todas las bases |
 
 | Se ejecuta con | Devuelve |
 |---|---|
@@ -209,6 +243,46 @@ async fn todo_list(req: Request) -> Result<Page> {
 
 El valor que devuelve `paginate` es el tipo `Page` propio de Memoire (`paquets::orm::Page`), no la `Page` HTML: solo usas sus campos.
 
+## Filas relacionadas
+
+Una columna declarada con `references` enlaza dos modelos, y Memoire lee el enlace en ella: no hay nada más que declarar.
+
+```rust
+#[model(table = "users")]
+struct User {
+    id: i64,
+    name: String,
+}
+
+#[model(table = "posts")]
+struct Post {
+    id: i64,
+    #[memoire(references = "users(id)", index)]
+    author_id: i64,
+    title: String,
+}
+```
+
+| Código | Devuelve |
+|---|---|
+| `Post::belonging_to(&user)` | una consulta sobre los artículos de un usuario, para filtrar, ordenar o contar como cualquier otra |
+| `post.find_parent::<User, _>(db).await?` | `Option<User>`: el autor de un artículo |
+| `users.load_children::<Post>(db).await?` | `Vec<Vec<Post>>`: los artículos de cada usuario, alineados con `users` |
+| `posts.load_parent::<User>(db).await?` | `Vec<Option<User>>`: el autor de cada artículo |
+| `posts.load_via::<PostTag, Tag>(db).await?` | muchos a muchos, a través de un modelo que referencia a los dos |
+
+`load_children`, `load_parent` y `load_via` (el trait `LoadRelated`, en el prelude) hacen una consulta por nivel, sea cual sea el número de filas de partida, en lugar de una consulta por fila:
+
+```rust
+async fn authors(req: Request) -> Result<Page> {
+    let users = User::query().order_by(User::NAME.asc()).all(req.db()).await?;
+    let posts = users.load_children::<Post>(req.db()).await?; // una sola consulta para todos los artículos
+    Ok(Page::new("Autores").body(ul().children(users.into_iter().zip(posts).map(
+        |(user, posts)| li().text(format!("{}: {} artículos", user.name, posts.len())),
+    ))))
+}
+```
+
 ## Escribir datos
 
 ```rust
@@ -231,6 +305,7 @@ let deleted: bool = Todo::delete_by_key(db, todo.id).await?;
 | `Todo::insert_many(db, &rows)` | inserta varias filas, devuelve cuántas |
 | `row.upsert(db)` | inserta, o reemplaza la fila con la misma clave |
 | `row.update(db)` | guarda todas las columnas de la fila |
+| `row.update_only(db, (Todo::TITLE, Todo::DONE))` | guarda solo esas columnas |
 | `row.delete(db)` | elimina la fila, devuelve `bool` |
 | `Todo::delete_by_key(db, id)` | elimina por clave, devuelve `bool` |
 | `Todo::update_many().set(Todo::DONE, true).filter(...).execute(db)` | actualiza muchas filas, devuelve cuántas |
@@ -359,7 +434,7 @@ Si prefieres reaccionar tú mismo a un error, compruébalo con un `match` antes 
 | Situación | Elección |
 |---|---|
 | Aprendizaje, prototipos, pruebas | en memoria (nada que configurar) |
-| Un servidor con un disco persistente (un VPS, una Raspberry Pi, un volumen de Docker) | SQLite: un archivo, nada que instalar, muy rápido |
+| Un servidor con un disco persistente (un VPS, una Raspberry Pi, un volumen de Docker) | SQLite: un archivo, nada que instalar, muy rápido; o `memory://app.memoire`, el motor en memoria guardado en un archivo |
 | Heroku, o varios servidores | PostgreSQL |
 | Una base de datos existente | la que tengas: MySQL/MariaDB, Redis o MongoDB |
 
@@ -370,7 +445,7 @@ Con PostgreSQL, el pool abre hasta 4 conexiones por núcleo de CPU cuando el tr�
 
 ## Más información
 
-La documentación de Memoire va más allá: [modelos](https://maxlestage.github.io/Memoire/es/docs/models/), [consultas](https://maxlestage.github.io/Memoire/es/docs/queries/) (joins, agregados, group by), [relaciones](https://maxlestage.github.io/Memoire/es/docs/relations/), [transacciones](https://maxlestage.github.io/Memoire/es/docs/transactions/), [migraciones](https://maxlestage.github.io/Memoire/es/docs/migrations/) y una página por base de datos. Todo funciona con `req.db()`: acepta todos los métodos de los modelos y todas las consultas. En Paquets, Memoire se reexporta como `paquets::orm`.
+La documentación de Memoire va más allá: [modelos](https://maxlestage.github.io/Memoire/es/docs/models/), [consultas](https://maxlestage.github.io/Memoire/es/docs/queries/) (joins, agregados, group by), [relaciones](https://maxlestage.github.io/Memoire/es/docs/relations/), [transacciones](https://maxlestage.github.io/Memoire/es/docs/transactions/), [migraciones](https://maxlestage.github.io/Memoire/es/docs/migrations/), [notificaciones de cambios](https://maxlestage.github.io/Memoire/es/docs/events/) y una página por base de datos. Todo funciona con `req.db()`: acepta todos los métodos de los modelos y todas las consultas. En Paquets, Memoire se reexporta como `paquets::orm`.
 
 ## Próximos pasos
 

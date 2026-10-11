@@ -148,6 +148,7 @@ Clases del tema: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted
 | `DATABASE_URL` | Base de datos |
 |---|---|
 | sin definir, `memory` | en memoria |
+| `memory://app.memoire` | en memoria, guardada en un archivo |
 | `sqlite://app.db` | archivo SQLite |
 | `postgres://…` | PostgreSQL (Heroku Postgres) |
 | `mysql://…`, `mariadb://…` | MySQL, MariaDB (feature `mysql`) |
@@ -213,6 +214,7 @@ Consulta [Seguridad](security.md).
 |---|---|
 | Isla (en `src/lib.rs`) | `pub fn counter(props: &str) -> Node { ... }` |
 | Estado | `let n = use_state(0);` `n.get()`, `n.set(v)`, `n.update(\|n\| *n += 1)`, `n.with(\|v\| …)` |
+| Estado derivado | `let total = memo(move \|\| items.with(\|v\| v.len()));`, `untrack(\|\| …)`, `on_cleanup(\|\| …)` |
 | Eventos | `.on_click(\|e\| …)`, `.on_input(\|e\| …)`, `.on("keydown", \|e\| …)`; `e.value()`, `e.key()` |
 | Dinámico | `.text_dyn(\|\| …)`, `.attr_dyn(name, \|\| …)`, `.class_if(class, \|\| …)`, `.bool_attr(name, \|\| …)` |
 | Registrar | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |

@@ -144,9 +144,18 @@ Features turn optional parts of Paquets on or off. The defaults suit most apps:
 | `chrono` | | date and time columns (`chrono::NaiveDateTime`, `DateTime<Utc>`…) |
 | `uuid` | | `uuid::Uuid` columns |
 | `json` | | JSON columns (`serde_json::Value`, `Json<T>`) |
+| `encryption` | | in-memory databases kept in an encrypted file (see [Database](database.md#an-in-memory-database-kept-in-a-file)) |
+| `tls` | | HTTPS in the server itself: `app.tls(...)` (see [Configuration](configuration.md#https-in-the-server)) |
+| `http2` | | HTTP/2, negotiated with `tls`, and in clear text (h2c) |
 | `http3` | | HTTP/3 over QUIC, next to HTTP/1.1 |
+| `session` | | signed cookies and server-side sessions (see [Security](security.md#accounts-and-sessions)) |
+| `templates` | | HTML templates with minijinja: `app.views("views")`, `req.render(...)` |
+| `multipart` | | file uploads: `req.multipart()` (see [Requests and responses](requests-responses.md#file-uploads)) |
+| `compress` | | Brotli or gzip responses: `middleware::compress()` (see [Performance](performance.md#compression)) |
+| `tower` | | tower layers as middlewares: `middleware::layer(...)` |
 | `full` | | everything above |
 | `client` | | the browser side of islands (for the `wasm32-unknown-unknown` target only) |
+| `browser-storage` | | in islands, a state store and a database kept in `localStorage` (see [Islands](islands.md#keeping-data-in-the-browser)) |
 
 For example, to use MySQL and dates:
 

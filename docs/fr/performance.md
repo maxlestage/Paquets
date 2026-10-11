@@ -108,7 +108,13 @@ app.serve_dir("/assets", ServeDir::new("assets").max_age(Duration::from_secs(31_
 
 ### Compression
 
-Vitesse ne compresse pas les réponses. Le texte se compresse très bien (HTML, JSON, CSS, WebAssembly) : placez donc un CDN (Cloudflare, Fastly…) ou un reverse proxy devant l'application si la bande passante compte. Le routeur de Heroku ne compresse pas non plus.
+Le texte se compresse très bien (HTML, JSON, CSS, WebAssembly), et le routeur de Heroku ne compresse pas. Avec la feature `compress`, l'application s'en charge elle-même :
+
+```rust
+app.middleware(middleware::compress());
+```
+
+Les réponses de 1 Kio ou plus en texte, JSON, SVG ou WebAssembly sont envoyées en Brotli aux navigateurs qui l'acceptent, en gzip aux autres ; les images et les archives passent telles quelles. L'encodage s'exécute sur un thread bloquant. Un CDN (Cloudflare, Fastly…) placé devant l'application fait la même chose, et met le résultat en cache.
 
 ### Journaux
 

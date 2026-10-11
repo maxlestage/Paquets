@@ -80,9 +80,13 @@
 //! | `postgres` | ✓ | PostgreSQL with TLS (Heroku Postgres) |
 //! | `mysql`, `redis`, `mongodb` | | the other databases |
 //! | `chrono`, `uuid`, `json` | | more column types |
-//! | `http3` | | HTTP/3 over QUIC |
+//! | `encryption` | | in-memory databases stored in an encrypted file |
+//! | `tls`, `http2`, `http3` | | HTTPS ([`App::tls`]), HTTP/2, HTTP/3 over QUIC |
+//! | `session`, `templates`, `multipart` | | signed cookies and sessions, minijinja templates, file uploads |
+//! | `compress`, `tower` | | Brotli or gzip responses, tower layers as middlewares |
 //! | `full` | | everything above |
 //! | `client` | | browser side (`wasm32`): hydrate islands, client-side apps |
+//! | `browser-storage` | | `orm::web`: a state store and a database in `localStorage`, for islands |
 
 #![doc(
     html_logo_url = "https://maxlestage.github.io/Paquets/assets/logo.svg",
@@ -162,10 +166,10 @@ pub mod prelude {
     // `main` is the program's function, so the tag is written `html::main()`.
     pub use active::html::{self, *};
     pub use active::{
-        Element, Event, Node, Seo, State, effect, el, fragment, fragment_dyn, island, keyed, text,
-        text_dyn, use_state,
+        Element, Event, Node, Seo, State, effect, el, fragment, fragment_dyn, indexed, island,
+        keyed, memo, on_cleanup, switch, text, text_dyn, untrack, use_state,
     };
-    pub use memoire_orm::{Database, Executor, Model, Transaction};
+    pub use memoire_orm::{Database, Executor, LoadRelated, Model, Transaction};
     pub use serde_json::json;
 
     pub use crate::{data, model};

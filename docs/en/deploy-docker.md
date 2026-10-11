@@ -164,7 +164,7 @@ app.security(
 
 Check your platform's documentation for the exact header it sets, and read [Security](security.md#the-client-ip-behind-a-proxy) before trusting one.
 
-HTTPS: Paquets serves plain HTTP. Every platform above provides HTTPS in front of the container. On your own server, put Caddy or Nginx in front, which also handles certificates and compression.
+HTTPS: every platform above provides HTTPS in front of the container, which serves plain HTTP. On your own server, put Caddy or Nginx in front, which also renews the certificates, or let the app serve HTTPS itself with the `tls` feature (see [Configuration](configuration.md#https-in-the-server)); the `compress` feature compresses its responses (see [Performance](performance.md#compression)).
 
 ## A health check
 
