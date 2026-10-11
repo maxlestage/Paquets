@@ -42,7 +42,7 @@ Si Rust ya estaba instalado, actualízalo con `rustup update`.
 El comando `paquets` crea proyectos, los ejecuta y los compila para producción. Instálalo con Cargo:
 
 ```sh
-cargo install paquets --locked
+cargo install --git https://github.com/maxlestage/Paquets paquets --locked
 ```
 
 `--locked` compila la herramienta con las versiones exactas de las dependencias con las que se probó.
@@ -102,7 +102,7 @@ También puedes usar Paquets sin la herramienta de línea de comandos, como cual
 
 ```toml
 [dependencies]
-paquets = "0.1"
+paquets = { git = "https://github.com/maxlestage/Paquets" }
 
 # Para las pruebas (`#[tokio::test]`).
 [dev-dependencies]
@@ -113,7 +113,7 @@ Añade Paquets a `Cargo.toml`:
 
 ```toml
 [dependencies]
-paquets = "0.1"
+paquets = { git = "https://github.com/maxlestage/Paquets" }
 ```
 
 Después reemplaza `src/main.rs` por una primera aplicación:
@@ -152,14 +152,14 @@ Por ejemplo, para usar MySQL y fechas:
 
 ```toml
 [dependencies]
-paquets = { version = "0.1", features = ["mysql", "chrono"] }
+paquets = { git = "https://github.com/maxlestage/Paquets", features = ["mysql", "chrono"] }
 ```
 
 Para que tu programa sea más pequeño y compile más rápido cuando no necesitas SQLite o PostgreSQL, desactiva las features por defecto y conserva solo lo que uses. La base de datos en memoria siempre está disponible:
 
 ```toml
 [dependencies]
-paquets = { version = "0.1", default-features = false, features = ["postgres"] }
+paquets = { git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["postgres"] }
 ```
 
 ## Editor

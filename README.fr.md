@@ -71,7 +71,7 @@ Paquets assemble quatre crates, chacune utilisable seule :
 ## Démarrer
 
 ```sh
-cargo install paquets --locked    # la commande `paquets`
+cargo install --git https://github.com/maxlestage/Paquets paquets --locked    # la commande `paquets`
 paquets new mon-app               # un projet complet, prêt à déployer
 cd mon-app
 paquets dev                       # http://localhost:3000
@@ -86,7 +86,7 @@ Ou ajoutez Paquets à un projet existant :
 
 ```toml
 [dependencies]
-paquets = "0.1"
+paquets = { git = "https://github.com/maxlestage/Paquets" }
 ```
 
 ## Visite guidée
@@ -159,7 +159,7 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
 
 ## Déployer depuis un téléphone
 
-1. Ouvrez `https://heroku.com/deploy?template=<l'adresse de votre dépôt>` sur votre téléphone,
+1. Ouvrez `https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets` sur votre téléphone,
    choisissez un nom d'application, appuyez sur **Deploy app**. Heroku lit [`app.json`](app.json)
    et construit le [`Dockerfile`](Dockerfile) : le site, qui est lui-même une application
    Paquets, avec sa démo en direct (`/demo`, `/api/todos`).

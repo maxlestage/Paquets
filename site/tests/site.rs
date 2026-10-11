@@ -88,7 +88,7 @@ async fn the_home_page_has_every_section() {
             );
         }
         assert!(html.contains(t.hero_lead));
-        assert!(html.contains("cargo install paquets"));
+        assert!(html.contains("cargo install --git https://github.com/maxlestage/Paquets paquets"));
         assert!(html.contains("© 2026"));
         // The signature footer: the author, the license, the ecosystem.
         assert!(html.contains(r#"class="footer__name""#));
@@ -99,8 +99,8 @@ async fn the_home_page_has_every_section() {
                 || html.contains("Todos los derechos reservados")
         );
         assert!(html.contains(r#"href="/LICENSE.txt""#));
-        // No link to GitHub anywhere: the project is not open source.
-        assert!(!html.contains("github.com"));
+        // The source is on GitHub, the only way to get the crate until it is on crates.io.
+        assert!(html.contains("https://github.com/maxlestage/Paquets"));
         assert!(!html.contains("MIT OR Apache-2.0"));
         assert!(html.contains(&format!("v{}", paquets::VERSION)));
         for project in [
@@ -149,7 +149,7 @@ async fn docs_pages_have_navigation() {
         html.contains("href=\"/fr/docs/project-structure/\""),
         "previous page"
     );
-    assert!(!html.contains("github.com"));
+    assert!(html.contains("https://github.com/maxlestage/Paquets"));
     let hub = client.get("/es/docs/").await.text();
     for page in &PAGES {
         assert!(

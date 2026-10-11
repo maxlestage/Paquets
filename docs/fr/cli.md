@@ -5,13 +5,13 @@ La commande `paquets` crée les projets, les lance pendant le développement, le
 ## Installation
 
 ```sh
-cargo install paquets --locked
+cargo install --git https://github.com/maxlestage/Paquets paquets --locked
 ```
 
 Installez-la avec cargo :
 
 ```sh
-cargo install paquets --locked
+cargo install --git https://github.com/maxlestage/Paquets paquets --locked
 ```
 
 Voir [Installation](installation.md) pour Rust lui-même et les outils facultatifs.

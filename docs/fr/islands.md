@@ -245,10 +245,10 @@ Un projet créé avec `paquets new --minimal`, ou un projet existant, demande qu
 crate-type = ["cdylib", "rlib"]
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-paquets = "0.1"
+paquets = { git = "https://github.com/maxlestage/Paquets" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-paquets = { version = "0.1", default-features = false, features = ["client"] }
+paquets = { git = "https://github.com/maxlestage/Paquets", default-features = false, features = ["client"] }
 wasm-bindgen = "0.2"
 
 # Le bundle du navigateur : le plus petit possible.

@@ -138,7 +138,7 @@ Rust compile chaque dépendance une fois, avec toutes les optimisations en mode 
 
 ### Comment mettre Paquets à jour ?
 
-Dans un projet : `cargo update -p paquets` (les quatre paquets suivent). Pour la ligne de commande : `cargo install paquets --locked --force` (ou la même commande avec `--git`). Lisez d'abord le journal des modifications : avant la 1.0, les versions mineures peuvent changer l'API.
+Dans un projet : `cargo update -p paquets` (les quatre paquets suivent). Pour la ligne de commande : `cargo install --git https://github.com/maxlestage/Paquets paquets --locked --force` (ou la même commande avec `--git`). Lisez d'abord le journal des modifications : avant la 1.0, les versions mineures peuvent changer l'API.
 
 ### Comment signaler un bug ou contribuer ?
 

@@ -114,7 +114,7 @@ app.database("sqlite://app.db"); // un fichier là où le programme s'exécute
 Si l'URL est fausse ou que le serveur est injoignable, l'application ne démarre pas, et dit pourquoi. Une URL qui a besoin d'une feature que vous n'avez pas activée vous indique même quoi écrire dans `Cargo.toml` :
 
 ```text
-📦 Paquets could not start: database: operation not supported by this backend: `mysql` URLs need the `mysql` feature: paquets = { version = "0.1", features = ["mysql"] }
+📦 Paquets could not start: database: operation not supported by this backend: `mysql` URLs need the `mysql` feature: paquets = { git = "https://github.com/maxlestage/Paquets", features = ["mysql"] }
 ```
 
 > [!NOTE]

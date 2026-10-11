@@ -6,7 +6,7 @@ Todo Paquets en una sola página. Todos los ejemplos suponen `use paquets::prelu
 
 | Tarea | Comando |
 |---|---|
-| Instalar la herramienta | `cargo install paquets --locked` |
+| Instalar la herramienta | `cargo install --git https://github.com/maxlestage/Paquets paquets --locked` |
 | Crear un proyecto | `paquets new my-app` (`--minimal`: sin islas) |
 | Ejecutar mientras desarrollas | `paquets dev` |
 | Compilar para producción | `paquets build` |

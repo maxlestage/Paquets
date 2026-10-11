@@ -141,7 +141,7 @@ impl Db {
                 "unknown database URL scheme `{scheme}` (expected memory, sqlite, postgres, mysql, redis or mongodb)"
             ))),
             kind => Err(memoire_orm::Error::Unsupported(format!(
-                "`{scheme}` URLs need the `{kind}` feature: paquets = {{ version = \"0.1\", features = [\"{kind}\"] }}"
+                "`{scheme}` URLs need the `{kind}` feature: paquets = {{ git = \"https://github.com/maxlestage/Paquets\", features = [\"{kind}\"] }}"
             ))),
         }
     }

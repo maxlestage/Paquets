@@ -1,6 +1,6 @@
 # Publish on crates.io
 
-[crates.io](https://crates.io) is Rust's package registry: once Paquets is published there, anyone can install the command with `cargo install paquets` and use the library with `paquets = "0.1"`. This page is for the maintainers of Paquets (or of a fork under another name). It explains why the four packages must be published first, then how to publish everything from a phone, with GitHub releases.
+[crates.io](https://crates.io) is Rust's package registry: once Paquets is published there, anyone can install the command with `cargo install --git https://github.com/maxlestage/Paquets paquets` and use the library with `paquets = { git = "https://github.com/maxlestage/Paquets" }`. This page is for the maintainers of Paquets (or of a fork under another name). It explains why the four packages must be published first, then how to publish everything from a phone, with GitHub releases.
 
 ## Why the order matters
 
@@ -10,12 +10,12 @@ That is why, until they are all published, Paquets' `Cargo.toml` gives each pack
 
 ```toml
 [dependencies]
-active = "0.1"
-memoire-orm = { version = "0.1", default-features = false, features = ["memory"] }
+active = { git = "https://github.com/maxlestage/Active" }
+memoire-orm = { git = "https://github.com/maxlestage/Memoire", default-features = false, features = ["memory"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-vitesse = "0.1"
-securite = { version = "0.1", default-features = false }
+vitesse = { git = "https://github.com/maxlestage/Vitesse" }
+securite = { git = "https://github.com/maxlestage/Securite", default-features = false }
 ```
 
 - While you develop, Cargo uses the `git` source (the address of the repository, left out below): the latest code of each repository.
@@ -91,8 +91,8 @@ To check everything without publishing, run it by hand: **Actions** → **Releas
 
 Then:
 
-- `cargo install paquets --locked` installs the command;
-- `paquets = "0.1"` works in any project. Projects created with `paquets new` keep using the GitHub repository (`version = "0.1", git = ...`) until you simplify their `Cargo.toml` to `paquets = "0.1"`.
+- `cargo install --git https://github.com/maxlestage/Paquets paquets --locked` installs the command;
+- `paquets = { git = "https://github.com/maxlestage/Paquets" }` works in any project. Projects created with `paquets new` keep using the GitHub repository (`version = "0.1", git = ...`) until you simplify their `Cargo.toml` to `paquets = { git = "https://github.com/maxlestage/Paquets" }`.
 
 ## A new version
 
