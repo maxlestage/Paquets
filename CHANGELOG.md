@@ -6,7 +6,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-10-12
+## [0.1.1] - 2026-10-12
 
 ### Changed
 - From the latest Vitesse: an app listening on port 0 with HTTP/3 picks another pair of

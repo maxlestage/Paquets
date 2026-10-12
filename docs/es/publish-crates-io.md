@@ -79,7 +79,7 @@ El workflow se pone en marcha en unos segundos. Síguelo en la pestaña **Action
 
 ## Publicar Paquets
 
-Cuando los cuatro paquetes estén en crates.io, publica Paquets de la misma forma (etiqueta `v0.2.0`). Su workflow **Release**:
+Cuando los cuatro paquetes estén en crates.io, publica Paquets de la misma forma (etiqueta `v0.1.1`). Su workflow **Release**:
 
 1. comprueba que la etiqueta coincide con la versión de `Cargo.toml`;
 2. comprueba que `memoire-orm-derive`, `memoire-orm`, `securite`, `vitesse` y `active` están en crates.io y, si no, se detiene con la lista de los que faltan;
@@ -96,7 +96,7 @@ Después:
 
 ## Una versión nueva
 
-crates.io nunca acepta dos veces la misma versión: cada release necesita un número de versión nuevo. Sigue el [versionado semántico](https://semver.org): `0.1.0` → `0.1.1` para las correcciones, `0.1.1` → `0.2.0` para las funcionalidades nuevas o, antes de la 1.0, los cambios incompatibles.
+crates.io nunca acepta dos veces la misma versión: cada release necesita un número de versión nuevo. Sigue el [versionado semántico](https://semver.org): `0.1.0` → `0.1.1` para las correcciones, `0.1.1` → `0.1.1` para las funcionalidades nuevas o, antes de la 1.0, los cambios incompatibles.
 
 En el repositorio de Paquets cambian cuatro sitios:
 

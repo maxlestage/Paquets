@@ -1,6 +1,6 @@
 [package]
 name = "paquets"
-version = "0.2.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.88"
 description = "The simplest full-stack web framework for Rust: server, security, database, REST API, SEO pages and WebAssembly islands in one crate. Built on vitesse, securite, memoire-orm and active."
@@ -97,7 +97,7 @@ members = ["macros"]
 exclude = ["site"]
 
 [dependencies]
-paquets-macros = { version = "=0.2.0", path = "macros" }
+paquets-macros = { version = "=0.1.1", path = "macros" }
 # Each package is published on crates.io under the version below; the `git`
 # source is used while developing (and ignored by `cargo publish`).
 active = { version = "0.1", git = "https://github.com/maxlestage/Active" }
