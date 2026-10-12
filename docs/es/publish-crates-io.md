@@ -79,15 +79,15 @@ El workflow se pone en marcha en unos segundos. Síguelo en la pestaña **Action
 
 ## Publicar Paquets
 
-Cuando los cuatro paquetes estén en crates.io, publica Paquets de la misma forma (etiqueta `v0.1.1`). Su workflow **Release**:
+Paquets se publica solo: no hay ningún formulario que rellenar. Cambia `version` en `Cargo.toml` y `macros/Cargo.toml`, escribe la sección de esa versión en `CHANGELOG.md` (`## [0.1.1] - fecha`) y haz push a `master`. Cuando la CI está en verde, su workflow **Release**:
 
-1. comprueba que la etiqueta coincide con la versión de `Cargo.toml`;
-2. comprueba que `memoire-orm-derive`, `memoire-orm`, `securite`, `vitesse` y `active` están en crates.io y, si no, se detiene con la lista de los que faltan;
+1. etiqueta la versión (`v0.1.1`) y crea su release de GitHub, con su sección del changelog como notas (una versión ya etiquetada no se toca);
+2. comprueba que `memoire-orm-derive`, `memoire-orm`, `securite`, `vitesse` y `active` están en crates.io (y que el secreto `CARGO_REGISTRY_TOKEN` existe); si no, la publicación espera y la ejecución dice lo que falta;
 3. ejecuta las pruebas;
 4. publica `paquets-macros` (salvo que esa versión ya esté allí) y luego `paquets`;
 5. escribe un enlace al crate en el resumen de la ejecución.
 
-Para comprobarlo todo sin publicar, lánzalo a mano: **Actions** → **Release** → **Run workflow**, dejando activada la opción **Only check**. En lugar de la publicación, hace una ejecución de prueba (dry run).
+Cuando los cuatro paquetes estén en crates.io, publica una versión salida antes lanzando el workflow a mano, con **Only check** desactivado. Una release creada a mano (**Releases** → **Draft a new release**) también publica. Para comprobarlo todo sin publicar, lánzalo a mano: **Actions** → **Release** → **Run workflow**, dejando activada la opción **Only check**. En lugar de la publicación, hace una ejecución de prueba (dry run).
 
 Después:
 
@@ -96,7 +96,7 @@ Después:
 
 ## Una versión nueva
 
-crates.io nunca acepta dos veces la misma versión: cada release necesita un número de versión nuevo. Sigue el [versionado semántico](https://semver.org): `0.1.0` → `0.1.1` para las correcciones, `0.1.1` → `0.1.1` para las funcionalidades nuevas o, antes de la 1.0, los cambios incompatibles.
+crates.io nunca acepta dos veces la misma versión: cada release necesita un número de versión nuevo. Sigue el [versionado semántico](https://semver.org): `0.1.0` → `0.1.1` para las correcciones, `0.1.1` → `0.2.0` para las funcionalidades nuevas o, antes de la 1.0, los cambios incompatibles.
 
 En el repositorio de Paquets cambian cuatro sitios:
 

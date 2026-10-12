@@ -188,7 +188,8 @@ everything is green, the branch is **merged into `master` automatically** (excep
 
 1. crates.io → *Account Settings* → *API Tokens* → a token with the *publish-new* and
    *publish-update* scopes; add it to GitHub as the secret `CARGO_REGISTRY_TOKEN`.
-2. GitHub → *Releases* → *Draft a new release* → tag `v0.1.1` → *Publish release*.
+2. Change `version` in `Cargo.toml` and `macros/Cargo.toml`, write its section in `CHANGELOG.md`,
+   push: once CI is green, the version is tagged (`v0.1.1`) and released on its own, nothing to fill in.
 
 [`release.yml`](.github/workflows/release.yml) publishes `paquets-macros`, then `paquets`. crates.io
 only accepts dependencies that are on crates.io, so Vitesse, Securite, memoire-orm and Active are
