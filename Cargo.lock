@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Active#ef4fa22301918672a248ded24bdeb56a39bdc1fb"
+source = "git+https://github.com/maxlestage/Active#d11f54be31fddd9e2cf49d1d683b3f716c918ed0"
 dependencies = [
  "wasm-bindgen",
  "web-sys",
@@ -1676,7 +1676,7 @@ checksum = "5449c8c750f1a07ea702bbd212bd999fceece9b3d1508b17023b3e174583124b"
 [[package]]
 name = "memoire-orm"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#02e875893814fe6c30339e74a881ebc61ca61998"
+source = "git+https://github.com/maxlestage/Memoire#ebd3ebd5e33a506adc83884b222eeff9500679ab"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -1709,7 +1709,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#02e875893814fe6c30339e74a881ebc61ca61998"
+source = "git+https://github.com/maxlestage/Memoire#ebd3ebd5e33a506adc83884b222eeff9500679ab"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2028,7 +2028,7 @@ checksum = "7c87def4c32ab89d880effc9e097653c8da5d6ef28e6b539d313baaacfbafcbe"
 
 [[package]]
 name = "paquets"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "active",
  "memoire-orm",
@@ -2042,7 +2042,7 @@ dependencies = [
 
 [[package]]
 name = "paquets-macros"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2636,7 +2636,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Securite#2da37eabe7fb71fc87e6eb813d176a5816b8e9eb"
+source = "git+https://github.com/maxlestage/Securite#d8c91f39a52b07a47f1e929f34e0922faacb3136"
 dependencies = [
  "aho-corasick",
  "base64 0.23.1",
@@ -3450,7 +3450,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vitesse"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Vitesse#41c57df666ce7981f93b993cac8f82ada4523d54"
+source = "git+https://github.com/maxlestage/Vitesse#5915730ae68b9952cb8efffc4e0a80816b7c0aa8"
 dependencies = [
  "brotli",
  "bytes",

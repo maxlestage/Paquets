@@ -137,7 +137,7 @@ Leurs README expliquent comment démarrer. Les quatre utilisent l'édition 2024.
 
 ## Versions
 
-Paquets 0.1 dépend de Vitesse 0.1, Securite 0.1, memoire-orm 0.1 et Active 0.1. Tant qu'ils ne sont pas sur crates.io, Cargo les récupère depuis leurs dépôts GitHub ; voir [Publier sur crates.io](publish-crates-io.md) pour l'ordre de publication.
+Paquets 0.2 dépend de Vitesse 0.1, Securite 0.1, memoire-orm 0.1 et Active 0.1. Tant qu'ils ne sont pas sur crates.io, Cargo les récupère depuis leurs dépôts GitHub ; voir [Publier sur crates.io](publish-crates-io.md) pour l'ordre de publication.
 
 ## Étapes suivantes
 

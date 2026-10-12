@@ -79,7 +79,7 @@ Le workflow démarre en quelques secondes. Suivez-le dans l'onglet **Actions** (
 
 ## Publier Paquets
 
-Une fois les quatre paquets sur crates.io, publiez Paquets de la même façon (tag `v0.1.0`). Son workflow **Release** :
+Une fois les quatre paquets sur crates.io, publiez Paquets de la même façon (tag `v0.2.0`). Son workflow **Release** :
 
 1. vérifie que le tag correspond à la version de `Cargo.toml` ;
 2. vérifie que `memoire-orm-derive`, `memoire-orm`, `securite`, `vitesse` et `active` sont sur crates.io, et sinon s'arrête avec la liste de ceux qui manquent ;

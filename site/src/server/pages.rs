@@ -1128,7 +1128,7 @@ fn journey(ctx: &Ctx<'_>) -> Element {
 fn phone(t: &Texts) -> Element {
     let log = [
         "Step 1/6 : FROM rust:slim",
-        "Compiling paquets v0.1.0",
+        "Compiling paquets v0.2.0",
         "Compiling my-app v0.1.0",
         "Finished release",
         "Launching web.1",

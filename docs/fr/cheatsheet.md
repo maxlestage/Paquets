@@ -253,6 +253,6 @@ Voir [Tests](testing.md).
 | Redéployer à la main | Actions → Deploy to Heroku → Run workflow |
 | Docker | `docker build -t mon-app . && docker run -p 8080:8080 mon-app` |
 | Éviter la fusion automatique | nommer la branche `wip/...` |
-| Publier sur crates.io | secret `CARGO_REGISTRY_TOKEN`, puis Releases → Draft a new release → `v0.1.0` |
+| Publier sur crates.io | secret `CARGO_REGISTRY_TOKEN`, puis Releases → Draft a new release → `v0.2.0` |
 
 Voir [Heroku](deploy-heroku-mobile.md), [Docker](deploy-docker.md), [Automatisation](automation.md) et [Publier sur crates.io](publish-crates-io.md).
