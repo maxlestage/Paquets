@@ -137,7 +137,7 @@ Their READMEs explain how to start. All four use the 2024 edition. Like Paquets,
 
 ## Versions
 
-Paquets 0.1 depends on Vitesse 0.1, Securite 0.1, memoire-orm 0.1 and Active 0.1. Until they are on crates.io, Cargo takes them from their GitHub repositories; see [Publish on crates.io](publish-crates-io.md) for the publication order.
+Paquets 0.2 depends on Vitesse 0.1, Securite 0.1, memoire-orm 0.1 and Active 0.1. Until they are on crates.io, Cargo takes them from their GitHub repositories; see [Publish on crates.io](publish-crates-io.md) for the publication order.
 
 ## Next steps
 

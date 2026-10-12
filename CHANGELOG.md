@@ -6,7 +6,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-12
+
 ### Changed
+- From the latest Vitesse: an app listening on port 0 with HTTP/3 picks another pair of
+  ports when the UDP twin of the chosen TCP port is unavailable (reserved on Windows),
+  instead of failing to start.
 - Website: the share image is lighter (281 kB: WhatsApp drops previews over about
   300 kB), and every card gives its size and description.
 - The shield of every app is Securite's own Vitesse middleware (Securite now protects

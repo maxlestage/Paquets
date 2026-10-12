@@ -190,7 +190,7 @@ features), pruebas, documentación, versión mínima de Rust, los proyectos gene
 
 1. crates.io → *Account Settings* → *API Tokens* → un token con los permisos *publish-new* y
    *publish-update*; añádelo en GitHub como secreto `CARGO_REGISTRY_TOKEN`.
-2. GitHub → *Releases* → *Draft a new release* → etiqueta `v0.1.0` → *Publish release*.
+2. GitHub → *Releases* → *Draft a new release* → etiqueta `v0.2.0` → *Publish release*.
 
 [`release.yml`](.github/workflows/release.yml) publica `paquets-macros` y después `paquets`.
 crates.io solo acepta dependencias publicadas en crates.io, así que vitesse, Securite, memoire-orm

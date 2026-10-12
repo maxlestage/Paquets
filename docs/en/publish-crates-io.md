@@ -79,7 +79,7 @@ The workflow starts within seconds. Follow it in the **Actions** tab (the GitHub
 
 ## Publishing Paquets
 
-Once the four packages are on crates.io, publish Paquets the same way (tag `v0.1.0`). Its **Release** workflow:
+Once the four packages are on crates.io, publish Paquets the same way (tag `v0.2.0`). Its **Release** workflow:
 
 1. checks that the tag matches the version of `Cargo.toml`;
 2. checks that `memoire-orm-derive`, `memoire-orm`, `securite`, `vitesse` and `active` are on crates.io, and stops with the list of the missing ones otherwise;
