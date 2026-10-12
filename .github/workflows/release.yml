@@ -1,5 +1,5 @@
 # Publishes paquets-macros, then paquets, on crates.io when a GitHub release is
-# published (from a phone: Releases → Draft a new release → tag v0.2.0 →
+# published (from a phone: Releases → Draft a new release → tag v0.1.1 →
 # Publish release), or by hand from the Actions tab (a dry run by default).
 #
 # Setup: repository secret CARGO_REGISTRY_TOKEN, a crates.io API token with the

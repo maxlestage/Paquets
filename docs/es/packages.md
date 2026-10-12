@@ -137,7 +137,7 @@ Sus README explican cómo empezar. Los cuatro usan la edición 2024. Como Paquet
 
 ## Versiones
 
-Paquets 0.2 depende de Vitesse 0.1, Securite 0.1, memoire-orm 0.1 y Active 0.1. Mientras no estén en crates.io, Cargo los toma de sus repositorios de GitHub; consulta [Publicar en crates.io](publish-crates-io.md) para ver el orden de publicación.
+Paquets 0.1 depende de Vitesse 0.1, Securite 0.1, memoire-orm 0.1 y Active 0.1. Mientras no estén en crates.io, Cargo los toma de sus repositorios de GitHub; consulta [Publicar en crates.io](publish-crates-io.md) para ver el orden de publicación.
 
 ## Próximos pasos
 
