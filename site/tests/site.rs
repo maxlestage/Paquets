@@ -72,6 +72,12 @@ async fn the_home_page_has_every_section() {
         let res = client.get(&format!("/{}/", lang.code())).await;
         let html = res.text();
         let t = lang.texts();
+        assert!(html.contains(r#"/assets/og-image.png"/>"#));
+        // The card of a shared link: the image, its size and its description.
+        assert!(html.contains(r#"<meta property="og:image:width" content="1200"/>"#));
+        assert!(html.contains(r#"<meta property="og:image:height" content="630"/>"#));
+        assert!(html.contains(r#"<meta property="og:image:alt" content="#));
+        assert!(html.contains(r#"<meta name="twitter:card" content="summary_large_image"/>"#));
         for id in [
             "top", "packages", "code", "features", "numbers", "start", "deploy", "docs",
         ] {

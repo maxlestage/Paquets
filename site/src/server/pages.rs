@@ -279,6 +279,12 @@ fn layout(ctx: &Ctx<'_>, title: &str, description: &str, content: Element) -> Pa
         .site_name("Paquets")
         .base_url(ctx.origin.clone())
         .image("/assets/og-image.png")
+        .meta_property("og:image:width", "1200")
+        .meta_property("og:image:height", "630")
+        .meta_property(
+            "og:image:alt",
+            "Paquets: the simplest full-stack framework for Rust.",
+        )
         .og_type("website")
         .locale(lang.locale())
         .meta_name("author", AUTHOR);
