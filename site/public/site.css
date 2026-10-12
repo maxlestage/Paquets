@@ -3089,6 +3089,10 @@ html.menu-open .menu nav a {
 .cta__title {
   display: grid;
   font-size: clamp(48px, 10.5vw, 160px);
+  /* A word longer than the screen (es: « desempaquetar ») is hyphenated, cut at worst. */
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  overflow-wrap: anywhere;
   font-weight: 800;
   letter-spacing: -0.06em;
   line-height: 0.95;
