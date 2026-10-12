@@ -89,6 +89,10 @@ async fn the_home_page_has_every_section() {
         }
         assert!(html.contains(t.hero_lead));
         assert!(html.contains("cargo install --git https://github.com/maxlestage/Paquets paquets"));
+        // On a phone, the install command wraps after the slashes of its URL.
+        assert!(html.contains(
+            "<code>cargo install --git https://github.com/<wbr/>maxlestage/<wbr/>Paquets paquets</code>"
+        ));
         assert!(html.contains("© 2026"));
         // The signature footer: the author, the license, the ecosystem.
         assert!(html.contains(r#"class="footer__name""#));

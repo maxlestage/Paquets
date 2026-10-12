@@ -204,7 +204,7 @@ fn install(ctx: &Ctx<'_>, class: &str, delay: &str) -> Element {
         .class(class.to_owned())
         .style(format!("--d:{delay}"))
         .child(span().class("install__prompt").text("$"))
-        .child(code().text(INSTALL))
+        .child(command(INSTALL))
         .child(
             button()
                 .class("copy")
@@ -219,6 +219,26 @@ fn install(ctx: &Ctx<'_>, class: &str, delay: &str) -> Element {
 }
 
 /// The language selector: links to the same page in each language.
+/// A shell command in `<code>`, whose URL may break after its slashes on a narrow screen:
+/// `<wbr>` adds nothing to what is selected and copied.
+fn command(text: &str) -> Element {
+    let mut code = code();
+    let mut part = String::new();
+    let mut chars = text.chars().peekable();
+    let mut previous = ' ';
+    while let Some(c) = chars.next() {
+        part.push(c);
+        let next = chars.peek().copied();
+        if c == '/' && previous != '/' && next.is_some_and(|n| n != '/') {
+            code = code
+                .child(Node::from(std::mem::take(&mut part)))
+                .child(wbr());
+        }
+        previous = c;
+    }
+    code.child(Node::from(part))
+}
+
 fn lang_switch(ctx: &Ctx<'_>) -> Element {
     let index = Lang::ALL.iter().position(|&l| l == ctx.lang()).unwrap_or(0);
     div()

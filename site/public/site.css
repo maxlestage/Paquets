@@ -1633,11 +1633,12 @@ html.menu-open .menu nav a {
   font-size: 14px;
 }
 
+/* On one line when there is room; otherwise it wraps after the slashes of the URL. */
 .install code {
-  overflow-x: auto;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: left;
   color: var(--text);
-  scrollbar-width: none;
 }
 
 .install__prompt {
@@ -3053,6 +3054,8 @@ html.menu-open .menu nav a {
 .cta {
   position: relative;
   display: grid;
+  /* The column is the screen's width, never the width of the install command. */
+  grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   margin: 0 auto;
   padding: clamp(110px, 16vw, 210px) var(--gutter);
@@ -5487,6 +5490,14 @@ button.doc-search kbd {
 
   .nav > .lang {
     margin-left: 0;
+  }
+}
+
+/* Too narrow for the logo, the search, the languages and the menu on one line: the
+   languages stay in the menu. */
+@media (max-width: 413px) {
+  .nav > .lang {
+    display: none;
   }
 }
 
