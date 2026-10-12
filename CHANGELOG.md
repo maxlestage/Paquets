@@ -6,6 +6,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Releases without a form: once CI is green on `master`, a new `version` in `Cargo.toml`
+  is tagged and released on GitHub with its changelog section, then published on crates.io
+  when the four packages are there.
+
 ## [0.1.1] - 2026-10-12
 
 ### Changed
