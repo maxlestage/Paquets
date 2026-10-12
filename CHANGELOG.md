@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- Website: the share image is lighter (281 kB: WhatsApp drops previews over about
+  300 kB), and every card gives its size and description.
 - The shield of every app is Securite's own Vitesse middleware (Securite now protects
   Vitesse applications natively): the bridge between tower and Vitesse that Paquets
   carried is gone, with its `tower-layer`, `tower-service` and `http` dependencies.
