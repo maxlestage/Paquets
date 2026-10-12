@@ -1,5 +1,7 @@
 <div align="center">
 
+[![Paquets: el framework full-stack más sencillo para Rust](https://raw.githubusercontent.com/maxlestage/Paquets/master/site/public/assets/og-image.png)](https://maxlestage.github.io/Paquets/)
+
 # 📦 Paquets
 
 **El framework full-stack más sencillo para Rust.**
