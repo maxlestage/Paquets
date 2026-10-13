@@ -17,13 +17,13 @@ You need:
 
 Everything Heroku needs is already in the repository, so nothing is compiled on your phone: Heroku builds the app on its own servers.
 
-In the Paquets repository, Heroku builds the Paquets website, which is itself a Paquets app (pages rendered on the server, islands in WebAssembly), with a live demo at `/demo` and a REST API at `/api/todos`. By default, it uses the [**emk/rust** buildpack](https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust) on the **heroku-24** stack:
+In the Paquets repository, Heroku builds the Paquets website, which is itself a Paquets app (pages rendered on the server, islands in WebAssembly), with a live demo at `/demo` and a REST API at `/api/todos`. By default, it uses the [**emk/rust** buildpack](https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust) on the **heroku-26** stack:
 
 | File | Role |
 |---|---|
-| `app.json` | describes the app for the Deploy button (name, description, the heroku-24 stack, the emk/rust buildpack) |
-| `RustConfig` | configures the buildpack: it compiles the server (`paquets-site`) in release mode, in `site/` |
-| `heroku-build.sh` | run after that build: compiles the islands (WebAssembly) into `site/pkg` |
+| `app.json` | describes the app for the Deploy button (name, description, the heroku-26 stack, the emk/rust buildpack) |
+| `RustConfig` | configures the buildpack: the Rust version, and instead of its own build, `heroku-build.sh` |
+| `heroku-build.sh` | the build, run once the buildpack has installed Rust: compiles the server (`paquets-site`) in release mode, in `site/`, then the islands (WebAssembly) into `site/pkg` |
 | `Procfile` | the command that starts the website |
 | `heroku.yml` and `Dockerfile` | the other way: a Docker image, on the "container" stack (`HEROKU_BUILD=docker`, see section 4) |
 | `.github/workflows/heroku.yml` | the **Deploy to Heroku** workflow, for automatic deployments |
@@ -90,7 +90,7 @@ To change the code, you need your own copy of the repository on GitHub:
 Goal: every change merged into `master` rebuilds and redeploys the app, with nothing to do. The **Deploy to Heroku** workflow talks directly to the Heroku Platform API: no Heroku CLI, no computer. On each run, it:
 
 1. checks that it is configured (if not, it stops without failing);
-2. creates the Heroku app if it doesn't exist yet, and chooses how Heroku builds it: in the Paquets repository, the heroku-24 stack and the emk/rust buildpack (or the "container" stack with `HEROKU_BUILD=docker`); in a project created with `paquets new`, the "container" stack;
+2. creates the Heroku app if it doesn't exist yet, and chooses how Heroku builds it: in the Paquets repository, the heroku-26 stack and the emk/rust buildpack (or the "container" stack with `HEROKU_BUILD=docker`); in a project created with `paquets new`, the "container" stack;
 3. sends the code to Heroku, which builds it (with the buildpack, or the image from `heroku.yml`), and shows the build log live in GitHub;
 4. writes the app's address in the run's summary.
 
@@ -155,11 +155,11 @@ For the Paquets repository, an app created another way (not by the button or the
 - **Heroku CLI** (on a computer, or in a cloud environment such as GitHub Codespaces), from a clone of the repository:
 
   ```sh
-  heroku create my-paquets --stack heroku-24 --buildpack emk/rust
+  heroku create my-paquets --stack heroku-26 --buildpack emk/rust
   git push heroku master
   ```
 
-  For an existing app: `heroku stack:set heroku-24`, then `heroku buildpacks:set emk/rust`, then `git push heroku master`.
+  For an existing app: `heroku stack:set heroku-26`, then `heroku buildpacks:set emk/rust`, then `git push heroku master`.
 
 ## 5. Change the code from your phone
 
