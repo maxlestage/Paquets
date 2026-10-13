@@ -767,7 +767,12 @@ fn hero(ctx: &Ctx<'_>) -> Element {
                                 .style("--d:0ms")
                                 .href("#packages")
                                 .child(span().class("badge__dot"))
-                                .child(span().text(t.hero_badge))
+                                // The version comes from Cargo.toml: it never falls behind.
+                                .child(span().text(format!(
+                                    "v{} — {}",
+                                    paquets::VERSION,
+                                    t.hero_badge
+                                )))
                                 .child(icon("arrow")),
                         )
                         .child(h1().class("hero__title").children(lines))
@@ -1127,11 +1132,11 @@ fn journey(ctx: &Ctx<'_>) -> Element {
 
 fn phone(t: &Texts) -> Element {
     let log = [
-        "Step 1/6 : FROM rust:slim",
-        "Compiling paquets v0.1.1",
-        "Compiling my-app v0.1.0",
-        "Finished release",
-        "Launching web.1",
+        "Step 1/6 : FROM rust:slim".to_string(),
+        format!("Compiling paquets v{}", paquets::VERSION),
+        "Compiling my-app v0.1.0".to_string(),
+        "Finished release".to_string(),
+        "Launching web.1".to_string(),
     ];
     div()
         .class("phone")
