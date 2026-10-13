@@ -289,7 +289,11 @@ pub fn script(out: &[&str; 4]) -> Vec<Line> {
             "cargo install --git https://github.com/maxlestage/Paquets paquets",
             None,
         ),
-        line(LineKind::Dim, "   Compiling paquets v0.1.1", None),
+        line(
+            LineKind::Dim,
+            &format!("   Compiling paquets v{}", paquets::VERSION),
+            None,
+        ),
         line(LineKind::Done, &format!("✓ {}", out[0]), None),
         line(LineKind::Command, "paquets new my-app", Some(0)),
         line(LineKind::Done, &format!("📦 {}", out[1]), Some(0)),

@@ -6,6 +6,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Website: the version shown at the top of the home page (and in its terminals) is
+  read from `Cargo.toml`, so it follows every release (it said `v0.1` after 0.1.1).
+
 ### Added
 - Releases without a form: once CI is green on `master`, a new `version` in `Cargo.toml`
   is tagged and released on GitHub with its changelog section, then published on crates.io
