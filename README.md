@@ -160,17 +160,26 @@ API reference: [docs.rs/paquets](https://docs.rs/paquets).
 ## Deploy from your phone
 
 1. Open `https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets` on your phone,
-   choose an app name, tap **Deploy app**. Heroku reads [`app.json`](app.json) and builds the
-   [`Dockerfile`](Dockerfile): the website, which is itself a Paquets app, with its live demo
+   choose an app name, tap **Deploy app**. Heroku reads [`app.json`](app.json) and builds, with the
+   [emk/rust buildpack](https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust) on the
+   heroku-24 stack ([`RustConfig`](RustConfig), [`heroku-build.sh`](heroku-build.sh),
+   [`Procfile`](Procfile)), the website, which is itself a Paquets app, with its live demo
    (`/demo`, `/api/todos`).
 2. Automatic deploys of `master`: in GitHub, *Settings → Secrets and variables → Actions*, add the
    secret `HEROKU_API_KEY` (Heroku → *Account settings* → *API Key*) and the variable
    `HEROKU_APP_NAME`. [`heroku.yml`](.github/workflows/heroku.yml) then deploys every merge.
+   With the optional variable `HEROKU_BUILD` set to `docker`, it builds the [`Dockerfile`](Dockerfile)
+   instead ([`heroku.yml`](heroku.yml), "container" stack).
 3. A database: Heroku → your app → *Resources* → *Heroku Postgres*. Its `DATABASE_URL` is used
    automatically.
 
+Without GitHub Actions: `heroku create --stack heroku-24 --buildpack emk/rust` (on an existing app,
+`heroku stack:set heroku-24` then `heroku buildpacks:set emk/rust`), then `git push heroku master`;
+or, in the dashboard, *Settings → Buildpacks → Add buildpack* → `emk/rust` (the stack must not be
+"container").
+
 Heroku has no free plan (an Eco dyno costs about $5 a month). Projects created with
-`paquets new` contain the same files. Step-by-step guide:
+`paquets new` deploy the same way, built from their `Dockerfile`. Step-by-step guide:
 [docs/en/deploy-heroku-mobile.md](docs/en/deploy-heroku-mobile.md).
 
 The website is also published for free on **GitHub Pages** at
