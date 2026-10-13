@@ -17,7 +17,7 @@ Requêtes par seconde sur une VM à 4 vCPU, le serveur épinglé sur 2 cœurs et
 | `POST /echo` (lit et renvoie du JSON) | 105 570 (18,8 µs) | 170 129 (11,7 µs) | **253 941 (7,6 µs)** |
 | `GET /` pipeliné ×16 | 213 678 (9,3 µs) | 1 272 510 (1,6 µs) | **2 781 541 (0,64 µs)** |
 
-La méthodologie, les autres frameworks mesurés (Express, Drogon) et la façon de reproduire ces chiffres se trouvent dans [le guide des performances de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/performance/).
+La méthodologie, les autres frameworks mesurés (Express, Drogon) et la façon de reproduire ces chiffres se trouvent dans [le guide des performances de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/performance/).
 
 ### Le bouclier (Securite)
 
@@ -32,7 +32,7 @@ Toute la chaîne recommandée (identifiant de requête, hygiène, filtre de mét
 | Sycamore 0.9 | 33,0 µs | 45,8 ko | 227 ms |
 | Dioxus 0.7 | 24,2 µs | 170,4 ko | 339 ms |
 
-Le plus petit bundle de tous, et un rendu serveur 2,4 fois plus rapide que l'autre framework qui fusionne les balises SEO venant des composants (Leptos avec leptos_meta). Un moteur de templates sans fusion SEO, comme maud, rend plus vite (1,4 µs), mais n'envoie rien au navigateur. Les détails sont dans [les benchmarks d'active](https://maxlestage.github.io/Active/fr/docs/benchmarks/).
+Le plus petit bundle de tous, et un rendu serveur 2,4 fois plus rapide que l'autre framework qui fusionne les balises SEO venant des composants (Leptos avec leptos_meta). Un moteur de templates sans fusion SEO, comme maud, rend plus vite (1,4 µs), mais n'envoie rien au navigateur. Les détails sont dans [les benchmarks d'active](https://active-c1883a966650.herokuapp.com/fr/docs/benchmarks/).
 
 ### Ce que cela signifie pour votre application
 

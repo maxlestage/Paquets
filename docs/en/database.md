@@ -1,6 +1,6 @@
 # Database
 
-Paquets stores data with [memoire-orm](https://maxlestage.github.io/Memoire/), a type-safe ORM: a Rust struct describes a table, and queries are written in Rust, checked by the compiler. The same code runs in memory, on SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: the database is chosen by a URL. This page covers models, choosing the database, reading and writing, transactions, schema changes and raw SQL.
+Paquets stores data with [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), a type-safe ORM: a Rust struct describes a table, and queries are written in Rust, checked by the compiler. The same code runs in memory, on SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: the database is chosen by a URL. This page covers models, choosing the database, reading and writing, transactions, schema changes and raw SQL.
 
 ## Models
 
@@ -150,7 +150,7 @@ let db = MemoryDb::open_with("data/app.memoire", StorageOptions::new().password(
 app.database(Db::from(db));
 ```
 
-Like SQLite, it needs a disk that persists: not on Heroku. See [Memoire's in-memory engine](https://maxlestage.github.io/Memoire/en/docs/memory/) for durability (`StorageOptions::sync`) and compaction.
+Like SQLite, it needs a disk that persists: not on Heroku. See [Memoire's in-memory engine](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/memory/) for durability (`StorageOptions::sync`) and compaction.
 
 ## Tables are created at startup
 
@@ -395,7 +395,7 @@ Then add `priority: i32` to the struct. How it works, and the rules to follow:
 - Don't `create_table::<M>()` in these migrations for a model registered with `app.api` or `app.model`: its table was already created before `on_start` runs, and the migration would fail with "table already exists".
 
 > [!NOTE]
-> SQLite and MySQL don't support `ADD COLUMN IF NOT EXISTS`. For them, run the migrations yourself **before** the app creates its tables: open the database with `Db::connect(&url).await?`, run the `Migrator` (with `create_table` steps built from frozen copies of your structs), then hand the database to the app with `app.database(db)` and start it with `app.serve().await` inside `#[tokio::main]`. Memoire's [migrations guide](https://maxlestage.github.io/Memoire/en/docs/migrations/) explains frozen structs in detail.
+> SQLite and MySQL don't support `ADD COLUMN IF NOT EXISTS`. For them, run the migrations yourself **before** the app creates its tables: open the database with `Db::connect(&url).await?`, run the `Migrator` (with `create_table` steps built from frozen copies of your structs), then hand the database to the app with `app.database(db)` and start it with `app.serve().await` inside `#[tokio::main]`. Memoire's [migrations guide](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/migrations/) explains frozen structs in detail.
 
 ## Raw SQL
 
@@ -445,7 +445,7 @@ With PostgreSQL, the pool opens up to 4 connections per CPU core when the traffi
 
 ## Learn more
 
-Memoire's documentation goes further: [models](https://maxlestage.github.io/Memoire/en/docs/models/), [queries](https://maxlestage.github.io/Memoire/en/docs/queries/) (joins, aggregates, group by), [relations](https://maxlestage.github.io/Memoire/en/docs/relations/), [transactions](https://maxlestage.github.io/Memoire/en/docs/transactions/), [migrations](https://maxlestage.github.io/Memoire/en/docs/migrations/), [change notifications](https://maxlestage.github.io/Memoire/en/docs/events/) and one page per database. Everything works with `req.db()`: it accepts every model method and query. In Paquets, Memoire is re-exported as `paquets::orm`.
+Memoire's documentation goes further: [models](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/models/), [queries](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/queries/) (joins, aggregates, group by), [relations](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/relations/), [transactions](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/transactions/), [migrations](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/migrations/), [change notifications](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/events/) and one page per database. Everything works with `req.db()`: it accepts every model method and query. In Paquets, Memoire is re-exported as `paquets::orm`.
 
 ## Next steps
 

@@ -7,6 +7,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- Links: the websites of Paquets, Active, Vitesse, Securite and Memoire are linked at their
+  Heroku addresses (`*.herokuapp.com`) instead of GitHub Pages, in the READMEs, the docs, the
+  site's footer, `Cargo.toml`, `app.json`, the rustdoc logo and the `paquets new` template; the
+  old `/#/docs` links point to real pages (`/<lang>/docs/`).
+- Credits: FerroSwift and Solidify are no longer listed in the ecosystem (READMEs, site footer,
+  `PUBLISHING.md`): the footer presents five projects.
 - Heroku: the website is built with the emk/rust buildpack on the heroku-26 stack by default
   (`RustConfig` sets the Rust version and skips the buildpack's own build, `heroku-build.sh`
   builds the server and the islands, `Procfile`; `app.json` chooses them for the Deploy button).

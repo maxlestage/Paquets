@@ -8,10 +8,10 @@ Paquets («paquetes» en francés) es una biblioteca de Rust para crear sitios w
 
 | Paquete | Qué hace en Paquets |
 |---|---|
-| [Vitesse](https://maxlestage.github.io/Vitesse/) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
-| [Securite](https://maxlestage.github.io/Securite/) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
-| [memoire-orm](https://maxlestage.github.io/Memoire/) | La base de datos: modelos y consultas con tipado seguro, en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
-| [Active](https://maxlestage.github.io/Active/) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
+| [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
+| [Securite](https://securite-2db4c1994be7.herokuapp.com/) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
+| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | La base de datos: modelos y consultas con tipado seguro, en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
+| [Active](https://active-c1883a966650.herokuapp.com/) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
 
 No necesitas aprender cuatro bibliotecas para empezar. Paquets las conecta, elige buenos valores por defecto y expone una sola API, pequeña. Cuando necesites más, cada paquete está a un import de distancia (consulta [Los cuatro paquetes](packages.md)).
 

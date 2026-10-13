@@ -11,14 +11,12 @@ pub const LICENSE_PATH: &str = "/LICENSE.txt";
 
 /// The sister projects of Paquets, by the same author: (name, website). The footer links
 /// them in this order; `i18n::Texts::footer_projects` describes each one in the same order.
-pub const ECOSYSTEM: [(&str, &str); 7] = [
-    ("Active", "https://maxlestage.github.io/Active/"),
-    ("Vitesse", "https://maxlestage.github.io/Vitesse/"),
-    ("Securite", "https://maxlestage.github.io/Securite/"),
-    ("Memoire", "https://maxlestage.github.io/Memoire/"),
-    ("Paquets", "https://maxlestage.github.io/Paquets/"),
-    ("FerroSwift", "https://maxlestage.github.io/FerroSwift/"),
-    ("Solidify", "https://maxlestage.github.io/Solidify/"),
+pub const ECOSYSTEM: [(&str, &str); 5] = [
+    ("Active", "https://active-c1883a966650.herokuapp.com/"),
+    ("Vitesse", "https://vitesse-f16135654c3d.herokuapp.com/"),
+    ("Securite", "https://securite-2db4c1994be7.herokuapp.com/"),
+    ("Memoire", "https://memoire-7f4525f1fdaf.herokuapp.com/"),
+    ("Paquets", "https://paquets-90dfc06b6fea.herokuapp.com/"),
 ];
 
 /// The command shown (and copied) in the hero.
@@ -41,7 +39,7 @@ pub struct Package {
 pub const PACKAGES: [Package; 4] = [
     Package {
         name: "Vitesse",
-        site: "https://maxlestage.github.io/Vitesse/",
+        site: "https://vitesse-f16135654c3d.herokuapp.com/",
         glyph: "V",
         color: "#ffc24b",
         figure: "291k req/s",
@@ -49,7 +47,7 @@ pub const PACKAGES: [Package; 4] = [
     },
     Package {
         name: "Securite",
-        site: "https://maxlestage.github.io/Securite/",
+        site: "https://securite-2db4c1994be7.herokuapp.com/",
         glyph: "S",
         color: "#ff4fa3",
         figure: "≈ 6 µs",
@@ -57,7 +55,7 @@ pub const PACKAGES: [Package; 4] = [
     },
     Package {
         name: "Memoire",
-        site: "https://maxlestage.github.io/Memoire/",
+        site: "https://memoire-7f4525f1fdaf.herokuapp.com/",
         glyph: "M",
         color: "#8b6dff",
         figure: "6 DB",
@@ -65,7 +63,7 @@ pub const PACKAGES: [Package; 4] = [
     },
     Package {
         name: "Active",
-        site: "https://maxlestage.github.io/Active/",
+        site: "https://active-c1883a966650.herokuapp.com/",
         glyph: "A",
         color: "#22d3ee",
         figure: "36.8 kB",

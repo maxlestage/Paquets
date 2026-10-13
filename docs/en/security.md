@@ -1,6 +1,6 @@
 # Security
 
-Every Paquets app is protected from its first line: `App::new()` puts the recommended shield of [Securite](https://maxlestage.github.io/Securite/) in front of every request. Attacks are blocked before your code runs, and every response gets the security headers browsers need. This page explains what the shield does, how to change it, and what remains your job, such as logging users in.
+Every Paquets app is protected from its first line: `App::new()` puts the recommended shield of [Securite](https://securite-2db4c1994be7.herokuapp.com/) in front of every request. Attacks are blocked before your code runs, and every response gets the security headers browsers need. This page explains what the shield does, how to change it, and what remains your job, such as logging users in.
 
 ## What the shield does
 
@@ -103,7 +103,7 @@ app.security(
 ```
 
 > [!WARNING]
-> Only trust a forwarding header when your app can be reached **only** through the proxy that sets it. Otherwise anyone can send the header and choose their address. See Securite's [client IP guide](https://maxlestage.github.io/Securite/en/docs/client-ip/).
+> Only trust a forwarding header when your app can be reached **only** through the proxy that sets it. Otherwise anyone can send the header and choose their address. See Securite's [client IP guide](https://securite-2db4c1994be7.herokuapp.com/en/docs/client-ip/).
 
 Handlers can read the address the shield found with `req.extensions().get::<ClientIp>()` (see [Requests and responses](requests-responses.md#the-clients-ip-address)).
 
@@ -249,7 +249,7 @@ app.get("/admin", |req: Request| async move {
 });
 ```
 
-Every path under `/admin` now needs the user name and password; the others stay public. Read the password from an environment variable (`std::env::var("ADMIN_PASSWORD")`) rather than writing it in the code. Securite's [authentication guide](https://maxlestage.github.io/Securite/en/docs/auth/) covers tokens, API keys and custom checks such as JWT.
+Every path under `/admin` now needs the user name and password; the others stay public. Read the password from an environment variable (`std::env::var("ADMIN_PASSWORD")`) rather than writing it in the code. Securite's [authentication guide](https://securite-2db4c1994be7.herokuapp.com/en/docs/auth/) covers tokens, API keys and custom checks such as JWT.
 
 ### Accounts and sessions
 
@@ -277,7 +277,7 @@ app.get("/", |req: Request| async move {
 });
 ```
 
-`MemoryStore` keeps the sessions in the server's memory: they are lost at restart and not shared between instances. `session.destroy()` logs out. Vitesse's [sessions guide](https://maxlestage.github.io/Vitesse/en/docs/sessions/) covers signed cookies, expiry and stores of your own.
+`MemoryStore` keeps the sessions in the server's memory: they are lost at restart and not shared between instances. `session.destroy()` logs out. Vitesse's [sessions guide](https://vitesse-f16135654c3d.herokuapp.com/en/docs/sessions/) covers signed cookies, expiry and stores of your own.
 
 Without the feature, or to keep sessions in your database, the usual pattern is:
 
@@ -289,7 +289,7 @@ The shield takes care of the rest: the cookie gets `Secure`, `HttpOnly` and `Sam
 
 ## Learn more
 
-Securite's documentation has one page per guard: [WAF](https://maxlestage.github.io/Securite/en/docs/waf/), [rate limit](https://maxlestage.github.io/Securite/en/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/en/docs/csrf/), [security headers](https://maxlestage.github.io/Securite/en/docs/security-headers/), [presets](https://maxlestage.github.io/Securite/en/docs/shield-presets/), and more: IP filter, host filter, automatic bans, webhook signatures. In Paquets, Securite is re-exported as `paquets::securite`.
+Securite's documentation has one page per guard: [WAF](https://securite-2db4c1994be7.herokuapp.com/en/docs/waf/), [rate limit](https://securite-2db4c1994be7.herokuapp.com/en/docs/rate-limit/), [CSRF](https://securite-2db4c1994be7.herokuapp.com/en/docs/csrf/), [security headers](https://securite-2db4c1994be7.herokuapp.com/en/docs/security-headers/), [presets](https://securite-2db4c1994be7.herokuapp.com/en/docs/shield-presets/), and more: IP filter, host filter, automatic bans, webhook signatures. In Paquets, Securite is re-exported as `paquets::securite`.
 
 ## Next steps
 

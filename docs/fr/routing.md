@@ -1,6 +1,6 @@
 # Routes
 
-Le routage décide quel code répond à une requête, d'après sa méthode (`GET`, `POST`…) et son chemin (`/users/42`). Paquets utilise le routeur de [Vitesse](https://maxlestage.github.io/Vitesse/), avec le vocabulaire d'Express.js : `app.get(chemin, handler)`, des paramètres écrits `:id`, des middlewares avec `next`. Cette page couvre les routes, les paramètres, les routeurs, les middlewares, la page 404 et les fichiers statiques.
+Le routage décide quel code répond à une requête, d'après sa méthode (`GET`, `POST`…) et son chemin (`/users/42`). Paquets utilise le routeur de [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), avec le vocabulaire d'Express.js : `app.get(chemin, handler)`, des paramètres écrits `:id`, des middlewares avec `next`. Cette page couvre les routes, les paramètres, les routeurs, les middlewares, la page 404 et les fichiers statiques.
 
 ## Vos premières routes
 
@@ -222,11 +222,11 @@ Les fichiers du dossier `public/` sont servis à la racine du site, sans une lig
 app.static_dir("/downloads", "files"); // files/rapport.pdf → /downloads/rapport.pdf
 ```
 
-Les chemins sont relatifs au dossier depuis lequel le serveur est lancé. Les fichiers statiques reçoivent les bons en-têtes `Content-Type`, `ETag` et `Last-Modified`, les réponses `304 Not Modified` et les requêtes partielles (vidéo). Les fichiers cachés (`.env`, `.git/`) et les chemins avec `..` sont refusés. Plus d'options dans [le guide des fichiers statiques de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/static-files/).
+Les chemins sont relatifs au dossier depuis lequel le serveur est lancé. Les fichiers statiques reçoivent les bons en-têtes `Content-Type`, `ETag` et `Last-Modified`, les réponses `304 Not Modified` et les requêtes partielles (vidéo). Les fichiers cachés (`.env`, `.git/`) et les chemins avec `..` sont refusés. Plus d'options dans [le guide des fichiers statiques de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/static-files/).
 
 ## Pour aller plus loin
 
-La documentation de Vitesse approfondit le routage : [routage](https://maxlestage.github.io/Vitesse/fr/docs/routing/), [middlewares](https://maxlestage.github.io/Vitesse/fr/docs/middleware/) (y compris les middlewares fournis `logger`, `cors` et `timeout`) et [routeurs](https://maxlestage.github.io/Vitesse/fr/docs/routers/). Tout ce qui s'y trouve fonctionne dans Paquets : `App` donne accès à toutes les méthodes de l'application de Vitesse.
+La documentation de Vitesse approfondit le routage : [routage](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/routing/), [middlewares](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/middleware/) (y compris les middlewares fournis `logger`, `cors` et `timeout`) et [routeurs](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/routers/). Tout ce qui s'y trouve fonctionne dans Paquets : `App` donne accès à toutes les méthodes de l'application de Vitesse.
 
 ## Étapes suivantes
 

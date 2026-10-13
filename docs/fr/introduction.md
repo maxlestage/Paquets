@@ -8,10 +8,10 @@ Paquets est une bibliothèque Rust pour créer des sites et des API web. Il asse
 
 | Paquet | Son rôle dans Paquets |
 |---|---|
-| [Vitesse](https://maxlestage.github.io/Vitesse/) | Le serveur HTTP, avec une API dans le style d'Express.js : `app.get(...)`, `req.param(...)`, middlewares, routeurs, WebSocket. |
-| [Securite](https://maxlestage.github.io/Securite/) | Le bouclier de sécurité devant chaque requête : pare-feu, limitation de débit, protection CSRF, en-têtes de sécurité, et bien plus. |
-| [memoire-orm](https://maxlestage.github.io/Memoire/) | La base de données : modèles et requêtes typés, en mémoire, SQLite, PostgreSQL, MySQL, Redis ou MongoDB. |
-| [Active](https://maxlestage.github.io/Active/) | Le front-end : des vues écrites comme des fonctions Rust, le rendu serveur avec les balises SEO, et les îlots WebAssembly. |
+| [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | Le serveur HTTP, avec une API dans le style d'Express.js : `app.get(...)`, `req.param(...)`, middlewares, routeurs, WebSocket. |
+| [Securite](https://securite-2db4c1994be7.herokuapp.com/) | Le bouclier de sécurité devant chaque requête : pare-feu, limitation de débit, protection CSRF, en-têtes de sécurité, et bien plus. |
+| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | La base de données : modèles et requêtes typés, en mémoire, SQLite, PostgreSQL, MySQL, Redis ou MongoDB. |
+| [Active](https://active-c1883a966650.herokuapp.com/) | Le front-end : des vues écrites comme des fonctions Rust, le rendu serveur avec les balises SEO, et les îlots WebAssembly. |
 
 Pas besoin d'apprendre quatre bibliothèques pour commencer. Paquets les relie, choisit de bons réglages par défaut et expose une seule petite API. Quand il vous en faut plus, chaque paquet n'est qu'à un import de distance (voir [Les quatre paquets](packages.md)).
 

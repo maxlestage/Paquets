@@ -146,7 +146,7 @@ async fn login(req: Request) -> Result<Redirect> {
 
 ### Subida de archivos
 
-Con la feature `multipart`, `req.multipart()?` lee un formulario enviado con `enctype="multipart/form-data"`, campo a campo; responde `415` cuando la petición es de otro tipo. Los límites del cuerpo (2 MiB por defecto) también se aplican a las subidas: para aceptar archivos más grandes, sube los dos (consulta [Tamaño del cuerpo](#tamaño-del-cuerpo)). Consulta la [guía de Vitesse sobre la subida de archivos](https://maxlestage.github.io/Vitesse/es/docs/requests/#subida-de-archivos-multipart).
+Con la feature `multipart`, `req.multipart()?` lee un formulario enviado con `enctype="multipart/form-data"`, campo a campo; responde `415` cuando la petición es de otro tipo. Los límites del cuerpo (2 MiB por defecto) también se aplican a las subidas: para aceptar archivos más grandes, sube los dos (consulta [Tamaño del cuerpo](#tamaño-del-cuerpo)). Consulta la [guía de Vitesse sobre la subida de archivos](https://vitesse-f16135654c3d.herokuapp.com/es/docs/requests/#subida-de-archivos-multipart).
 
 Sin la feature, lee el cuerpo en bruto con `req.take_body()` y pásaselo a un crate de multipart.
 
@@ -266,7 +266,7 @@ app.get("/export.csv", |_| async { Csv("id,name\n1,Ada\n".into()) });
 
 ## Más información
 
-- [vitesse: Leer la petición](https://maxlestage.github.io/Vitesse/es/docs/requests/) y [Responder](https://maxlestage.github.io/Vitesse/es/docs/responses/): todos los métodos, cuerpos en streaming, Server-Sent Events.
+- [vitesse: Leer la petición](https://vitesse-f16135654c3d.herokuapp.com/es/docs/requests/) y [Responder](https://vitesse-f16135654c3d.herokuapp.com/es/docs/responses/): todos los métodos, cuerpos en streaming, Server-Sent Events.
 - [Errores](errors.md): lo que hace `?` con cada tipo de error.
 
 ## Próximos pasos

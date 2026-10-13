@@ -282,4 +282,4 @@ The `ci.yml` workflow of a generated project runs `cargo test` on every push, to
 
 - [Errors](errors.md): what each error looks like, to test it.
 - [Automation](automation.md): tests on every push.
-- [Vitesse's testing guide](https://maxlestage.github.io/Vitesse/en/docs/testing/): more examples with the same test client.
+- [Vitesse's testing guide](https://vitesse-f16135654c3d.herokuapp.com/en/docs/testing/): more examples with the same test client.

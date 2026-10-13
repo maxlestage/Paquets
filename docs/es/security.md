@@ -1,6 +1,6 @@
 # Seguridad
 
-Toda aplicación Paquets está protegida desde su primera línea: `App::new()` pone el escudo recomendado de [Securite](https://maxlestage.github.io/Securite/) delante de cada petición. Los ataques se bloquean antes de que se ejecute tu código, y cada respuesta recibe las cabeceras de seguridad que necesitan los navegadores. Esta página explica qué hace el escudo, cómo modificarlo y qué sigue siendo tarea tuya, como el inicio de sesión de los usuarios.
+Toda aplicación Paquets está protegida desde su primera línea: `App::new()` pone el escudo recomendado de [Securite](https://securite-2db4c1994be7.herokuapp.com/) delante de cada petición. Los ataques se bloquean antes de que se ejecute tu código, y cada respuesta recibe las cabeceras de seguridad que necesitan los navegadores. Esta página explica qué hace el escudo, cómo modificarlo y qué sigue siendo tarea tuya, como el inicio de sesión de los usuarios.
 
 ## Qué hace el escudo
 
@@ -103,7 +103,7 @@ app.security(
 ```
 
 > [!WARNING]
-> Confía en una cabecera de reenvío solo cuando tu aplicación sea accesible **únicamente** a través del proxy que la define. Si no, cualquiera puede enviar la cabecera y elegir su dirección. Consulta la [guía de la IP del cliente](https://maxlestage.github.io/Securite/es/docs/client-ip/) de Securite.
+> Confía en una cabecera de reenvío solo cuando tu aplicación sea accesible **únicamente** a través del proxy que la define. Si no, cualquiera puede enviar la cabecera y elegir su dirección. Consulta la [guía de la IP del cliente](https://securite-2db4c1994be7.herokuapp.com/es/docs/client-ip/) de Securite.
 
 Los handlers pueden leer la dirección que encontró el escudo con `req.extensions().get::<ClientIp>()` (consulta [Peticiones y respuestas](requests-responses.md#la-dirección-ip-del-cliente)).
 
@@ -249,7 +249,7 @@ app.get("/admin", |req: Request| async move {
 });
 ```
 
-Ahora todas las rutas bajo `/admin` necesitan el nombre de usuario y la contraseña; las demás siguen siendo públicas. Lee la contraseña de una variable de entorno (`std::env::var("ADMIN_PASSWORD")`) en lugar de escribirla en el código. La [guía de autenticación](https://maxlestage.github.io/Securite/es/docs/auth/) de Securite trata los tokens, las claves de API y las comprobaciones personalizadas como JWT.
+Ahora todas las rutas bajo `/admin` necesitan el nombre de usuario y la contraseña; las demás siguen siendo públicas. Lee la contraseña de una variable de entorno (`std::env::var("ADMIN_PASSWORD")`) en lugar de escribirla en el código. La [guía de autenticación](https://securite-2db4c1994be7.herokuapp.com/es/docs/auth/) de Securite trata los tokens, las claves de API y las comprobaciones personalizadas como JWT.
 
 ### Cuentas y sesiones
 
@@ -277,7 +277,7 @@ app.get("/", |req: Request| async move {
 });
 ```
 
-`MemoryStore` guarda las sesiones en la memoria del servidor: se pierden al reiniciar y no se comparten entre instancias. `session.destroy()` cierra la sesión. La [guía de sesiones](https://maxlestage.github.io/Vitesse/es/docs/sessions/) de Vitesse cubre las cookies firmadas, la caducidad y los stores propios.
+`MemoryStore` guarda las sesiones en la memoria del servidor: se pierden al reiniciar y no se comparten entre instancias. `session.destroy()` cierra la sesión. La [guía de sesiones](https://vitesse-f16135654c3d.herokuapp.com/es/docs/sessions/) de Vitesse cubre las cookies firmadas, la caducidad y los stores propios.
 
 Sin la feature, o para guardar las sesiones en tu base de datos, el patrón habitual es:
 
@@ -289,7 +289,7 @@ El escudo se encarga del resto: la cookie recibe `Secure`, `HttpOnly` y `SameSit
 
 ## Más información
 
-La documentación de Securite tiene una página por guard: [WAF](https://maxlestage.github.io/Securite/es/docs/waf/), [límite de tasa](https://maxlestage.github.io/Securite/es/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/es/docs/csrf/), [cabeceras de seguridad](https://maxlestage.github.io/Securite/es/docs/security-headers/), [presets](https://maxlestage.github.io/Securite/es/docs/shield-presets/), y más: filtro de IP, filtro de hosts, bloqueos automáticos, firmas de webhooks. En Paquets, Securite se reexporta como `paquets::securite`.
+La documentación de Securite tiene una página por guard: [WAF](https://securite-2db4c1994be7.herokuapp.com/es/docs/waf/), [límite de tasa](https://securite-2db4c1994be7.herokuapp.com/es/docs/rate-limit/), [CSRF](https://securite-2db4c1994be7.herokuapp.com/es/docs/csrf/), [cabeceras de seguridad](https://securite-2db4c1994be7.herokuapp.com/es/docs/security-headers/), [presets](https://securite-2db4c1994be7.herokuapp.com/es/docs/shield-presets/), y más: filtro de IP, filtro de hosts, bloqueos automáticos, firmas de webhooks. En Paquets, Securite se reexporta como `paquets::securite`.
 
 ## Próximos pasos
 

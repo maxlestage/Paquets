@@ -6,16 +6,16 @@ Paquets is built on four packages by the same author: Vitesse, Securite, memoire
 
 | Package | Role | Re-exported as | Repository | Documentation |
 |---|---|---|---|---|
-| **Vitesse** | HTTP server in the style of Express.js: routes, middleware, routers, WebSocket, HTTPS, HTTP/2 and HTTP/3, sessions, templates, test client | `paquets::vitesse` | [maxlestage/Vitesse](https://maxlestage.github.io/Vitesse/) | [docs](https://maxlestage.github.io/Vitesse/en/docs/README/) |
-| **Securite** | security middleware: WAF, rate limit, CSRF, CORS, security headers and CSP, bot blocker, authentication… | `paquets::securite` | [maxlestage/Securite](https://maxlestage.github.io/Securite/) | [docs](https://maxlestage.github.io/Securite/en/docs/introduction/) |
-| **memoire-orm** | type-safe async ORM, SQL built at compile time: memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://maxlestage.github.io/Memoire/) | [docs](https://maxlestage.github.io/Memoire/en/docs/introduction/) |
-| **active** | front end: components as Rust functions, `use_state`, server rendering with complete SEO tags, WebAssembly islands | `paquets::active` | [maxlestage/Active](https://maxlestage.github.io/Active/) | [docs](https://maxlestage.github.io/Active/en/docs/introduction/) |
+| **Vitesse** | HTTP server in the style of Express.js: routes, middleware, routers, WebSocket, HTTPS, HTTP/2 and HTTP/3, sessions, templates, test client | `paquets::vitesse` | [maxlestage/Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | [docs](https://vitesse-f16135654c3d.herokuapp.com/en/docs/introduction/) |
+| **Securite** | security middleware: WAF, rate limit, CSRF, CORS, security headers and CSP, bot blocker, authentication… | `paquets::securite` | [maxlestage/Securite](https://securite-2db4c1994be7.herokuapp.com/) | [docs](https://securite-2db4c1994be7.herokuapp.com/en/docs/introduction/) |
+| **memoire-orm** | type-safe async ORM, SQL built at compile time: memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | [docs](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/introduction/) |
+| **active** | front end: components as Rust functions, `use_state`, server rendering with complete SEO tags, WebAssembly islands | `paquets::active` | [maxlestage/Active](https://active-c1883a966650.herokuapp.com/) | [docs](https://active-c1883a966650.herokuapp.com/en/docs/introduction/) |
 
 Paquets also re-exports `paquets::serde` and `paquets::serde_json` (and `json!` in the prelude), so that `#[model]` and `#[data]` work without adding serde to your `Cargo.toml`, and `paquets::test`, the test client types.
 
 ## vitesse: the server
 
-[Vitesse](https://maxlestage.github.io/Vitesse/) (French for "speed") is the HTTP server, with its own HTTP/1.1 engine on top of tokio. It handles about 291,000 requests per second on 2 cores for `GET /`, more than actix-web and axum on the same machine, and 2.78 million with pipelining.
+[Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) (French for "speed") is the HTTP server, with its own HTTP/1.1 engine on top of tokio. It handles about 291,000 requests per second on 2 cores for `GET /`, more than actix-web and axum on the same machine, and 2.78 million with pipelining.
 
 **In Paquets:** `App` contains a `vitesse::App` and gives access to all its methods (it dereferences to it): `get`, `post`, `ws`, `middleware`, `mount`, `state`, `fallback`, `on_error`, `body_limit`, `static_dir`, `workers`… Handlers receive a `vitesse::Request` and return anything that implements `vitesse::IntoResponse`. The test client of `app.test()` is Vitesse's `TestClient`.
 
@@ -43,18 +43,18 @@ Vitesse's options are Cargo features of Paquets, with the same names:
 
 | Feature | Brings | Vitesse's guide |
 |---|---|---|
-| `tls`, `http2`, `http3` | HTTPS in the server (`app.tls(...)`), HTTP/2, HTTP/3 over QUIC | [HTTPS](https://maxlestage.github.io/Vitesse/en/docs/https/), [HTTP/3](https://maxlestage.github.io/Vitesse/en/docs/http3/) |
-| `session` | signed cookies (`app.cookie_secret(...)`) and sessions (`middleware::session(...)`, `req.session()`) | [Sessions](https://maxlestage.github.io/Vitesse/en/docs/sessions/) |
-| `templates` | minijinja templates: `app.views("views")`, `req.render("page.html", json!({...}))` | [Templates](https://maxlestage.github.io/Vitesse/en/docs/templates/) |
-| `multipart` | file uploads: `req.multipart()` | [Requests](https://maxlestage.github.io/Vitesse/en/docs/requests/) |
-| `compress` | Brotli or gzip responses (`middleware::compress()`), compressed request bodies (`middleware::decompress()`) | [Middleware](https://maxlestage.github.io/Vitesse/en/docs/middleware/) |
-| `tower` | tower layers as middlewares: `middleware::layer(...)` | [Middleware](https://maxlestage.github.io/Vitesse/en/docs/middleware/) |
+| `tls`, `http2`, `http3` | HTTPS in the server (`app.tls(...)`), HTTP/2, HTTP/3 over QUIC | [HTTPS](https://vitesse-f16135654c3d.herokuapp.com/en/docs/https/), [HTTP/3](https://vitesse-f16135654c3d.herokuapp.com/en/docs/http3/) |
+| `session` | signed cookies (`app.cookie_secret(...)`) and sessions (`middleware::session(...)`, `req.session()`) | [Sessions](https://vitesse-f16135654c3d.herokuapp.com/en/docs/sessions/) |
+| `templates` | minijinja templates: `app.views("views")`, `req.render("page.html", json!({...}))` | [Templates](https://vitesse-f16135654c3d.herokuapp.com/en/docs/templates/) |
+| `multipart` | file uploads: `req.multipart()` | [Requests](https://vitesse-f16135654c3d.herokuapp.com/en/docs/requests/) |
+| `compress` | Brotli or gzip responses (`middleware::compress()`), compressed request bodies (`middleware::decompress()`) | [Middleware](https://vitesse-f16135654c3d.herokuapp.com/en/docs/middleware/) |
+| `tower` | tower layers as middlewares: `middleware::layer(...)` | [Middleware](https://vitesse-f16135654c3d.herokuapp.com/en/docs/middleware/) |
 
 Pages rendered with `req.render` get the shield's Content-Security-Policy, which refuses inline scripts and styles: put them in `public/`, or build the page with `Page`, which allows its own (see [Security](security.md#security-headers-and-the-content-security-policy)).
 
 ## securite: the shield
 
-[Securite](https://maxlestage.github.io/Securite/) is a set of 19 security guards, assembled into a `Shield`. Its recommended pipeline costs about 6 µs per request. It is written for Vitesse (and for the tower ecosystem: hyper, tonic) and contains no `unsafe` code.
+[Securite](https://securite-2db4c1994be7.herokuapp.com/) is a set of 19 security guards, assembled into a `Shield`. Its recommended pipeline costs about 6 µs per request. It is written for Vitesse (and for the tower ecosystem: hyper, tonic) and contains no `unsafe` code.
 
 **In Paquets:** `App::new()` puts `paquets::shield().build()` in front of every request: Securite's recommended preset, with the client IP read from `X-Forwarded-For` on Heroku. Paquets bridges Vitesse's requests to Securite's guards: the shield sees the request line and the headers, adds its headers to every response, and hands its findings to your handlers (the client IP, the authenticated user, the request id). Pages compute their own Content-Security-Policy with Securite's hashing functions.
 
@@ -82,11 +82,11 @@ app.middleware(Health::new().version(env!("CARGO_PKG_VERSION"))); // GET /health
 app.middleware(ETag::new());
 ```
 
-See the [Pratique documentation](https://maxlestage.github.io/Securite/en/docs/pratique/).
+See the [Pratique documentation](https://securite-2db4c1994be7.herokuapp.com/en/docs/pratique/).
 
 ## memoire-orm: the database
 
-[memoire-orm](https://maxlestage.github.io/Memoire/) maps Rust structs to tables and writes queries in Rust, checked by the compiler. The SQL of primary-key operations is built at compile time, and the same code runs on six backends.
+[memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) maps Rust structs to tables and writes queries in Rust, checked by the compiler. The SQL of primary-key operations is built at compile time, and the same code runs on six backends.
 
 **In Paquets:**
 
@@ -102,13 +102,13 @@ See the [Pratique documentation](https://maxlestage.github.io/Securite/en/docs/p
 
 ## active: the front end
 
-[Active](https://maxlestage.github.io/Active/) builds views with one function per HTML tag, renders them on the server with complete SEO tags, and turns marked parts of a page into WebAssembly islands. It has no macros, no template language and no dependency on the server side; its counter bundle weighs 36.8 kB compressed.
+[Active](https://active-c1883a966650.herokuapp.com/) builds views with one function per HTML tag, renders them on the server with complete SEO tags, and turns marked parts of a page into WebAssembly islands. It has no macros, no template language and no dependency on the server side; its counter bundle weighs 36.8 kB compressed.
 
 **In Paquets:** `Page` wraps Active's `Document`: it adds the theme, the Content-Security-Policy and the loading of the islands' bundle (found in `pkg/` at startup). Islands are active's islands, hydrated in the browser by `paquets::hydrate` (feature `client`).
 
 **In the prelude:** every HTML tag function (`div()`, `p()`, `a()`…) and the `html` module (for `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `memo` (a derived state that notifies only when its value changes), `untrack`, `on_cleanup`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn`, `keyed`, `indexed` (a list whose rows follow their position) and `switch` (a view that keeps its page while the page's parameters change).
 
-**Beyond the prelude**, through `paquets::active`: `Document` to render a page without the theme and security policy of `Page`, for example to export static files. With the `client` feature (browser side): `paquets::hydrate`, `paquets::mount_to` and `paquets::mount` for apps rendered entirely in the browser, `paquets::navigate`, `paquets::location`, `paquets::query` and `paquets::query_param` for routing without reloading. See [Islands](islands.md) and [Active's documentation](https://maxlestage.github.io/Active/en/docs/introduction/).
+**Beyond the prelude**, through `paquets::active`: `Document` to render a page without the theme and security policy of `Page`, for example to export static files. With the `client` feature (browser side): `paquets::hydrate`, `paquets::mount_to` and `paquets::mount` for apps rendered entirely in the browser, `paquets::navigate`, `paquets::location`, `paquets::query` and `paquets::query_param` for routing without reloading. See [Islands](islands.md) and [Active's documentation](https://active-c1883a966650.herokuapp.com/en/docs/introduction/).
 
 ## How the names map
 

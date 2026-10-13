@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-State lives in memory: it is lost when the server restarts, and each server has its own copy. Data that must last belongs in the [database](database.md). More patterns in [Vitesse's state guide](https://maxlestage.github.io/Vitesse/en/docs/state/).
+State lives in memory: it is lost when the server restarts, and each server has its own copy. Data that must last belongs in the [database](database.md). More patterns in [Vitesse's state guide](https://vitesse-f16135654c3d.herokuapp.com/en/docs/state/).
 
 ## How the server runs
 
@@ -174,7 +174,7 @@ fn main() -> std::io::Result<()> {
 }
 ```
 
-`Tls::from_pem_files` reads a certificate chain and its private key, as written by Let's Encrypt (certbot). See Vitesse's [HTTPS guide](https://maxlestage.github.io/Vitesse/en/docs/https/) for certificates in memory, a redirect from port 80, and HTTP/3.
+`Tls::from_pem_files` reads a certificate chain and its private key, as written by Let's Encrypt (certbot). See Vitesse's [HTTPS guide](https://vitesse-f16135654c3d.herokuapp.com/en/docs/https/) for certificates in memory, a redirect from port 80, and HTTP/3.
 
 ## Cargo features
 

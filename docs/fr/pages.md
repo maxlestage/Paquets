@@ -267,7 +267,7 @@ async fn article(_req: Request) -> Page {
 | `.og_type(...)`, `.locale(...)`, `.twitter(compte)` | les autres balises Open Graph et Twitter |
 | `.meta_name(nom, contenu)`, `.meta_property(...)` | n'importe quelle autre balise `<meta>` |
 
-Un `Seo` peut aussi se placer à l'intérieur d'une vue (`.child(Seo::new().title(...))`) : tous les `Seo` de la page sont fusionnés, la valeur la plus profonde l'emportant, sans balises en double. Une mise en page peut donc définir des valeurs pour tout le site, que chaque page complète. Voir [le guide SEO d'active](https://maxlestage.github.io/Active/fr/docs/seo/).
+Un `Seo` peut aussi se placer à l'intérieur d'une vue (`.child(Seo::new().title(...))`) : tous les `Seo` de la page sont fusionnés, la valeur la plus profonde l'emportant, sans balises en double. Une mise en page peut donc définir des valeurs pour tout le site, que chaque page complète. Voir [le guide SEO d'active](https://active-c1883a966650.herokuapp.com/fr/docs/seo/).
 
 ## La Content-Security-Policy
 
@@ -348,7 +348,7 @@ app.pwa(
 
 ## Pour aller plus loin
 
-Les vues viennent d'[Active](https://maxlestage.github.io/Active/). Sa documentation approfondit [les composants et les vues](https://maxlestage.github.io/Active/fr/docs/components/), [le SEO](https://maxlestage.github.io/Active/fr/docs/seo/) et [les données structurées](https://maxlestage.github.io/Active/fr/docs/structured-data/).
+Les vues viennent d'[Active](https://active-c1883a966650.herokuapp.com/). Sa documentation approfondit [les composants et les vues](https://active-c1883a966650.herokuapp.com/fr/docs/components/), [le SEO](https://active-c1883a966650.herokuapp.com/fr/docs/seo/) et [les données structurées](https://active-c1883a966650.herokuapp.com/fr/docs/structured-data/).
 
 ## Étapes suivantes
 

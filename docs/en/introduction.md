@@ -8,10 +8,10 @@ Paquets (French for "packages") is a Rust library for building websites and web 
 
 | Package | What it does in Paquets |
 |---|---|
-| [Vitesse](https://maxlestage.github.io/Vitesse/) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
-| [Securite](https://maxlestage.github.io/Securite/) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
-| [memoire-orm](https://maxlestage.github.io/Memoire/) | The database: type-safe models and queries, in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
-| [Active](https://maxlestage.github.io/Active/) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
+| [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
+| [Securite](https://securite-2db4c1994be7.herokuapp.com/) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
+| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | The database: type-safe models and queries, in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
+| [Active](https://active-c1883a966650.herokuapp.com/) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
 
 You don't need to learn four libraries to start. Paquets connects them, chooses good defaults, and exposes one small API. When you need more, every package is one import away (see [The four packages](packages.md)).
 

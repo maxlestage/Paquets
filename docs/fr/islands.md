@@ -225,7 +225,7 @@ Les props font partie du HTML : gardez-les légères, et n'y mettez jamais de se
 - **Les îlots sont indépendants.** Chaque îlot a ses propres états. Si deux parties d'une page doivent réagir l'une à l'autre (un filtre et une liste), faites-en un seul îlot, ou partagez un store (voir [Garder des données dans le navigateur](#garder-des-données-dans-le-navigateur)).
 - **Le même balisage des deux côtés.** N'utilisez `#[cfg(target_arch = "wasm32")]` que pour le comportement, jamais pour changer ce qui est rendu.
 - **Les noms doivent correspondre.** Un îlot dont le nom n'est pas dans `start()` reste tout simplement statique, sans la moindre erreur.
-- **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://maxlestage.github.io/Active/fr/docs/events/)), ou utilisez un simple formulaire HTML qui envoie ses données à une route.
+- **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://active-c1883a966650.herokuapp.com/fr/docs/events/)), ou utilisez un simple formulaire HTML qui envoie ses données à une route.
 
 ## Garder des données dans le navigateur
 
@@ -281,7 +281,7 @@ pub fn add_to_cart(product: &str) -> Node {
 }
 ```
 
-Les données restent dans le navigateur : le serveur ne les voit jamais, sauf si un îlot les envoie (à votre API, avec `fetch`). Voir [le guide du stockage dans le navigateur](https://maxlestage.github.io/Memoire/fr/docs/browser-storage/) de Memoire pour les versions et les migrations, `SessionStorage` et `LocalStorageDb`.
+Les données restent dans le navigateur : le serveur ne les voit jamais, sauf si un îlot les envoie (à votre API, avec `fetch`). Voir [le guide du stockage dans le navigateur](https://memoire-7f4525f1fdaf.herokuapp.com/fr/docs/browser-storage/) de Memoire pour les versions et les migrations, `SessionStorage` et `LocalStorageDb`.
 
 ## Compiler pour la production
 
@@ -352,7 +352,7 @@ Le fichier `.wasm` porte le nom du paquet, avec `-` remplacé par `_`.
 
 ## Pour aller plus loin
 
-Les îlots, les états et les événements viennent d'[Active](https://maxlestage.github.io/Active/). Sa documentation va plus loin : [îlots](https://maxlestage.github.io/Active/fr/docs/islands/), [état et effets](https://maxlestage.github.io/Active/fr/docs/state/), [événements](https://maxlestage.github.io/Active/fr/docs/events/), et [applications côté client](https://maxlestage.github.io/Active/fr/docs/client-app/) (`paquets::mount_to`, `navigate` et `location` avec la feature `client`).
+Les îlots, les états et les événements viennent d'[Active](https://active-c1883a966650.herokuapp.com/). Sa documentation va plus loin : [îlots](https://active-c1883a966650.herokuapp.com/fr/docs/islands/), [état et effets](https://active-c1883a966650.herokuapp.com/fr/docs/state/), [événements](https://active-c1883a966650.herokuapp.com/fr/docs/events/), et [applications côté client](https://active-c1883a966650.herokuapp.com/fr/docs/client-app/) (`paquets::mount_to`, `navigate` et `location` avec la feature `client`).
 
 ## Étapes suivantes
 

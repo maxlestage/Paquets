@@ -27,7 +27,7 @@ Options of `new`:
   --minimal       one src/main.rs, no islands (no WebAssembly tools needed)
   --path <dir>    use a local checkout of Paquets instead of the published one
 
-Documentation: https://maxlestage.github.io/Paquets/";
+Documentation: https://paquets-90dfc06b6fea.herokuapp.com/";
 
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();

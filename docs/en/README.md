@@ -1,6 +1,6 @@
 # Paquets documentation
 
-Everything you need to build full-stack web apps with Paquets 📦, the simplest full-stack framework for Rust: from your first page to a deployment made from your phone. These pages are also on the website: https://maxlestage.github.io/Paquets/
+Everything you need to build full-stack web apps with Paquets 📦, the simplest full-stack framework for Rust: from your first page to a deployment made from your phone. These pages are also on the website: https://paquets-90dfc06b6fea.herokuapp.com/
 
 ## Getting started
 
@@ -44,6 +44,6 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 ## More resources
 
 - API reference generated from the source code: https://docs.rs/paquets
-- Source code, issues and examples: https://maxlestage.github.io/Paquets/
-- The four packages: [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [memoire-orm](https://maxlestage.github.io/Memoire/), [Active](https://maxlestage.github.io/Active/)
+- Source code, issues and examples: https://paquets-90dfc06b6fea.herokuapp.com/
+- The four packages: [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), [Active](https://active-c1883a966650.herokuapp.com/)
 - Also available in [French](../fr/README.md) and [Spanish](../es/README.md).

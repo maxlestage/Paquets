@@ -1,8 +1,8 @@
 {
   "name": "Paquets",
   "description": "The simplest full-stack framework for Rust. Deploys the Paquets website, itself a Paquets app, with its live demo (pages, REST API, database, security).",
-  "website": "https://maxlestage.github.io/Paquets/",
-  "logo": "https://maxlestage.github.io/Paquets/assets/logo.svg",
+  "website": "https://paquets-90dfc06b6fea.herokuapp.com/",
+  "logo": "https://paquets-90dfc06b6fea.herokuapp.com/assets/logo.svg",
   "keywords": [
     "rust",
     "web",

@@ -146,7 +146,7 @@ async fn login(req: Request) -> Result<Redirect> {
 
 ### Envois de fichiers
 
-Avec la feature `multipart`, `req.multipart()?` lit un formulaire envoyé avec `enctype="multipart/form-data"`, un champ à la fois ; il répond `415` quand la requête est d'un autre type. Les limites de corps (2 Mio par défaut) s'appliquent aussi aux envois : pour accepter des fichiers plus gros, relevez les deux (voir [Taille du corps](#taille-du-corps)). Voir [le guide des envois de fichiers de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/requests/#envois-de-fichiers-multipart).
+Avec la feature `multipart`, `req.multipart()?` lit un formulaire envoyé avec `enctype="multipart/form-data"`, un champ à la fois ; il répond `415` quand la requête est d'un autre type. Les limites de corps (2 Mio par défaut) s'appliquent aussi aux envois : pour accepter des fichiers plus gros, relevez les deux (voir [Taille du corps](#taille-du-corps)). Voir [le guide des envois de fichiers de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/requests/#envois-de-fichiers-multipart).
 
 Sans la feature, lisez le corps brut avec `req.take_body()` et passez-le à une crate multipart.
 
@@ -266,7 +266,7 @@ app.get("/export.csv", |_| async { Csv("id,name\n1,Ada\n".into()) });
 
 ## Pour aller plus loin
 
-- [Vitesse : Lire la requête](https://maxlestage.github.io/Vitesse/fr/docs/requests/) et [Répondre](https://maxlestage.github.io/Vitesse/fr/docs/responses/) : toutes les méthodes, les corps en streaming, les Server-Sent Events.
+- [Vitesse : Lire la requête](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/requests/) et [Répondre](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/responses/) : toutes les méthodes, les corps en streaming, les Server-Sent Events.
 - [Erreurs](errors.md) : ce que fait `?` de chaque type d'erreur.
 
 ## Étapes suivantes

@@ -73,7 +73,7 @@ That's all. Heroku creates the database, sets the `DATABASE_URL` config var, and
 
 To change the code, you need your own copy of the repository on GitHub:
 
-1. Open https://maxlestage.github.io/Paquets/ (the GitHub app works), tap **Fork**, then **Create fork**.
+1. Open https://github.com/maxlestage/Paquets (the GitHub app works), tap **Fork**, then **Create fork**.
 2. Deploy your fork by typing this address in your browser, with your GitHub user name instead of `<you>`:
 
    ```text
