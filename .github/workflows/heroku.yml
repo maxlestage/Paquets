@@ -2,7 +2,7 @@
 # CLI: everything goes through the Heroku Platform API, so it can be set up and
 # started from a phone. Heroku builds the app itself, in one of two ways:
 #   - buildpack (default): the emk/rust buildpack, configured by RustConfig and
-#     Procfile, on the heroku-24 stack;
+#     Procfile, on the heroku-26 stack;
 #   - docker: the Dockerfile, through heroku.yml, on the container stack.
 #
 # Setup (GitHub → Settings → Secrets and variables → Actions):
@@ -48,7 +48,7 @@ jobs:
             exit 0
           fi
           case "$BUILD" in
-            buildpack) stack=heroku-24 ;;
+            buildpack) stack=heroku-26 ;;
             docker) stack=container ;;
             *) echo "::error::HEROKU_BUILD must be buildpack or docker, not \"$BUILD\"."; exit 1 ;;
           esac

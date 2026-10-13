@@ -164,7 +164,7 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
 1. Ouvrez `https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets` sur votre téléphone,
    choisissez un nom d'application, appuyez sur **Deploy app**. Heroku lit [`app.json`](app.json)
    et construit, avec le [buildpack emk/rust](https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust)
-   sur la pile heroku-24 ([`RustConfig`](RustConfig), [`heroku-build.sh`](heroku-build.sh),
+   sur la pile heroku-26 ([`RustConfig`](RustConfig), [`heroku-build.sh`](heroku-build.sh),
    [`Procfile`](Procfile)), le site, qui est lui-même une application Paquets, avec sa démo en
    direct (`/demo`, `/api/todos`).
 2. Déploiements automatiques de `master` : dans GitHub, *Settings → Secrets and variables →
@@ -175,8 +175,8 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
 3. Une base de données : Heroku → votre application → *Resources* → *Heroku Postgres*. Sa
    `DATABASE_URL` est utilisée automatiquement.
 
-Sans GitHub Actions : `heroku create --stack heroku-24 --buildpack emk/rust` (sur une application
-existante, `heroku stack:set heroku-24` puis `heroku buildpacks:set emk/rust`), puis
+Sans GitHub Actions : `heroku create --stack heroku-26 --buildpack emk/rust` (sur une application
+existante, `heroku stack:set heroku-26` puis `heroku buildpacks:set emk/rust`), puis
 `git push heroku master` ; ou, dans le tableau de bord, *Settings → Buildpacks → Add buildpack* →
 `emk/rust` (la pile ne doit pas être « container »).
 

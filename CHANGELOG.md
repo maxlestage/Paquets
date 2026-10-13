@@ -7,9 +7,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
-- Heroku: the website is built with the emk/rust buildpack on the heroku-24 stack by default
-  (`RustConfig`, `heroku-build.sh` for the islands, `Procfile`; `app.json` chooses them for the
-  Deploy button). The Deploy to Heroku workflow takes an optional `HEROKU_BUILD` variable:
+- Heroku: the website is built with the emk/rust buildpack on the heroku-26 stack by default
+  (`RustConfig` sets the Rust version and skips the buildpack's own build, `heroku-build.sh`
+  builds the server and the islands, `Procfile`; `app.json` chooses them for the Deploy button).
+  The Deploy to Heroku workflow takes an optional `HEROKU_BUILD` variable:
   `buildpack` (default) or `docker`, which keeps the Docker build (`heroku.yml`, `Dockerfile`,
   "container" stack); it switches the app's stack when needed. Apps created by `paquets new`
   are unchanged.
