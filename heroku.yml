@@ -1,4 +1,5 @@
-# Heroku builds the Docker image from the Dockerfile ("container" stack).
+# Heroku builds the Docker image from the Dockerfile on the "container" stack
+# (HEROKU_BUILD=docker); by default it uses the emk/rust buildpack (RustConfig).
 build:
   docker:
     web: Dockerfile

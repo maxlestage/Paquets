@@ -163,16 +163,25 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
 
 1. Ouvrez `https://heroku.com/deploy?template=https://github.com/maxlestage/Paquets` sur votre téléphone,
    choisissez un nom d'application, appuyez sur **Deploy app**. Heroku lit [`app.json`](app.json)
-   et construit le [`Dockerfile`](Dockerfile) : le site, qui est lui-même une application
-   Paquets, avec sa démo en direct (`/demo`, `/api/todos`).
+   et construit, avec le [buildpack emk/rust](https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust)
+   sur la pile heroku-24 ([`RustConfig`](RustConfig), [`heroku-build.sh`](heroku-build.sh),
+   [`Procfile`](Procfile)), le site, qui est lui-même une application Paquets, avec sa démo en
+   direct (`/demo`, `/api/todos`).
 2. Déploiements automatiques de `master` : dans GitHub, *Settings → Secrets and variables →
    Actions*, ajoutez le secret `HEROKU_API_KEY` (Heroku → *Account settings* → *API Key*) et la
    variable `HEROKU_APP_NAME`. [`heroku.yml`](.github/workflows/heroku.yml) déploie alors chaque fusion.
+   Avec la variable facultative `HEROKU_BUILD` à `docker`, il construit le [`Dockerfile`](Dockerfile)
+   à la place ([`heroku.yml`](heroku.yml), pile « container »).
 3. Une base de données : Heroku → votre application → *Resources* → *Heroku Postgres*. Sa
    `DATABASE_URL` est utilisée automatiquement.
 
+Sans GitHub Actions : `heroku create --stack heroku-24 --buildpack emk/rust` (sur une application
+existante, `heroku stack:set heroku-24` puis `heroku buildpacks:set emk/rust`), puis
+`git push heroku master` ; ou, dans le tableau de bord, *Settings → Buildpacks → Add buildpack* →
+`emk/rust` (la pile ne doit pas être « container »).
+
 Heroku n'a pas d'offre gratuite (un dyno Eco coûte environ 5 $ par mois). Les projets créés avec
-`paquets new` contiennent les mêmes fichiers. Guide pas à pas :
+`paquets new` se déploient de la même façon, construits à partir de leur `Dockerfile`. Guide pas à pas :
 [docs/fr/deploy-heroku-mobile.md](docs/fr/deploy-heroku-mobile.md).
 
 Le site est aussi publié gratuitement sur **GitHub Pages** à l'adresse

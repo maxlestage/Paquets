@@ -17,15 +17,19 @@ Il vous faut :
 
 Tout ce dont Heroku a besoin se trouve déjà dans le dépôt, rien n'est donc compilé sur votre téléphone : Heroku construit l'application sur ses propres serveurs.
 
+Dans le dépôt de Paquets, Heroku construit le site de Paquets, qui est lui-même une application Paquets (pages rendues par le serveur, îlots en WebAssembly), avec une démo en direct sur `/demo` et une API REST sur `/api/todos`. Par défaut, il utilise le [buildpack **emk/rust**](https://elements.heroku.com/buildpacks/emk/heroku-buildpack-rust) sur la pile **heroku-24** :
+
 | Fichier | Rôle |
 |---|---|
-| `app.json` | décrit l'application pour le bouton Deploy (nom, description, la pile « container ») |
-| `heroku.yml` | indique à Heroku de construire l'image à partir du `Dockerfile` |
-| `Dockerfile` | compile l'application et ses îlots en mode release, et les emballe dans une petite image |
+| `app.json` | décrit l'application pour le bouton Deploy (nom, description, la pile heroku-24, le buildpack emk/rust) |
+| `RustConfig` | configure le buildpack : il compile le serveur (`paquets-site`) en mode release, dans `site/` |
+| `heroku-build.sh` | lancé après cette compilation : compile les îlots (WebAssembly) dans `site/pkg` |
+| `Procfile` | la commande qui démarre le site |
+| `heroku.yml` et `Dockerfile` | l'autre voie : une image Docker, sur la pile « container » (`HEROKU_BUILD=docker`, voir la partie 4) |
 | `.github/workflows/heroku.yml` | le workflow **Deploy to Heroku**, pour les déploiements automatiques |
 | `.github/workflows/ci.yml` | le workflow **CI** : teste chaque push, puis fusionne la branche dans `master` |
 
-Dans le dépôt de Paquets, le `Dockerfile` construit le site de Paquets, qui est lui-même une application Paquets (pages rendues par le serveur, îlots en WebAssembly), avec une démo en direct sur `/demo` et une API REST sur `/api/todos`. Dans un projet créé avec `paquets new`, les mêmes fichiers construisent votre propre application : `src/main.rs` et les îlots de `src/lib.rs`.
+Un projet créé avec `paquets new` est construit à partir de son `Dockerfile` : son `app.json` choisit la pile « container », et son `heroku.yml` indique à Heroku de construire l'image à partir du `Dockerfile`, qui compile votre application (`src/main.rs` et les îlots de `src/lib.rs`) en mode release et l'emballe dans une petite image.
 
 ## 1. Le plus rapide : le bouton Deploy to Heroku
 
@@ -33,7 +37,7 @@ Dans le dépôt de Paquets, le `Dockerfile` construit le site de Paquets, qui es
 2. Heroku affiche un formulaire de création d'application :
    - **App name** : par exemple `mes-paquets`. Les noms sont uniques sur tout Heroku, en lettres minuscules, chiffres et tirets. Vous pouvez laisser le champ vide : Heroku en choisira un.
    - **Choose a region** : États-Unis ou Europe.
-3. Touchez **Deploy app**. Heroku récupère le code et construit l'image Docker ; le journal de construction défile sur la page. La première construction prend un moment (souvent 10 à 20 minutes) : Rust compile l'application et son bundle WebAssembly avec toutes les optimisations activées.
+3. Touchez **Deploy app**. Heroku récupère le code et construit l'application (avec le buildpack dans le dépôt de Paquets, à partir du `Dockerfile` dans un projet créé avec `paquets new`) ; le journal de construction défile sur la page. La première construction prend un moment (souvent 10 à 20 minutes) : Rust compile l'application et son bundle WebAssembly avec toutes les optimisations activées.
 4. Une fois la construction terminée, touchez **View**. Le site s'ouvre à l'adresse `https://<nom-de-l-app>.herokuapp.com` (l'adresse exacte figure aussi dans l'onglet **Settings** de l'application sur Heroku).
 
 Essayez la démo en ajoutant ces chemins à l'adresse :
@@ -86,8 +90,8 @@ Pour modifier le code, il vous faut votre propre copie du dépôt sur GitHub :
 Objectif : chaque modification fusionnée dans `master` reconstruit et redéploie l'application, sans rien faire. Le workflow **Deploy to Heroku** dialogue directement avec l'API Platform de Heroku : ni CLI Heroku, ni ordinateur. À chaque exécution, il :
 
 1. vérifie qu'il est configuré (sinon, il s'arrête sans échouer) ;
-2. crée l'application Heroku si elle n'existe pas encore (avec la pile « container ») ;
-3. envoie le code à Heroku, qui construit l'image à partir de `heroku.yml`, et affiche le journal de construction en direct dans GitHub ;
+2. crée l'application Heroku si elle n'existe pas encore, et choisit comment Heroku la construit : dans le dépôt de Paquets, la pile heroku-24 et le buildpack emk/rust (ou la pile « container » avec `HEROKU_BUILD=docker`) ; dans un projet créé avec `paquets new`, la pile « container » ;
+3. envoie le code à Heroku, qui le construit (avec le buildpack, ou l'image à partir de `heroku.yml`), et affiche le journal de construction en direct dans GitHub ;
 4. écrit l'adresse de l'application dans le résumé de l'exécution.
 
 ### Étape 1 : obtenir une clé d'API Heroku
@@ -114,12 +118,14 @@ Pour une clé que vous pourrez révoquer séparément, ouvrez plutôt l'onglet *
    - **Value** : le nom de votre application Heroku (celle créée avec le bouton, ou un nouveau nom : le workflow crée l'application si besoin)
    - touchez **Add variable**.
 5. Facultatif : une variable `HEROKU_REGION` avec la valeur `eu` crée l'application en Europe. Elle ne sert que lorsque le workflow crée l'application.
+6. Facultatif, dans le dépôt de Paquets : une variable `HEROKU_BUILD` avec la valeur `docker` construit l'image Docker (`heroku.yml` et le `Dockerfile`, pile « container ») au lieu du buildpack. Avec `buildpack`, ou sans la variable, le workflow utilise le buildpack emk/rust. Il change lui-même la pile de l'application quand vous changez cette valeur.
 
 | Nom | Type | Obligatoire | Valeur |
 |---|---|---|---|
 | `HEROKU_API_KEY` | secret | oui | votre clé d'API Heroku |
 | `HEROKU_APP_NAME` | variable | oui | par exemple `mes-paquets` |
 | `HEROKU_REGION` | variable | non | `us` (par défaut) ou `eu` |
+| `HEROKU_BUILD` | variable | non | `buildpack` (par défaut) ou `docker` (dépôt de Paquets) |
 
 ### Étape 3 : activer Actions dans un fork
 
@@ -140,6 +146,20 @@ Désormais, l'application est redéployée :
 
 > [!NOTE]
 > Tant que le secret ou la variable manque, le workflow saute le déploiement avec un avertissement (« Heroku is not configured ») au lieu d'échouer.
+
+### Sans GitHub Actions
+
+Pour le dépôt de Paquets, une application créée autrement (ni par le bouton, ni par le workflow) doit utiliser le buildpack :
+
+- **Tableau de bord Heroku** : votre application → **Settings** → **Buildpacks** → **Add buildpack**, tapez `emk/rust` et enregistrez. La pile de l'application ne doit pas être « container » (cette pile construit avec `heroku.yml` à la place).
+- **CLI Heroku** (sur un ordinateur, ou dans un environnement dans le cloud comme GitHub Codespaces), depuis un clone du dépôt :
+
+  ```sh
+  heroku create mes-paquets --stack heroku-24 --buildpack emk/rust
+  git push heroku master
+  ```
+
+  Pour une application existante : `heroku stack:set heroku-24`, puis `heroku buildpacks:set emk/rust`, puis `git push heroku master`.
 
 ## 5. Modifier le code depuis votre téléphone
 
@@ -162,7 +182,7 @@ Heroku ne met en ligne que les constructions réussies : si une construction éc
 
 ## 6. Votre propre projet, créé avec paquets new
 
-Un projet créé avec `paquets new mon-app` contient les mêmes fichiers (`app.json`, `heroku.yml`, `Dockerfile` et les deux workflows) : chaque étape de ce guide s'y applique donc.
+Un projet créé avec `paquets new mon-app` contient `app.json`, `heroku.yml`, un `Dockerfile` et les deux workflows, et il est construit à partir de son `Dockerfile` (pile « container »). Chaque étape de ce guide s'y applique, sauf le buildpack et `HEROKU_BUILD`, propres au dépôt de Paquets.
 
 La création du projet demande Rust, une seule fois : sur n'importe quel ordinateur, ou dans un environnement de développement dans le cloud qui tourne dans un navigateur, comme GitHub Codespaces. Lancez `paquets new mon-app`, puis publiez le dossier comme nouveau dépôt GitHub (par exemple `gh repo create mon-app --private --source=mon-app --push`). À partir de là, tout se fait depuis votre téléphone :
 

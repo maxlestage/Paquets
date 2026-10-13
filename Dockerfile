@@ -1,6 +1,7 @@
-# The image deployed by the "Deploy to Heroku" button: the Paquets website, which is
-# itself a Paquets app (pages rendered by active, islands in WebAssembly), with its
-# live demo at /demo and /api/todos.
+# The Paquets website, which is itself a Paquets app (pages rendered by active,
+# islands in WebAssembly), with its live demo at /demo and /api/todos. Heroku builds
+# it with the emk/rust buildpack (RustConfig, Procfile); this image is the other way:
+# the container stack (heroku.yml, HEROKU_BUILD=docker), or any Docker host.
 #
 #   docker build -t paquets . && docker run --rm -p 8080:8080 paquets
 
