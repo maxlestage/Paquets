@@ -70,7 +70,7 @@ No: components are plain functions that build a view. Do the asynchronous work (
 
 ### Can an island call my API?
 
-Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [Active's events guide](https://maxlestage.github.io/Active/en/docs/events/)). An island can also contain a plain HTML form that posts to one of your routes.
+Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [Active's events guide](https://active-c1883a966650.herokuapp.com/en/docs/events/)). An island can also contain a plain HTML form that posts to one of your routes.
 
 ### Is there hot reload?
 
@@ -146,7 +146,7 @@ Open an issue on GitHub. Pull requests are welcome; read `CONTRIBUTING.md` first
 
 ### Which license?
 
-Paquets, Vitesse, Securite, memoire-orm and Active are proprietary software: © Maxime Nathan Lestage, all rights reserved. Their source is published on crates.io and GitHub so that you can read, audit and build it, and you may use them freely as dependencies of your own programs, commercial ones included. Modifying them or redistributing their source needs the author's written permission. The full terms are in each repository's [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt). What you build with them, including the projects created by `paquets new`, is yours.
+Paquets, Vitesse, Securite, memoire-orm and Active are proprietary software: © Maxime Nathan Lestage, all rights reserved. Their source is published on crates.io and GitHub so that you can read, audit and build it, and you may use them freely as dependencies of your own programs, commercial ones included. Modifying them or redistributing their source needs the author's written permission. The full terms are in each repository's [LICENSE](https://paquets-90dfc06b6fea.herokuapp.com/LICENSE.txt). What you build with them, including the projects created by `paquets new`, is yours.
 
 ## Next steps
 

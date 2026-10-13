@@ -225,7 +225,7 @@ Las props forman parte del HTML: mantenlas pequeñas y nunca pongas secretos en 
 - **Las islas son independientes.** Cada isla tiene sus propios estados. Si dos partes de una página deben reaccionar la una a la otra (un filtro y una lista), conviértelas en una sola isla, o comparte un store (consulta [Guardar datos en el navegador](#guardar-datos-en-el-navegador)).
 - **El mismo marcado en los dos lados.** Usa `#[cfg(target_arch = "wasm32")]` solo para el comportamiento, nunca para cambiar lo que se renderiza.
 - **Los nombres deben coincidir.** Una isla cuyo nombre no está en `start()` se queda estática, sin ningún error.
-- **Datos del servidor.** Para leer o enviar datos después de que la página se haya cargado, llama a tu API con el `fetch` del navegador a través de `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://maxlestage.github.io/Active/es/docs/events/)), o usa un formulario HTML normal que envíe los datos a una ruta.
+- **Datos del servidor.** Para leer o enviar datos después de que la página se haya cargado, llama a tu API con el `fetch` del navegador a través de `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://active-c1883a966650.herokuapp.com/es/docs/events/)), o usa un formulario HTML normal que envíe los datos a una ruta.
 
 ## Guardar datos en el navegador
 
@@ -281,7 +281,7 @@ pub fn add_to_cart(product: &str) -> Node {
 }
 ```
 
-Los datos se quedan en el navegador: el servidor nunca los ve, salvo que una isla los envíe (a tu API, con `fetch`). Consulta la [guía de almacenamiento del navegador](https://maxlestage.github.io/Memoire/es/docs/browser-storage/) de Memoire para las versiones y las migraciones, `SessionStorage` y `LocalStorageDb`.
+Los datos se quedan en el navegador: el servidor nunca los ve, salvo que una isla los envíe (a tu API, con `fetch`). Consulta la [guía de almacenamiento del navegador](https://memoire-7f4525f1fdaf.herokuapp.com/es/docs/browser-storage/) de Memoire para las versiones y las migraciones, `SessionStorage` y `LocalStorageDb`.
 
 ## Compilar para producción
 
@@ -352,7 +352,7 @@ El archivo `.wasm` lleva el nombre del paquete, con `-` reemplazado por `_`.
 
 ## Más información
 
-Las islas, los estados y los eventos vienen de [Active](https://maxlestage.github.io/Active/). Su documentación va más allá: [islas](https://maxlestage.github.io/Active/es/docs/islands/), [estado y efectos](https://maxlestage.github.io/Active/es/docs/state/), [eventos](https://maxlestage.github.io/Active/es/docs/events/) y [aplicaciones del lado del cliente](https://maxlestage.github.io/Active/es/docs/client-app/) (`paquets::mount_to`, `navigate` y `location` con la feature `client`).
+Las islas, los estados y los eventos vienen de [Active](https://active-c1883a966650.herokuapp.com/). Su documentación va más allá: [islas](https://active-c1883a966650.herokuapp.com/es/docs/islands/), [estado y efectos](https://active-c1883a966650.herokuapp.com/es/docs/state/), [eventos](https://active-c1883a966650.herokuapp.com/es/docs/events/) y [aplicaciones del lado del cliente](https://active-c1883a966650.herokuapp.com/es/docs/client-app/) (`paquets::mount_to`, `navigate` y `location` con la feature `client`).
 
 ## Próximos pasos
 

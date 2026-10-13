@@ -4,4 +4,4 @@
 - [Français](fr/README.md)
 - [Español](es/README.md)
 
-Also on the website: https://maxlestage.github.io/Paquets/
+Also on the website: https://paquets-90dfc06b6fea.herokuapp.com/

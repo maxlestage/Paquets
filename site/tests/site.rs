@@ -113,22 +113,17 @@ async fn the_home_page_has_every_section() {
         assert!(html.contains("https://github.com/maxlestage/Paquets"));
         assert!(!html.contains("MIT OR Apache-2.0"));
         assert!(html.contains(&format!("v{}", paquets::VERSION)));
-        for project in [
-            "Active",
-            "Vitesse",
-            "Securite",
-            "Memoire",
-            "Paquets",
-            "FerroSwift",
-            "Solidify",
+        for url in [
+            "https://active-c1883a966650.herokuapp.com/",
+            "https://vitesse-f16135654c3d.herokuapp.com/",
+            "https://securite-2db4c1994be7.herokuapp.com/",
+            "https://memoire-7f4525f1fdaf.herokuapp.com/",
+            "https://paquets-90dfc06b6fea.herokuapp.com/",
         ] {
-            assert!(
-                html.contains(&format!(
-                    r#"href="https://maxlestage.github.io/{project}/""#
-                )),
-                "{project}"
-            );
+            assert!(html.contains(&format!(r#"href="{url}""#)), "{url}");
         }
+        assert_eq!(html.matches(r#"class="eco__name""#).count(), 5);
+        assert!(!html.contains("github.io"));
         assert!(html.contains(r#"aria-current="page""#));
         assert!(html.contains(r#"<meta name="author" content="Maxime Nathan Lestage"/>"#));
         // The preloader plays once per visit (a cookie remembers it).

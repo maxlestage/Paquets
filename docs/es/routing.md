@@ -1,6 +1,6 @@
 # Enrutamiento
 
-El enrutamiento decide qué código responde a una petición, según su método (`GET`, `POST`…) y su ruta (`/users/42`). Paquets usa el enrutador de [Vitesse](https://maxlestage.github.io/Vitesse/), con el vocabulario de Express.js: `app.get(path, handler)`, parámetros escritos `:id`, middleware con `next`. Esta página cubre las rutas, los parámetros, los routers, el middleware, la página 404 y los archivos estáticos.
+El enrutamiento decide qué código responde a una petición, según su método (`GET`, `POST`…) y su ruta (`/users/42`). Paquets usa el enrutador de [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), con el vocabulario de Express.js: `app.get(path, handler)`, parámetros escritos `:id`, middleware con `next`. Esta página cubre las rutas, los parámetros, los routers, el middleware, la página 404 y los archivos estáticos.
 
 ## Tus primeras rutas
 
@@ -222,11 +222,11 @@ Los archivos de la carpeta `public/` se sirven en la raíz del sitio, sin códig
 app.static_dir("/downloads", "files"); // files/report.pdf → /downloads/report.pdf
 ```
 
-Las rutas son relativas a la carpeta desde la que se lanza el servidor. Los archivos estáticos reciben las cabeceras `Content-Type`, `ETag` y `Last-Modified` correctas, `304 Not Modified` y peticiones parciales (vídeo). Los archivos ocultos (`.env`, `.git/`) y las rutas con `..` se rechazan. Más opciones en la [guía de archivos estáticos de Vitesse](https://maxlestage.github.io/Vitesse/es/docs/static-files/).
+Las rutas son relativas a la carpeta desde la que se lanza el servidor. Los archivos estáticos reciben las cabeceras `Content-Type`, `ETag` y `Last-Modified` correctas, `304 Not Modified` y peticiones parciales (vídeo). Los archivos ocultos (`.env`, `.git/`) y las rutas con `..` se rechazan. Más opciones en la [guía de archivos estáticos de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/es/docs/static-files/).
 
 ## Más información
 
-La documentación de Vitesse trata el enrutamiento con más profundidad: [enrutamiento](https://maxlestage.github.io/Vitesse/es/docs/routing/), [middleware](https://maxlestage.github.io/Vitesse/es/docs/middleware/) (incluidos los middlewares integrados `logger`, `cors` y `timeout`) y [routers](https://maxlestage.github.io/Vitesse/es/docs/routers/). Todo lo que hay allí funciona en Paquets: `App` da acceso a todos los métodos de la aplicación de Vitesse.
+La documentación de Vitesse trata el enrutamiento con más profundidad: [enrutamiento](https://vitesse-f16135654c3d.herokuapp.com/es/docs/routing/), [middleware](https://vitesse-f16135654c3d.herokuapp.com/es/docs/middleware/) (incluidos los middlewares integrados `logger`, `cors` y `timeout`) y [routers](https://vitesse-f16135654c3d.herokuapp.com/es/docs/routers/). Todo lo que hay allí funciona en Paquets: `App` da acceso a todos los métodos de la aplicación de Vitesse.
 
 ## Próximos pasos
 

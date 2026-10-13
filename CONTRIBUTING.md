@@ -32,8 +32,8 @@ pull request. Notable changes go in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## The four packages
 
-Paquets assembles [Vitesse](https://maxlestage.github.io/Vitesse/),
-[Securite](https://maxlestage.github.io/Securite/),
-[memoire-orm](https://maxlestage.github.io/Memoire/) and
-[Active](https://maxlestage.github.io/Active/). A bug in one of them is best fixed in its
+Paquets assembles [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/),
+[Securite](https://securite-2db4c1994be7.herokuapp.com/),
+[memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) and
+[Active](https://active-c1883a966650.herokuapp.com/). A bug in one of them is best fixed in its
 own repository; Paquets then picks it up with `cargo update`.

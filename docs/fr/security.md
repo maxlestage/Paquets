@@ -1,6 +1,6 @@
 # Sécurité
 
-Chaque application Paquets est protégée dès sa première ligne : `App::new()` place le bouclier recommandé de [Securite](https://maxlestage.github.io/Securite/) devant chaque requête. Les attaques sont bloquées avant que votre code ne s'exécute, et chaque réponse reçoit les en-têtes de sécurité dont les navigateurs ont besoin. Cette page explique ce que fait le bouclier, comment le modifier, et ce qui reste à votre charge, comme la connexion des utilisateurs.
+Chaque application Paquets est protégée dès sa première ligne : `App::new()` place le bouclier recommandé de [Securite](https://securite-2db4c1994be7.herokuapp.com/) devant chaque requête. Les attaques sont bloquées avant que votre code ne s'exécute, et chaque réponse reçoit les en-têtes de sécurité dont les navigateurs ont besoin. Cette page explique ce que fait le bouclier, comment le modifier, et ce qui reste à votre charge, comme la connexion des utilisateurs.
 
 ## Ce que fait le bouclier
 
@@ -103,7 +103,7 @@ app.security(
 ```
 
 > [!WARNING]
-> Ne faites confiance à un en-tête de transfert que si votre application n'est joignable **que** par le proxy qui le définit. Sinon, n'importe qui peut envoyer l'en-tête et choisir son adresse. Voir le [guide de l'IP du client](https://maxlestage.github.io/Securite/fr/docs/client-ip/) de Securite.
+> Ne faites confiance à un en-tête de transfert que si votre application n'est joignable **que** par le proxy qui le définit. Sinon, n'importe qui peut envoyer l'en-tête et choisir son adresse. Voir le [guide de l'IP du client](https://securite-2db4c1994be7.herokuapp.com/fr/docs/client-ip/) de Securite.
 
 Les handlers peuvent lire l'adresse trouvée par le bouclier avec `req.extensions().get::<ClientIp>()` (voir [Requêtes et réponses](requests-responses.md#ladresse-ip-du-client)).
 
@@ -249,7 +249,7 @@ app.get("/admin", |req: Request| async move {
 });
 ```
 
-Tous les chemins sous `/admin` demandent désormais le nom d'utilisateur et le mot de passe ; les autres restent publics. Lisez le mot de passe depuis une variable d'environnement (`std::env::var("ADMIN_PASSWORD")`) plutôt que de l'écrire dans le code. Le [guide de l'authentification](https://maxlestage.github.io/Securite/fr/docs/auth/) de Securite couvre les jetons, les clés d'API et les vérifications sur mesure comme JWT.
+Tous les chemins sous `/admin` demandent désormais le nom d'utilisateur et le mot de passe ; les autres restent publics. Lisez le mot de passe depuis une variable d'environnement (`std::env::var("ADMIN_PASSWORD")`) plutôt que de l'écrire dans le code. Le [guide de l'authentification](https://securite-2db4c1994be7.herokuapp.com/fr/docs/auth/) de Securite couvre les jetons, les clés d'API et les vérifications sur mesure comme JWT.
 
 ### Comptes et sessions
 
@@ -277,7 +277,7 @@ app.get("/", |req: Request| async move {
 });
 ```
 
-`MemoryStore` garde les sessions dans la mémoire du serveur : elles sont perdues au redémarrage et ne sont pas partagées entre les instances. `session.destroy()` déconnecte l'utilisateur. Le [guide des sessions](https://maxlestage.github.io/Vitesse/fr/docs/sessions/) de Vitesse couvre les cookies signés, l'expiration et les stores sur mesure.
+`MemoryStore` garde les sessions dans la mémoire du serveur : elles sont perdues au redémarrage et ne sont pas partagées entre les instances. `session.destroy()` déconnecte l'utilisateur. Le [guide des sessions](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/sessions/) de Vitesse couvre les cookies signés, l'expiration et les stores sur mesure.
 
 Sans la feature, ou pour garder les sessions dans votre base de données, le schéma habituel est le suivant :
 
@@ -289,7 +289,7 @@ Le bouclier s'occupe du reste : le cookie reçoit `Secure`, `HttpOnly` et `SameS
 
 ## Pour aller plus loin
 
-La documentation de Securite a une page par guard : [WAF](https://maxlestage.github.io/Securite/fr/docs/waf/), [limitation de débit](https://maxlestage.github.io/Securite/fr/docs/rate-limit/), [CSRF](https://maxlestage.github.io/Securite/fr/docs/csrf/), [en-têtes de sécurité](https://maxlestage.github.io/Securite/fr/docs/security-headers/), [préréglages](https://maxlestage.github.io/Securite/fr/docs/shield-presets/), et bien d'autres : filtre d'IP, filtre d'hôte, bannissements automatiques, signatures de webhooks. Dans Paquets, Securite est réexporté sous `paquets::securite`.
+La documentation de Securite a une page par guard : [WAF](https://securite-2db4c1994be7.herokuapp.com/fr/docs/waf/), [limitation de débit](https://securite-2db4c1994be7.herokuapp.com/fr/docs/rate-limit/), [CSRF](https://securite-2db4c1994be7.herokuapp.com/fr/docs/csrf/), [en-têtes de sécurité](https://securite-2db4c1994be7.herokuapp.com/fr/docs/security-headers/), [préréglages](https://securite-2db4c1994be7.herokuapp.com/fr/docs/shield-presets/), et bien d'autres : filtre d'IP, filtre d'hôte, bannissements automatiques, signatures de webhooks. Dans Paquets, Securite est réexporté sous `paquets::securite`.
 
 ## Étapes suivantes
 

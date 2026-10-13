@@ -238,4 +238,4 @@ Comme `main` renvoie un `std::io::Result<()>`, le programme affiche l'erreur et 
 
 - [Tests](testing.md) : vérifier vos erreurs dans des tests.
 - [Sécurité](security.md) : les réponses du bouclier.
-- [Le guide des erreurs de Vitesse](https://maxlestage.github.io/Vitesse/fr/docs/errors/) : plus de détails sur les erreurs, `on_error` et les paniques.
+- [Le guide des erreurs de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/fr/docs/errors/) : plus de détails sur les erreurs, `on_error` et les paniques.

@@ -267,7 +267,7 @@ async fn article(_req: Request) -> Page {
 | `.og_type(...)`, `.locale(...)`, `.twitter(handle)` | las demás etiquetas Open Graph y Twitter |
 | `.meta_name(name, content)`, `.meta_property(...)` | cualquier otra etiqueta `<meta>` |
 
-Un `Seo` también se puede colocar dentro de una vista (`.child(Seo::new().title(...))`): todos los `Seo` de la página se fusionan, gana el valor más profundo y no se duplican etiquetas. Así, un layout puede fijar valores para todo el sitio que cada página completa. Consulta la [guía de SEO de Active](https://maxlestage.github.io/Active/es/docs/seo/).
+Un `Seo` también se puede colocar dentro de una vista (`.child(Seo::new().title(...))`): todos los `Seo` de la página se fusionan, gana el valor más profundo y no se duplican etiquetas. Así, un layout puede fijar valores para todo el sitio que cada página completa. Consulta la [guía de SEO de Active](https://active-c1883a966650.herokuapp.com/es/docs/seo/).
 
 ## La Content-Security-Policy
 
@@ -348,7 +348,7 @@ app.pwa(
 
 ## Más información
 
-Las vistas vienen de [Active](https://maxlestage.github.io/Active/). Su documentación trata en profundidad los [componentes y las vistas](https://maxlestage.github.io/Active/es/docs/components/), el [SEO](https://maxlestage.github.io/Active/es/docs/seo/) y los [datos estructurados](https://maxlestage.github.io/Active/es/docs/structured-data/).
+Las vistas vienen de [Active](https://active-c1883a966650.herokuapp.com/). Su documentación trata en profundidad los [componentes y las vistas](https://active-c1883a966650.herokuapp.com/es/docs/components/), el [SEO](https://active-c1883a966650.herokuapp.com/es/docs/seo/) y los [datos estructurados](https://active-c1883a966650.herokuapp.com/es/docs/structured-data/).
 
 ## Próximos pasos
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Paquets: the simplest full-stack framework for Rust](https://raw.githubusercontent.com/maxlestage/Paquets/master/site/public/assets/og-image.png)](https://maxlestage.github.io/Paquets/)
+[![Paquets: the simplest full-stack framework for Rust](https://raw.githubusercontent.com/maxlestage/Paquets/master/site/public/assets/og-image.png)](https://paquets-90dfc06b6fea.herokuapp.com/)
 
 # 📦 Paquets
 
@@ -14,7 +14,7 @@ Server, security, database, REST API, SEO pages and WebAssembly islands: one cra
 
 **English** · [Français](README.fr.md) · [Español](README.es.md)
 
-[Website & documentation](https://maxlestage.github.io/Paquets/) · [Deploy to Heroku from your phone](#deploy-from-your-phone)
+[Website & documentation](https://paquets-90dfc06b6fea.herokuapp.com/) · [Deploy to Heroku from your phone](#deploy-from-your-phone)
 
 </div>
 
@@ -64,10 +64,10 @@ Paquets assembles four crates, each usable on its own:
 
 | Package | Role | In Paquets |
 |---|---|---|
-| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, sessions, HTTPS, HTTP/2 and HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**Securite**](https://maxlestage.github.io/Securite/) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
-| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | Type-safe async ORM with compile-time SQL, SQL and NoSQL, relations and full-text search | `#[model]`, `req.db()`, `app.api::<M>()` |
-| [**active**](https://maxlestage.github.io/Active/) | Front end: components, state, server rendering, SEO, WebAssembly islands | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
+| [**Vitesse**](https://vitesse-f16135654c3d.herokuapp.com/) | HTTP server in the style of Express: routes, middlewares, routers, WebSocket, sessions, HTTPS, HTTP/2 and HTTP/3 | `App` (dereferences to `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**Securite**](https://securite-2db4c1994be7.herokuapp.com/) | Security middlewares: WAF, rate limit, CSRF, CORS, headers & CSP, auth… | in front of every request, `app.security(...)` |
+| [**memoire-orm**](https://memoire-7f4525f1fdaf.herokuapp.com/) | Type-safe async ORM with compile-time SQL, SQL and NoSQL, relations and full-text search | `#[model]`, `req.db()`, `app.api::<M>()` |
+| [**active**](https://active-c1883a966650.herokuapp.com/) | Front end: components, state, server rendering, SEO, WebAssembly islands | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
 ## Get started
 
@@ -144,7 +144,7 @@ async fn it_works() {
 
 ## Documentation
 
-Everything is explained on the [website](https://maxlestage.github.io/Paquets/#/docs) and in
+Everything is explained on the [website](https://paquets-90dfc06b6fea.herokuapp.com/en/docs/) and in
 [`docs/`](docs/en/README.md), in English, [French](docs/fr/README.md) and [Spanish](docs/es/README.md):
 
 | Getting started | Essentials | Going further | Deploy | Reference |
@@ -238,4 +238,4 @@ to the author, as the license states.
 ## Credits
 
 Designed and developed by Maxime Nathan Lestage,
-as part of one family of Rust projects: [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/), [FerroSwift](https://maxlestage.github.io/FerroSwift/) and [Solidify](https://maxlestage.github.io/Solidify/).
+as part of one family of Rust projects: [Active](https://active-c1883a966650.herokuapp.com/), [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) and [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/).

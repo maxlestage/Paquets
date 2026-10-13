@@ -27,12 +27,12 @@ Seven crates are published from five repositories. Each repository has its own r
 
 | Order | Crate | Repository | Workflow (Actions tab) |
 |---|---|---|---|
-| 1 | `memoire-orm-derive` | [Memoire](https://maxlestage.github.io/Memoire/) | **Publish to crates.io** (publishes both Memoire crates, the derive first) |
-| 2 | `memoire-orm` | [Memoire](https://maxlestage.github.io/Memoire/) | same run |
-| 3 | `securite` | [Securite](https://maxlestage.github.io/Securite/) | **Publish crate** |
-| 4 | `vitesse` | [Vitesse](https://maxlestage.github.io/Vitesse/) | **Release** |
-| 5 | `active` | [Active](https://maxlestage.github.io/Active/) | **Release** |
-| 6 | `paquets-macros`, then `paquets` | [Paquets](https://maxlestage.github.io/Paquets/) | **Release** |
+| 1 | `memoire-orm-derive` | [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | **Publish to crates.io** (publishes both Memoire crates, the derive first) |
+| 2 | `memoire-orm` | [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | same run |
+| 3 | `securite` | [Securite](https://securite-2db4c1994be7.herokuapp.com/) | **Publish crate** |
+| 4 | `vitesse` | [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | **Release** |
+| 5 | `active` | [Active](https://active-c1883a966650.herokuapp.com/) | **Release** |
+| 6 | `paquets-macros`, then `paquets` | [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/) | **Release** |
 
 `memoire-orm` needs `memoire-orm-derive`, and the Memoire workflow publishes them in that order. The four repositories of steps 1 to 5 don't depend on each other: you can release them in any order, as long as all of them are on crates.io before step 6. Paquets' workflow checks it, and says which crates are missing.
 

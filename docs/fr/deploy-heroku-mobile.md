@@ -73,7 +73,7 @@ C'est tout. Heroku crée la base de données, définit la config var `DATABASE_U
 
 Pour modifier le code, il vous faut votre propre copie du dépôt sur GitHub :
 
-1. Ouvrez https://maxlestage.github.io/Paquets/ (l'application GitHub fonctionne), touchez **Fork**, puis **Create fork**.
+1. Ouvrez https://github.com/maxlestage/Paquets (l'application GitHub fonctionne), touchez **Fork**, puis **Create fork**.
 2. Déployez votre fork en tapant cette adresse dans votre navigateur, avec votre nom d'utilisateur GitHub à la place de `<vous>` :
 
    ```text

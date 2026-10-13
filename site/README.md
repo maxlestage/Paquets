@@ -1,8 +1,8 @@
 # The Paquets website
 
-The website and documentation hub of [Paquets](https://maxlestage.github.io/Paquets/),
+The website and documentation hub of [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/),
 written **with Paquets**: the server is a `paquets::App`, the pages are `paquets::Page`s
-built with [Active](https://maxlestage.github.io/Active/) views, and the interactive
+built with [Active](https://active-c1883a966650.herokuapp.com/) views, and the interactive
 parts are active islands compiled to WebAssembly. English, French and Spanish.
 
 | Part | Where |

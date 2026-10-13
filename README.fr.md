@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Paquets : le framework full-stack le plus simple pour Rust](https://raw.githubusercontent.com/maxlestage/Paquets/master/site/public/assets/og-image.png)](https://maxlestage.github.io/Paquets/)
+[![Paquets : le framework full-stack le plus simple pour Rust](https://raw.githubusercontent.com/maxlestage/Paquets/master/site/public/assets/og-image.png)](https://paquets-90dfc06b6fea.herokuapp.com/)
 
 # 📦 Paquets
 
@@ -14,7 +14,7 @@ Serveur, sécurité, base de données, API REST, pages optimisées pour le SEO e
 
 [English](README.md) · **Français** · [Español](README.es.md)
 
-[Site et documentation](https://maxlestage.github.io/Paquets/) · [Déployer sur Heroku depuis un téléphone](#déployer-depuis-un-téléphone)
+[Site et documentation](https://paquets-90dfc06b6fea.herokuapp.com/) · [Déployer sur Heroku depuis un téléphone](#déployer-depuis-un-téléphone)
 
 </div>
 
@@ -65,10 +65,10 @@ Paquets assemble quatre crates, chacune utilisable seule :
 
 | Paquet | Rôle | Dans Paquets |
 |---|---|---|
-| [**Vitesse**](https://maxlestage.github.io/Vitesse/) | Serveur HTTP dans le style d'Express : routes, middlewares, routeurs, WebSocket, sessions, HTTPS, HTTP/2 et HTTP/3 | `App` (se déréférence en `vitesse::App`), `Request`, `Json`, `Router`… |
-| [**Securite**](https://maxlestage.github.io/Securite/) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
-| [**memoire-orm**](https://maxlestage.github.io/Memoire/) | ORM asynchrone typé, SQL généré à la compilation, SQL et NoSQL, relations et recherche plein texte | `#[model]`, `req.db()`, `app.api::<M>()` |
-| [**active**](https://maxlestage.github.io/Active/) | Front-end : composants, état, rendu serveur, SEO, îlots WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
+| [**Vitesse**](https://vitesse-f16135654c3d.herokuapp.com/) | Serveur HTTP dans le style d'Express : routes, middlewares, routeurs, WebSocket, sessions, HTTPS, HTTP/2 et HTTP/3 | `App` (se déréférence en `vitesse::App`), `Request`, `Json`, `Router`… |
+| [**Securite**](https://securite-2db4c1994be7.herokuapp.com/) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
+| [**memoire-orm**](https://memoire-7f4525f1fdaf.herokuapp.com/) | ORM asynchrone typé, SQL généré à la compilation, SQL et NoSQL, relations et recherche plein texte | `#[model]`, `req.db()`, `app.api::<M>()` |
+| [**active**](https://active-c1883a966650.herokuapp.com/) | Front-end : composants, état, rendu serveur, SEO, îlots WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
 
 ## Démarrer
 
@@ -146,7 +146,7 @@ async fn ca_marche() {
 
 ## Documentation
 
-Tout est expliqué sur le [site](https://maxlestage.github.io/Paquets/#/docs) et dans
+Tout est expliqué sur le [site](https://paquets-90dfc06b6fea.herokuapp.com/fr/docs/) et dans
 [`docs/`](docs/fr/README.md), en français, en [anglais](docs/en/README.md) et en [espagnol](docs/es/README.md) :
 
 | Démarrer | L'essentiel | Aller plus loin | Déployer | Référence |
@@ -240,4 +240,4 @@ les droits à l'auteur, comme l'indique la licence.
 ## Crédits
 
 Conçu et développé par Maxime Nathan Lestage,
-au sein d'une même famille de projets Rust : [Active](https://maxlestage.github.io/Active/), [Vitesse](https://maxlestage.github.io/Vitesse/), [Securite](https://maxlestage.github.io/Securite/), [Memoire](https://maxlestage.github.io/Memoire/), [Paquets](https://maxlestage.github.io/Paquets/), [FerroSwift](https://maxlestage.github.io/FerroSwift/) et [Solidify](https://maxlestage.github.io/Solidify/).
+au sein d'une même famille de projets Rust : [Active](https://active-c1883a966650.herokuapp.com/), [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) et [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/).

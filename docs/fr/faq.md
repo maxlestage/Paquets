@@ -70,7 +70,7 @@ Non : les composants sont de simples fonctions qui construisent une vue. Faites 
 
 ### Un îlot peut-il appeler mon API ?
 
-Oui, avec le `fetch` du navigateur, via les crates `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://maxlestage.github.io/Active/fr/docs/events/)). Un îlot peut aussi contenir un simple formulaire HTML qui envoie ses données à l'une de vos routes.
+Oui, avec le `fetch` du navigateur, via les crates `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://active-c1883a966650.herokuapp.com/fr/docs/events/)). Un îlot peut aussi contenir un simple formulaire HTML qui envoie ses données à l'une de vos routes.
 
 ### Y a-t-il du rechargement à chaud ?
 
@@ -146,7 +146,7 @@ Ouvrez une issue sur GitHub. Les pull requests sont les bienvenues ; lisez d'abo
 
 ### Quelle licence ?
 
-Paquets, Vitesse, Securite, memoire-orm et Active sont des logiciels propriétaires : © Maxime Nathan Lestage, tous droits réservés. Leur code source est publié sur crates.io et GitHub pour que vous puissiez le lire, l'auditer et le compiler, et vous pouvez les utiliser librement comme dépendances de vos propres programmes, y compris commerciaux. Les modifier ou redistribuer leur code source demande l'accord écrit de l'auteur. Les conditions complètes sont dans le fichier [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de chaque dépôt. Ce que vous construisez avec eux, y compris les projets créés par `paquets new`, vous appartient.
+Paquets, Vitesse, Securite, memoire-orm et Active sont des logiciels propriétaires : © Maxime Nathan Lestage, tous droits réservés. Leur code source est publié sur crates.io et GitHub pour que vous puissiez le lire, l'auditer et le compiler, et vous pouvez les utiliser librement comme dépendances de vos propres programmes, y compris commerciaux. Les modifier ou redistribuer leur code source demande l'accord écrit de l'auteur. Les conditions complètes sont dans le fichier [LICENSE](https://paquets-90dfc06b6fea.herokuapp.com/LICENSE.txt) de chaque dépôt. Ce que vous construisez avec eux, y compris les projets créés par `paquets new`, vous appartient.
 
 ## Étapes suivantes
 

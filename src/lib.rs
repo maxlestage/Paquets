@@ -32,10 +32,10 @@
 //!
 //! | Package | Role in Paquets | Re-exported as |
 //! |---|---|---|
-//! | [vitesse](https://maxlestage.github.io/Vitesse/) | HTTP server in the style of Express: routes, middlewares, WebSocket | [`vitesse`], [`App`] dereferences to `vitesse::App` |
-//! | [securite](https://maxlestage.github.io/Securite/) | security in front of every request: WAF, rate limit, CSRF, headers… | [`securite`], [`App::security`] |
-//! | [memoire-orm](https://maxlestage.github.io/Memoire/) | database: memory, SQLite, PostgreSQL, MySQL, Redis, MongoDB | [`orm`], [`Db`], [`macro@model`] |
-//! | [active](https://maxlestage.github.io/Active/) | pages rendered on the server, SEO tags, WebAssembly islands | [`active`], [`Page`] |
+//! | [vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | HTTP server in the style of Express: routes, middlewares, WebSocket | [`vitesse`], [`App`] dereferences to `vitesse::App` |
+//! | [securite](https://securite-2db4c1994be7.herokuapp.com/) | security in front of every request: WAF, rate limit, CSRF, headers… | [`securite`], [`App::security`] |
+//! | [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | database: memory, SQLite, PostgreSQL, MySQL, Redis, MongoDB | [`orm`], [`Db`], [`macro@model`] |
+//! | [active](https://active-c1883a966650.herokuapp.com/) | pages rendered on the server, SEO tags, WebAssembly islands | [`active`], [`Page`] |
 //!
 //! ## In handlers
 //!
@@ -67,8 +67,8 @@
 //! ## Guide
 //!
 //! The complete documentation, in English, French and Spanish, is on the
-//! [Paquets website](https://maxlestage.github.io/Paquets/) and in the
-//! [`docs/` folder](https://maxlestage.github.io/Paquets/en/docs/) of the
+//! [Paquets website](https://paquets-90dfc06b6fea.herokuapp.com/) and in the
+//! [`docs/` folder](https://paquets-90dfc06b6fea.herokuapp.com/en/docs/) of the
 //! repository: getting started, every concept, deployment to Heroku from a phone,
 //! publishing on crates.io.
 //!
@@ -89,8 +89,8 @@
 //! | `browser-storage` | | `orm::web`: a state store and a database in `localStorage`, for islands |
 
 #![doc(
-    html_logo_url = "https://maxlestage.github.io/Paquets/assets/logo.svg",
-    html_favicon_url = "https://maxlestage.github.io/Paquets/assets/logo.svg"
+    html_logo_url = "https://paquets-90dfc06b6fea.herokuapp.com/assets/logo.svg",
+    html_favicon_url = "https://paquets-90dfc06b6fea.herokuapp.com/assets/logo.svg"
 )]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![forbid(unsafe_code)]
@@ -131,16 +131,16 @@ pub use active::pwa::Manifest as Pwa;
 /// The version of this crate, e.g. `"0.1.1"`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/// Front end: views, state, SEO tags, islands ([active](https://maxlestage.github.io/Active/)).
+/// Front end: views, state, SEO tags, islands ([active](https://active-c1883a966650.herokuapp.com/)).
 pub use active;
-/// Database: models, queries, transactions, migrations ([memoire-orm](https://maxlestage.github.io/Memoire/)).
+/// Database: models, queries, transactions, migrations ([memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/)).
 pub use memoire_orm as orm;
-/// Security middlewares ([securite](https://maxlestage.github.io/Securite/)).
+/// Security middlewares ([securite](https://securite-2db4c1994be7.herokuapp.com/)).
 #[cfg(not(target_arch = "wasm32"))]
 pub use securite;
 pub use serde;
 pub use serde_json;
-/// HTTP server ([vitesse](https://maxlestage.github.io/Vitesse/)).
+/// HTTP server ([vitesse](https://vitesse-f16135654c3d.herokuapp.com/)).
 #[cfg(not(target_arch = "wasm32"))]
 pub use vitesse;
 /// Testing an application without opening a port: see [`App::test`].

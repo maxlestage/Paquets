@@ -1,6 +1,6 @@
 # {{title}}
 
-A full-stack Rust app built with [Paquets](https://maxlestage.github.io/Paquets/) 📦:
+A full-stack Rust app built with [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/) 📦:
 server, security, database, REST API, pages{{readme_islands}}, installable on phones
 (PWA) and usable offline.
 
@@ -28,4 +28,4 @@ green (`.github/workflows/ci.yml`; name a branch `wip/...` to opt out), and `mas
 
 Add a database: Heroku → your app → *Resources* → *Heroku Postgres*. Its `DATABASE_URL` is used automatically.
 
-Guide: https://maxlestage.github.io/Paquets/#/docs/deploy-heroku-mobile
+Guide: https://paquets-90dfc06b6fea.herokuapp.com/en/docs/deploy-heroku-mobile/

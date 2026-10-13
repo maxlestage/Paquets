@@ -27,12 +27,12 @@ Sept crates sont publiées depuis cinq dépôts. Chaque dépôt a son propre wor
 
 | Ordre | Crate | Dépôt | Workflow (onglet Actions) |
 |---|---|---|---|
-| 1 | `memoire-orm-derive` | [Memoire](https://maxlestage.github.io/Memoire/) | **Publish to crates.io** (publie les deux crates de Memoire, la derive en premier) |
-| 2 | `memoire-orm` | [Memoire](https://maxlestage.github.io/Memoire/) | la même exécution |
-| 3 | `securite` | [Securite](https://maxlestage.github.io/Securite/) | **Publish crate** |
-| 4 | `vitesse` | [Vitesse](https://maxlestage.github.io/Vitesse/) | **Release** |
-| 5 | `active` | [Active](https://maxlestage.github.io/Active/) | **Release** |
-| 6 | `paquets-macros`, puis `paquets` | [Paquets](https://maxlestage.github.io/Paquets/) | **Release** |
+| 1 | `memoire-orm-derive` | [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | **Publish to crates.io** (publie les deux crates de Memoire, la derive en premier) |
+| 2 | `memoire-orm` | [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | la même exécution |
+| 3 | `securite` | [Securite](https://securite-2db4c1994be7.herokuapp.com/) | **Publish crate** |
+| 4 | `vitesse` | [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | **Release** |
+| 5 | `active` | [Active](https://active-c1883a966650.herokuapp.com/) | **Release** |
+| 6 | `paquets-macros`, puis `paquets` | [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/) | **Release** |
 
 `memoire-orm` a besoin de `memoire-orm-derive`, et le workflow de Memoire les publie dans cet ordre. Les quatre dépôts des étapes 1 à 5 ne dépendent pas les uns des autres : vous pouvez les publier dans n'importe quel ordre, du moment qu'ils sont tous sur crates.io avant l'étape 6. Le workflow de Paquets le vérifie, et indique les crates qui manquent.
 

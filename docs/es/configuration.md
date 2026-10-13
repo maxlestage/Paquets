@@ -108,7 +108,7 @@ app.get("/visits", |req: Request| async move {
 });
 ```
 
-El estado vive en memoria: se pierde cuando el servidor se reinicia, y cada servidor tiene su propia copia. Los datos que deben durar van en la [base de datos](database.md). Más patrones en la [guía de estado de Vitesse](https://maxlestage.github.io/Vitesse/es/docs/state/).
+El estado vive en memoria: se pierde cuando el servidor se reinicia, y cada servidor tiene su propia copia. Los datos que deben durar van en la [base de datos](database.md). Más patrones en la [guía de estado de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/es/docs/state/).
 
 ## Cómo funciona el servidor
 
@@ -174,7 +174,7 @@ fn main() -> std::io::Result<()> {
 }
 ```
 
-`Tls::from_pem_files` lee una cadena de certificados y su clave privada, tal como las escribe Let's Encrypt (certbot). Consulta la [guía de HTTPS](https://maxlestage.github.io/Vitesse/es/docs/https/) de Vitesse para los certificados en memoria, una redirección desde el puerto 80 y HTTP/3.
+`Tls::from_pem_files` lee una cadena de certificados y su clave privada, tal como las escribe Let's Encrypt (certbot). Consulta la [guía de HTTPS](https://vitesse-f16135654c3d.herokuapp.com/es/docs/https/) de Vitesse para los certificados en memoria, una redirección desde el puerto 80 y HTTP/3.
 
 ## Features de Cargo
 

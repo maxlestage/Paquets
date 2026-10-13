@@ -70,7 +70,7 @@ No: los componentes son funciones normales que construyen una vista. Haz primero
 
 ### ¿Una isla puede llamar a mi API?
 
-Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://maxlestage.github.io/Active/es/docs/events/)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
+Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://active-c1883a966650.herokuapp.com/es/docs/events/)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
 
 ### ¿Hay recarga en caliente (hot reload)?
 
@@ -146,7 +146,7 @@ Abre una issue en GitHub. Las pull requests son bienvenidas; lee antes `CONTRIBU
 
 ### ¿Qué licencia tiene?
 
-Paquets, Vitesse, Securite, memoire-orm y Active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://maxlestage.github.io/Paquets/LICENSE.txt) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
+Paquets, Vitesse, Securite, memoire-orm y Active son software propietario: © Maxime Nathan Lestage, todos los derechos reservados. Su código fuente se publica en crates.io y GitHub para que puedas leerlo, auditarlo y compilarlo, y puedes usarlos libremente como dependencias de tus propios programas, también comerciales. Modificarlos o redistribuir su código fuente requiere el permiso escrito del autor. Las condiciones completas están en el archivo [LICENSE](https://paquets-90dfc06b6fea.herokuapp.com/LICENSE.txt) de cada repositorio. Lo que construyes con ellos, incluidos los proyectos creados por `paquets new`, es tuyo.
 
 ## Próximos pasos
 

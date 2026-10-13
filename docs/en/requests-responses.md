@@ -146,7 +146,7 @@ async fn login(req: Request) -> Result<Redirect> {
 
 ### File uploads
 
-With the `multipart` feature, `req.multipart()?` reads a form sent with `enctype="multipart/form-data"`, one field at a time; it answers `415` when the request is something else. The body limits (2 MiB by default) apply to uploads too: to accept larger files, raise both (see [Body size](#body-size)). See [Vitesse's guide to file uploads](https://maxlestage.github.io/Vitesse/en/docs/requests/#file-uploads-multipart).
+With the `multipart` feature, `req.multipart()?` reads a form sent with `enctype="multipart/form-data"`, one field at a time; it answers `415` when the request is something else. The body limits (2 MiB by default) apply to uploads too: to accept larger files, raise both (see [Body size](#body-size)). See [Vitesse's guide to file uploads](https://vitesse-f16135654c3d.herokuapp.com/en/docs/requests/#file-uploads-multipart).
 
 Without the feature, read the raw body with `req.take_body()` and give it to a multipart crate.
 
@@ -266,7 +266,7 @@ app.get("/export.csv", |_| async { Csv("id,name\n1,Ada\n".into()) });
 
 ## Learn more
 
-- [vitesse: Reading requests](https://maxlestage.github.io/Vitesse/en/docs/requests/) and [Sending responses](https://maxlestage.github.io/Vitesse/en/docs/responses/): every method, streaming bodies, Server-Sent Events.
+- [vitesse: Reading requests](https://vitesse-f16135654c3d.herokuapp.com/en/docs/requests/) and [Sending responses](https://vitesse-f16135654c3d.herokuapp.com/en/docs/responses/): every method, streaming bodies, Server-Sent Events.
 - [Errors](errors.md): what `?` does with each kind of error.
 
 ## Next steps
