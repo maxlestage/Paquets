@@ -6,6 +6,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-15
+
 ### Changed
 - `Cargo.lock` (and the site's) on the latest commits of Active, Vitesse, Securite and Memoire.
 - On the latest versions of the four packages, all reachable through Paquets:

@@ -62,7 +62,7 @@ app.seed(|db| async move {
 app.health("/health");
 ```
 
-`GET /health` responde `200` con `{"status": "ok", "database": {"kind": "postgres", "ok": true}, "uptime_seconds": 42, "paquets": "0.1.1"}`, o `503` cuando la base de datos no responde (`SELECT 1`). Apunta ahí los balanceadores de carga, las sondas de Kubernetes o los monitores de disponibilidad. Los proyectos creados con `paquets new` la tienen.
+`GET /health` responde `200` con `{"status": "ok", "database": {"kind": "postgres", "ok": true}, "uptime_seconds": 42, "paquets": "0.2.0"}`, o `503` cuando la base de datos no responde (`SELECT 1`). Apunta ahí los balanceadores de carga, las sondas de Kubernetes o los monitores de disponibilidad. Los proyectos creados con `paquets new` la tienen.
 
 ## Métricas
 

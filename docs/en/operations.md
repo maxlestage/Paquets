@@ -62,7 +62,7 @@ app.seed(|db| async move {
 app.health("/health");
 ```
 
-`GET /health` answers `200` with `{"status": "ok", "database": {"kind": "postgres", "ok": true}, "uptime_seconds": 42, "paquets": "0.1.1"}`, or `503` when the database does not answer (`SELECT 1`). Point load balancers, Kubernetes probes or uptime monitors at it. Projects made by `paquets new` have it.
+`GET /health` answers `200` with `{"status": "ok", "database": {"kind": "postgres", "ok": true}, "uptime_seconds": 42, "paquets": "0.2.0"}`, or `503` when the database does not answer (`SELECT 1`). Point load balancers, Kubernetes probes or uptime monitors at it. Projects made by `paquets new` have it.
 
 ## Metrics
 
