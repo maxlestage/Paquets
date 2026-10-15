@@ -7,6 +7,15 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- On the latest versions of the four packages, all reachable through Paquets:
+  Vitesse (request validation with 422 details, OpenAPI 3.1 and Swagger UI,
+  lifecycle hooks, `app.param`, route groups and plugins), Securite (Argon2id
+  password hashing, login throttling, gates and policies, signed URLs, TOTP
+  two-factor codes, trusted proxies), Memoire (timestamps, soft deletes,
+  lifecycle hooks, `save`, `first_or_create`, chunks and cursor pagination, query
+  log) and active (watch, provide/inject, two-way binding, route patterns,
+  resources and suspense, error boundaries, island hydration strategies,
+  navigation guards, transitions, forms with validation, portals).
 - Links: the websites of Paquets, Active, Vitesse, Securite and Memoire are linked at their
   Heroku addresses (`*.herokuapp.com`) instead of GitHub Pages, in the READMEs, the docs, the
   site's footer, `Cargo.toml`, `app.json`, the rustdoc logo and the `paquets new` template; the
