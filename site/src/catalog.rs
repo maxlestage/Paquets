@@ -270,9 +270,9 @@ pub const PAGES: [Page; 24] = [
         category: 3,
         title: ["Automatisation", "Automation", "Automatización"],
         summary: [
-            "CI, fusion automatique dans master, Pages et Heroku.",
-            "CI, automatic merge into master, Pages and Heroku.",
-            "CI, fusión automática en master, Pages y Heroku.",
+            "CI, fusion automatique dans master et déploiement sur Heroku.",
+            "CI, automatic merge into master and Heroku deployment.",
+            "CI, fusión automática en master y despliegue en Heroku.",
         ],
     },
     // ----- Reference

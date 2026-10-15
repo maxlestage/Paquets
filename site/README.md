@@ -52,10 +52,14 @@ Environment: `PORT`, `DATABASE_URL` (the demo's database, in memory by default),
 otherwise), `BASE_PATH`, `DOCS_DIR` (the Markdown pages; `../docs` by default, then
 `docs/` in the current directory, e.g. in a Docker image).
 
-## Static export (GitHub Pages)
+## Static export
+
+The website is served by Heroku only, at <https://paquets-90dfc06b6fea.herokuapp.com/>.
+It can still be exported to static files, which the CI checks on every push (no host
+publishes them):
 
 ```bash
-BASE_PATH=/Paquets SITE_URL=https://maxlestage.github.io/Paquets \
+BASE_PATH=/Paquets SITE_URL=https://example.com/Paquets \
   cargo run --release -- export dist
 ```
 
