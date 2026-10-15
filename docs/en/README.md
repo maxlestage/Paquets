@@ -26,6 +26,10 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 - [Errors](errors.md): `Result`, the `?` operator, the status of each error, and custom error formats.
 - [Configuration](configuration.md): environment variables, app settings, shared state and how the server runs.
 - [Performance](performance.md): the benchmarks, how the server uses your CPU, and tips to stay fast.
+- [Authentication](authentication.md): sign-up, login, password resets and two-factor codes in one line.
+- [Admin panel](admin.md): list, search, create, edit and delete the rows of your models in the browser.
+- [Generators](generators.md): `paquets make:model`, `make:api`, `make:page`… write the code and wire it.
+- [Operations](operations.md): OpenAPI and Swagger UI, the route list, migrations and seeds, health checks, metrics, live reload.
 
 ## Deploy
 
@@ -36,7 +40,7 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 
 ## Reference
 
-- [Command line tool](cli.md): `paquets new`, `dev`, `build` and `doctor`.
+- [Command line tool](cli.md): `paquets new`, `dev`, `build`, `doctor`, `routes`, `db:*` and the generators.
 - [Cheat sheet](cheatsheet.md): the whole API on one page.
 - [The four packages](packages.md): Vitesse, Securite, memoire-orm and Active, and how Paquets uses them.
 - [FAQ](faq.md): common questions and their answers.

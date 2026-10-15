@@ -50,7 +50,7 @@ pub const CATEGORIES: [Category; 5] = [
     },
 ];
 
-pub const PAGES: [Page; 24] = [
+pub const PAGES: [Page; 28] = [
     // ----- Getting started
     Page {
         slug: "introduction",
@@ -222,6 +222,50 @@ pub const PAGES: [Page; 24] = [
             "Las cifras, de dónde salen y cómo mantener tu app rápida.",
         ],
     },
+    Page {
+        slug: "authentication",
+        category: 2,
+        title: ["Authentification", "Authentication", "Autenticación"],
+        summary: [
+            "Inscription, connexion, mot de passe oublié et codes à deux facteurs en une ligne.",
+            "Sign-up, login, forgotten passwords and two-factor codes in one line.",
+            "Registro, inicio de sesión, contraseña olvidada y códigos de dos factores en una línea.",
+        ],
+    },
+    Page {
+        slug: "admin",
+        category: 2,
+        title: [
+            "Panneau d'administration",
+            "Admin panel",
+            "Panel de administración",
+        ],
+        summary: [
+            "Lister, chercher, créer, modifier et supprimer les lignes de vos modèles.",
+            "List, search, create, edit and delete the rows of your models.",
+            "Listar, buscar, crear, editar y borrar las filas de tus modelos.",
+        ],
+    },
+    Page {
+        slug: "generators",
+        category: 2,
+        title: ["Générateurs", "Generators", "Generadores"],
+        summary: [
+            "make:model, make:api, make:page… : le code écrit et branché pour vous.",
+            "make:model, make:api, make:page…: the code written and wired for you.",
+            "make:model, make:api, make:page…: el código escrito y conectado por ti.",
+        ],
+    },
+    Page {
+        slug: "operations",
+        category: 2,
+        title: ["Exploitation", "Operations", "Operaciones"],
+        summary: [
+            "OpenAPI, liste des routes, migrations, santé, métriques et rechargement automatique.",
+            "OpenAPI, the route list, migrations, health, metrics and live reload.",
+            "OpenAPI, lista de rutas, migraciones, salud, métricas y recarga automática.",
+        ],
+    },
     // ----- Deploy
     Page {
         slug: "deploy-heroku-mobile",
@@ -391,7 +435,11 @@ mod tests {
                     "testing",
                     "errors",
                     "configuration",
-                    "performance"
+                    "performance",
+                    "authentication",
+                    "admin",
+                    "generators",
+                    "operations"
                 ],
                 vec![
                     "deploy-heroku-mobile",

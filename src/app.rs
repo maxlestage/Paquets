@@ -96,6 +96,10 @@ pub struct App {
     https: bool,
     pwa: Option<crate::Pwa>,
     api_paths: Vec<String>,
+    api_docs: Option<crate::docs::ApiDocs>,
+    schemas: Vec<(String, serde_json::Value)>,
+    migrators: Vec<memoire_orm::Migrator>,
+    seeds: Vec<StartHook>,
 }
 
 impl Default for App {
@@ -143,6 +147,10 @@ impl App {
             https: false,
             pwa: None,
             api_paths: Vec::new(),
+            api_docs: None,
+            schemas: Vec::new(),
+            migrators: Vec::new(),
+            seeds: Vec::new(),
         }
     }
 
@@ -174,7 +182,174 @@ impl App {
     pub fn api<M: Resource>(&mut self, path: &str) -> &mut Self {
         crate::api::routes::<M>(&mut self.inner, path);
         self.api_paths.push(path.trim_end_matches('/').to_owned());
+        let name = crate::docs::type_name::<M>().to_owned();
+        if !self.schemas.iter().any(|(n, _)| *n == name) {
+            self.schemas
+                .push((name, crate::docs::json_schema(M::SCHEMA)));
+        }
         self.model::<M>()
+    }
+
+    /// Sign up, log in, log out, forgotten passwords and two-factor codes, with
+    /// their pages (`/register`, `/login`, `/account`…), in one line: see
+    /// [`auth`](crate::auth). The users are the [`User`](crate::auth::User) model
+    /// (table `users`, created at startup); handlers read the logged-in one with
+    /// [`req.user()`](crate::auth::AuthExt::user).
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    /// use paquets::auth::Auth;
+    ///
+    /// let mut app = App::new();
+    /// app.auth(Auth::new().name("My app").admins(["me@example.com"]));
+    /// ```
+    ///
+    /// # Panics
+    /// If the secret (`APP_KEY` or [`Auth::secret`](crate::auth::Auth::secret)) is
+    /// shorter than 32 bytes.
+    pub fn auth(&mut self, auth: crate::auth::Auth) -> &mut Self {
+        crate::auth::install(&mut self.inner, auth);
+        self.model::<crate::auth::User>()
+    }
+
+    /// An admin panel for models, like Django's admin, at `/admin`: lists with
+    /// search, sort, filters and pages, forms to create, edit and delete rows. See
+    /// [`admin`](crate::admin) for who gets in.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// #[model]
+    /// struct Todo {
+    ///     id: i64,
+    ///     title: String,
+    ///     done: bool,
+    /// }
+    ///
+    /// let mut app = App::new();
+    /// app.admin(Admin::new().model::<Todo>());
+    /// ```
+    pub fn admin(&mut self, admin: crate::admin::Admin) -> &mut Self {
+        let creators = crate::admin::install(&mut self.inner, admin);
+        self.tables.extend(creators);
+        self
+    }
+
+    /// Documents the API in one line: the OpenAPI 3.1 document at `/openapi.json`
+    /// and Swagger UI at `/docs`. The routes of [`App::api`] are described with
+    /// their model's JSON Schema; other routes appear as they are, or as their
+    /// [`.doc(…)`](vitesse::App::doc) describes them. The pages of
+    /// [`App::auth`] and [`App::admin`] are left out.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// #[model]
+    /// struct Todo {
+    ///     id: i64,
+    ///     title: String,
+    /// }
+    ///
+    /// let mut app = App::new();
+    /// app.api::<Todo>("/api/todos");
+    /// app.api_docs("Todos API"); // GET /openapi.json, GET /docs
+    /// ```
+    pub fn api_docs(&mut self, title: &str) -> &mut Self {
+        self.api_docs = Some(crate::docs::ApiDocs {
+            title: title.to_owned(),
+            version: "1.0.0".into(),
+            json: "/openapi.json".into(),
+            ui: "/docs".into(),
+        });
+        self
+    }
+
+    /// A health check at `path` (`/health`): `200` with
+    /// `{"status": "ok", "database": {…}, "uptime_seconds": …}`, or `503` when the
+    /// database does not answer. For load balancers, Kubernetes, uptime monitors.
+    ///
+    /// ```
+    /// # let mut app = paquets::App::new();
+    /// app.health("/health");
+    /// ```
+    pub fn health(&mut self, path: &str) -> &mut Self {
+        crate::ops::health(&mut self.inner, path);
+        self
+    }
+
+    /// Counts requests (by status class, with a duration histogram) and serves the
+    /// counts in Prometheus' text format at `path` (`/metrics`), to requests from
+    /// this machine, or with `Authorization: Bearer $METRICS_TOKEN` when the
+    /// `METRICS_TOKEN` environment variable is set.
+    ///
+    /// ```
+    /// # let mut app = paquets::App::new();
+    /// app.metrics("/metrics");
+    /// ```
+    pub fn metrics(&mut self, path: &str) -> &mut Self {
+        crate::ops::metrics(&mut self.inner, path);
+        self
+    }
+
+    /// Versioned migrations (memoire's [`Migrator`](memoire_orm::Migrator)), run at
+    /// startup before the tables are created, and by `paquets db:migrate`. Each
+    /// runs once, in a transaction.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// let mut app = App::new();
+    /// app.migrate(
+    ///     Migrator::new()
+    ///         .add(Migration::new(1, "create_notes").sql("CREATE TABLE notes (id INTEGER)")),
+    /// );
+    /// ```
+    pub fn migrate(&mut self, migrator: memoire_orm::Migrator) -> &mut Self {
+        self.migrators.push(migrator);
+        self
+    }
+
+    /// Fills the database with example data, when `paquets db:seed` runs (not
+    /// when the server starts: see [`App::on_start`] for that).
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// #[model]
+    /// struct Todo {
+    ///     id: i64,
+    ///     title: String,
+    /// }
+    ///
+    /// let mut app = App::new();
+    /// app.model::<Todo>();
+    /// app.seed(|db| async move {
+    ///     Todo { id: 0, title: "Try Paquets".into() }.insert(db).await?;
+    ///     Ok(())
+    /// });
+    /// ```
+    pub fn seed<F, Fut>(&mut self, hook: F) -> &mut Self
+    where
+        F: FnOnce(&'static Db) -> Fut + Send + 'static,
+        Fut: Future<Output = crate::Result<()>> + Send + 'static,
+    {
+        self.seeds.push(Box::new(move |db| Box::pin(hook(db))));
+        self
+    }
+
+    /// Every route added so far, sorted by path: what `paquets routes` prints
+    /// (static files and `app.all` routes excepted).
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// let mut app = App::new();
+    /// app.get("/", |_| async { "Hello" });
+    /// let routes = app.routes();
+    /// assert_eq!((routes[0].method.as_str(), routes[0].path.as_str()), ("GET", "/"));
+    /// ```
+    pub fn routes(&self) -> Vec<crate::RouteInfo> {
+        crate::docs::routes_of(&self.inner)
     }
 
     /// Creates the table of a model at startup (if it does not exist yet), for models
@@ -350,6 +525,9 @@ impl App {
     }
 
     fn start(self) -> io::Result<()> {
+        if let Some(command) = command() {
+            return self.command(&command);
+        }
         let kind = self.database_kind();
         if matches!(kind, "memory" | "sqlite") {
             let startup = tokio::runtime::Builder::new_current_thread()
@@ -368,6 +546,12 @@ impl App {
 
     /// Starts the server on the current tokio runtime (`#[tokio::main]`).
     pub async fn serve(self) -> io::Result<()> {
+        if let Some(command) = command() {
+            return match command.as_str() {
+                "migrate" | "seed" => self.database_command(&command).await,
+                _ => self.command(&command),
+            };
+        }
         let (app, port) = self.prepare(false).await?;
         app.listen(port).await
     }
@@ -411,9 +595,47 @@ impl App {
         Db::kind_of(&self.database_url(false))
     }
 
-    /// Opens the database, creates the tables, runs the startup hooks and plugs in
-    /// security, static files and islands.
-    async fn prepare(mut self, testing: bool) -> io::Result<(vitesse::App, u16)> {
+    /// What `paquets routes`, `paquets db:migrate` and `paquets db:seed` ask, through
+    /// the `PAQUETS_COMMAND` environment variable, instead of serving.
+    fn command(self, command: &str) -> io::Result<()> {
+        if command == "routes" {
+            print!("{}", crate::docs::route_table(&self.routes()));
+            return Ok(());
+        }
+        if !matches!(command, "migrate" | "seed") {
+            return Err(io::Error::other(format!(
+                "unknown PAQUETS_COMMAND `{command}` (routes, migrate or seed)"
+            )));
+        }
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()?
+            .block_on(self.database_command(command))
+    }
+
+    async fn database_command(mut self, command: &str) -> io::Result<()> {
+        let db = self.open_database(false).await?;
+        println!("📦 database: {}", db.kind());
+        if command == "seed" {
+            let seeds = std::mem::take(&mut self.seeds);
+            if seeds.is_empty() {
+                println!("   no seed: add one with app.seed(|db| async move {{ … }})");
+            }
+            let count = seeds.len();
+            for seed in seeds {
+                seed(db)
+                    .await
+                    .map_err(|e| io::Error::other(format!("seed: {}", e.describe())))?;
+            }
+            if count > 0 {
+                println!("   {count} seed(s) run");
+            }
+        }
+        Ok(())
+    }
+
+    /// Opens the database, runs the migrations and creates the tables of the models.
+    async fn open_database(&mut self, testing: bool) -> io::Result<&'static Db> {
         let url = self.database_url(testing);
         let db = match self.database.take() {
             Some(DbSource::Handle(db)) => db,
@@ -422,11 +644,27 @@ impl App {
                 .map_err(|e| io::Error::other(format!("database: {e}")))?,
         };
         let db: &'static Db = Box::leak(Box::new(db));
+        for migrator in &self.migrators {
+            let applied = migrator
+                .run(db)
+                .await
+                .map_err(|e| io::Error::other(format!("migrations: {e}")))?;
+            if !applied.is_empty() && !testing {
+                println!("📦 migrations applied: {applied:?}");
+            }
+        }
         for create in &self.tables {
             create(db)
                 .await
                 .map_err(|e| io::Error::other(format!("database: {e}")))?;
         }
+        Ok(db)
+    }
+
+    /// Opens the database, creates the tables, runs the startup hooks and plugs in
+    /// security, static files and islands.
+    async fn prepare(mut self, testing: bool) -> io::Result<(vitesse::App, u16)> {
+        let db = self.open_database(testing).await?;
         for hook in std::mem::take(&mut self.startup) {
             hook(db)
                 .await
@@ -450,6 +688,12 @@ impl App {
             self.inner.static_dir("/pkg", "pkg");
             page::set_bundle(js.clone(), wasm.clone());
         }
+        if let Some(docs) = self.api_docs.take() {
+            crate::docs::install(&mut self.inner, &docs, &self.schemas);
+        }
+        if crate::ops::live_reload() && !testing {
+            crate::ops::live_reload_route(&mut self.inner);
+        }
         if let Some(manifest) = self.pwa.take() {
             crate::pwa::install(&mut self.inner, manifest, bundle.as_ref(), &self.api_paths);
         }
@@ -472,6 +716,13 @@ impl App {
         }
         Ok((self.inner, port))
     }
+}
+
+/// The command asked by the `paquets` tool, if any.
+fn command() -> Option<String> {
+    std::env::var(crate::ops::COMMAND_VAR)
+        .ok()
+        .filter(|c| !c.trim().is_empty())
 }
 
 /// `pkg/<name>.js` and `pkg/<name>_bg.wasm`, as written by `wasm-bindgen --target web`.

@@ -5,12 +5,22 @@ version = 4
 [[package]]
 name = "active"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Active#01d0a6612cbc1a61fdc71a81e781ac40b49e1f75"
+source = "git+https://github.com/maxlestage/Active#759c0f82edd328904b2e8916e2e9d8a356c64c89"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
+]
+
+[[package]]
+name = "aead"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1973cfbc1a2daf9cf550e74e1f088c28e7f7d8c1e1418fb6c9dc5184b7e84c99"
+dependencies = [
+ "crypto-common",
+ "inout",
 ]
 
 [[package]]
@@ -139,8 +149,32 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65c35e4b699c7e15ccbe7ee35c005e4fc0a278d22238a2857e6ce2dadeda1b06"
 dependencies = [
  "cfg-if",
+ "cipher",
  "cpufeatures",
  "rand_core",
+]
+
+[[package]]
+name = "chacha20poly1305"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b89e1c441e926b9c82a8d023f6e1b7ae0adcfaa7d621814e4d60789bac751cb"
+dependencies = [
+ "aead",
+ "chacha20",
+ "cipher",
+ "poly1305",
+]
+
+[[package]]
+name = "cipher"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8cf2a2c93cd704877c0858356ed03480ff301ee950b43f1cbe4573b088bfa6c"
+dependencies = [
+ "block-buffer",
+ "crypto-common",
+ "inout",
 ]
 
 [[package]]
@@ -488,6 +522,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "inout"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d8c0d789294fb457b791f7797a04478704788f30b407e5d0b01deaa846572d9f"
+dependencies = [
+ "hybrid-array",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -564,7 +607,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#c506dd132380ef32238f35828c7e51915b2f831a"
+source = "git+https://github.com/maxlestage/Memoire#c5e14d83e796ed5f4b63da35e172ae72592fa55e"
 dependencies = [
  "async-lock",
  "bytes",
@@ -585,7 +628,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#c506dd132380ef32238f35828c7e51915b2f831a"
+source = "git+https://github.com/maxlestage/Memoire#c5e14d83e796ed5f4b63da35e172ae72592fa55e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -632,11 +675,13 @@ name = "paquets"
 version = "0.1.1"
 dependencies = [
  "active",
+ "hmac",
  "memoire-orm",
  "paquets-macros",
  "securite",
  "serde",
  "serde_json",
+ "sha2",
  "tokio",
  "vitesse",
 ]
@@ -747,6 +792,16 @@ name = "pkg-config"
 version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f6b464fbc74e149a392436b17d523f769e057cb6877f6a5c4618bc6f11800548"
+
+[[package]]
+name = "poly1305"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e2d0073b297041425c7c3df6eb4792d598a15323fe63346852b092eca02904c"
+dependencies = [
+ "cpufeatures",
+ "universal-hash",
+]
 
 [[package]]
 name = "postgres-protocol"
@@ -945,12 +1000,13 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Securite#bed84f0d60f1e25afa1a91ec2e803343e3108c5e"
+source = "git+https://github.com/maxlestage/Securite#78a21046282a02736aac8cbe6fa385451cc93baa"
 dependencies = [
  "aho-corasick",
  "argon2",
  "base64 0.23.1",
  "bytes",
+ "chacha20poly1305",
  "getrandom 0.4.3",
  "hmac",
  "http",
@@ -1397,6 +1453,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7df058c713841ad818f1dc5d3fd88063241cc61f49f5fbea4b951e8cf5a8d71d"
 
 [[package]]
+name = "universal-hash"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4987bdc12753382e0bec4a65c50738ffaabc998b9cdd1f952fb5f39b0048a96"
+dependencies = [
+ "crypto-common",
+ "ctutils",
+]
+
+[[package]]
 name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1411,7 +1477,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vitesse"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Vitesse#deadcc68fff30a08104ae076805b10e660e9b026"
+source = "git+https://github.com/maxlestage/Vitesse#751667a9ae25e3e8f701d1d73d52960a7081db48"
 dependencies = [
  "bytes",
  "form_urlencoded",

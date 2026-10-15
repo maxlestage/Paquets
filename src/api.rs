@@ -26,12 +26,21 @@ pub(crate) fn routes<M: Resource>(app: &mut vitesse::App, path: &str) {
         base => base,
     };
     let item = format!("{}/:id", base.trim_end_matches('/'));
-    app.get(base, list::<M>);
-    app.post(base, create::<M>);
-    app.get(&item, show::<M>);
-    app.put(&item, replace::<M>);
-    app.patch(&item, update::<M>);
-    app.delete(&item, remove::<M>);
+    // Documented for `app.api_docs(…)`, with the model's schema.
+    let [
+        list_doc,
+        create_doc,
+        show_doc,
+        replace_doc,
+        update_doc,
+        remove_doc,
+    ] = crate::docs::api_operations(crate::docs::type_name::<M>());
+    app.get(base, list::<M>).doc(list_doc);
+    app.post(base, create::<M>).doc(create_doc);
+    app.get(&item, show::<M>).doc(show_doc);
+    app.put(&item, replace::<M>).doc(replace_doc);
+    app.patch(&item, update::<M>).doc(update_doc);
+    app.delete(&item, remove::<M>).doc(remove_doc);
 }
 
 /// `GET /todos?limit=100&offset=0`: the rows in primary key order, with the total in

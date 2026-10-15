@@ -26,6 +26,10 @@ Todo lo que necesitas para crear aplicaciones web full-stack con Paquets 📦, e
 - [Errores](errors.md): `Result`, el operador `?`, el estado de cada error y los formatos de error personalizados.
 - [Configuración](configuration.md): variables de entorno, ajustes de la aplicación, estado compartido y cómo funciona el servidor.
 - [Rendimiento](performance.md): los benchmarks, cómo usa el servidor tu CPU y consejos para seguir siendo rápido.
+- [Autenticación](authentication.md): registro, inicio de sesión, contraseña olvidada y códigos de dos factores en una línea.
+- [Panel de administración](admin.md): listar, buscar, crear, editar y borrar las filas de tus modelos en el navegador.
+- [Generadores](generators.md): `paquets make:model`, `make:api`, `make:page`… escriben el código y lo conectan.
+- [Operaciones](operations.md): OpenAPI y Swagger UI, lista de rutas, migraciones y datos de ejemplo, salud, métricas, recarga automática.
 
 ## Desplegar
 
@@ -36,7 +40,7 @@ Todo lo que necesitas para crear aplicaciones web full-stack con Paquets 📦, e
 
 ## Referencia
 
-- [Herramienta de línea de comandos](cli.md): `paquets new`, `dev`, `build` y `doctor`.
+- [Herramienta de línea de comandos](cli.md): `paquets new`, `dev`, `build`, `doctor`, `routes`, `db:*` y los generadores.
 - [Chuleta](cheatsheet.md): toda la API en una sola página.
 - [Los cuatro paquetes](packages.md): Vitesse, Securite, memoire-orm y Active, y cómo los usa Paquets.
 - [Preguntas frecuentes](faq.md): dudas habituales y sus respuestas.

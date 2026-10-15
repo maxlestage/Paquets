@@ -96,14 +96,26 @@
 #![forbid(unsafe_code)]
 #![warn(missing_docs, rust_2018_idioms)]
 
+// `#[model]` names `::paquets`, also inside this crate (the `User` of `auth`).
+#[cfg(not(target_arch = "wasm32"))]
+extern crate self as paquets;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub mod admin;
 #[cfg(not(target_arch = "wasm32"))]
 mod api;
 #[cfg(not(target_arch = "wasm32"))]
 mod app;
 #[cfg(not(target_arch = "wasm32"))]
+pub mod auth;
+#[cfg(not(target_arch = "wasm32"))]
 mod db;
 #[cfg(not(target_arch = "wasm32"))]
+mod docs;
+#[cfg(not(target_arch = "wasm32"))]
 mod error;
+#[cfg(not(target_arch = "wasm32"))]
+mod ops;
 #[cfg(not(target_arch = "wasm32"))]
 mod page;
 #[cfg(not(target_arch = "wasm32"))]
@@ -117,6 +129,8 @@ pub use api::Resource;
 pub use app::{App, DbSource, RequestExt};
 #[cfg(not(target_arch = "wasm32"))]
 pub use db::{Db, DbTransaction};
+#[cfg(not(target_arch = "wasm32"))]
+pub use docs::RouteInfo;
 #[cfg(not(target_arch = "wasm32"))]
 pub use error::{Error, Result};
 #[cfg(not(target_arch = "wasm32"))]
@@ -178,7 +192,13 @@ pub mod prelude {
     pub use crate::{hydrate, location, mount_to, navigate, query_param};
 
     #[cfg(not(target_arch = "wasm32"))]
+    pub use crate::admin::Admin;
+    #[cfg(not(target_arch = "wasm32"))]
+    pub use crate::auth::AuthExt;
+    #[cfg(not(target_arch = "wasm32"))]
     pub use crate::{App, Db, Error, Page, Pwa, RequestExt, Result};
+    #[cfg(not(target_arch = "wasm32"))]
+    pub use memoire_orm::{Migration, Migrator};
     #[cfg(not(target_arch = "wasm32"))]
     pub use vitesse::{
         Cookie, HandlerExt, Html, IntoResponse, Json, Method, Next, Redirect, Request, Response,

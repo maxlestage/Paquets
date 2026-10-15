@@ -178,6 +178,11 @@ impl Page {
                 .unwrap_or_default()
             }));
         }
+        if crate::ops::live_reload() {
+            let (script, hash) = crate::ops::live_reload_script();
+            document = document.head(format!("<script>{script}</script>"));
+            scripts.push(hash.clone());
+        }
         let mut html = document.render();
         if let Some((tags, hash)) = loader()
             && html.contains("<active-island")
