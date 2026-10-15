@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Active#759c0f82edd328904b2e8916e2e9d8a356c64c89"
+source = "git+https://github.com/maxlestage/Active#9d1f8386fc989eadada3dd206930a26ff057ac97"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -607,7 +607,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#c5e14d83e796ed5f4b63da35e172ae72592fa55e"
+source = "git+https://github.com/maxlestage/Memoire#fc7ca715dd5642e4e7efc67f3b1e63a341689a59"
 dependencies = [
  "async-lock",
  "bytes",
@@ -628,7 +628,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#c5e14d83e796ed5f4b63da35e172ae72592fa55e"
+source = "git+https://github.com/maxlestage/Memoire#fc7ca715dd5642e4e7efc67f3b1e63a341689a59"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1000,7 +1000,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Securite#78a21046282a02736aac8cbe6fa385451cc93baa"
+source = "git+https://github.com/maxlestage/Securite#613074ade2dc08a0ce762f2b4118860204f007ac"
 dependencies = [
  "aho-corasick",
  "argon2",
@@ -1477,7 +1477,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vitesse"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Vitesse#751667a9ae25e3e8f701d1d73d52960a7081db48"
+source = "git+https://github.com/maxlestage/Vitesse#3488ece44a718d5408f910fe516be806ae06a54b"
 dependencies = [
  "bytes",
  "form_urlencoded",
