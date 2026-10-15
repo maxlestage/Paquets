@@ -52,9 +52,14 @@ pub fn version(bytes: &[u8]) -> String {
 impl Site {
     /// Reads the docs and the stylesheet. Call [`routes::set_base`] before.
     pub fn load(live: bool, site_url: Option<String>) -> Site {
+        Site::load_with_docs(live, site_url, &docs::docs_dir())
+    }
+
+    /// [`Site::load`] with the Markdown pages read from `docs_dir`.
+    pub fn load_with_docs(live: bool, site_url: Option<String>, docs_dir: &Path) -> Site {
         let css = std::fs::read(site_dir().join("public/site.css")).unwrap_or_default();
         Site {
-            docs: Docs::load(&docs::docs_dir()),
+            docs: Docs::load(docs_dir),
             site_url: site_url
                 .map(|u| u.trim().trim_end_matches('/').to_owned())
                 .filter(|u| !u.is_empty())
@@ -254,12 +259,20 @@ pub fn app(site: Arc<Site>) -> App {
 /// `cargo run`: the server, on `PORT` (Heroku) or 3000.
 pub fn run() -> io::Result<()> {
     routes::set_base(&std::env::var("BASE_PATH").unwrap_or_default());
+    // DOCS_DIR may be relative to where the server starts (`DOCS_DIR=docs` in the
+    // Procfile): resolve it before moving into the site folder.
+    let docs = docs::docs_dir();
+    let docs = std::fs::canonicalize(&docs).unwrap_or(docs);
     // Paquets serves `public/` and `pkg/` from the current directory.
     let dir = site_dir();
     if dir != Path::new(".") {
         std::env::set_current_dir(&dir)?;
     }
-    let site = Arc::new(Site::load(true, std::env::var("SITE_URL").ok()));
+    let site = Arc::new(Site::load_with_docs(
+        true,
+        std::env::var("SITE_URL").ok(),
+        &docs,
+    ));
     for lang in Lang::ALL {
         println!(
             "   docs: {}/{} pages in {}",
