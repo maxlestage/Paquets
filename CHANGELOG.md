@@ -29,6 +29,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `buildpack` (default) or `docker`, which keeps the Docker build (`heroku.yml`, `Dockerfile`,
   "container" stack); it switches the app's stack when needed. Apps created by `paquets new`
   are unchanged.
+- Website: no longer published on GitHub Pages (the `pages.yml` workflow is removed): it is
+  served by Heroku only, and GitHub only hosts the code. The READMEs, the automation docs and
+  `site/README.md` no longer describe a Pages deployment; the static export keeps working and
+  is still checked by CI.
 - Website: the version shown at the top of the home page (and in its terminals) is
   read from `Cargo.toml`, so it follows every release (it said `v0.1` after 0.1.1).
 

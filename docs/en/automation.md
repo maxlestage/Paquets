@@ -1,6 +1,6 @@
 # Automation
 
-The Paquets repository, and every project created with `paquets new`, comes with GitHub workflows that do the repetitive work: they test every push, **merge every green branch into `master` automatically**, then deploy `master` to Heroku (and, for the Paquets repository, publish the website on GitHub Pages). This page explains each workflow, the rules of the automatic merge, and how to turn any of it off.
+The Paquets repository, and every project created with `paquets new`, comes with GitHub workflows that do the repetitive work: they test every push, **merge every green branch into `master` automatically**, then deploy `master` to Heroku. This page explains each workflow, the rules of the automatic merge, and how to turn any of it off.
 
 ## The big picture
 
@@ -11,8 +11,7 @@ push a branch ──▶ CI: format, Clippy, tests…
                     │
                     └── green ──▶ the branch is merged into master (unless it is named wip/…)
                                     │
-                                    ├──▶ Deploy to Heroku   (if HEROKU_API_KEY and HEROKU_APP_NAME are set)
-                                    └──▶ Pages              (Paquets repository: the website)
+                                    └──▶ Deploy to Heroku   (if HEROKU_API_KEY and HEROKU_APP_NAME are set)
 ```
 
 Nothing reaches `master`, or production, without passing the tests. And you never have to open, review or merge a pull request yourself, which makes the whole cycle possible from a phone.
@@ -23,7 +22,6 @@ Nothing reaches `master`, or production, without passing the tests. And you neve
 |---|---|---|---|
 | `.github/workflows/ci.yml` | **CI** | on every push and pull request, and by hand | checks everything, then merges the branch into `master` |
 | `.github/workflows/heroku.yml` | **Deploy to Heroku** | after each automatic merge, on pushes to `master`, by hand | deploys `master` to Heroku (see [Heroku](deploy-heroku-mobile.md#4-automatic-deployments-with-github-actions)) |
-| `.github/workflows/pages.yml` | **Pages** | after each automatic merge, on pushes to `master` that change the site or the docs, by hand | publishes the website on GitHub Pages (Paquets repository only) |
 | `.github/workflows/release.yml` | **Release** | when a GitHub release is published, by hand | publishes the crates on crates.io (Paquets repository only, see [Publish on crates.io](publish-crates-io.md)) |
 
 A project created with `paquets new` has the first two: `ci.yml` and `heroku.yml`.
@@ -50,7 +48,7 @@ Four jobs run in parallel, and the merge waits for all of them:
 | **Crate** | formatting; Clippy on the server with the default features and with every feature; Clippy on the browser side (`wasm32`, feature `client`); the tests with the default features and with every feature; the API documentation; the crates.io packages (`paquets-macros` completely, and the file list of `paquets`) |
 | **MSRV** | the crate compiles with Rust 1.88, the oldest supported version |
 | **paquets new** | generates a full and a minimal project with the command line tool, and runs their own checks (formatting, Clippy, tests, and the islands' Clippy for wasm32) |
-| **Website** | the website (a Paquets app in `site/`): formatting, Clippy (server and WebAssembly), its tests (including every page of the documentation, in the three languages, with their links), the build of its islands, and the static export for GitHub Pages |
+| **Website** | the website (a Paquets app in `site/`): formatting, Clippy (server and WebAssembly), its tests (including every page of the documentation, in the three languages, with their links), the build of its islands, and its static export |
 
 Any red check stops everything: the branch is not merged.
 
@@ -73,7 +71,7 @@ When every check of a push is green, the **Merge into master** job merges the br
 - if the branch is already in `master`, nothing happens;
 - merges never run at the same time: they wait for each other.
 
-After the merge, the job starts the deployment workflows itself (`gh workflow run heroku.yml`, and `pages.yml` in the Paquets repository). This is needed because GitHub doesn't start workflows for a push made by a workflow.
+After the merge, the job starts the deployment workflows itself (`gh workflow run heroku.yml`). This is needed because GitHub doesn't start workflows for a push made by a workflow.
 
 ### When the merge fails
 
@@ -81,20 +79,11 @@ If `master` has changed in a way that conflicts with your branch, the merge job 
 
 If the push to `master` is refused (`403` or "protected branch"), see [Branch protection](#branch-protection) below.
 
-## GitHub Pages: the website
+## The website
 
-The Paquets website (in `site/`) is a Paquets app: pages rendered on the server with Active, islands in WebAssembly, and a live demo. For GitHub Pages, which only serves files, the **Pages** workflow builds the islands, then exports every page to static files with the site's own server code:
+The Paquets website (in `site/`) is a Paquets app: pages rendered on the server with Active, islands in WebAssembly, a live demo and a REST API. It is served by Heroku only, at <https://paquets-90dfc06b6fea.herokuapp.com>, and deployed by the **Deploy to Heroku** workflow after each automatic merge, like any Paquets app (see [Heroku](deploy-heroku-mobile.md)). GitHub only hosts the code.
 
-```sh
-cd site
-BASE_PATH=/Paquets cargo run --release -- export dist
-```
-
-`BASE_PATH` prefixes every link with the repository's path, because GitHub Pages serves the site at `https://<owner>.github.io/<repository>/`. The workflow uploads `site/dist` and publishes it.
-
-One-time setup, possible from a phone: **Settings** → **Pages** → **Build and deployment** → **Source**: **GitHub Actions**. Until then, the workflow is skipped with a notice instead of failing. To publish right away: **Actions** → **Pages** → **Run workflow**.
-
-The same site, with its live demo and REST API, is what the **Deploy to Heroku** button deploys (see [Heroku](deploy-heroku-mobile.md)).
+The **Website** job of the CI also checks that the site can still be exported to static files with its own server code (`cd site && cargo run --release -- export dist`), the same `export` command your apps can use to publish a static copy anywhere.
 
 ## No Dependabot
 
@@ -118,7 +107,6 @@ If `master` is protected by a rule that requires pull requests or reviews, the b
 | the automatic merge entirely | delete the `merge:` job at the end of `.github/workflows/ci.yml`; the tests keep running |
 | a whole workflow | **Actions** → the workflow → **⋯** → **Disable workflow** (GitHub website) |
 | the Heroku deployments | delete the `HEROKU_API_KEY` secret or the `HEROKU_APP_NAME` variable: the workflow then skips with a notice |
-| the GitHub Pages site | **Settings** → **Pages**, unpublish the site, or disable the **Pages** workflow |
 | the crates.io publication | don't publish releases, or delete the `CARGO_REGISTRY_TOKEN` secret |
 
 Disabled workflows can be turned back on from the same menu.

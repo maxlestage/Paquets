@@ -184,16 +184,12 @@ Heroku no tiene plan gratuito (un dyno Eco cuesta unos 5 $ al mes). Los proyecto
 `paquets new` se despliegan igual, construidos a partir de su `Dockerfile`. Guía paso a paso:
 [docs/es/deploy-heroku-mobile.md](docs/es/deploy-heroku-mobile.md).
 
-El sitio web también se publica gratis en **GitHub Pages**, en
-<https://maxlestage.github.io/Paquets/> ([`pages.yml`](.github/workflows/pages.yml); una sola vez:
-*Settings → Pages → Source: GitHub Actions*).
-
 ## Siempre fusionado en master
 
 Cada push lanza la [CI](.github/workflows/ci.yml): formato, clippy (servidor, navegador y todas las
 features), pruebas, documentación, versión mínima de Rust, los proyectos generados por
 `paquets new` y el sitio web. Cuando todo está en verde, la rama se **fusiona automáticamente con
-`master`** (salvo las ramas llamadas `wip/...`) y después se despliegan el sitio y la aplicación de Heroku.
+`master`** (salvo las ramas llamadas `wip/...`) y después se despliega la aplicación de Heroku, que sirve el sitio web.
 
 ## Publicar en crates.io (desde el móvil)
 
@@ -222,7 +218,7 @@ cd site && cargo run                       # el sitio web, que es una aplicació
 | [`macros/`](macros) | `#[model]` y `#[data]` (`paquets-macros`) |
 | [`examples/`](examples) | `hello` y `todo` (la aplicación desplegada en Heroku) |
 | [`docs/`](docs) | la documentación, en inglés, francés y español |
-| [`site/`](site) | el sitio web: una aplicación Paquets (páginas renderizadas por Active, islas en WebAssembly), exportada a archivos estáticos para GitHub Pages |
+| [`site/`](site) | el sitio web: una aplicación Paquets (páginas renderizadas por Active, islas en WebAssembly), servida por Heroku |
 
 ## Licencia
 
