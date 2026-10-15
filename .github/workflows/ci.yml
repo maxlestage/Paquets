@@ -7,8 +7,8 @@
 # - site: the website (a Paquets app: active pages, WebAssembly islands) and its
 #   documentation, exported to static files;
 # - merge: when everything is green, the branch is merged into master (except
-#   master itself and branches named wip/...), then the website (pages.yml) and
-#   the Heroku app (heroku.yml) are deployed: a push made by a workflow starts no
+#   master itself and branches named wip/...), then the Heroku app (heroku.yml)
+#   is deployed and a new version released: a push made by a workflow starts no
 #   other workflow, so they are started explicitly.
 
 name: CI
@@ -131,7 +131,7 @@ jobs:
           curl -sSfL "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/${version}/wasm-bindgen-${version}-x86_64-unknown-linux-musl.tar.gz" \
             | tar -xz --strip-components=1 -C "$HOME/.cargo/bin"
           wasm-bindgen --target web --no-typescript --out-dir pkg target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
-      # The same command as pages.yml: the static version for GitHub Pages.
+      # The static export of the site, kept working (served by no host).
       - name: Static export
         run: BASE_PATH="/${{ github.event.repository.name }}" cargo run --release -- export dist
 
@@ -169,10 +169,9 @@ jobs:
           git push origin HEAD:master
           echo "::notice title=Auto-merge::$BRANCH merged into master"
       # A push made with GITHUB_TOKEN starts no workflow: deploy and release by hand.
-      - name: Deploy and release master (GitHub Pages, Heroku, a new version)
+      - name: Deploy and release master (Heroku, a new version)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh workflow run pages.yml --ref master --repo "$GITHUB_REPOSITORY"
           gh workflow run heroku.yml --ref master --repo "$GITHUB_REPOSITORY"
           gh workflow run release.yml --ref master --repo "$GITHUB_REPOSITORY" -f release=true
