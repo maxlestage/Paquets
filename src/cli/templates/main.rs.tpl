@@ -86,6 +86,8 @@ fn app() -> App {
     app.get("/", home);
     app.post("/todos", add);
     app.api::<Todo>("/api/todos"); // GET, POST, PUT, PATCH, DELETE
+    app.api_docs("{{title}} API"); // /openapi.json and Swagger UI at /docs
+    app.health("/health"); // for load balancers and uptime monitors
     app.pwa(Pwa::new("{{title}}").theme_color("#6d4aff")); // installable, works offline
     app
 }
@@ -103,6 +105,8 @@ mod tests {
         let client = app().test().await;
         assert_eq!(client.get("/").await.status(), 200);
         assert_eq!(client.get("/manifest.webmanifest").await.status(), 200);
+        assert_eq!(client.get("/health").await.status(), 200);
+        assert_eq!(client.get("/openapi.json").await.status(), 200);
 
         let res = client
             .post("/api/todos")

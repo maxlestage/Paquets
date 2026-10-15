@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Active#01d0a6612cbc1a61fdc71a81e781ac40b49e1f75"
+source = "git+https://github.com/maxlestage/Active#759c0f82edd328904b2e8916e2e9d8a356c64c89"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -30,13 +30,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "aead"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1973cfbc1a2daf9cf550e74e1f088c28e7f7d8c1e1418fb6c9dc5184b7e84c99"
+dependencies = [
+ "crypto-common 0.2.2",
+ "inout 0.2.3",
+]
+
+[[package]]
 name = "aes"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b169f7a6d4742236a0a00c541b845991d0ac43e546831af1249753ab4c3aa3a0"
 dependencies = [
  "cfg-if",
- "cipher",
+ "cipher 0.4.4",
  "cpufeatures 0.2.17",
 ]
 
@@ -46,9 +56,9 @@ version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "831010a0f742e1209b3bcea8fab6a8e149051ba6099432c8cb2cc117dec3ead1"
 dependencies = [
- "aead",
+ "aead 0.5.2",
  "aes",
- "cipher",
+ "cipher 0.4.4",
  "ctr",
  "ghash",
  "subtle",
@@ -354,8 +364,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65c35e4b699c7e15ccbe7ee35c005e4fc0a278d22238a2857e6ce2dadeda1b06"
 dependencies = [
  "cfg-if",
+ "cipher 0.5.2",
  "cpufeatures 0.3.1",
  "rand_core 0.10.1",
+]
+
+[[package]]
+name = "chacha20poly1305"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b89e1c441e926b9c82a8d023f6e1b7ae0adcfaa7d621814e4d60789bac751cb"
+dependencies = [
+ "aead 0.6.1",
+ "chacha20",
+ "cipher 0.5.2",
+ "poly1305",
 ]
 
 [[package]]
@@ -376,7 +399,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773f3b9af64447d2ce9850330c473515014aa235e6a783b02db81ff39e4a3dad"
 dependencies = [
  "crypto-common 0.1.7",
- "inout",
+ "inout 0.1.4",
+]
+
+[[package]]
+name = "cipher"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8cf2a2c93cd704877c0858356ed03480ff301ee950b43f1cbe4573b088bfa6c"
+dependencies = [
+ "block-buffer 0.12.1",
+ "crypto-common 0.2.2",
+ "inout 0.2.3",
 ]
 
 [[package]]
@@ -570,7 +604,7 @@ version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0369ee1ad671834580515889b80f2ea915f23b8be8d0daa4bbaf2ac5c7590835"
 dependencies = [
- "cipher",
+ "cipher 0.4.4",
 ]
 
 [[package]]
@@ -1445,6 +1479,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "inout"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d8c0d789294fb457b791f7797a04478704788f30b407e5d0b01deaa846572d9f"
+dependencies = [
+ "hybrid-array",
+]
+
+[[package]]
 name = "ipconfig"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1699,7 +1742,7 @@ checksum = "5449c8c750f1a07ea702bbd212bd999fceece9b3d1508b17023b3e174583124b"
 [[package]]
 name = "memoire-orm"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#c506dd132380ef32238f35828c7e51915b2f831a"
+source = "git+https://github.com/maxlestage/Memoire#c5e14d83e796ed5f4b63da35e172ae72592fa55e"
 dependencies = [
  "aes-gcm",
  "argon2 0.5.3",
@@ -1732,7 +1775,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Memoire#c506dd132380ef32238f35828c7e51915b2f831a"
+source = "git+https://github.com/maxlestage/Memoire#c5e14d83e796ed5f4b63da35e172ae72592fa55e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2054,11 +2097,13 @@ name = "paquets"
 version = "0.1.1"
 dependencies = [
  "active",
+ "hmac",
  "memoire-orm",
  "paquets-macros",
  "securite",
  "serde",
  "serde_json",
+ "sha2 0.11.0",
  "tokio",
  "vitesse",
 ]
@@ -2178,6 +2223,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f6b464fbc74e149a392436b17d523f769e057cb6877f6a5c4618bc6f11800548"
 
 [[package]]
+name = "poly1305"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e2d0073b297041425c7c3df6eb4792d598a15323fe63346852b092eca02904c"
+dependencies = [
+ "cpufeatures 0.3.1",
+ "universal-hash 0.6.1",
+]
+
+[[package]]
 name = "polyval"
 version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2186,7 +2241,7 @@ dependencies = [
  "cfg-if",
  "cpufeatures 0.2.17",
  "opaque-debug",
- "universal-hash",
+ "universal-hash 0.5.1",
 ]
 
 [[package]]
@@ -2678,12 +2733,13 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Securite#bed84f0d60f1e25afa1a91ec2e803343e3108c5e"
+source = "git+https://github.com/maxlestage/Securite#78a21046282a02736aac8cbe6fa385451cc93baa"
 dependencies = [
  "aho-corasick",
  "argon2 0.6.0",
  "base64 0.23.1",
  "bytes",
+ "chacha20poly1305",
  "getrandom 0.4.3",
  "hmac",
  "http",
@@ -3444,6 +3500,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "universal-hash"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4987bdc12753382e0bec4a65c50738ffaabc998b9cdd1f952fb5f39b0048a96"
+dependencies = [
+ "crypto-common 0.2.2",
+ "ctutils",
+]
+
+[[package]]
 name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3494,7 +3560,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vitesse"
 version = "0.1.0"
-source = "git+https://github.com/maxlestage/Vitesse#deadcc68fff30a08104ae076805b10e660e9b026"
+source = "git+https://github.com/maxlestage/Vitesse#751667a9ae25e3e8f701d1d73d52960a7081db48"
 dependencies = [
  "brotli",
  "bytes",

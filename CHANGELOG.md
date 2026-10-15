@@ -7,6 +7,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- `Cargo.lock` (and the site's) on the latest commits of Active, Vitesse, Securite and Memoire.
 - On the latest versions of the four packages, all reachable through Paquets:
   Vitesse (request validation with 422 details, OpenAPI 3.1 and Swagger UI,
   lifecycle hooks, `app.param`, route groups and plugins), Securite (Argon2id
@@ -37,6 +38,37 @@ project adheres to [Semantic Versioning](https://semver.org/).
   read from `Cargo.toml`, so it follows every release (it said `v0.1` after 0.1.1).
 
 ### Added
+- Authentication in one line, like Laravel Breeze: `app.auth(Auth::new())` (`paquets::auth`)
+  adds sign-up, login, logout, forgotten passwords and TOTP two-factor codes, with their
+  pages, on Securite's Argon2id `PasswordHasher`, `LoginThrottle`, signed cookies and links
+  (`Signer`) and `Totp`; the `User` model (table `users`), `req.user()` (`AuthExt`, in the
+  prelude), the `login_required` and `admin_required` middlewares, a pluggable mailer for
+  reset links, administrators by e-mail address, key rotation (`Auth::previous_secret`).
+  Two-factor secrets are encrypted at rest (Securite's `Encrypter`, XChaCha20-Poly1305, a key
+  derived from `APP_KEY` with HMAC-SHA256, bound to the user's row; secrets stored in clear are
+  still read and encrypted at the next two-factor login); `Debug` of `User` redacts the
+  password hash and the secret; a missing `APP_KEY` is reported at startup in every build.
+- An admin panel for models, like Django's admin: `app.admin(Admin::new().model::<Todo>())`
+  (`paquets::admin`, `Admin` in the prelude): dashboard, lists with search, sort, boolean
+  filters and pages, forms to create and edit rows typed by column, deletion with a
+  confirmation; secrets hidden; access for administrators, a rule (`allow`) or a Securite
+  `Gate`.
+- API documentation in one line: `app.api_docs("My API")` serves the OpenAPI 3.1 document at
+  `/openapi.json` and Swagger UI at `/docs` (with its own CSP); the routes of `app.api::<M>()`
+  are now documented with the model's JSON Schema.
+- `app.health("/health")` (database check, `503` when down) and `app.metrics("/metrics")`
+  (Prometheus counters and histogram, local or `METRICS_TOKEN`); `paquets new` projects have
+  the health check and the API documentation.
+- `app.migrate(Migrator)` (versioned migrations at startup), `app.seed(…)`, and `app.routes()`
+  with `RouteInfo`.
+- Command line: generators `paquets make:model`, `make:api`, `make:page`, `make:migration`,
+  `make:test`, `make:auth` and `make:admin`, which write idiomatic code and wire it into
+  `src/main.rs`; `paquets routes`, `paquets db:migrate`, `paquets db:seed` (the app answers
+  `PAQUETS_COMMAND` instead of serving); `paquets dev --watch`, which rebuilds and restarts the
+  app at every change while the open pages reload by themselves (Server-Sent Events).
+- CI: the template job also runs every generator on a third project and checks it.
+- Documentation, in English, French and Spanish: Authentication, Admin panel, Generators and
+  Operations pages; the command line page lists the new commands.
 - Releases without a form: once CI is green on `master`, a new `version` in `Cargo.toml`
   is tagged and released on GitHub with its changelog section, then published on crates.io
   when the four packages are there.

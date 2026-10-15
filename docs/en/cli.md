@@ -23,6 +23,11 @@ See [Installation](installation.md) for Rust itself and the optional tools.
 | `paquets new <name>` | creates a complete project: server, pages, a model and its API, an island, tests, `Dockerfile`, Heroku files, GitHub workflows |
 | `paquets new <name> --minimal` | the same, with a single `src/main.rs` and no islands |
 | `paquets dev` | builds the islands (debug), then runs the app with `cargo run` |
+| `paquets dev --watch` | the same, then rebuilds and restarts at every change; open pages reload by themselves |
+| `paquets routes` | lists the routes of the app (method, path, description) |
+| `paquets db:migrate` | runs the pending migrations (`app.migrate`) |
+| `paquets db:seed` | fills the database (`app.seed`) |
+| `paquets make:*` | generators: `make:model`, `make:api`, `make:page`, `make:migration`, `make:test`, `make:auth`, `make:admin` (see [Generators](generators.md)) |
 | `paquets build` | release build: the islands in `pkg/`, then the server with `cargo build --release` |
 | `paquets doctor` | checks Cargo, the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` and its version, Git and Docker |
 | `paquets help` | the list of commands |
@@ -99,7 +104,7 @@ If the islands can't be built, it prints a warning and runs the app anyway: page
 
 Arguments after `--` go to your program: `paquets dev -- --some-flag`. Environment variables work as usual: `DATABASE_URL=sqlite://app.db paquets dev`.
 
-`paquets dev` doesn't watch your files: after a change, stop the server (`Ctrl+C`) and run it again. To restart automatically on every change, use a file watcher such as [cargo-watch](https://crates.io/crates/cargo-watch): `cargo watch -s "paquets dev"`.
+`paquets dev` doesn't watch your files: after a change, stop the server (`Ctrl+C`) and run it again. `paquets dev --watch` does it for you: it rebuilds and restarts the app at every change of `src/`, `public/` or `Cargo.toml`, and the pages opened in the browser reload by themselves (see [Operations](operations.md#live-reload)).
 
 ## paquets build
 
@@ -157,6 +162,12 @@ Run inside a project, it also compares the installed `wasm-bindgen` with the ver
   ✗ wasm-bindgen 0.2.100, Cargo.lock wants 0.2.129
       → cargo install wasm-bindgen-cli --version 0.2.129 --locked
 ```
+
+## Generators and app commands
+
+`paquets make:model`, `make:api`, `make:page`, `make:migration`, `make:test`, `make:auth` and `make:admin` write code and wire it into `src/main.rs`: see [Generators](generators.md).
+
+`paquets routes`, `paquets db:migrate` and `paquets db:seed` run your app (`cargo run`) with the `PAQUETS_COMMAND` environment variable: instead of serving, it prints its routes, runs its migrations or its seeds, then stops. See [Operations](operations.md).
 
 ## Without the command line tool
 

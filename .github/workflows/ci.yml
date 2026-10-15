@@ -2,8 +2,8 @@
 #
 # - rust: format, clippy (server, browser, every feature), tests, docs, the
 #   crates.io packages;
-# - template: `paquets new` (full and minimal), and the generated projects pass
-#   their own checks;
+# - template: `paquets new` (full and minimal) and the `make:*` generators, and the
+#   generated projects pass their own checks;
 # - site: the website (a Paquets app: active pages, WebAssembly islands) and its
 #   documentation, exported to static files;
 # - merge: when everything is green, the branch is merged into master (except
@@ -88,11 +88,22 @@ jobs:
           cd "$RUNNER_TEMP/apps"
           "$GITHUB_WORKSPACE/target/debug/paquets" new demo --path "$GITHUB_WORKSPACE"
           "$GITHUB_WORKSPACE/target/debug/paquets" new mini --minimal --path "$GITHUB_WORKSPACE"
+          # The generators, on a third project: the code they write passes the checks too.
+          "$GITHUB_WORKSPACE/target/debug/paquets" new made --path "$GITHUB_WORKSPACE"
+          cd made
+          paquets="$GITHUB_WORKSPACE/target/debug/paquets"
+          "$paquets" make:api Post title:string body:text published:bool "views:i64?" --admin
+          "$paquets" make:model Category name:string:unique
+          "$paquets" make:admin Category
+          "$paquets" make:page about
+          "$paquets" make:migration create_tags
+          "$paquets" make:test checkout
+          "$paquets" make:auth
       - name: Check the projects
         env:
           CARGO_TARGET_DIR: ${{ github.workspace }}/target/apps
         run: |
-          for app in demo mini; do
+          for app in demo mini made; do
             echo "::group::$app"
             cd "$RUNNER_TEMP/apps/$app"
             cargo fmt --check
@@ -102,6 +113,10 @@ jobs:
           done
           cd "$RUNNER_TEMP/apps/demo"
           cargo clippy --lib --target wasm32-unknown-unknown -- -D warnings
+          # `paquets routes` and `paquets db:migrate` run the app with PAQUETS_COMMAND.
+          cd "$RUNNER_TEMP/apps/made"
+          PAQUETS_COMMAND=routes cargo run --quiet
+          PAQUETS_COMMAND=migrate cargo run --quiet
 
   site:
     name: Website (active, WebAssembly, static export)

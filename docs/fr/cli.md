@@ -23,6 +23,11 @@ Voir [Installation](installation.md) pour Rust lui-même et les outils facultati
 | `paquets new <nom>` | crée un projet complet : serveur, pages, un modèle et son API, un îlot, des tests, `Dockerfile`, fichiers Heroku, workflows GitHub |
 | `paquets new <nom> --minimal` | la même chose, avec un seul `src/main.rs` et sans îlots |
 | `paquets dev` | compile les îlots (debug), puis lance l'application avec `cargo run` |
+| `paquets dev --watch` | la même chose, puis recompile et relance à chaque changement ; les pages ouvertes se rechargent toutes seules |
+| `paquets routes` | liste les routes de l'application (méthode, chemin, description) |
+| `paquets db:migrate` | exécute les migrations en attente (`app.migrate`) |
+| `paquets db:seed` | remplit la base de données (`app.seed`) |
+| `paquets make:*` | générateurs : `make:model`, `make:api`, `make:page`, `make:migration`, `make:test`, `make:auth`, `make:admin` (voir [Générateurs](generators.md)) |
 | `paquets build` | compilation release : les îlots dans `pkg/`, puis le serveur avec `cargo build --release` |
 | `paquets doctor` | vérifie Cargo, la cible `wasm32-unknown-unknown`, `wasm-bindgen-cli` et sa version, Git et Docker |
 | `paquets help` | la liste des commandes |
@@ -99,7 +104,7 @@ Si les îlots ne peuvent pas être compilés, elle affiche un avertissement et l
 
 Les arguments placés après `--` vont à votre programme : `paquets dev -- --une-option`. Les variables d'environnement fonctionnent comme d'habitude : `DATABASE_URL=sqlite://app.db paquets dev`.
 
-`paquets dev` ne surveille pas vos fichiers : après une modification, arrêtez le serveur (`Ctrl+C`) et relancez-le. Pour redémarrer automatiquement à chaque modification, utilisez un outil de surveillance de fichiers comme [cargo-watch](https://crates.io/crates/cargo-watch) : `cargo watch -s "paquets dev"`.
+`paquets dev` ne surveille pas vos fichiers : après une modification, arrêtez le serveur (`Ctrl+C`) et relancez-le. `paquets dev --watch` le fait pour vous : il recompile et relance l'application à chaque changement de `src/`, `public/` ou `Cargo.toml`, et les pages ouvertes dans le navigateur se rechargent toutes seules (voir [Exploitation](operations.md#rechargement-automatique)).
 
 ## paquets build
 
@@ -157,6 +162,12 @@ Lancée dans un projet, elle compare aussi le `wasm-bindgen` installé à la ver
   ✗ wasm-bindgen 0.2.100, Cargo.lock wants 0.2.129
       → cargo install wasm-bindgen-cli --version 0.2.129 --locked
 ```
+
+## Générateurs et commandes de l'application
+
+`paquets make:model`, `make:api`, `make:page`, `make:migration`, `make:test`, `make:auth` et `make:admin` écrivent du code et le branchent dans `src/main.rs` : voir [Générateurs](generators.md).
+
+`paquets routes`, `paquets db:migrate` et `paquets db:seed` lancent votre application (`cargo run`) avec la variable d'environnement `PAQUETS_COMMAND` : au lieu de servir, elle affiche ses routes, exécute ses migrations ou ses données d'exemple, puis s'arrête. Voir [Exploitation](operations.md).
 
 ## Sans la ligne de commande
 
