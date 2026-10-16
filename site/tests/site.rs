@@ -102,6 +102,11 @@ async fn the_home_page_has_every_section() {
         assert!(html.contains("© 2026"));
         // The signature footer: the author, the license, the ecosystem.
         assert!(html.contains(r#"class="footer__name""#));
+        // The seal: the signature around a circle, closing it exactly, and the initials.
+        assert!(html.contains(r#"class="seal""#));
+        assert!(html.contains(r##"<textPath href="#seal-circle" textLength="490.1""##));
+        assert!(html.contains(r#"<span class="seal__mono">MNL</span>"#));
+        assert!(html.contains(r#"<span class="crafted__rust">Rust</span>"#));
         assert!(html.contains("Maxime Nathan Lestage"));
         assert!(
             html.contains("All rights reserved")
