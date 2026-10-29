@@ -118,10 +118,7 @@ impl Db {
             "memory" => match memory_file(url) {
                 Some(path) => {
                     // `memory://data/app.memoire`: the folder is created like the file.
-                    if let Some(dir) = std::path::Path::new(path).parent() {
-                        std::fs::create_dir_all(dir)
-                            .map_err(|e| memoire_orm::Error::Database(Box::new(e)))?;
-                    }
+                    create_folder(path)?;
                     Ok(Db::Memory(MemoryDb::open(path)?))
                 }
                 None => Ok(Db::memory()),
@@ -135,6 +132,8 @@ impl Db {
                 if path.is_empty() || path == ":memory:" {
                     Ok(Db::Sqlite(SqliteDb::open_in_memory()?))
                 } else {
+                    // `sqlite://data/app.db`: the folder is created like the file.
+                    create_folder(path)?;
                     Ok(Db::Sqlite(SqliteDb::open(path)?))
                 }
             }
@@ -205,6 +204,16 @@ impl Db {
 fn memory_file(url: &str) -> Option<&str> {
     let (_, path) = url.split_once("://")?;
     (!path.is_empty()).then_some(path)
+}
+
+/// Creates the folder of a database file, if it is missing.
+fn create_folder(path: &str) -> Result<()> {
+    match std::path::Path::new(path).parent() {
+        Some(dir) => {
+            std::fs::create_dir_all(dir).map_err(|e| memoire_orm::Error::Database(Box::new(e)))
+        }
+        None => Ok(()),
+    }
 }
 
 impl Default for Db {
@@ -442,6 +451,21 @@ mod tests {
             db.create_table_if_not_exists::<Note>().await.unwrap();
             assert_eq!(Note::get(&db, 1).await.unwrap().text, "kept");
         });
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(feature = "sqlite")]
+    #[test]
+    fn a_sqlite_file_gets_its_folder() {
+        let dir = std::env::temp_dir().join(format!("paquets-sqlite-{}", std::process::id()));
+        let file = dir.join("data").join("app.db");
+        memoire_orm::block_on(async {
+            let db = Db::connect(&format!("sqlite://{}", file.display()))
+                .await
+                .unwrap();
+            assert_eq!(db.kind(), "sqlite");
+        });
+        assert!(file.is_file());
         std::fs::remove_dir_all(dir).unwrap();
     }
 }

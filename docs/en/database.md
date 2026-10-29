@@ -106,7 +106,7 @@ The database is chosen by the `DATABASE_URL` environment variable when the app s
 |---|---|---|
 | *(not set)* or `memory` | in memory, emptied when the server stops | always available |
 | `memory://data/app.memoire` | in memory, kept in a file and read back at startup | always available |
-| `sqlite://app.db`, `app.db`, `sqlite::memory:` | a SQLite file, created if missing | `sqlite` (default) |
+| `sqlite://app.db`, `app.db`, `sqlite::memory:` | a SQLite file, created (with its folder) if missing | `sqlite` (default) |
 | `postgres://user:password@host:5432/name` | PostgreSQL, with TLS when the server offers it | `postgres` (default) |
 | `mysql://…`, `mariadb://…` | MySQL or MariaDB | `mysql` |
 | `redis://…`, `rediss://…` | Redis | `redis` |
@@ -365,6 +365,21 @@ app.on_start(|db| async move {
 ```
 
 If the hook returns an error, the app doesn't start, and the message begins with `startup:`. You can call `on_start` several times: hooks run in order.
+
+A hook can also start background work with `tokio::spawn`, such as a purge every minute: the task keeps running as long as the server, whatever the database.
+
+```rust
+app.on_start(|db| async move {
+    tokio::spawn(async move {
+        let mut minute = tokio::time::interval(std::time::Duration::from_secs(60));
+        loop {
+            minute.tick().await;
+            let _ = Todo::delete_many().filter(Todo::DONE.eq(true)).execute(db).await;
+        }
+    });
+    Ok(())
+});
+```
 
 ## Changing a table later
 

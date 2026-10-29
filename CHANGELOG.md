@@ -6,6 +6,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- With SQLite or the in-memory database, the tasks spawned by `app.on_start` hooks
+  (`tokio::spawn`: a purge every minute, a cache refreshed in the background…) were cancelled
+  as soon as the server started, because the runtime of the startup was dropped: it now keeps
+  running on a thread of its own (`paquets-tasks`), for as long as the server.
+
+### Changed
+- `DATABASE_URL=sqlite://data/app.db` creates the folder of the file when it is missing, like
+  `memory://data/app.memoire`.
+
 ## [0.2.0] - 2026-10-15
 
 ### Changed

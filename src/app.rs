@@ -393,7 +393,9 @@ impl App {
     }
 
     /// Runs `hook` once the database is ready, before the first request: seed data,
-    /// check the configuration…
+    /// check the configuration… The tasks it spawns with `tokio::spawn` (a purge
+    /// every minute, a cache refreshed in the background…) keep running as long as
+    /// the server, whatever the database.
     ///
     /// ```
     /// use paquets::prelude::*;
@@ -534,7 +536,7 @@ impl App {
                 .enable_all()
                 .build()?;
             let (app, port) = startup.block_on(self.prepare(false))?;
-            drop(startup);
+            keep_running(startup)?;
             app.run(port)
         } else {
             tokio::runtime::Builder::new_multi_thread()
@@ -718,6 +720,18 @@ impl App {
     }
 }
 
+/// Keeps the runtime of the startup hooks running, on a thread of its own: the
+/// tasks they spawned (a purge every minute, a cache refreshed in the
+/// background…) live as long as the server. Dropping it would cancel them as
+/// soon as the server started, since the server threads have runtimes of their
+/// own.
+fn keep_running(runtime: tokio::runtime::Runtime) -> io::Result<()> {
+    std::thread::Builder::new()
+        .name("paquets-tasks".into())
+        .spawn(move || runtime.block_on(std::future::pending::<()>()))?;
+    Ok(())
+}
+
 /// The command asked by the `paquets` tool, if any.
 fn command() -> Option<String> {
     std::env::var(crate::ops::COMMAND_VAR)
@@ -791,6 +805,25 @@ impl Middleware for Logs {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_tasks_of_the_startup_hooks_keep_running() {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
+        let (tx, rx) = std::sync::mpsc::channel();
+        // Spawned by a startup hook: it only finishes after the startup.
+        runtime.block_on(async move {
+            tokio::spawn(async move {
+                tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+                tx.send(()).unwrap();
+            });
+        });
+        keep_running(runtime).unwrap();
+        rx.recv_timeout(std::time::Duration::from_secs(5))
+            .expect("the task was cancelled");
+    }
 
     #[test]
     fn finds_the_browser_bundle() {
