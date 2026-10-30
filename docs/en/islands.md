@@ -233,6 +233,7 @@ With the `browser-storage` feature, islands can keep data in the visitor's brows
 
 - **`Store<S>`**, application state in the spirit of Pinia: `Store::new("cart")` returns the same store in every island of the page, saved in `localStorage` at every change, restored on the next visit and kept in step across tabs;
 - **`LocalStorageDb`**, a Memoire database in `localStorage`: models, queries and transactions, as on the server.
+- **`IndexedDbStorage`** keeps either of them in IndexedDB instead of `localStorage` — far more room, writes in the background: `LocalStorageDb::open_with("notes", IndexedDbStorage::open("my-app").await?)`. It is read once when opened; a change made in another tab is seen at the next opening.
 
 The islands of `src/lib.rs` are compiled for both sides (rendered by the server, then hydrated in the browser), so turn the feature on in both dependencies:
 

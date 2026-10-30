@@ -86,7 +86,7 @@
 //! | `compress`, `tower` | | Brotli or gzip responses, tower layers as middlewares |
 //! | `full` | | everything above |
 //! | `client` | | browser side (`wasm32`): hydrate islands, client-side apps |
-//! | `browser-storage` | | `orm::web`: a state store and a database in `localStorage`, for islands |
+//! | `browser-storage` | | `orm::web`: a state store and a database in `localStorage`, for islands; [`IndexedDbStorage`] keeps them in IndexedDB |
 
 #![doc(
     html_logo_url = "https://paquets-90dfc06b6fea.herokuapp.com/assets/logo.svg",
@@ -149,6 +149,11 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub use active;
 /// Database: models, queries, transactions, migrations ([memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/)).
 pub use memoire_orm as orm;
+
+#[cfg(feature = "browser-storage")]
+mod indexeddb;
+#[cfg(feature = "browser-storage")]
+pub use indexeddb::IndexedDbStorage;
 /// Security middlewares ([securite](https://securite-2db4c1994be7.herokuapp.com/)).
 #[cfg(not(target_arch = "wasm32"))]
 pub use securite;

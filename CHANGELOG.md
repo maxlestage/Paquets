@@ -6,6 +6,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `IndexedDbStorage` (feature `browser-storage`): a Memoire `KeyValueStorage` kept in the
+  browser's IndexedDB, so a `Store` or a whole `LocalStorageDb` — models, queries,
+  transactions — can live in IndexedDB instead of `localStorage`: far more room, and writes
+  that do not block the page. Read once when opened, then served from memory; writes reach
+  IndexedDB in the background, in order.
+
 ### Fixed
 - With SQLite or the in-memory database, the tasks spawned by `app.on_start` hooks
   (`tokio::spawn`: a purge every minute, a cache refreshed in the background…) were cancelled
