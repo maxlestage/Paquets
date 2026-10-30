@@ -2096,6 +2096,7 @@ version = "0.2.0"
 dependencies = [
  "active",
  "hmac",
+ "js-sys",
  "memoire-orm",
  "paquets-macros",
  "securite",
@@ -2104,6 +2105,9 @@ dependencies = [
  "sha2 0.11.1",
  "tokio",
  "vitesse",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

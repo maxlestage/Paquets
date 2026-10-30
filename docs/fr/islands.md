@@ -233,6 +233,7 @@ Avec la feature `browser-storage`, les îlots peuvent garder des données dans l
 
 - **`Store<S>`**, un état d'application dans l'esprit de Pinia : `Store::new("cart")` renvoie le même store dans chaque îlot de la page, enregistré dans `localStorage` à chaque changement, restauré à la visite suivante et synchronisé entre les onglets ;
 - **`LocalStorageDb`**, une base Memoire dans `localStorage` : modèles, requêtes et transactions, comme sur le serveur.
+- **`IndexedDbStorage`** range l'un ou l'autre dans IndexedDB plutôt que dans `localStorage` — bien plus de place, et des écritures en arrière-plan : `LocalStorageDb::open_with("notes", IndexedDbStorage::open("mon-app").await?)`. Il est lu une fois, à l'ouverture ; un changement fait dans un autre onglet se voit à l'ouverture suivante.
 
 Les îlots de `src/lib.rs` sont compilés pour les deux côtés (rendus par le serveur, puis hydratés dans le navigateur) : activez donc la feature dans les deux dépendances :
 

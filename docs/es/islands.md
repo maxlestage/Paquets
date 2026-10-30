@@ -233,6 +233,7 @@ Con la feature `browser-storage`, las islas pueden guardar datos en el navegador
 
 - **`Store<S>`**, estado de la aplicación al estilo de Pinia: `Store::new("cart")` devuelve el mismo store en todas las islas de la página, guardado en `localStorage` en cada cambio, restaurado en la siguiente visita y sincronizado entre pestañas;
 - **`LocalStorageDb`**, una base de datos Memoire en `localStorage`: modelos, consultas y transacciones, como en el servidor.
+- **`IndexedDbStorage`** guarda cualquiera de los dos en IndexedDB en lugar de `localStorage`: mucho más espacio y escrituras en segundo plano: `LocalStorageDb::open_with("notas", IndexedDbStorage::open("mi-app").await?)`. Se lee una vez, al abrirlo; un cambio hecho en otra pestaña se ve en la siguiente apertura.
 
 Las islas de `src/lib.rs` se compilan para los dos lados (el servidor las renderiza y luego se hidratan en el navegador), así que activa la feature en las dos dependencias:
 
