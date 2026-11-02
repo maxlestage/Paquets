@@ -165,7 +165,7 @@ pub struct Texts {
     pub features_label: &'static str,
     pub features_title: &'static str,
     pub features_lead: &'static str,
-    pub features: [Item; 8],
+    pub features: [Item; 12],
     // Numbers
     pub numbers_label: &'static str,
     pub numbers_title: &'static str,
@@ -587,8 +587,16 @@ pub const EN: Texts = Texts {
             "WAF, rate limiting, CSRF, security headers and hardened cookies in front of every request, in about 6 µs.",
         ),
         item(
+            "Never twice",
+            "app.middleware(Idempotency::new()): a POST sent again with the same Idempotency-Key gets the first answer instead of running twice. For payments and orders.",
+        ),
+        item(
             "Any database",
             "In memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: set DATABASE_URL and keep the same code.",
+        ),
+        item(
+            "Tables follow your models",
+            "Add a field to a struct: at the next start it is a column, new indexes are created, nothing is dropped. A field existing rows can't fill stops the start with a clear message.",
         ),
         item(
             "SEO-ready pages",
@@ -597,6 +605,14 @@ pub const EN: Texts = Texts {
         item(
             "WebAssembly islands",
             "Add interactivity one component at a time. The bundle only loads on the pages that need it.",
+        ),
+        item(
+            "Query cache",
+            "use_query and use_mutation: data shared by key between islands, revalidated in the background, invalidated by prefix, with optimistic updates. TanStack Query, in Rust.",
+        ),
+        item(
+            "Data in the browser",
+            "A Pinia-like Store, or a whole Memoire database, kept in localStorage or IndexedDB: models, queries and transactions in the browser.",
         ),
         item(
             "Deploy from your phone",
@@ -867,8 +883,16 @@ pub const FR: Texts = Texts {
             "WAF, limitation de débit, CSRF, en-têtes de sécurité et cookies durcis devant chaque requête, en 6 µs environ.",
         ),
         item(
+            "Jamais deux fois",
+            "app.middleware(Idempotency::new()) : un POST renvoyé avec la même Idempotency-Key reçoit la première réponse au lieu de s'exécuter deux fois. Pour les paiements et les commandes.",
+        ),
+        item(
             "Toutes les bases",
             "En mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : changez DATABASE_URL, gardez le même code.",
+        ),
+        item(
+            "Les tables suivent les modèles",
+            "Ajoutez un champ à une struct : au démarrage suivant, c'est une colonne, les nouveaux index sont créés, rien n'est supprimé. Un champ que les lignes existantes ne peuvent pas remplir arrête le démarrage avec un message clair.",
         ),
         item(
             "Pages prêtes pour le SEO",
@@ -877,6 +901,14 @@ pub const FR: Texts = Texts {
         item(
             "Îlots WebAssembly",
             "Ajoutez de l'interactivité composant par composant. Le bundle n'est chargé que par les pages qui en ont besoin.",
+        ),
+        item(
+            "Cache de requêtes",
+            "use_query et use_mutation : des données partagées par clé entre les îlots, revalidées en arrière-plan, invalidées par préfixe, avec mises à jour optimistes. TanStack Query, en Rust.",
+        ),
+        item(
+            "Des données dans le navigateur",
+            "Un Store à la Pinia, ou toute une base Memoire, gardés dans localStorage ou IndexedDB : modèles, requêtes et transactions dans le navigateur.",
         ),
         item(
             "Déployé depuis un téléphone",
@@ -1153,8 +1185,16 @@ pub const ES: Texts = Texts {
             "WAF, limitación de tráfico, CSRF, cabeceras de seguridad y cookies reforzadas delante de cada petición, en unos 6 µs.",
         ),
         item(
+            "Nunca dos veces",
+            "app.middleware(Idempotency::new()): un POST reenviado con la misma Idempotency-Key recibe la primera respuesta en lugar de ejecutarse dos veces. Para pagos y pedidos.",
+        ),
+        item(
             "Cualquier base de datos",
             "En memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis o MongoDB: cambia DATABASE_URL y conserva el mismo código.",
+        ),
+        item(
+            "Las tablas siguen a los modelos",
+            "Añade un campo a un struct: en el siguiente arranque es una columna, se crean los nuevos índices, no se borra nada. Un campo que las filas existentes no pueden rellenar detiene el arranque con un mensaje claro.",
         ),
         item(
             "Páginas listas para el SEO",
@@ -1163,6 +1203,14 @@ pub const ES: Texts = Texts {
         item(
             "Islas WebAssembly",
             "Añade interactividad componente a componente. El bundle solo se carga en las páginas que lo necesitan.",
+        ),
+        item(
+            "Caché de consultas",
+            "use_query y use_mutation: datos compartidos por clave entre islas, revalidados en segundo plano, invalidados por prefijo, con actualizaciones optimistas. TanStack Query, en Rust.",
+        ),
+        item(
+            "Datos en el navegador",
+            "Un Store al estilo de Pinia, o toda una base Memoire, guardados en localStorage o IndexedDB: modelos, consultas y transacciones en el navegador.",
         ),
         item(
             "Despliega desde el móvil",

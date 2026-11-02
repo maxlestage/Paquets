@@ -90,7 +90,7 @@ Run it and you get:
 Paquets is young (version 0.1). Be aware of these limits before you choose it:
 
 - **HTTPS, HTTP/2 and HTTP/3 are options.** On a platform such as Heroku, its router provides HTTPS in front of the app. To serve it from the app itself, turn on the `tls` feature (and `http2`, `http3`): see [Configuration](configuration.md#https-in-the-server).
-- **No automatic schema changes.** Tables are created when they are missing, but adding a field to a model does not change an existing table: write a migration (see [Database](database.md#changing-a-table-later)).
+- **Additive schema changes only.** At startup, new fields become columns and new indexes are created, but nothing is renamed, dropped or retyped: write a migration for that (see [Database](database.md#changing-a-table-later)).
 - **Islands need two extra tools**: the `wasm32-unknown-unknown` target and `wasm-bindgen-cli`. `paquets dev` installs them for you the first time. Pages without islands need nothing.
 - **No built-in user accounts.** The shield protects every request and Vitesse keeps sessions (feature `session`), but storing users and checking their passwords is up to you. See [Security](security.md#accounts-and-sessions).
 - **Not on crates.io yet.** Until the four packages and Paquets are published, projects depend on the GitHub repository. See [Installation](installation.md) and [Publish on crates.io](publish-crates-io.md).

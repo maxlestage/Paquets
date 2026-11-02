@@ -70,7 +70,7 @@ Non : les composants sont de simples fonctions qui construisent une vue. Faites 
 
 ### Un îlot peut-il appeler mon API ?
 
-Oui, avec le `fetch` du navigateur, via les crates `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://active-c1883a966650.herokuapp.com/fr/docs/events/)). Un îlot peut aussi contenir un simple formulaire HTML qui envoie ses données à l'une de vos routes.
+Oui, avec le `fetch` du navigateur, via les crates `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://active-c1883a966650.herokuapp.com/fr/docs/events/)). Enveloppez l'appel dans `use_query` pour partager la réponse entre les îlots et la garder en cache (voir [Îlots](islands.md#charger-des-données--use_query-et-use_mutation)). Un îlot peut aussi contenir un simple formulaire HTML qui envoie ses données à l'une de vos routes.
 
 ### Y a-t-il du rechargement à chaud ?
 
@@ -86,9 +86,9 @@ En mémoire pendant l'apprentissage et dans les tests, SQLite pour un seul serve
 
 Sans `DATABASE_URL`, la base de données est en mémoire et se vide à l'arrêt du serveur. Sur Heroku, les fichiers SQLite sont eux aussi effacés à chaque redémarrage. Utilisez PostgreSQL (l'add-on Heroku Postgres) pour les données qui doivent durer.
 
-### J'ai ajouté un champ à un modèle, et j'obtiens maintenant des erreurs 500.
+### J'ai ajouté un champ à un modèle, et l'application ne démarre plus.
 
-Les tables sont créées quand elles manquent, jamais modifiées : la table existante n'a pas la nouvelle colonne. Ajoutez une migration. Voir [Base de données](database.md#modifier-une-table-plus-tard).
+La colonne est ajoutée au démarrage suivant, mais les lignes déjà dans la table ont besoin d'une valeur : faites du champ une `Option<T>`, ou donnez-lui `#[memoire(default = "...")]`. Le message au démarrage nomme la table et le champ. Renommer ou supprimer une colonne demande une migration. Voir [Base de données](database.md#modifier-une-table-plus-tard).
 
 ### Comment voir le SQL d'une requête ?
 
