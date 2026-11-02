@@ -352,11 +352,13 @@ impl App {
         crate::docs::routes_of(&self.inner)
     }
 
-    /// Creates the table of a model at startup (if it does not exist yet), for models
-    /// used without [`App::api`].
+    /// Brings the table of a model up to date at startup, for models used without
+    /// [`App::api`]: creates it if it does not exist yet, otherwise adds the columns and
+    /// indexes added to the struct since (never drops anything; a new field that existing
+    /// rows could not fill must be an `Option<T>` or have a `default`).
     pub fn model<M: Model>(&mut self) -> &mut Self {
         fn create<M: Model>(db: &'static Db) -> BoxFuture<memoire_orm::Result<()>> {
-            Box::pin(db.create_table_if_not_exists::<M>())
+            Box::pin(async move { db.push::<M>().await.map(|_| ()) })
         }
         self.tables.push(create::<M>);
         self

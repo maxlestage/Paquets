@@ -1749,7 +1749,7 @@ checksum = "5449c8c750f1a07ea702bbd212bd999fceece9b3d1508b17023b3e174583124b"
 [[package]]
 name = "memoire-orm"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#49751e954f42dd725fc7e35278a6cf143f899094"
+source = "git+https://github.com/maxlestage/Memoire#7f8d2ba5e6b10fd238031cad98240702dbee36bc"
 dependencies = [
  "aes-gcm",
  "argon2 0.5.3",
@@ -1782,7 +1782,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#49751e954f42dd725fc7e35278a6cf143f899094"
+source = "git+https://github.com/maxlestage/Memoire#7f8d2ba5e6b10fd238031cad98240702dbee36bc"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2117,6 +2117,7 @@ dependencies = [
  "js-sys",
  "memoire-orm",
  "paquets-macros",
+ "pratique",
  "securite",
  "serde",
  "serde_json",
@@ -2325,6 +2326,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85eae3c4ed2f50dcfe72643da4befc30deadb458a9b590d720cde2f2b1e97da9"
 dependencies = [
  "zerocopy",
+]
+
+[[package]]
+name = "pratique"
+version = "0.2.0"
+source = "git+https://github.com/maxlestage/Securite#829ddb519072bd54867a8a8aca72bd2ddc619e35"
+dependencies = [
+ "vitesse",
 ]
 
 [[package]]
@@ -2753,7 +2762,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#bb363547c794b1bb9d517af99aaf5aa997f4b946"
+source = "git+https://github.com/maxlestage/Securite#829ddb519072bd54867a8a8aca72bd2ddc619e35"
 dependencies = [
  "aho-corasick",
  "argon2 0.6.0",

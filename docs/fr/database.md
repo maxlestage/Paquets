@@ -162,7 +162,7 @@ app.api::<Todo>("/api/todos"); // table + routes REST
 app.model::<User>();            // table seulement
 ```
 
-Une table existante n'est jamais modifiée : quand vous ajoutez plus tard un champ à un modèle, voir [Modifier une table plus tard](#modifier-une-table-plus-tard).
+Quand vous ajoutez plus tard un champ à un modèle, la colonne est ajoutée au démarrage suivant (comme `drizzle-kit push`), de même que les nouveaux index `#[memoire(index)]` et `unique`. Faites du nouveau champ une `Option<T>`, ou donnez-lui `#[memoire(default = "...")]` : les lignes existantes ont besoin d'une valeur, sinon l'application refuse de démarrer, avant tout changement. Rien n'est jamais supprimé, renommé ni retypé : pour cela, voir [Modifier une table plus tard](#modifier-une-table-plus-tard).
 
 ## Lire des données
 

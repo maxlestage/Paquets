@@ -140,7 +140,7 @@ impl Admin {
         }
         fn create<M: Model>(db: &'static Db) -> BoxFuture<memoire_orm::Result<()>> {
             use memoire_orm::Executor as _;
-            Box::pin(db.create_table_if_not_exists::<M>())
+            Box::pin(async move { db.push::<M>().await.map(|_| ()) })
         }
         self.entries.push(Entry {
             table: M::SCHEMA.name,

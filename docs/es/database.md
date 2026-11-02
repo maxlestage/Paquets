@@ -162,7 +162,7 @@ app.api::<Todo>("/api/todos"); // tabla + rutas REST
 app.model::<User>();            // solo la tabla
 ```
 
-Una tabla existente nunca se modifica: cuando más adelante añadas un campo a un modelo, consulta [Modificar una tabla más adelante](#modificar-una-tabla-más-adelante).
+Cuando más adelante añadas un campo a un modelo, la columna se añade en el siguiente arranque (como `drizzle-kit push`), igual que los nuevos índices `#[memoire(index)]` y `unique`. Haz del nuevo campo un `Option<T>`, o dale `#[memoire(default = "...")]`: las filas existentes necesitan un valor, y si no la aplicación se niega a arrancar, antes de cambiar nada. Nunca se borra, renombra ni cambia de tipo nada: para eso, consulta [Modificar una tabla más adelante](#modificar-una-tabla-más-adelante).
 
 ## Leer datos
 
