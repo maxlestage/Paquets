@@ -70,7 +70,7 @@ No: los componentes son funciones normales que construyen una vista. Haz primero
 
 ### ¿Una isla puede llamar a mi API?
 
-Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://active-c1883a966650.herokuapp.com/es/docs/events/)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
+Sí, con el `fetch` del navegador a través de los crates `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://active-c1883a966650.herokuapp.com/es/docs/events/)). Envuelve la llamada en `use_query` para compartir la respuesta entre islas y guardarla en caché (consulta [Islas](islands.md#cargar-datos-use_query-y-use_mutation)). Una isla también puede contener un formulario HTML normal que envíe los datos a una de tus rutas.
 
 ### ¿Hay recarga en caliente (hot reload)?
 
@@ -86,9 +86,9 @@ En memoria mientras aprendes y en las pruebas, SQLite para un solo servidor con 
 
 Sin `DATABASE_URL`, la base de datos está en memoria y se vacía cuando el servidor se detiene. En Heroku, los archivos SQLite también se borran en cada reinicio. Usa PostgreSQL (el add-on Heroku Postgres) para los datos que deben durar.
 
-### He añadido un campo a un modelo y ahora recibo errores 500.
+### He añadido un campo a un modelo y ahora la aplicación no arranca.
 
-Las tablas se crean cuando no existen, pero nunca se modifican: la tabla existente no tiene la nueva columna. Añade una migración. Consulta [Base de datos](database.md#modificar-una-tabla-más-adelante).
+La columna se añade en el siguiente arranque, pero las filas que ya están en la tabla necesitan un valor: haz del campo un `Option<T>`, o dale `#[memoire(default = "...")]`. El mensaje al arrancar nombra la tabla y el campo. Renombrar o borrar una columna requiere una migración. Consulta [Base de datos](database.md#modificar-una-tabla-más-adelante).
 
 ### ¿Cómo veo el SQL de una consulta?
 

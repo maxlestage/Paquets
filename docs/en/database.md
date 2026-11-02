@@ -154,7 +154,7 @@ Like SQLite, it needs a disk that persists: not on Heroku. See [Memoire's in-mem
 
 ## Tables are created at startup
 
-When the app starts, it creates the table of every model registered with `app.api::<M>(...)` (see [REST API](rest-api.md)) or `app.model::<M>()`, **if the table doesn't exist yet**. Use `app.model` for models you only use in your own handlers:
+When the app starts, it creates the table of every model registered with `app.api::<M>(...)` (see [REST API](rest-api.md)) or `app.model::<M>()`, if it doesn't exist yet. Use `app.model` for models you only use in your own handlers:
 
 ```rust
 let mut app = App::new();
@@ -162,7 +162,7 @@ app.api::<Todo>("/api/todos"); // table + REST routes
 app.model::<User>();            // table only
 ```
 
-An existing table is never changed: when you add a field to a model later, see [Changing a table later](#changing-a-table-later).
+When you add a field to a model later, the column is added at the next start (like `drizzle-kit push`), and so are new `#[memoire(index)]` and `unique` indexes. Make the new field an `Option<T>`, or give it `#[memoire(default = "...")]`: existing rows need a value, and the app refuses to start otherwise, before changing anything. Nothing is ever dropped, renamed or retyped: for that, see [Changing a table later](#changing-a-table-later).
 
 ## Reading data
 
@@ -383,18 +383,18 @@ app.on_start(|db| async move {
 
 ## Changing a table later
 
-Tables are created when they are missing, but **never altered**. If you add a field to a model whose table already exists (in a SQLite file or on Heroku Postgres), the column is missing, and queries on that model fail with a `500`. With the in-memory database (development, tests) there is nothing to do: the table is recreated at every start.
+At every start, each table is brought up to date with its struct (see [Tables are created at startup](#tables-are-created-at-startup)): a new field becomes a column, new indexes are created, and **nothing else changes**. A new field that existing rows can't fill (neither an `Option<T>` nor with a `default`) stops the start with a clear message, before any change. With the in-memory database (development, tests) the table is recreated at every start anyway.
 
-For an existing database, use a **migration**: a numbered change, recorded in the database so that it runs only once. Memoire's `Migrator` does this, and `on_start` is the place to run it. This example adds a `priority` column to the `todo` table on PostgreSQL:
+Everything else is a **migration**: filling a new column from existing data, renaming, dropping or retyping a column. A migration is a numbered change, recorded in the database so that it runs only once. Memoire's `Migrator` does this, and `on_start` is the place to run it: it runs after the tables are up to date. Once `priority: i32` with `#[memoire(default = "0")]` has been added to the struct, this example gives the todos not done yet a priority of 1 on PostgreSQL:
 
 ```rust
 use paquets::orm::{Dialect, Migration, Migrator};
 
 app.on_start(|db| async move {
     Migrator::new()
-        .add(Migration::new(1, "add_todo_priority").sql_for(
+        .add(Migration::new(1, "todo_priority_backfill").sql_for(
             Dialect::Postgres,
-            "ALTER TABLE todo ADD COLUMN IF NOT EXISTS priority INTEGER NOT NULL DEFAULT 0",
+            "UPDATE todo SET priority = 1 WHERE done = false",
         ))
         .run(db)
         .await?;
@@ -402,15 +402,14 @@ app.on_start(|db| async move {
 });
 ```
 
-Then add `priority: i32` to the struct. How it works, and the rules to follow:
+How it works, and the rules to follow:
 
 - `sql_for(Dialect::Postgres, ...)` runs only on PostgreSQL; it is skipped on the in-memory database, so your tests keep working. There are also `Dialect::Sqlite` and `Dialect::MySql`, and `.sql(...)` for every SQL database.
-- `IF NOT EXISTS` makes the change safe on a brand-new database too: there, the table was just created from the current struct and already has the column.
 - Never change a migration that already ran somewhere: add a new one with the next number.
 - Don't `create_table::<M>()` in these migrations for a model registered with `app.api` or `app.model`: its table was already created before `on_start` runs, and the migration would fail with "table already exists".
 
 > [!NOTE]
-> SQLite and MySQL don't support `ADD COLUMN IF NOT EXISTS`. For them, run the migrations yourself **before** the app creates its tables: open the database with `Db::connect(&url).await?`, run the `Migrator` (with `create_table` steps built from frozen copies of your structs), then hand the database to the app with `app.database(db)` and start it with `app.serve().await` inside `#[tokio::main]`. Memoire's [migrations guide](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/migrations/) explains frozen structs in detail.
+> To rename a field, run the migration **before** the app brings its tables up to date, or the new name is added as a new, empty column next to the old one: open the database with `Db::connect(&url).await?`, run the `Migrator`, then hand the database to the app with `app.database(db)` and start it with `app.serve().await` inside `#[tokio::main]`. Memoire's [migrations guide](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/migrations/) explains migrations in detail.
 
 ## Raw SQL
 

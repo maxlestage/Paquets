@@ -154,6 +154,11 @@ pub use memoire_orm as orm;
 mod indexeddb;
 #[cfg(feature = "browser-storage")]
 pub use indexeddb::IndexedDbStorage;
+/// Everyday middlewares ([pratique](https://securite-2db4c1994be7.herokuapp.com/)): `Idempotency`
+/// (a `POST` sent again gets the first answer again), response cache, access logs, metrics,
+/// health checks, maintenance mode…
+#[cfg(not(target_arch = "wasm32"))]
+pub use pratique;
 /// Security middlewares ([securite](https://securite-2db4c1994be7.herokuapp.com/)).
 #[cfg(not(target_arch = "wasm32"))]
 pub use securite;
@@ -186,7 +191,8 @@ pub mod prelude {
     pub use active::html::{self, *};
     pub use active::{
         Element, Event, Node, Seo, State, effect, el, fragment, fragment_dyn, indexed, island,
-        keyed, memo, on_cleanup, switch, text, text_dyn, untrack, use_state,
+        keyed, memo, on_cleanup, switch, text, text_dyn, untrack, use_mutation, use_query,
+        use_state,
     };
     pub use memoire_orm::{Database, Executor, LoadRelated, Model, Transaction};
     pub use serde_json::json;
@@ -204,6 +210,8 @@ pub mod prelude {
     pub use crate::{App, Db, Error, Page, Pwa, RequestExt, Result};
     #[cfg(not(target_arch = "wasm32"))]
     pub use memoire_orm::{Migration, Migrator};
+    #[cfg(not(target_arch = "wasm32"))]
+    pub use pratique::idempotency::Idempotency;
     #[cfg(not(target_arch = "wasm32"))]
     pub use vitesse::{
         Cookie, HandlerExt, Html, IntoResponse, Json, Method, Next, Redirect, Request, Response,

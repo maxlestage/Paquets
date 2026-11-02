@@ -616,7 +616,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#49751e954f42dd725fc7e35278a6cf143f899094"
+source = "git+https://github.com/maxlestage/Memoire#30c0284ea054b98c57878715ed09ebc35570f5cb"
 dependencies = [
  "async-lock",
  "bytes",
@@ -637,7 +637,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#49751e954f42dd725fc7e35278a6cf143f899094"
+source = "git+https://github.com/maxlestage/Memoire#30c0284ea054b98c57878715ed09ebc35570f5cb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -696,6 +696,7 @@ dependencies = [
  "hmac",
  "memoire-orm",
  "paquets-macros",
+ "pratique",
  "securite",
  "serde",
  "serde_json",
@@ -848,6 +849,14 @@ dependencies = [
  "bytes",
  "fallible-iterator 0.2.0",
  "postgres-protocol",
+]
+
+[[package]]
+name = "pratique"
+version = "0.2.0"
+source = "git+https://github.com/maxlestage/Securite#829ddb519072bd54867a8a8aca72bd2ddc619e35"
+dependencies = [
+ "vitesse",
 ]
 
 [[package]]
@@ -1018,7 +1027,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#bb363547c794b1bb9d517af99aaf5aa997f4b946"
+source = "git+https://github.com/maxlestage/Securite#829ddb519072bd54867a8a8aca72bd2ddc619e35"
 dependencies = [
  "aho-corasick",
  "argon2",

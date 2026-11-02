@@ -42,6 +42,7 @@ Estos benchmarks miden cada paquete por separado, con handlers triviales. En una
 
 - Con la base de datos en memoria o SQLite, `app.run()` arranca **un hilo por núcleo de CPU**, cada uno con su propio bucle de eventos y su propio socket de escucha. El kernel reparte las conexiones entre los hilos, y una petición nunca cambia de hilo. Es el modo más rápido de Vitesse.
 - Con un servidor de base de datos (PostgreSQL…), la aplicación funciona sobre el runtime multihilo de tokio, compartido con las conexiones a la base de datos, y los hilos libres toman trabajo de los ocupados.
+- La memoria se reserva con **mimalloc**, el asignador por defecto de Vitesse, más rápido que el del sistema: hasta un 10 % más de peticiones por segundo en las rutas que construyen JSON; las rutas que apenas reservan memoria no cambian.
 
 En los dos modos, un handler que bloquea su hilo (un cálculo largo, una lectura de archivo bloqueante, `std::thread::sleep`) retrasa todas las demás peticiones de ese hilo. Mantén los handlers asíncronos y saca los cálculos pesados del bucle de eventos:
 
