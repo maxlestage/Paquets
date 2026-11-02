@@ -42,6 +42,7 @@ Ces benchmarks mesurent chaque paquet seul, sur des handlers triviaux. Dans une 
 
 - Avec la base de données en mémoire ou SQLite, `app.run()` démarre **un thread par cœur de processeur**, chacun avec sa propre boucle d'événements et sa propre socket d'écoute. Le noyau répartit les connexions entre les threads, et une requête ne change jamais de thread. C'est le mode le plus rapide de Vitesse.
 - Avec un serveur de base de données (PostgreSQL…), l'application tourne sur le runtime multithread de tokio, partagé avec les connexions à la base, et les threads inactifs prennent du travail aux threads occupés.
+- La mémoire est allouée avec **mimalloc**, l'allocateur par défaut de Vitesse, plus rapide que celui du système : jusqu'à 10 % de requêtes par seconde en plus sur les routes qui construisent du JSON ; les routes qui allouent peu ne changent pas.
 
 Dans les deux modes, un handler qui bloque son thread (un long calcul, une lecture de fichier bloquante, `std::thread::sleep`) retarde toutes les autres requêtes de ce thread. Gardez des handlers asynchrones, et sortez les calculs lourds de la boucle d'événements :
 

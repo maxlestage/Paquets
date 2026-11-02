@@ -90,7 +90,7 @@ Ejecútalo y obtendrás:
 Paquets es joven (versión 0.1). Ten en cuenta estos límites antes de elegirlo:
 
 - **HTTPS, HTTP/2 y HTTP/3 son opciones.** En una plataforma como Heroku, su router aporta HTTPS delante de la aplicación. Para servirlo desde la propia aplicación, activa la feature `tls` (y `http2`, `http3`): consulta [Configuración](configuration.md#https-en-el-servidor).
-- **Sin cambios automáticos del esquema.** Las tablas se crean cuando no existen, pero añadir un campo a un modelo no modifica una tabla existente: escribe una migración (consulta [Base de datos](database.md#modificar-una-tabla-más-adelante)).
+- **Solo cambios de esquema por adición.** Al arrancar, los campos nuevos se convierten en columnas y se crean los nuevos índices, pero nada se renombra, borra ni cambia de tipo: escribe una migración para eso (consulta [Base de datos](database.md#modificar-una-tabla-más-adelante)).
 - **Las islas necesitan dos herramientas más**: el target `wasm32-unknown-unknown` y `wasm-bindgen-cli`. `paquets dev` las instala por ti la primera vez. Las páginas sin islas no necesitan nada.
 - **Sin cuentas de usuario integradas.** El escudo protege cada petición y Vitesse mantiene las sesiones (feature `session`), pero guardar los usuarios y comprobar sus contraseñas queda en tus manos. Consulta [Seguridad](security.md#cuentas-y-sesiones).
 - **Todavía no está en crates.io.** Hasta que se publiquen los cuatro paquetes y Paquets, los proyectos dependen del repositorio de GitHub. Consulta [Instalación](installation.md) y [Publicar en crates.io](publish-crates-io.md).

@@ -270,7 +270,7 @@ Todos los códigos se enumeran en https://devcenter.heroku.com/articles/error-co
 - **Todos los visitantes reciben `429 Too Many Requests`**: el escudo cuenta las peticiones por dirección IP. El escudo por defecto lee la dirección real detrás del router de Heroku; si lo reemplazaste con `app.security(...)`, constrúyelo a partir de `paquets::shield()`, que conserva ese ajuste (consulta [Seguridad](security.md#la-ip-del-cliente-detrás-de-un-proxy)).
 - **La primera visita es lenta**: un dyno Eco estaba suspendido.
 - **Mis datos han desaparecido**: la aplicación no tiene ningún add-on de base de datos (datos en memoria), o usa SQLite. Añade Heroku Postgres (sección 2).
-- **Un campo nuevo de un modelo provoca errores `500`**: la tabla existente no se modificó. Consulta [Base de datos](database.md#modificar-una-tabla-más-adelante).
+- **La aplicación no arranca después de añadir un campo a un modelo**: las filas existentes necesitan un valor. Hazlo un `Option<T>` o dale un `default`. Consulta [Base de datos](database.md#modificar-una-tabla-más-adelante).
 - **Las conexiones WebSocket se cierran al cabo de un minuto**: Heroku cierra las conexiones que permanecen en silencio unos 55 segundos. Envía un ping con regularidad (consulta [WebSocket](websocket.md#en-producción)).
 - **HTTP/3 no funciona**: el router de Heroku no reenvía UDP. Deja desactivada la feature `http3` en Heroku.
 

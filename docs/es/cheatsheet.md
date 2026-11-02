@@ -48,6 +48,7 @@ Consulta [Configuración](configuration.md).
 | Comodín | `/files/*path` → `req.param("path")` |
 | Router | `let mut api = Router::new(); api.get(...); app.mount("/api", api);` |
 | Middleware global | `app.middleware(\|req: Request, next: Next\| async move { next.run(req).await });` |
+| Un `POST` reenviado recibe la primera respuesta | `app.middleware(Idempotency::new());` (cabecera `Idempotency-Key`) |
 | Middleware en una ruta | `app.get("/admin", handler.with(auth));` |
 | Middleware en un router | `router.middleware(auth);` |
 | 404 personalizada | `app.fallback(\|_\| async { Page::new("Página no encontrada").status(404) });` |
@@ -120,6 +121,7 @@ Clases del tema: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted
 | Admite nulos | `bio: Option<String>` |
 | Opcional en JSON | `#[serde(default)] done: bool` |
 | Crear solo la tabla | `app.model::<Todo>();` |
+| Campo nuevo en una tabla con filas | `Option<T>` o `#[memoire(default = "0")]`: la columna se añade en el siguiente arranque |
 
 ## Consultas
 
@@ -217,6 +219,7 @@ Consulta [Seguridad](security.md).
 | Estado derivado | `let total = memo(move \|\| items.with(\|v\| v.len()));`, `untrack(\|\| …)`, `on_cleanup(\|\| …)` |
 | Eventos | `.on_click(\|e\| …)`, `.on_input(\|e\| …)`, `.on("keydown", \|e\| …)`; `e.value()`, `e.key()` |
 | Dinámico | `.text_dyn(\|\| …)`, `.attr_dyn(name, \|\| …)`, `.class_if(class, \|\| …)`, `.bool_attr(name, \|\| …)` |
+| Datos compartidos, en caché | `let todos = use_query(\|\| "todos".into(), load);`, `use_mutation(send).invalidates("todos")` |
 | Registrar | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |
 | Colocar | `island("counter", "0", counter)` |
 | Compilar | `paquets dev`, `paquets build` → `pkg/` |

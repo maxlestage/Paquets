@@ -68,15 +68,10 @@ app.security(paquets::shield().guard(RateLimit::per_minute(600)).build());
 
 `paquets::securite::prelude::*` brings every guard (`RateLimit`, `Waf`, `Csrf`, `Cors`, `Auth`, `IpFilter`, `HostFilter`, `SecurityHeaders`…), `Shield`, `ShieldBuilder`, `ClientIpSource`, `ErrorFormat`, `ClientIp` and `Principal`. `paquets::securite::headers::ContentSecurityPolicy` builds policies. See [Security](security.md).
 
-**Its sibling, Pratique.** Securite's repository also holds `pratique`, everyday Vitesse middlewares that have nothing to do with security: `ETag` and `304`, `Cache-Control`, a response cache, access logs, Prometheus metrics, health checks, maintenance mode, redirects, trailing slashes, the visitor's language. They work with a Paquets app as they are, since `App` is a Vitesse app:
-
-```toml
-[dependencies]
-pratique = { git = "https://github.com/maxlestage/Securite" }
-```
+**Its sibling, Pratique.** Securite's repository also holds `pratique`, everyday Vitesse middlewares that have nothing to do with security: `ETag` and `304`, `Cache-Control`, a response cache, access logs, Prometheus metrics, health checks, maintenance mode, redirects, trailing slashes, the visitor's language. They work with a Paquets app as they are, since `App` is a Vitesse app, and Paquets re-exports the crate as `paquets::pratique` (`Idempotency` is even in the prelude, see [Routing](routing.md#a-request-sent-twice-idempotency)):
 
 ```rust
-use pratique::prelude::*;
+use paquets::pratique::prelude::*;
 
 app.middleware(Health::new().version(env!("CARGO_PKG_VERSION"))); // GET /health
 app.middleware(ETag::new());

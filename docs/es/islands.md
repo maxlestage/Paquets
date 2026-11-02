@@ -222,10 +222,53 @@ Las props forman parte del HTML: mantenlas pequeñas y nunca pongas secretos en 
 ## Las reglas de las islas
 
 - **Todo viene de las props.** Una isla es una función normal (`fn(&str) -> Node`) que no captura nada. En el navegador no tiene acceso a tu base de datos ni al estado de tu servidor: dale lo que necesite a través de sus props. Una vista que depende de algo que solo tiene el servidor (la hora, un número aleatorio, un valor de la base de datos que no se pasa en las props) produce un HTML distinto en el navegador, que el navegador vuelve a dibujar, con un aviso en su consola: `active: re-rendering island (tag mismatch)`.
-- **Las islas son independientes.** Cada isla tiene sus propios estados. Si dos partes de una página deben reaccionar la una a la otra (un filtro y una lista), conviértelas en una sola isla, o comparte un store (consulta [Guardar datos en el navegador](#guardar-datos-en-el-navegador)).
+- **Las islas son independientes.** Cada isla tiene sus propios estados. Si dos partes de una página deben reaccionar la una a la otra (un filtro y una lista), conviértelas en una sola isla, comparte una consulta (consulta [Cargar datos](#cargar-datos-use_query-y-use_mutation)), o comparte un store (consulta [Guardar datos en el navegador](#guardar-datos-en-el-navegador)).
 - **El mismo marcado en los dos lados.** Usa `#[cfg(target_arch = "wasm32")]` solo para el comportamiento, nunca para cambiar lo que se renderiza.
 - **Los nombres deben coincidir.** Una isla cuyo nombre no está en `start()` se queda estática, sin ningún error.
-- **Datos del servidor.** Para leer o enviar datos después de que la página se haya cargado, llama a tu API con el `fetch` del navegador a través de `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://active-c1883a966650.herokuapp.com/es/docs/events/)), o usa un formulario HTML normal que envíe los datos a una ruta.
+- **Datos del servidor.** Para leer o enviar datos después de que la página se haya cargado, llama a tu API con el `fetch` del navegador a través de `web-sys` y `wasm-bindgen-futures` (consulta la [guía de eventos de Active](https://active-c1883a966650.herokuapp.com/es/docs/events/)), o usa un formulario HTML normal que envíe los datos a una ruta. Envuelve esas llamadas en `use_query` y `use_mutation` para guardar sus datos en caché y compartirlos (ver más abajo).
+
+## Cargar datos: `use_query` y `use_mutation`
+
+`use_query` carga datos bajo una clave y los comparte con todas las islas de la página que piden la misma clave, como TanStack Query o SWR: una petición, un valor, mostrado en todas partes. Los datos que ya están en caché se muestran al instante y se recargan en segundo plano; `use_mutation` envía un cambio y recarga las consultas afectadas. Ambos están en el prelude; tú escribes la petición en sí (`fetch` a través de `web-sys`, o `gloo-net`):
+
+```rust
+use paquets::prelude::*;
+
+async fn load_todos(key: String) -> Result<Vec<String>, String> {
+    // GET /api/{key} con web-sys o gloo-net…
+    Ok(Vec::new())
+}
+
+pub fn todo_count(_props: &str) -> Node {
+    // Todas las islas que piden "todos" comparten los mismos datos y la misma petición.
+    let todos = use_query(|| "todos".to_string(), load_todos);
+    let add = use_mutation(|title: String| async move {
+        // POST /api/todos…
+        Ok::<_, String>(title)
+    })
+    .invalidates("todos"); // cuando termina el cambio, recarga "todos", "todos/7"…
+    div()
+        .child(p().text_dyn(move || match todos.get() {
+            None => "Cargando…".to_string(),
+            Some(Ok(list)) => format!("{} tarea(s)", list.len()),
+            Some(Err(e)) => format!("Error: {e}"),
+        }))
+        .child(button().on_click(move |_| add.mutate("Nueva".into())).text("Añadir"))
+        .into()
+}
+```
+
+| Método | Para |
+|---|---|
+| `query.get()` | leer los datos (`None` hasta que llegan por primera vez); una vista que los lee los sigue |
+| `query.loading()` / `query.fetching()` | mostrar un marcador mientras no hay nada cargado / un indicador discreto durante una recarga en segundo plano |
+| `query.refetch()` | recargar ahora (un botón «Actualizar») |
+| `query.set(value)` | reemplazar los datos al instante allí donde se muestran: una actualización optimista, antes de `mutate` |
+| `mutation.mutate(input)`, `.pending()`, `.result()` | enviar el cambio, desactivar el botón mientras tanto, leer su resultado |
+| `paquets::active::invalidate("todos")` | recargar todas las consultas cuya clave empieza por `todos` |
+| `paquets::active::use_query_with(key, QueryOptions::default().stale_time(d), fetch)` | mantener los datos frescos durante `d` en lugar de recargarlos cada vez que una isla los muestra |
+
+Escribe las claves como rutas (`"todos"`, `"todos/7"`, `"users/7/posts"`): así un prefijo nombra una familia. Consulta la [documentación de `use_query`](https://docs.rs/active/latest/active/fn.use_query.html) de Active.
 
 ## Guardar datos en el navegador
 

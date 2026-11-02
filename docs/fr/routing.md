@@ -186,6 +186,16 @@ app.get("/stats", stats.with(require_admin));
 
 Pour appeler `.with` sur une closure, mettez la closure entre parenthèses : `(|_| async { "ok" }).with(require_admin)`.
 
+### Une requête envoyée deux fois : `Idempotency`
+
+Un téléphone perd le réseau juste après « Payer », et l'application renvoie le même `POST`. Avec `Idempotency` (dans le prélude), une requête qui porte le même en-tête `Idempotency-Key` qu'une précédente n'est pas exécutée à nouveau : elle reçoit la réponse enregistrée de la première, marquée `Idempotent-Replayed: true`. Utilisez-le pour les paiements et les commandes :
+
+```rust
+app.middleware(Idempotency::new()); // POST et PATCH qui portent une Idempotency-Key
+```
+
+Les réponses sont gardées 24 heures en mémoire (`.ttl(...)`, ou `.store(...)` pour les partager entre instances via Redis). La même clé avec une autre requête reçoit `422`, la même clé pendant que la première requête s'exécute encore reçoit `409`, et les erreurs serveur ne sont pas enregistrées : un nouvel essai s'exécute. `Idempotency` vient de [Pratique](packages.md), réexporté sous `paquets::pratique` avec ses autres middlewares du quotidien.
+
 ### L'ordre de toute la chaîne
 
 Pour chaque requête, Paquets exécute ces couches, dans cet ordre :

@@ -383,18 +383,18 @@ app.on_start(|db| async move {
 
 ## Modificar una tabla más adelante
 
-Las tablas se crean cuando no existen, pero **nunca se modifican**. Si añades un campo a un modelo cuya tabla ya existe (en un archivo SQLite o en Heroku Postgres), falta la columna, y las consultas sobre ese modelo fallan con un `500`. Con la base de datos en memoria (desarrollo, pruebas) no hay nada que hacer: la tabla se vuelve a crear en cada arranque.
+En cada arranque, cada tabla se pone al día según su struct (consulta [Las tablas se crean al arrancar](#las-tablas-se-crean-al-arrancar)): un campo nuevo se convierte en una columna, se crean los nuevos índices y **nada más cambia**. Un campo nuevo que las filas existentes no pueden rellenar (ni un `Option<T>` ni con un `default`) detiene el arranque con un mensaje claro, antes de cualquier cambio. Con la base de datos en memoria (desarrollo, pruebas) la tabla se vuelve a crear en cada arranque de todos modos.
 
-Para una base de datos existente, usa una **migración**: un cambio numerado, registrado en la base de datos para que solo se ejecute una vez. El `Migrator` de Memoire se encarga de ello, y `on_start` es el sitio donde ejecutarlo. Este ejemplo añade una columna `priority` a la tabla `todo` en PostgreSQL:
+Todo lo demás es una **migración**: rellenar una columna nueva a partir de los datos existentes, renombrar, borrar o cambiar el tipo de una columna. Una migración es un cambio numerado, registrado en la base de datos para que solo se ejecute una vez. El `Migrator` de Memoire se encarga de ello, y `on_start` es el sitio donde ejecutarlo: se ejecuta cuando las tablas ya están al día. Una vez añadido `priority: i32` al struct con `#[memoire(default = "0")]`, este ejemplo da una prioridad de 1 a las tareas aún no hechas, en PostgreSQL:
 
 ```rust
 use paquets::orm::{Dialect, Migration, Migrator};
 
 app.on_start(|db| async move {
     Migrator::new()
-        .add(Migration::new(1, "add_todo_priority").sql_for(
+        .add(Migration::new(1, "todo_priority_backfill").sql_for(
             Dialect::Postgres,
-            "ALTER TABLE todo ADD COLUMN IF NOT EXISTS priority INTEGER NOT NULL DEFAULT 0",
+            "UPDATE todo SET priority = 1 WHERE done = false",
         ))
         .run(db)
         .await?;
@@ -402,15 +402,14 @@ app.on_start(|db| async move {
 });
 ```
 
-Después añade `priority: i32` al struct. Cómo funciona y qué reglas seguir:
+Cómo funciona y qué reglas seguir:
 
 - `sql_for(Dialect::Postgres, ...)` solo se ejecuta en PostgreSQL; se omite en la base de datos en memoria, así que tus pruebas siguen funcionando. También existen `Dialect::Sqlite` y `Dialect::MySql`, y `.sql(...)` para todas las bases de datos SQL.
-- `IF NOT EXISTS` hace que el cambio también sea seguro en una base de datos completamente nueva: ahí la tabla se acaba de crear a partir del struct actual y ya tiene la columna.
 - Nunca modifiques una migración que ya se haya ejecutado en algún sitio: añade una nueva con el número siguiente.
 - No uses `create_table::<M>()` en estas migraciones para un modelo registrado con `app.api` o `app.model`: su tabla ya se creó antes de que se ejecute `on_start`, y la migración fallaría con «table already exists».
 
 > [!NOTE]
-> SQLite y MySQL no admiten `ADD COLUMN IF NOT EXISTS`. Para ellas, ejecuta tú las migraciones **antes** de que la aplicación cree sus tablas: abre la base de datos con `Db::connect(&url).await?`, ejecuta el `Migrator` (con pasos `create_table` construidos a partir de copias congeladas de tus structs), pásale luego la base de datos a la aplicación con `app.database(db)` y arráncala con `app.serve().await` dentro de `#[tokio::main]`. La [guía de migraciones](https://memoire-7f4525f1fdaf.herokuapp.com/es/docs/migrations/) de Memoire explica en detalle los structs congelados.
+> Para renombrar un campo, ejecuta la migración **antes** de que la aplicación ponga sus tablas al día, o el nuevo nombre se añade como una columna nueva y vacía junto a la antigua: abre la base de datos con `Db::connect(&url).await?`, ejecuta el `Migrator`, pásale luego la base de datos a la aplicación con `app.database(db)` y arráncala con `app.serve().await` dentro de `#[tokio::main]`. La [guía de migraciones](https://memoire-7f4525f1fdaf.herokuapp.com/es/docs/migrations/) de Memoire explica las migraciones en detalle.
 
 ## SQL sin procesar
 

@@ -270,7 +270,7 @@ All the codes are listed at https://devcenter.heroku.com/articles/error-codes.
 - **Every visitor gets `429 Too Many Requests`**: the shield counts requests per IP address. The default shield reads the real address behind Heroku's router; if you replaced it with `app.security(...)`, build it from `paquets::shield()`, which keeps that setting (see [Security](security.md#the-client-ip-behind-a-proxy)).
 - **The first visit is slow**: an Eco dyno was asleep.
 - **My data disappeared**: the app has no database add-on (data in memory), or uses SQLite. Add Heroku Postgres (section 2).
-- **A new field of a model causes `500` errors**: the existing table wasn't changed. See [Database](database.md#changing-a-table-later).
+- **The app doesn't start after adding a field to a model**: existing rows need a value for it. Make it an `Option<T>` or give it a `default`. See [Database](database.md#changing-a-table-later).
 - **WebSocket connections close after a minute**: Heroku closes connections that stay silent for about 55 seconds. Send a ping regularly (see [WebSocket](websocket.md#in-production)).
 - **HTTP/3 doesn't work**: Heroku's router doesn't forward UDP. Leave the `http3` feature off on Heroku.
 
