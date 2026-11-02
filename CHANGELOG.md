@@ -7,6 +7,15 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Tables follow the models: at startup, `app.api` / `app.model` now bring each table up to date
+  with Memoire's `push` (like `drizzle-kit push`): a field added to a struct becomes a column,
+  new indexes are created, nothing is ever dropped. A new field existing rows could not fill
+  (not an `Option`, no `default`) stops the start with a clear message, before any change.
+- `paquets::pratique` and `Idempotency` in the prelude: `app.middleware(Idempotency::new())`
+  makes a `POST` sent again with the same `Idempotency-Key` get the first answer again instead
+  of running twice (payments, orders).
+- `use_query` / `use_mutation` in the prelude: Active's query cache shared by key, with
+  background revalidation, invalidation by prefix and optimistic updates.
 - `IndexedDbStorage` (feature `browser-storage`): a Memoire `KeyValueStorage` kept in the
   browser's IndexedDB, so a `Store` or a whole `LocalStorageDb` — models, queries,
   transactions — can live in IndexedDB instead of `localStorage`: far more room, and writes

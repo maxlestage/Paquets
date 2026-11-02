@@ -154,7 +154,7 @@ Like SQLite, it needs a disk that persists: not on Heroku. See [Memoire's in-mem
 
 ## Tables are created at startup
 
-When the app starts, it creates the table of every model registered with `app.api::<M>(...)` (see [REST API](rest-api.md)) or `app.model::<M>()`, **if the table doesn't exist yet**. Use `app.model` for models you only use in your own handlers:
+When the app starts, it creates the table of every model registered with `app.api::<M>(...)` (see [REST API](rest-api.md)) or `app.model::<M>()`, if it doesn't exist yet. Use `app.model` for models you only use in your own handlers:
 
 ```rust
 let mut app = App::new();
@@ -162,7 +162,7 @@ app.api::<Todo>("/api/todos"); // table + REST routes
 app.model::<User>();            // table only
 ```
 
-An existing table is never changed: when you add a field to a model later, see [Changing a table later](#changing-a-table-later).
+When you add a field to a model later, the column is added at the next start (like `drizzle-kit push`), and so are new `#[memoire(index)]` and `unique` indexes. Make the new field an `Option<T>`, or give it `#[memoire(default = "...")]`: existing rows need a value, and the app refuses to start otherwise, before changing anything. Nothing is ever dropped, renamed or retyped: for that, see [Changing a table later](#changing-a-table-later).
 
 ## Reading data
 
