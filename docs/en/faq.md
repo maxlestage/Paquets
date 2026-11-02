@@ -70,7 +70,7 @@ No: components are plain functions that build a view. Do the asynchronous work (
 
 ### Can an island call my API?
 
-Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [Active's events guide](https://active-c1883a966650.herokuapp.com/en/docs/events/)). An island can also contain a plain HTML form that posts to one of your routes.
+Yes, with the browser's `fetch` through the `web-sys` and `wasm-bindgen-futures` crates (see [Active's events guide](https://active-c1883a966650.herokuapp.com/en/docs/events/)). Wrap the call in `use_query` to share the answer between islands and keep it in a cache (see [Islands](islands.md#loading-data-use_query-and-use_mutation)). An island can also contain a plain HTML form that posts to one of your routes.
 
 ### Is there hot reload?
 
@@ -86,9 +86,9 @@ In memory while you learn and in tests, SQLite for a single server with a persis
 
 Without `DATABASE_URL`, the database is in memory and is emptied when the server stops. On Heroku, SQLite files are erased at every restart too. Use PostgreSQL (the Heroku Postgres add-on) for data that must last.
 
-### I added a field to a model, and now I get 500 errors.
+### I added a field to a model, and now the app won't start.
 
-Tables are created when they are missing, never changed: the existing table doesn't have the new column. Add a migration. See [Database](database.md#changing-a-table-later).
+The column is added at the next start, but the rows already in the table need a value for it: make the field an `Option<T>`, or give it `#[memoire(default = "...")]`. The message at startup names the table and the field. Renaming or dropping a column needs a migration. See [Database](database.md#changing-a-table-later).
 
 ### How do I see the SQL of a query?
 

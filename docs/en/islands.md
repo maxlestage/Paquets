@@ -222,10 +222,53 @@ Props are part of the HTML: keep them small, and never put secrets in them.
 ## The rules of islands
 
 - **Everything comes from the props.** An island is a plain function (`fn(&str) -> Node`) that captures nothing. In the browser it has no access to your database or your server state: give it what it needs through its props. A view that depends on something only the server has (the time, a random number, a database value not passed in the props) produces a different HTML in the browser, which the browser then redraws, with a warning in its console: `active: re-rendering island (tag mismatch)`.
-- **Islands are independent.** Each island has its own states. If two parts of a page must react to each other (a filter and a list), make them one island, or share a store (see [Keeping data in the browser](#keeping-data-in-the-browser)).
+- **Islands are independent.** Each island has its own states. If two parts of a page must react to each other (a filter and a list), make them one island, share a query (see [Loading data](#loading-data-use_query-and-use_mutation)), or share a store (see [Keeping data in the browser](#keeping-data-in-the-browser)).
 - **The same markup on both sides.** Use `#[cfg(target_arch = "wasm32")]` only for behaviour, never to change what is rendered.
 - **Names must match.** An island whose name is not in `start()` simply stays static, without any error.
-- **Data from the server.** To read or send data after the page has loaded, call your API with the browser's `fetch` through `web-sys` and `wasm-bindgen-futures` (see [Active's events guide](https://active-c1883a966650.herokuapp.com/en/docs/events/)), or use a plain HTML form that posts to a route.
+- **Data from the server.** To read or send data after the page has loaded, call your API with the browser's `fetch` through `web-sys` and `wasm-bindgen-futures` (see [Active's events guide](https://active-c1883a966650.herokuapp.com/en/docs/events/)), or use a plain HTML form that posts to a route. Wrap those calls in `use_query` and `use_mutation` to cache and share their data (see below).
+
+## Loading data: `use_query` and `use_mutation`
+
+`use_query` loads data under a key and shares it with every island of the page that asks for the same key, like TanStack Query or SWR: one request, one value, shown everywhere. Data already in the cache is shown at once and reloaded in the background; `use_mutation` sends a change and reloads the queries it affects. Both are in the prelude; you write the request itself (`fetch` through `web-sys`, or `gloo-net`):
+
+```rust
+use paquets::prelude::*;
+
+async fn load_todos(key: String) -> Result<Vec<String>, String> {
+    // GET /api/{key} with web-sys or gloo-net…
+    Ok(Vec::new())
+}
+
+pub fn todo_count(_props: &str) -> Node {
+    // Every island asking for "todos" shares the same data and the same request.
+    let todos = use_query(|| "todos".to_string(), load_todos);
+    let add = use_mutation(|title: String| async move {
+        // POST /api/todos…
+        Ok::<_, String>(title)
+    })
+    .invalidates("todos"); // once the change is done, reloads "todos", "todos/7"…
+    div()
+        .child(p().text_dyn(move || match todos.get() {
+            None => "Loading…".to_string(),
+            Some(Ok(list)) => format!("{} todo(s)", list.len()),
+            Some(Err(e)) => format!("Error: {e}"),
+        }))
+        .child(button().on_click(move |_| add.mutate("New".into())).text("Add"))
+        .into()
+}
+```
+
+| Method | Use it to |
+|---|---|
+| `query.get()` | read the data (`None` until it first arrives); a view that reads it follows it |
+| `query.loading()` / `query.fetching()` | show a placeholder while nothing is loaded yet / a discreet indicator during a background reload |
+| `query.refetch()` | reload now (a "Refresh" button) |
+| `query.set(value)` | replace the data at once everywhere it is shown: an optimistic update, before `mutate` |
+| `mutation.mutate(input)`, `.pending()`, `.result()` | send the change, disable the button while it runs, read its output |
+| `paquets::active::invalidate("todos")` | reload every query whose key starts with `todos` |
+| `paquets::active::use_query_with(key, QueryOptions::default().stale_time(d), fetch)` | keep the data fresh for `d` instead of reloading it each time an island shows it |
+
+Write keys like paths (`"todos"`, `"todos/7"`, `"users/7/posts"`) so that a prefix names a family. See Active's [`use_query` documentation](https://docs.rs/active/latest/active/fn.use_query.html).
 
 ## Keeping data in the browser
 

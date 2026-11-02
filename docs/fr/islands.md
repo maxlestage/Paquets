@@ -222,10 +222,53 @@ Les props font partie du HTML : gardez-les légères, et n'y mettez jamais de se
 ## Les règles des îlots
 
 - **Tout vient des props.** Un îlot est une simple fonction (`fn(&str) -> Node`) qui ne capture rien. Dans le navigateur, il n'a accès ni à votre base de données ni à l'état de votre serveur : donnez-lui ce dont il a besoin par ses props. Une vue qui dépend de quelque chose que seul le serveur possède (l'heure, un nombre aléatoire, une valeur de la base de données qui ne passe pas par les props) produit un HTML différent dans le navigateur, que celui-ci redessine alors, avec un avertissement dans sa console : `active: re-rendering island (tag mismatch)`.
-- **Les îlots sont indépendants.** Chaque îlot a ses propres états. Si deux parties d'une page doivent réagir l'une à l'autre (un filtre et une liste), faites-en un seul îlot, ou partagez un store (voir [Garder des données dans le navigateur](#garder-des-données-dans-le-navigateur)).
+- **Les îlots sont indépendants.** Chaque îlot a ses propres états. Si deux parties d'une page doivent réagir l'une à l'autre (un filtre et une liste), faites-en un seul îlot, partagez une requête (voir [Charger des données](#charger-des-données--use_query-et-use_mutation)), ou partagez un store (voir [Garder des données dans le navigateur](#garder-des-données-dans-le-navigateur)).
 - **Le même balisage des deux côtés.** N'utilisez `#[cfg(target_arch = "wasm32")]` que pour le comportement, jamais pour changer ce qui est rendu.
 - **Les noms doivent correspondre.** Un îlot dont le nom n'est pas dans `start()` reste tout simplement statique, sans la moindre erreur.
-- **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://active-c1883a966650.herokuapp.com/fr/docs/events/)), ou utilisez un simple formulaire HTML qui envoie ses données à une route.
+- **Les données du serveur.** Pour lire ou envoyer des données une fois la page chargée, appelez votre API avec le `fetch` du navigateur via `web-sys` et `wasm-bindgen-futures` (voir [le guide des événements d'active](https://active-c1883a966650.herokuapp.com/fr/docs/events/)), ou utilisez un simple formulaire HTML qui envoie ses données à une route. Enveloppez ces appels dans `use_query` et `use_mutation` pour mettre leurs données en cache et les partager (voir plus bas).
+
+## Charger des données : `use_query` et `use_mutation`
+
+`use_query` charge des données sous une clé et les partage avec tous les îlots de la page qui demandent la même clé, comme TanStack Query ou SWR : une requête, une valeur, affichée partout. Les données déjà en cache s'affichent tout de suite et sont rechargées en arrière-plan ; `use_mutation` envoie une modification et recharge les requêtes qu'elle concerne. Les deux sont dans le prélude ; vous écrivez la requête elle-même (`fetch` via `web-sys`, ou `gloo-net`) :
+
+```rust
+use paquets::prelude::*;
+
+async fn load_todos(key: String) -> Result<Vec<String>, String> {
+    // GET /api/{key} avec web-sys ou gloo-net…
+    Ok(Vec::new())
+}
+
+pub fn todo_count(_props: &str) -> Node {
+    // Tous les îlots qui demandent "todos" partagent les mêmes données et la même requête.
+    let todos = use_query(|| "todos".to_string(), load_todos);
+    let add = use_mutation(|title: String| async move {
+        // POST /api/todos…
+        Ok::<_, String>(title)
+    })
+    .invalidates("todos"); // une fois la modification faite, recharge "todos", "todos/7"…
+    div()
+        .child(p().text_dyn(move || match todos.get() {
+            None => "Chargement…".to_string(),
+            Some(Ok(list)) => format!("{} tâche(s)", list.len()),
+            Some(Err(e)) => format!("Erreur: {e}"),
+        }))
+        .child(button().on_click(move |_| add.mutate("Nouvelle".into())).text("Ajouter"))
+        .into()
+}
+```
+
+| Méthode | Pour |
+|---|---|
+| `query.get()` | lire les données (`None` jusqu'à leur première arrivée) ; une vue qui les lit les suit |
+| `query.loading()` / `query.fetching()` | afficher un espace réservé tant que rien n'est chargé / un indicateur discret pendant un rechargement en arrière-plan |
+| `query.refetch()` | recharger tout de suite (un bouton « Actualiser ») |
+| `query.set(value)` | remplacer les données tout de suite partout où elles sont affichées : une mise à jour optimiste, avant `mutate` |
+| `mutation.mutate(input)`, `.pending()`, `.result()` | envoyer la modification, désactiver le bouton pendant ce temps, lire son résultat |
+| `paquets::active::invalidate("todos")` | recharger toutes les requêtes dont la clé commence par `todos` |
+| `paquets::active::use_query_with(key, QueryOptions::default().stale_time(d), fetch)` | garder les données fraîches pendant `d` au lieu de les recharger chaque fois qu'un îlot les affiche |
+
+Écrivez les clés comme des chemins (`"todos"`, `"todos/7"`, `"users/7/posts"`) : un préfixe nomme alors une famille. Voir la [documentation de `use_query`](https://docs.rs/active/latest/active/fn.use_query.html) d'Active.
 
 ## Garder des données dans le navigateur
 

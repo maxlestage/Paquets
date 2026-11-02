@@ -42,6 +42,7 @@ These benchmarks measure each package alone, on trivial handlers. In a real Paqu
 
 - With the in-memory database or SQLite, `app.run()` starts **one thread per CPU core**, each with its own event loop and its own listening socket. The kernel spreads connections across threads, and a request never changes thread. This is Vitesse's fastest mode.
 - With a database server (PostgreSQL…), the app runs on tokio's multi-threaded runtime, shared with the database connections, and idle threads take work from busy ones.
+- Memory is allocated with **mimalloc**, Vitesse's default allocator, faster than the system's: up to 10% more requests per second on routes that build JSON; routes that barely allocate don't change.
 
 In both modes, a handler that blocks its thread (a long computation, a blocking file read, `std::thread::sleep`) delays every other request of that thread. Keep handlers asynchronous, and move heavy computations off the event loop:
 

@@ -48,6 +48,7 @@ Voir [Configuration](configuration.md).
 | Joker | `/files/*path` → `req.param("path")` |
 | Routeur | `let mut api = Router::new(); api.get(...); app.mount("/api", api);` |
 | Middleware global | `app.middleware(\|req: Request, next: Next\| async move { next.run(req).await });` |
+| Un `POST` renvoyé reçoit la première réponse | `app.middleware(Idempotency::new());` (en-tête `Idempotency-Key`) |
 | Middleware sur une route | `app.get("/admin", handler.with(auth));` |
 | Middleware sur un routeur | `router.middleware(auth);` |
 | 404 personnalisée | `app.fallback(\|_\| async { Page::new("Introuvable").status(404) });` |
@@ -120,6 +121,7 @@ Classes du thème : `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.mu
 | Nullable | `bio: Option<String>` |
 | Facultatif en JSON | `#[serde(default)] done: bool` |
 | Créer seulement la table | `app.model::<Todo>();` |
+| Nouveau champ sur une table qui a des lignes | `Option<T>` ou `#[memoire(default = "0")]` : la colonne est ajoutée au démarrage suivant |
 
 ## Requêtes à la base de données
 
@@ -217,6 +219,7 @@ Voir [Sécurité](security.md).
 | État dérivé | `let total = memo(move \|\| items.with(\|v\| v.len()));`, `untrack(\|\| …)`, `on_cleanup(\|\| …)` |
 | Événements | `.on_click(\|e\| …)`, `.on_input(\|e\| …)`, `.on("keydown", \|e\| …)` ; `e.value()`, `e.key()` |
 | Dynamique | `.text_dyn(\|\| …)`, `.attr_dyn(nom, \|\| …)`, `.class_if(classe, \|\| …)`, `.bool_attr(nom, \|\| …)` |
+| Données partagées, en cache | `let todos = use_query(\|\| "todos".into(), load);`, `use_mutation(send).invalidates("todos")` |
 | Enregistrer | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |
 | Placer | `island("counter", "0", counter)` |
 | Compiler | `paquets dev`, `paquets build` → `pkg/` |

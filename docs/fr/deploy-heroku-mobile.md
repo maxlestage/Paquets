@@ -270,7 +270,7 @@ Tous les codes sont listés sur https://devcenter.heroku.com/articles/error-code
 - **Tous les visiteurs reçoivent `429 Too Many Requests`** : le bouclier compte les requêtes par adresse IP. Le bouclier par défaut lit la véritable adresse derrière le routeur de Heroku ; si vous l'avez remplacé avec `app.security(...)`, construisez-le à partir de `paquets::shield()`, qui conserve ce réglage (voir [Sécurité](security.md#lip-du-client-derrière-un-proxy)).
 - **La première visite est lente** : un dyno Eco dormait.
 - **Mes données ont disparu** : l'application n'a pas d'add-on de base de données (données en mémoire), ou utilise SQLite. Ajoutez Heroku Postgres (partie 2).
-- **Un nouveau champ d'un modèle provoque des erreurs `500`** : la table existante n'a pas été modifiée. Voir [Base de données](database.md#modifier-une-table-plus-tard).
+- **L'application ne démarre plus après l'ajout d'un champ à un modèle** : les lignes existantes ont besoin d'une valeur. Faites-en une `Option<T>` ou donnez-lui un `default`. Voir [Base de données](database.md#modifier-une-table-plus-tard).
 - **Les connexions WebSocket se ferment au bout d'une minute** : Heroku ferme les connexions qui restent silencieuses pendant environ 55 secondes. Envoyez régulièrement un ping (voir [WebSocket](websocket.md#en-production)).
 - **HTTP/3 ne fonctionne pas** : le routeur de Heroku ne transmet pas l'UDP. Laissez la feature `http3` désactivée sur Heroku.
 

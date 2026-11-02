@@ -186,6 +186,16 @@ app.get("/stats", stats.with(require_admin));
 
 To call `.with` on a closure, wrap the closure in parentheses: `(|_| async { "ok" }).with(require_admin)`.
 
+### A request sent twice: `Idempotency`
+
+A phone loses its network right after "Pay", and the app sends the same `POST` again. With `Idempotency` (in the prelude), a request that carries the same `Idempotency-Key` header as an earlier one is not run again: it gets the stored answer to the first one, marked `Idempotent-Replayed: true`. Use it for payments and orders:
+
+```rust
+app.middleware(Idempotency::new()); // POST and PATCH carrying an Idempotency-Key
+```
+
+Answers are kept 24 hours in memory (`.ttl(...)`, or `.store(...)` to share them between instances through Redis). The same key with a different request gets `422`, the same key while the first request still runs gets `409`, and server errors are not stored, so a retry runs. `Idempotency` comes from [Pratique](packages.md), re-exported as `paquets::pratique` with its other everyday middlewares.
+
 ### The order of the whole chain
 
 For every request, Paquets runs these layers, in this order:

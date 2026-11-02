@@ -48,6 +48,7 @@ See [Configuration](configuration.md).
 | Wildcard | `/files/*path` → `req.param("path")` |
 | Router | `let mut api = Router::new(); api.get(...); app.mount("/api", api);` |
 | Global middleware | `app.middleware(\|req: Request, next: Next\| async move { next.run(req).await });` |
+| A `POST` sent again gets the first answer | `app.middleware(Idempotency::new());` (header `Idempotency-Key`) |
 | Middleware on one route | `app.get("/admin", handler.with(auth));` |
 | Middleware on a router | `router.middleware(auth);` |
 | Custom 404 | `app.fallback(\|_\| async { Page::new("Not found").status(404) });` |
@@ -120,6 +121,7 @@ Theme classes: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted`,
 | Nullable | `bio: Option<String>` |
 | Optional in JSON | `#[serde(default)] done: bool` |
 | Create the table only | `app.model::<Todo>();` |
+| New field on a table with rows | `Option<T>` or `#[memoire(default = "0")]`: the column is added at the next start |
 
 ## Queries
 
@@ -217,6 +219,7 @@ See [Security](security.md).
 | Derived state | `let total = memo(move \|\| items.with(\|v\| v.len()));`, `untrack(\|\| …)`, `on_cleanup(\|\| …)` |
 | Events | `.on_click(\|e\| …)`, `.on_input(\|e\| …)`, `.on("keydown", \|e\| …)`; `e.value()`, `e.key()` |
 | Dynamic | `.text_dyn(\|\| …)`, `.attr_dyn(name, \|\| …)`, `.class_if(class, \|\| …)`, `.bool_attr(name, \|\| …)` |
+| Shared, cached data | `let todos = use_query(\|\| "todos".into(), load);`, `use_mutation(send).invalidates("todos")` |
 | Register | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |
 | Place | `island("counter", "0", counter)` |
 | Build | `paquets dev`, `paquets build` → `pkg/` |
