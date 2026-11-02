@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Active#04804b5f25c67f6eff074a40d0e4923262cae022"
+source = "git+https://github.com/maxlestage/Active#0323605026745580cfe179eb48ffaef4a5fecae6"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -1749,7 +1749,7 @@ checksum = "5449c8c750f1a07ea702bbd212bd999fceece9b3d1508b17023b3e174583124b"
 [[package]]
 name = "memoire-orm"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#30c0284ea054b98c57878715ed09ebc35570f5cb"
+source = "git+https://github.com/maxlestage/Memoire#445a99da25f3e5f0cf882fa15a1c27097ebbf3fa"
 dependencies = [
  "aes-gcm",
  "argon2 0.5.3",
@@ -1782,7 +1782,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#30c0284ea054b98c57878715ed09ebc35570f5cb"
+source = "git+https://github.com/maxlestage/Memoire#445a99da25f3e5f0cf882fa15a1c27097ebbf3fa"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2331,7 +2331,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#829ddb519072bd54867a8a8aca72bd2ddc619e35"
+source = "git+https://github.com/maxlestage/Securite#ddaa40dd3d5ecd04e1b1ddc318df9f7bc85fa2a3"
 dependencies = [
  "vitesse",
 ]
@@ -2762,7 +2762,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#829ddb519072bd54867a8a8aca72bd2ddc619e35"
+source = "git+https://github.com/maxlestage/Securite#ddaa40dd3d5ecd04e1b1ddc318df9f7bc85fa2a3"
 dependencies = [
  "aho-corasick",
  "argon2 0.6.0",
@@ -3598,7 +3598,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vitesse"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Vitesse#ab91e22d69a71109d7fa1d8240dd31fdbf20eb9d"
+source = "git+https://github.com/maxlestage/Vitesse#ed9d6bd23d84d2a24c67d1da4c8d7d2f376567f5"
 dependencies = [
  "brotli",
  "bytes",
