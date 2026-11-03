@@ -75,7 +75,7 @@ Run it and you get:
 
 - **Simplicity.** One dependency, one import (`use paquets::prelude::*;`), one `App`. A handler is an `async` function that takes a request and returns a response. Errors are values, and `?` turns them into the right HTTP status.
 - **Secure by default.** Attacks such as SQL injection in the URL, cross-site request forgery, clickjacking or brute force are blocked before your code runs. You have to opt out, not opt in.
-- **Fast.** Vitesse handles about 291,000 requests per second for `GET /` on 2 CPU cores, more than actix-web and axum on the same machine, and 2.78 million per second with pipelining. Securite's whole pipeline costs about 6 µs per request. The smallest island bundle (a counter) weighs 36.8 kB compressed. See [Performance](performance.md).
+- **Fast.** Vitesse handles about 176,000 requests per second for `GET /` on 2 CPU cores, more than actix-web and axum on the same machine, and 1.77 million per second with pipelining. Securite's whole pipeline costs about 6 µs per request. The smallest island bundle (a counter) weighs 36.8 kB compressed. See [Performance](performance.md).
 - **Type-safe from the database to the page.** A misspelled column, a comparison between a number and a string, or a missing field in a response is a compile error, not a bug in production.
 - **Easy to deploy.** A project created with `paquets new` contains a `Dockerfile`, the files for a one-tap Heroku deployment and GitHub workflows. You can deploy, redeploy and read your logs [from a phone](deploy-heroku-mobile.md).
 
