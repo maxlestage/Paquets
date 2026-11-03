@@ -15,7 +15,7 @@ Paquets réexporte aussi `paquets::serde` et `paquets::serde_json` (et `json!` d
 
 ## Vitesse : le serveur
 
-[Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) est le serveur HTTP, avec son propre moteur HTTP/1.1 au-dessus de tokio. Il traite environ 291 000 requêtes par seconde sur 2 cœurs pour `GET /`, plus qu'actix-web et axum sur la même machine, et 2,78 millions avec le pipelining.
+[Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) est le serveur HTTP, avec son propre moteur HTTP/1.1 au-dessus de tokio. Il traite environ 176 000 requêtes par seconde sur 2 cœurs pour `GET /`, plus qu'actix-web et axum sur la même machine, et 1,77 millions avec le pipelining.
 
 **Dans Paquets :** `App` contient une `vitesse::App` et donne accès à toutes ses méthodes (elle se déréférence vers elle) : `get`, `post`, `ws`, `middleware`, `mount`, `state`, `fallback`, `on_error`, `body_limit`, `static_dir`, `workers`… Les handlers reçoivent une `vitesse::Request` et renvoient tout ce qui implémente `vitesse::IntoResponse`. Le client de test de `app.test()` est le `TestClient` de Vitesse.
 

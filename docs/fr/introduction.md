@@ -75,7 +75,7 @@ Lancez-le, et vous obtenez :
 
 - **La simplicité.** Une dépendance, un import (`use paquets::prelude::*;`), une `App`. Un handler est une fonction `async` qui prend une requête et renvoie une réponse. Les erreurs sont des valeurs, et `?` les transforme en bon statut HTTP.
 - **Sécurisé par défaut.** Les attaques comme l'injection SQL dans l'URL, la falsification de requête intersite (CSRF), le clickjacking ou la force brute sont bloquées avant que votre code ne s'exécute. C'est la protection qu'il faut désactiver, pas l'inverse.
-- **Rapide.** Vitesse traite environ 291 000 requêtes par seconde pour `GET /` sur 2 cœurs, plus qu'actix-web et axum sur la même machine, et 2,78 millions par seconde avec le pipelining. Toute la chaîne de Securite coûte environ 6 µs par requête. Le plus petit bundle d'îlot (un compteur) pèse 36,8 ko compressé. Voir [Performances](performance.md).
+- **Rapide.** Vitesse traite environ 176 000 requêtes par seconde pour `GET /` sur 2 cœurs, plus qu'actix-web et axum sur la même machine, et 1,77 millions par seconde avec le pipelining. Toute la chaîne de Securite coûte environ 6 µs par requête. Le plus petit bundle d'îlot (un compteur) pèse 36,8 ko compressé. Voir [Performances](performance.md).
 - **Typé de la base de données jusqu'à la page.** Une colonne mal orthographiée, une comparaison entre un nombre et une chaîne ou un champ manquant dans une réponse est une erreur de compilation, pas un bug en production.
 - **Facile à déployer.** Un projet créé avec `paquets new` contient un `Dockerfile`, les fichiers pour déployer sur Heroku d'un simple geste et des workflows GitHub. Vous pouvez déployer, redéployer et lire vos journaux [depuis un téléphone](deploy-heroku-mobile.md).
 

@@ -15,7 +15,7 @@ Paquets also re-exports `paquets::serde` and `paquets::serde_json` (and `json!` 
 
 ## vitesse: the server
 
-[Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) (French for "speed") is the HTTP server, with its own HTTP/1.1 engine on top of tokio. It handles about 291,000 requests per second on 2 cores for `GET /`, more than actix-web and axum on the same machine, and 2.78 million with pipelining.
+[Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) (French for "speed") is the HTTP server, with its own HTTP/1.1 engine on top of tokio. It handles about 176,000 requests per second on 2 cores for `GET /`, more than actix-web and axum on the same machine, and 1.77 million with pipelining.
 
 **In Paquets:** `App` contains a `vitesse::App` and gives access to all its methods (it dereferences to it): `get`, `post`, `ws`, `middleware`, `mount`, `state`, `fallback`, `on_error`, `body_limit`, `static_dir`, `workers`… Handlers receive a `vitesse::Request` and return anything that implements `vitesse::IntoResponse`. The test client of `app.test()` is Vitesse's `TestClient`.
 
