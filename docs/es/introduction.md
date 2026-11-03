@@ -75,7 +75,7 @@ Ejecútalo y obtendrás:
 
 - **Sencillez.** Una dependencia, un import (`use paquets::prelude::*;`), una `App`. Un handler es una función `async` que recibe una petición y devuelve una respuesta. Los errores son valores, y `?` los convierte en el estado HTTP correcto.
 - **Seguro por defecto.** Ataques como la inyección SQL en la URL, la falsificación de peticiones entre sitios (CSRF), el clickjacking o la fuerza bruta se bloquean antes de que se ejecute tu código. Tienes que desactivar la protección, no activarla.
-- **Rápido.** Vitesse atiende unas 291 000 peticiones por segundo en `GET /` con 2 núcleos de CPU, más que actix-web y axum en la misma máquina, y 2.78 millones por segundo con pipelining. Todo el pipeline de Securite cuesta unos 6 µs por petición. El bundle de isla más pequeño (un contador) pesa 36.8 kB comprimido. Consulta [Rendimiento](performance.md).
+- **Rápido.** Vitesse atiende unas 176 000 peticiones por segundo en `GET /` con 2 núcleos de CPU, más que actix-web y axum en la misma máquina, y 1.77 millones por segundo con pipelining. Todo el pipeline de Securite cuesta unos 6 µs por petición. El bundle de isla más pequeño (un contador) pesa 36.8 kB comprimido. Consulta [Rendimiento](performance.md).
 - **Tipado seguro de la base de datos a la página.** Una columna mal escrita, una comparación entre un número y una cadena o un campo que falta en una respuesta son errores de compilación, no bugs en producción.
 - **Fácil de desplegar.** Un proyecto creado con `paquets new` contiene un `Dockerfile`, los archivos para desplegar en Heroku con un solo toque y workflows de GitHub. Puedes desplegar, redesplegar y leer tus logs [desde un teléfono](deploy-heroku-mobile.md).
 

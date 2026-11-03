@@ -10,12 +10,12 @@ Peticiones por segundo en una VM de 4 vCPU, con el servidor fijado en 2 núcleos
 
 | Escenario | axum 0.8 | actix-web 4 | **Vitesse** |
 |---|---:|---:|---:|
-| `GET /` (texto) | 168 165 (11.7 µs) | 274 195 (7.1 µs) | **291 415 (6.1 µs)** |
-| `GET /json` | 165 988 (11.9 µs) | 248 987 (7.9 µs) | **313 438 (5.9 µs)** |
-| `GET /json` enviado por un navegador (12 cabeceras) | 131 710 (15.0 µs) | 179 505 (10.9 µs) | **290 478 (6.8 µs)** |
-| `GET /users/:id` (parámetro + JSON) | 151 303 (13.1 µs) | 209 173 (9.4 µs) | **304 323 (6.2 µs)** |
-| `POST /echo` (lee y devuelve JSON) | 105 570 (18.8 µs) | 170 129 (11.7 µs) | **253 941 (7.6 µs)** |
-| `GET /` en pipeline ×16 | 213 678 (9.3 µs) | 1 272 510 (1.6 µs) | **2 781 541 (0.64 µs)** |
+| `GET /` (texto) | 104 439 (18.8 µs) | 174 475 (11.0 µs) | **175 956 (10.1 µs)** |
+| `GET /json` | 101 206 (19.3 µs) | 152 498 (12.6 µs) | **173 191 (10.4 µs)** |
+| `GET /json` enviado por un navegador (12 cabeceras) | 86 681 (22.7 µs) | 138 917 (14.1 µs) | **165 337 (11.0 µs)** |
+| `GET /users/:id` (parámetro + JSON) | 96 321 (20.1 µs) | 152 877 (12.8 µs) | **178 731 (10.0 µs)** |
+| `POST /echo` (lee y devuelve JSON) | 81 171 (24.4 µs) | 115 069 (17.1 µs) | **171 438 (10.8 µs)** |
+| `GET /` en pipeline ×16 | 171 985 (11.5 µs) | 983 771 (2.0 µs) | **1 770 173 (0.97 µs)** |
 
 La metodología, los otros frameworks medidos (Express, Drogon) y la forma de reproducir estas cifras están en la [guía de rendimiento de Vitesse](https://vitesse-f16135654c3d.herokuapp.com/es/docs/performance/).
 
