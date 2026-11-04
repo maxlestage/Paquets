@@ -25,7 +25,14 @@ paquets = { path = ".." }
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 paquets = { path = "..", default-features = false, features = ["client"] }
 wasm-bindgen = "=0.2.129"
-web-sys = { version = "0.3", features = ["DomRect", "DomTokenList", "Element", "EventTarget", "MediaQueryList", "Performance", "PointerEvent", "Window"] }
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+  "AddEventListenerOptions", "CssStyleDeclaration", "Document", "DomRect", "DomTokenList",
+  "Element", "Event", "EventTarget", "HtmlElement", "IntersectionObserver",
+  "IntersectionObserverEntry", "IntersectionObserverInit", "KeyboardEvent", "MediaQueryList",
+  "MouseEvent", "MutationObserver", "MutationObserverInit", "NodeList", "Performance",
+  "PointerEvent", "ScrollBehavior", "ScrollToOptions", "Window",
+] }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

@@ -1,6 +1,6 @@
 # 🪐 Orbite — un site vitrine complet écrit avec Paquets
 
-Un site de studio créatif, du serveur à la 3D, écrit en Rust avec [Paquets](../README.md) :
+Un site de studio créatif, du serveur à la 3D, écrit **entièrement en Rust** avec [Paquets](../README.md), sans une ligne de JavaScript :
 pages rendues sur le serveur avec leurs balises SEO, PWA installable et hors ligne, scènes
 3D temps réel en WebAssembly (`paquets::three`), physique (`paquets::three::Physics`),
 formulaires enregistrés en base, et beaucoup d'animations.
@@ -29,10 +29,10 @@ formulaires enregistrés en base, et beaucoup d'animations.
 | `src/main.rs` | Le serveur : mise en page (en-tête, pied de page), pages, formulaires, PWA, sitemap |
 | `src/contenu.rs` | **Tous les textes** : coordonnées, services, projets, équipe, FAQ, pages légales |
 | `src/icones.rs` | Les icônes SVG |
-| `src/lib.rs` | Les îlots (serveur + navigateur) : `hero3d`, `atelier`, `pluie`, `tarifs` |
+| `src/lib.rs` | Les îlots (serveur + navigateur) : `mouvement` (sur chaque page), `hero3d`, `atelier`, `pluie`, `tarifs` |
 | `src/scenes.rs` | Les scènes 3D (navigateur seulement) |
 | `public/style.css` | Le thème et les animations |
-| `public/motion.js` | Les mouvements de la page (défilement, inclinaison, curseur, menu…) |
+| `src/mouvement.rs` | Les mouvements de la page, en Rust : apparitions, compteurs, défilement, inclinaison, curseur, menu, filtres, installation de la PWA |
 
 ## Lancer
 
@@ -52,8 +52,8 @@ wasm-bindgen --target web --no-typescript --out-dir pkg \
 cargo run --release
 ```
 
-Sans `pkg/`, le site fonctionne quand même (pages, formulaires, animations CSS et JS), sans
-la 3D ni les îlots interactifs.
+Sans `pkg/`, le site fonctionne quand même (pages, formulaires, animations CSS), sans la 3D,
+les îlots ni les mouvements pilotés par Rust.
 
 Variables d'environnement : `PORT`, `DATABASE_URL` (en mémoire par défaut ;
 `sqlite://orbite.db` ou PostgreSQL pour garder les messages), `SITE_URL` (adresse publique,
