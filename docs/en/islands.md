@@ -334,6 +334,8 @@ An island can draw 3D in a `<canvas>`, with Active's two 3D modules, re-exported
 - `paquets::three` writes it like [Three.js](https://threejs.org): a scene of meshes, lights and cameras, a WebGL 2 renderer, an animation loop and `OrbitControls`;
 - `paquets::ecs` writes it like [Bevy](https://bevy.org): entities, components and systems, an `App` with plugins and schedules, 3D in physical light units.
 
+Every mesh also has physics: a mass from its volume, gravity, forces and collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… on the entity; `paquets::three::Physics` for a scene; `paquets::physics` on its own). Active's guide explains it in its physics section.
+
 A game written the Bevy way, in an island:
 
 ```rust
