@@ -7,6 +7,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Physics: every 3D object has a mass (from its volume), forces, gravity and collisions,
+  Active's new `active::physics`, re-exported as `paquets::physics` and built into
+  `paquets::ecs` (`DefaultPlugins`: `Mass`, `LinearVelocity`, `ExternalForce`,
+  `Restitution`, `CollisionStarted`…) and `paquets::three::Physics`.
 - 3D, the Three.js and Bevy way: `paquets::three` (a scene of meshes, lights and cameras drawn
   with WebGL 2, `OrbitControls`, `animation_loop`) and `paquets::ecs` (entities, components,
   systems, an `App` with plugins and schedules, 3D in physical light units, `app.run_in(canvas)`

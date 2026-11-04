@@ -334,6 +334,8 @@ Una isla puede dibujar en 3D en un `<canvas>`, con los dos módulos 3D de Active
 - `paquets::three` lo escribe como [Three.js](https://threejs.org): una escena de mallas, luces y cámaras, un renderizador WebGL 2, un bucle de animación y `OrbitControls`;
 - `paquets::ecs` lo escribe como [Bevy](https://bevy.org): entidades, componentes y sistemas, una `App` con plugins y horarios, 3D en unidades físicas de luz.
 
+Cada malla tiene también su física: una masa a partir de su volumen, gravedad, fuerzas y colisiones (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… en la entidad; `paquets::three::Physics` para una escena; `paquets::physics` por sí solo). La guía de Active lo explica en su parte sobre la física.
+
 Un juego escrito al estilo de Bevy, en una isla:
 
 ```rust
