@@ -351,6 +351,31 @@ async fn transfer(req: Request) -> Result<StatusCode> {
 
 If anything fails before `commit` (a `?` returns early), the transaction is dropped and every change is rolled back.
 
+### All or nothing, retried on conflicts: `db.transaction`
+
+`db.transaction` runs a closure in a transaction, like Prisma's `$transaction`: it commits when the closure returns `Ok`, rolls everything back when it returns an error, and runs it again when it conflicts with another transaction (a serialization failure, a deadlock), up to five times in all. Write the queries with `tx`:
+
+```rust
+async fn transfer(req: Request) -> Result<StatusCode> {
+    let t: Transfer = req.json().await?;
+    let (from, to, amount) = (t.from, t.to, t.amount);
+    req.db()
+        .transaction(|tx| Box::pin(async move {
+            let mut a = Account::find(tx, from).await?.ok_or(paquets::orm::Error::NotFound)?;
+            let mut b = Account::find(tx, to).await?.ok_or(paquets::orm::Error::NotFound)?;
+            a.balance -= amount;
+            b.balance += amount;
+            a.update(tx).await?;
+            b.update(tx).await?;
+            Ok(())
+        }))
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+```
+
+The closure may run more than once: give it copies of what it needs (`let (from, to, amount) = ...` above), not the request.
+
 ## Data at startup
 
 `app.on_start` runs once, after the database is open and the tables exist, before the first request. Use it to add initial data:
@@ -384,6 +409,8 @@ app.on_start(|db| async move {
 ## Changing a table later
 
 At every start, each table is brought up to date with its struct (see [Tables are created at startup](#tables-are-created-at-startup)): a new field becomes a column, new indexes are created, and **nothing else changes**. A new field that existing rows can't fill (neither an `Option<T>` nor with a `default`) stops the start with a clear message, before any change. With the in-memory database (development, tests) the table is recreated at every start anyway.
+
+This is Memoire's `db.push::<M>()`, like `drizzle-kit push` or `prisma db push`, which you can also call yourself, for a model not registered with the app or from a script: `let report = db.push::<Todo>().await?;` tells what was created or added.
 
 Everything else is a **migration**: filling a new column from existing data, renaming, dropping or retyping a column. A migration is a numbered change, recorded in the database so that it runs only once. Memoire's `Migrator` does this, and `on_start` is the place to run it: it runs after the tables are up to date. Once `priority: i32` with `#[memoire(default = "0")]` has been added to the struct, this example gives the todos not done yet a priority of 1 on PostgreSQL:
 

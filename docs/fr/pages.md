@@ -322,6 +322,25 @@ fn contact_form() -> Element {
 
 Aucun jeton CSRF n'est nécessaire : le bouclier refuse les formulaires envoyés depuis d'autres sites. Le côté handler se trouve dans [Requêtes et réponses](requests-responses.md#formulaires).
 
+## Des changements de page plus rapides
+
+Trois méthodes de `Page` donnent au passage d'une page du site à l'autre la fluidité d'une app, sans JavaScript à écrire :
+
+```rust
+fn layout(title: &str, content: Node) -> Page {
+    Page::new(title)
+        .view_transitions()        // la page suivante apparaît en fondu, comme une app
+        .prefetch(Prefetch::Hover) // et se charge pendant que le pointeur repose sur son lien
+        .body(content)
+}
+```
+
+- `view_transitions()` : le navigateur passe d'une page à l'autre en fondu, et un élément qui a le même `view-transition-name` (CSS) sur les deux pages glisse jusqu'à sa nouvelle place (l'API View Transitions, comme dans Astro et Next). Rien ne se passe dans les navigateurs qui ne l'ont pas, ni pour les visiteurs qui préfèrent moins d'animations.
+- `prefetch(Prefetch::Hover)` : la page vers laquelle mène un lien se charge pendant que le pointeur repose dessus (ou que le lien a le focus), et s'affiche aussitôt au clic. `Prefetch::Press` attend l'appui, `Prefetch::Visible` charge les liens dès qu'ils sont à l'écran. Liens du même site seulement ; ceux qui ont `rel="nofollow"` ou `download`, ou qui sont dans un élément `data-no-prefetch`, sont laissés de côté.
+- `prerender(...)` : la même chose, et la page suivante est en plus exécutée et dessinée en arrière-plan là où le navigateur le peut (Chrome, Edge). Gardez-le pour les pages sans effet de bord à leur chargement.
+
+Leur code en ligne est ajouté à la Content-Security-Policy de la page par son empreinte, comme le thème : rien d'autre en ligne ne peut s'exécuter.
+
 ## Parties interactives
 
 Une page, c'est du HTML statique. Pour qu'une partie réagisse dans le navigateur (un compteur, un champ de recherche, un panier), faites-en un **îlot** : `island("counter", "0", counter)`. Seules les pages qui contiennent des îlots chargent le bundle du navigateur. Voir [Îlots](islands.md).

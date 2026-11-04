@@ -327,6 +327,76 @@ pub fn add_to_cart(product: &str) -> Node {
 
 Les données restent dans le navigateur : le serveur ne les voit jamais, sauf si un îlot les envoie (à votre API, avec `fetch`). Voir [le guide du stockage dans le navigateur](https://memoire-7f4525f1fdaf.herokuapp.com/fr/docs/browser-storage/) de Memoire pour les versions et les migrations, `SessionStorage` et `LocalStorageDb`.
 
+## De la 3D dans un îlot
+
+Un îlot peut dessiner en 3D dans un `<canvas>`, avec les deux modules 3D d'Active, réexportés par Paquets :
+
+- `paquets::three` l'écrit comme [Three.js](https://threejs.org) : une scène de maillages, de lumières et de caméras, un rendu WebGL 2, une boucle d'animation et `OrbitControls` ;
+- `paquets::ecs` l'écrit comme [Bevy](https://bevy.org) : entités, composants et systèmes, une `App` avec plugins et horaires, la 3D en unités physiques de lumière.
+
+Un jeu écrit à la manière de Bevy, dans un îlot :
+
+```rust
+// src/game.rs : le jeu, dans son propre module (le prélude de Bevy a son propre `App`).
+use paquets::ecs::prelude::*;
+
+struct Spinning;
+paquets::active::component!(Spinning); // #[derive(Component)] dans Bevy
+
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    commands.spawn((
+        Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
+        MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
+        Spinning,
+    ));
+    commands.spawn((PointLight::default(), Transform::from_xyz(4.0, 8.0, 4.0)));
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(0.0, 2.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+    ));
+}
+
+fn spin(time: Res<Time>, mut cubes: Query<&mut Transform, With<Spinning>>) {
+    for mut transform in &mut cubes {
+        transform.rotate_y(time.delta_secs());
+    }
+}
+
+pub fn app() -> App {
+    let mut app = App::new();
+    app.add_plugins(DefaultPlugins).add_systems(Startup, setup).add_systems(Update, spin);
+    app
+}
+```
+
+```rust
+// src/lib.rs : l'îlot qui le fait tourner dans un canvas.
+use paquets::prelude::*;
+
+mod game;
+
+pub fn scene(_props: &str) -> Node {
+    canvas().class("scene").use_action(play).into()
+}
+
+#[cfg(target_arch = "wasm32")]
+fn play(canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
+    let running = game::app().run_in(canvas).ok();
+    move || drop(running) // arrête le jeu quand l'îlot s'en va
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn play(_canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
+    || {}
+}
+```
+
+Placez-le comme n'importe quel îlot : `island("scene", "", scene)`, avec une taille pour le canvas (`.scene { width: 100%; height: 360px; display: block }` dans le style de la page). Le serveur rend un canvas vide ; le navigateur lance le jeu, qui s'arrête quand l'îlot s'en va. Le jeu tourne aussi sans navigateur, dans les tests : `app.update()` exécute une image, et `RenderFrame::extract` liste ce que la caméra dessinerait. Le guide d'Active [La 3D avec Three.js et Bevy](https://active-c1883a966650.herokuapp.com/fr/docs/3d/) présente les deux modules en entier.
+
 ## Compiler pour la production
 
 ```sh

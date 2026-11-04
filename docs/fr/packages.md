@@ -95,6 +95,9 @@ Voir la [documentation de Pratique](https://securite-2db4c1994be7.herokuapp.com/
 
 **Au-delà du prélude**, via `paquets::orm` : `Migrator` et `Migration`, `Dialect`, la macro `params!` pour le SQL brut, `Page` (le résultat de `paginate`), les colonnes `Json<T>`, `Observed` (une poignée qui annonce chaque écriture faite à travers elle), `StorageOptions`, et les backends eux-mêmes (`SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), pour ouvrir une base de données avec vos propres réglages et la passer à `app.database(Db::from(...))`. Voir [Base de données](database.md).
 
+
+Les transactions relancées en cas de conflit (`db.transaction`, comme Prisma) et les tables mises à jour sans fichier de migration (`db.push::<M>()`, comme Drizzle, lancé à chaque démarrage) fonctionnent aussi sur `req.db()`.
+
 ## Active : le front-end
 
 [Active](https://active-c1883a966650.herokuapp.com/) construit les vues avec une fonction par balise HTML, les rend sur le serveur avec toutes les balises SEO, et transforme les parties marquées d'une page en îlots WebAssembly. Il n'a ni macros, ni langage de templates, ni dépendance côté serveur ; son bundle compteur pèse 36,8 ko compressé.
@@ -104,6 +107,9 @@ Voir la [documentation de Pratique](https://securite-2db4c1994be7.herokuapp.com/
 **Dans le prélude :** toutes les fonctions de balises HTML (`div()`, `p()`, `a()`…) et le module `html` (pour `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `memo` (un état dérivé qui ne notifie que quand sa valeur change), `untrack`, `on_cleanup`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn`, `keyed`, `indexed` (une liste dont les lignes suivent leur position) et `switch` (une vue qui garde sa page pendant que les paramètres de la page changent).
 
 **Au-delà du prélude**, via `paquets::active` : `Document`, pour rendre une page sans le thème ni la politique de sécurité de `Page`, par exemple pour exporter des fichiers statiques. Avec la feature `client` (côté navigateur) : `paquets::hydrate`, `paquets::mount_to` et `paquets::mount` pour les applications entièrement rendues dans le navigateur, `paquets::navigate`, `paquets::location`, `paquets::query` et `paquets::query_param` pour le routage sans rechargement. Voir [Îlots](islands.md) et [la documentation d'active](https://active-c1883a966650.herokuapp.com/fr/docs/introduction/).
+
+
+**3D :** `paquets::three` (l'API de Three.js) et `paquets::ecs` (l'API de Bevy) dessinent en 3D dans le canvas d'un îlot, voir [De la 3D dans un îlot](islands.md#de-la-3d-dans-un-îlot). Et `Page::view_transitions()`, `Page::prefetch(...)` et `Page::prerender(...)` rendent les changements de page instantanés, voir [Des changements de page plus rapides](pages.md#des-changements-de-page-plus-rapides).
 
 ## Correspondance des noms
 

@@ -7,6 +7,11 @@ use paquets::prelude::*;
 pub fn paths(name: &str) -> &'static [&'static str] {
     match name {
         "bolt" => &["M13 2 4 14h7l-1 8 9-12h-7z"],
+        // A planet and its orbit: 3D.
+        "orbit" => &[
+            "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z",
+            "M2.5 12c0-2.5 4.3-4.5 9.5-4.5s9.5 2 9.5 4.5-4.3 4.5-9.5 4.5-9.5-2-9.5-4.5z",
+        ],
         "shield" => &[
             "M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z",
             "m9 12 2 2 4-4",
