@@ -832,7 +832,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -1717,7 +1717,7 @@ checksum = "5449c8c750f1a07ea702bbd212bd999fceece9b3d1508b17023b3e174583124b"
 [[package]]
 name = "memoire-orm"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#2bbb2ae61b3a557e1337ee13e8580838580f6638"
+source = "git+https://github.com/maxlestage/Memoire#219a47c6da6a1f2ad263395404fdafefdb113154"
 dependencies = [
  "aes-gcm",
  "argon2 0.5.3",
@@ -1750,7 +1750,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#2bbb2ae61b3a557e1337ee13e8580838580f6638"
+source = "git+https://github.com/maxlestage/Memoire#219a47c6da6a1f2ad263395404fdafefdb113154"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2299,7 +2299,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#ea8f54eee5b198a1d564024e1bf79dce19179d77"
+source = "git+https://github.com/maxlestage/Securite#96f1f712e7331649aa0fd8954c2952df577f31f6"
 dependencies = [
  "vitesse",
 ]
@@ -2398,7 +2398,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2730,7 +2730,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#ea8f54eee5b198a1d564024e1bf79dce19179d77"
+source = "git+https://github.com/maxlestage/Securite#96f1f712e7331649aa0fd8954c2952df577f31f6"
 dependencies = [
  "aho-corasick",
  "argon2 0.6.0",
@@ -3554,7 +3554,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vitesse"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Vitesse#aa8074ea393abf827cd28528ae2ef1b70ecc40b9"
+source = "git+https://github.com/maxlestage/Vitesse#5fc52fad78a67b30afab249a5b4170cc6ff04927"
 dependencies = [
  "brotli",
  "bytes",
@@ -3743,7 +3743,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
