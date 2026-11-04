@@ -334,6 +334,8 @@ Un îlot peut dessiner en 3D dans un `<canvas>`, avec les deux modules 3D d'Acti
 - `paquets::three` l'écrit comme [Three.js](https://threejs.org) : une scène de maillages, de lumières et de caméras, un rendu WebGL 2, une boucle d'animation et `OrbitControls` ;
 - `paquets::ecs` l'écrit comme [Bevy](https://bevy.org) : entités, composants et systèmes, une `App` avec plugins et horaires, la 3D en unités physiques de lumière.
 
+Chaque maillage a aussi sa physique : une masse tirée de son volume, la gravité, des forces et des collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… sur l'entité ; `paquets::three::Physics` pour une scène ; `paquets::physics` seul). Le guide d'Active l'explique dans sa partie sur la physique.
+
 Un jeu écrit à la manière de Bevy, dans un îlot :
 
 ```rust
