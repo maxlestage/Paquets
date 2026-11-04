@@ -218,30 +218,12 @@ impl Page {
         let speed = self.speed;
         if speed.transitions {
             document = document.view_transitions();
-            allow(
-                &mut styles,
-                &mut scripts,
-                "transitions".into(),
-                Document::view_transitions,
-            );
         }
         if let Some(when) = speed.prefetch {
             document = document.prefetch(when);
-            allow(
-                &mut styles,
-                &mut scripts,
-                format!("prefetch {when:?}"),
-                |d| d.prefetch(when),
-            );
         }
         if let Some(when) = speed.prerender {
             document = document.prerender(when);
-            allow(
-                &mut styles,
-                &mut scripts,
-                format!("prerender {when:?}"),
-                |d| d.prerender(when),
-            );
         }
         if let Some(manifest) = crate::pwa::manifest() {
             document = document
@@ -262,6 +244,33 @@ impl Page {
             scripts.push(hash.clone());
         }
         let mut html = document.render();
+        // The hashes of what these options write inline, found by rendering an empty
+        // page with each: after the page itself, whose islands' states would not survive
+        // another render finishing before theirs.
+        if speed.transitions {
+            allow(
+                &mut styles,
+                &mut scripts,
+                "transitions".into(),
+                Document::view_transitions,
+            );
+        }
+        if let Some(when) = speed.prefetch {
+            allow(
+                &mut styles,
+                &mut scripts,
+                format!("prefetch {when:?}"),
+                |d| d.prefetch(when),
+            );
+        }
+        if let Some(when) = speed.prerender {
+            allow(
+                &mut styles,
+                &mut scripts,
+                format!("prerender {when:?}"),
+                |d| d.prerender(when),
+            );
+        }
         if let Some((tags, hash)) = loader()
             && html.contains("<active-island")
             && let Some(at) = html.find("</head>")
