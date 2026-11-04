@@ -7,10 +7,13 @@
 use paquets::prelude::*;
 
 #[cfg(target_arch = "wasm32")]
+mod mouvement;
+#[cfg(target_arch = "wasm32")]
 mod scenes;
 
 /// Les îlots, sous le nom donné à `island(...)`.
-pub const ISLANDS: [(&str, paquets::active::IslandFn); 4] = [
+pub const ISLANDS: [(&str, paquets::active::IslandFn); 5] = [
+    ("mouvement", mouvement),
     ("hero3d", hero3d),
     ("atelier", atelier),
     ("pluie", pluie),
@@ -28,6 +31,18 @@ pub const TEINTES: [(&str, u32); 5] = [
     ("Or", 0xffc857),
     ("Glacier", 0x5cc8ff),
 ];
+
+/// Les mouvements de la page (src/mouvement.rs) : un îlot invisible, présent sur chaque
+/// page, qui charge le bundle WebAssembly et lance les animations en Rust.
+pub fn mouvement(_props: &str) -> Node {
+    span()
+        .attr("hidden", "")
+        .on_mount(|_| {
+            #[cfg(target_arch = "wasm32")]
+            mouvement::demarrer();
+        })
+        .into()
+}
 
 /// Le fond du héros : une constellation 3D qui suit le pointeur et le défilement.
 pub fn hero3d(_props: &str) -> Node {

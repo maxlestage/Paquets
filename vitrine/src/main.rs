@@ -130,11 +130,11 @@ fn page(chemin: &str, titre: &str, description: &str, contenu: Vec<Node>) -> Pag
             r#"<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>"#,
             r#"<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png"/>"#,
             r#"<meta name="color-scheme" content="dark"/>"#,
-            r#"<script src="/motion.js" defer></script>"#,
         ))
         .view_transitions()
         .prefetch(Prefetch::Hover);
     page = page.body(Node::from(curseur()));
+    page = page.body(island("mouvement", "", orbite::mouvement));
     page = page.body(Node::from(entete(chemin)));
     page = page.body(Node::from(
         html::main().id("contenu").class("page").children(contenu),
