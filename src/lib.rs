@@ -147,6 +147,13 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Front end: views, state, SEO tags, islands ([active](https://active-c1883a966650.herokuapp.com/)).
 pub use active;
+/// Games and simulations the way Bevy writes them: entities, components, systems, an `App`
+/// with plugins and schedules, 3D in physical light units, run in an island's canvas with
+/// `app.run_in(canvas)` (`active::ecs`).
+pub use active::ecs;
+/// 3D the way Three.js writes it: a scene of meshes, lights and cameras, drawn with WebGL 2
+/// in an island's canvas (`active::three`; the renderer comes with the `client` feature).
+pub use active::three;
 /// Database: models, queries, transactions, migrations ([memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/)).
 pub use memoire_orm as orm;
 
@@ -190,8 +197,8 @@ pub mod prelude {
     // `main` is the program's function, so the tag is written `html::main()`.
     pub use active::html::{self, *};
     pub use active::{
-        Element, Event, Node, Seo, State, effect, el, fragment, fragment_dyn, indexed, island,
-        keyed, memo, on_cleanup, switch, text, text_dyn, untrack, use_mutation, use_query,
+        Element, Event, Node, Prefetch, Seo, State, effect, el, fragment, fragment_dyn, indexed,
+        island, keyed, memo, on_cleanup, switch, text, text_dyn, untrack, use_mutation, use_query,
         use_state,
     };
     pub use memoire_orm::{Database, Executor, LoadRelated, Model, Transaction};

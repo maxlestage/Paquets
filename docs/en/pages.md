@@ -322,6 +322,25 @@ fn contact_form() -> Element {
 
 No CSRF token is needed: the shield refuses forms posted from other websites. The handler side is in [Requests and responses](requests-responses.md#forms).
 
+## Faster page changes
+
+Three methods of `Page` make going from one page of the site to the next feel like an app, without JavaScript to write:
+
+```rust
+fn layout(title: &str, content: Node) -> Page {
+    Page::new(title)
+        .view_transitions()        // the next page fades in, like an app
+        .prefetch(Prefetch::Hover) // and is loaded while the pointer rests on its link
+        .body(content)
+}
+```
+
+- `view_transitions()`: the browser fades from one page to the next, and an element with the same `view-transition-name` (CSS) on both pages moves to its new place (the View Transitions API, as in Astro and Next). Nothing happens in browsers without it, nor for visitors who prefer reduced motion.
+- `prefetch(Prefetch::Hover)`: the page a link leads to is loaded while the pointer rests on it (or the link gets the focus), so it shows at once when clicked. `Prefetch::Press` waits for the press, `Prefetch::Visible` loads the links as soon as they are on screen. Same-site links only; links with `rel="nofollow"` or `download`, or inside an element with `data-no-prefetch`, are left alone.
+- `prerender(...)`: the same, with the next page also run and painted in the background where the browser can (Chrome, Edge). Keep it for pages without side effects when they load.
+
+Their inline code is added to the page's Content-Security-Policy by its hash, like the theme: nothing else inline can run.
+
 ## Interactive parts
 
 A page is static HTML. To make part of it react in the browser (a counter, a search box, a cart), make that part an **island**: `island("counter", "0", counter)`. Only pages that contain islands load the browser bundle. See [Islands](islands.md).
