@@ -273,6 +273,9 @@ ul, ol { padding: 0; margin: 0; list-style: none; }
 [data-reveal="zoom"] { transform: scale(0.92) translateY(30px); }
 [data-reveal].is-in { opacity: 1; transform: none; filter: none; }
 .no-js [data-reveal], .no-js .split .wi { opacity: 1; transform: none; filter: none; }
+/* Sans le bundle WebAssembly (qui ajoute `motion` à <html>), tout apparaît quand même. */
+html:not(.motion) [data-reveal], html:not(.motion) .split .wi { animation: sans-wasm 0.8s var(--ease) 2.5s forwards; }
+@keyframes sans-wasm { to { opacity: 1; transform: none; filter: none; } }
 
 /* ————— Fonds ————— */
 
