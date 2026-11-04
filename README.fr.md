@@ -56,6 +56,7 @@ Rien à configurer.
 | 🔎 **Pages SEO** | Les pages sont du HTML fini, rendu par le serveur : titre, description, Open Graph, Twitter, URL canonique, JSON-LD. Un thème intégré (clair et sombre) les rend belles sans CSS. |
 | 📲 **Installable (PWA)** | `app.pwa(Pwa::new("Mon app"))` : un manifeste d'application web et un service worker hors ligne, pour que l'application aille sur l'écran d'accueil et fonctionne sans réseau. |
 | 🏝️ **Îlots** | Les parties interactives sont des composants Rust compilés en WebAssembly, et seulement elles : le reste de la page n'envoie aucun code. |
+| 🎮 **3D** | Three.js et Bevy, écrits en Rust : `paquets::three` dessine des scènes avec WebGL 2, `paquets::ecs` fait tourner des jeux faits d'entités, de composants et de systèmes, dans le canvas d'un îlot. |
 | ⚡ **Rapide** | Construit sur un serveur plus rapide qu'actix-web et axum, une chaîne de sécurité d'environ 6 µs, du SQL généré à la compilation. |
 | 📱 **Déployé depuis un téléphone** | Dockerfile, `heroku.yml`, `app.json` et GitHub Actions sont générés : un appui sur *Deploy to Heroku*. |
 

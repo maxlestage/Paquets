@@ -237,15 +237,19 @@ pub fn markers(code: &str) -> usize {
 }
 
 /// The icon and the code tag of each feature.
-pub const FEATURES: [(&str, &str); 12] = [
+pub const FEATURES: [(&str, &str); 16] = [
     ("box", "use paquets::prelude::*;"),
     ("shield", "App::new()"),
     ("replay", "Idempotency::new()"),
     ("db", "DATABASE_URL"),
     ("layers", "app.model::<User>()"),
+    ("check", "db.transaction(..)"),
     ("page", "Page::new(\"Home\")"),
+    ("rocket", ".view_transitions()"),
     ("spark", "island(\"counter\", ..)"),
+    ("orbit", "paquets::ecs"),
     ("bolt", "use_query(key, fetch)"),
+    ("cloud", "middleware::compress()"),
     ("globe", "IndexedDbStorage"),
     ("phone", "git push"),
     ("flask", "app().test().await"),

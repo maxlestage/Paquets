@@ -327,6 +327,76 @@ pub fn add_to_cart(product: &str) -> Node {
 
 The data stays in the browser: the server never sees it unless an island sends it (to your API, with `fetch`). See Memoire's [browser storage guide](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/browser-storage/) for versions and migrations, `SessionStorage` and `LocalStorageDb`.
 
+## 3D in an island
+
+An island can draw 3D in a `<canvas>`, with Active's two 3D modules, re-exported by Paquets:
+
+- `paquets::three` writes it like [Three.js](https://threejs.org): a scene of meshes, lights and cameras, a WebGL 2 renderer, an animation loop and `OrbitControls`;
+- `paquets::ecs` writes it like [Bevy](https://bevy.org): entities, components and systems, an `App` with plugins and schedules, 3D in physical light units.
+
+A game written the Bevy way, in an island:
+
+```rust
+// src/game.rs: the game, in its own module (Bevy's prelude has its own `App`).
+use paquets::ecs::prelude::*;
+
+struct Spinning;
+paquets::active::component!(Spinning); // #[derive(Component)] in Bevy
+
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    commands.spawn((
+        Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
+        MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
+        Spinning,
+    ));
+    commands.spawn((PointLight::default(), Transform::from_xyz(4.0, 8.0, 4.0)));
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(0.0, 2.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+    ));
+}
+
+fn spin(time: Res<Time>, mut cubes: Query<&mut Transform, With<Spinning>>) {
+    for mut transform in &mut cubes {
+        transform.rotate_y(time.delta_secs());
+    }
+}
+
+pub fn app() -> App {
+    let mut app = App::new();
+    app.add_plugins(DefaultPlugins).add_systems(Startup, setup).add_systems(Update, spin);
+    app
+}
+```
+
+```rust
+// src/lib.rs: the island that runs it in a canvas.
+use paquets::prelude::*;
+
+mod game;
+
+pub fn scene(_props: &str) -> Node {
+    canvas().class("scene").use_action(play).into()
+}
+
+#[cfg(target_arch = "wasm32")]
+fn play(canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
+    let running = game::app().run_in(canvas).ok();
+    move || drop(running) // stops the game when the island goes
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn play(_canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
+    || {}
+}
+```
+
+Place it like any island: `island("scene", "", scene)`, with a size for the canvas (`.scene { width: 100%; height: 360px; display: block }` in the page's style). The server renders an empty canvas; the browser starts the game, which stops when the island goes. The game also runs without a browser, in tests: `app.update()` runs one frame, and `RenderFrame::extract` lists what the camera would draw. Active's guide [3D with Three.js and Bevy](https://active-c1883a966650.herokuapp.com/en/docs/3d/) shows both modules in full.
+
 ## Building for production
 
 ```sh
