@@ -303,7 +303,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -616,7 +616,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#219a47c6da6a1f2ad263395404fdafefdb113154"
+source = "git+https://github.com/maxlestage/Memoire#504e331f76a3b546144990bd83132c22d9be92cb"
 dependencies = [
  "async-lock",
  "bytes",
@@ -637,7 +637,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#219a47c6da6a1f2ad263395404fdafefdb113154"
+source = "git+https://github.com/maxlestage/Memoire#504e331f76a3b546144990bd83132c22d9be92cb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -855,7 +855,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#fe49dda20a10c2429f231066a0383cbbe308c992"
+source = "git+https://github.com/maxlestage/Securite#61097425f01877d6e024aa82983e2bde1d9279a5"
 dependencies = [
  "vitesse",
 ]
@@ -1028,7 +1028,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#fe49dda20a10c2429f231066a0383cbbe308c992"
+source = "git+https://github.com/maxlestage/Securite#61097425f01877d6e024aa82983e2bde1d9279a5"
 dependencies = [
  "aho-corasick",
  "argon2",
@@ -1505,7 +1505,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vitesse"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Vitesse#5fc52fad78a67b30afab249a5b4170cc6ff04927"
+source = "git+https://github.com/maxlestage/Vitesse#7a513b55a72ff8f3f18c41072c96abc0ece40cfa"
 dependencies = [
  "bytes",
  "form_urlencoded",
