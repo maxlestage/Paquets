@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Active#19c7b2650cd5d2497be7fe8e05d34feea29ba87f"
+source = "git+https://github.com/maxlestage/Active#9f4ffb860805d01165c118695de8c1f09b8a06fd"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -2299,7 +2299,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#6f30b1686c1dac858feb4b043a8d8c5852042678"
+source = "git+https://github.com/maxlestage/Securite#43eee81ec02c8f2aaa4ae5b781643da17f7e493d"
 dependencies = [
  "vitesse",
 ]
@@ -2730,7 +2730,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#6f30b1686c1dac858feb4b043a8d8c5852042678"
+source = "git+https://github.com/maxlestage/Securite#43eee81ec02c8f2aaa4ae5b781643da17f7e493d"
 dependencies = [
  "aho-corasick",
  "argon2 0.6.0",
