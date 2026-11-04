@@ -7,12 +7,6 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- `vitrine/`: Orbite, a complete showcase site written with Paquets (French): seven pages
-  rendered on the server, an installable PWA with its own icons, a contact form and a
-  newsletter stored in the database, three `paquets::three` scenes in islands (a hero that
-  follows the pointer and the scroll, a configurable object with `OrbitControls`, boxes
-  falling with `paquets::three::Physics`), scroll animations and a full footer, all in Rust
-  (the page motion too: `vitrine/src/mouvement.rs`, an island on every page).
 - Physics: every 3D object has a mass (from its volume), forces, gravity and collisions,
   Active's new `active::physics`, re-exported as `paquets::physics` and built into
   `paquets::ecs` (`DefaultPlugins`: `Mass`, `LinearVelocity`, `ExternalForce`,
