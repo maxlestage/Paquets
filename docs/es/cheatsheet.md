@@ -100,6 +100,7 @@ Consulta [Peticiones y respuestas](requests-responses.md).
 | Etiqueta extra en el head | `.head(r#"<link rel="icon" href="/favicon.svg"/>"#)` |
 | Sin tema | `.plain()` |
 | Estado | `.status(404)` |
+| Cambios de página más rápidos | `.view_transitions()`, `.prefetch(Prefetch::Hover)`, `.prerender(Prefetch::Hover)` |
 | Elemento | `div()`, `p()`, `a()`, `ul()`, `li()`, `h1()`, `section()`, `form()`, `input()`, `button()`… |
 | `<main>` en `main.rs` | `html::main()` |
 | Texto (escapado) | `.text("…")` |
@@ -141,6 +142,7 @@ Clases del tema: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted
 | Actualizar varias | `Todo::update_many().set(Todo::DONE, true).filter(...).execute(db)` |
 | Eliminar varias | `Todo::delete_many().filter(...).execute(db)` |
 | Transacción | `let tx = db.begin().await?; ...(&tx)...; tx.commit().await?;` |
+| Transacción relanzada si hay conflictos | `db.transaction(\|tx\| Box::pin(async move { ...(tx)...; Ok(()) })).await?` |
 | SQL sin procesar | `db.raw::<(i64, String)>("SELECT …", &paquets::orm::params![…])` |
 
 `db` es `req.db()` en un handler, o el argumento de `on_start`. Consulta [Base de datos](database.md).
@@ -223,6 +225,7 @@ Consulta [Seguridad](security.md).
 | Registrar | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |
 | Colocar | `island("counter", "0", counter)` |
 | Compilar | `paquets dev`, `paquets build` → `pkg/` |
+| 3D en un canvas | `paquets::three` (Three.js), `paquets::ecs` (Bevy): `game().run_in(canvas)` en `use_action` |
 
 Consulta [Islas](islands.md).
 

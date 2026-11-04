@@ -165,7 +165,7 @@ pub struct Texts {
     pub features_label: &'static str,
     pub features_title: &'static str,
     pub features_lead: &'static str,
-    pub features: [Item; 12],
+    pub features: [Item; 16],
     // Numbers
     pub numbers_label: &'static str,
     pub numbers_title: &'static str,
@@ -519,7 +519,7 @@ pub const EN: Texts = Texts {
         },
         PkgText {
             role: "Front end",
-            text: "Components are Rust functions with use_state. Server rendering with complete SEO tags, and WebAssembly islands for interactivity.",
+            text: "Components are Rust functions with use_state. Server rendering with complete SEO tags, WebAssembly islands for interactivity, and 3D the Three.js and Bevy way.",
             figure: "gzip for a counter island",
         },
     ],
@@ -599,16 +599,32 @@ pub const EN: Texts = Texts {
             "Add a field to a struct: at the next start it is a column, new indexes are created, nothing is dropped. A field existing rows can't fill stops the start with a clear message.",
         ),
         item(
+            "Transactions that retry",
+            "db.transaction(..) commits everything or nothing, and runs again when it conflicts with another transaction, like Prisma's $transaction.",
+        ),
+        item(
             "SEO-ready pages",
             "Server-rendered HTML with title, description, Open Graph, canonical URL and a strict CSP.",
+        ),
+        item(
+            "Instant page changes",
+            "view_transitions() fades from one page to the next like an app; prefetch() loads the next page while the pointer rests on its link. Allowed by the page's CSP, and nothing else.",
         ),
         item(
             "WebAssembly islands",
             "Add interactivity one component at a time. The bundle only loads on the pages that need it.",
         ),
         item(
+            "3D in the page",
+            "Three.js and Bevy, written in Rust: paquets::three draws scenes with WebGL 2, paquets::ecs runs games made of entities and systems, in an island's canvas.",
+        ),
+        item(
             "Query cache",
             "use_query and use_mutation: data shared by key between islands, revalidated in the background, invalidated by prefix, with optimistic updates. TanStack Query, in Rust.",
+        ),
+        item(
+            "Fast in a real app",
+            "With the compress feature, responses are compressed as fast as nginx does it and static files stay in memory with their compressed versions: up to 37 times more requests per second.",
         ),
         item(
             "Data in the browser",
@@ -726,7 +742,7 @@ pub const EN: Texts = Texts {
     footer_ecosystem_text: "Five Rust projects by one author, made to work together: from the front end to the database.",
     footer_here: "You are here",
     footer_projects: [
-        "Front-end: components, SSR, WebAssembly islands",
+        "Front-end: components, SSR, WebAssembly islands, 3D",
         "Express-style web server, HTTP/3",
         "Security middlewares for Vitesse & tower",
         "Async, type-safe ORM, SQL & NoSQL",
@@ -815,7 +831,7 @@ pub const FR: Texts = Texts {
         },
         PkgText {
             role: "Front-end",
-            text: "Les composants sont des fonctions Rust avec use_state. Rendu serveur avec toutes les balises SEO, et îlots WebAssembly pour l'interactivité.",
+            text: "Les composants sont des fonctions Rust avec use_state. Rendu serveur avec toutes les balises SEO, îlots WebAssembly pour l'interactivité, et la 3D à la Three.js et à la Bevy.",
             figure: "gzip pour un îlot compteur",
         },
     ],
@@ -895,16 +911,32 @@ pub const FR: Texts = Texts {
             "Ajoutez un champ à une struct : au démarrage suivant, c'est une colonne, les nouveaux index sont créés, rien n'est supprimé. Un champ que les lignes existantes ne peuvent pas remplir arrête le démarrage avec un message clair.",
         ),
         item(
+            "Des transactions qui se relancent",
+            "db.transaction(..) valide tout ou rien, et se relance quand elle entre en conflit avec une autre transaction, comme le $transaction de Prisma.",
+        ),
+        item(
             "Pages prêtes pour le SEO",
             "Du HTML rendu sur le serveur avec titre, description, Open Graph, URL canonique et une CSP stricte.",
+        ),
+        item(
+            "Des changements de page instantanés",
+            "view_transitions() passe d'une page à l'autre en fondu, comme une app ; prefetch() charge la page suivante pendant que le pointeur repose sur son lien. Autorisés par la CSP de la page, et rien d'autre.",
         ),
         item(
             "Îlots WebAssembly",
             "Ajoutez de l'interactivité composant par composant. Le bundle n'est chargé que par les pages qui en ont besoin.",
         ),
         item(
+            "De la 3D dans la page",
+            "Three.js et Bevy, écrits en Rust : paquets::three dessine des scènes avec WebGL 2, paquets::ecs fait tourner des jeux faits d'entités et de systèmes, dans le canvas d'un îlot.",
+        ),
+        item(
             "Cache de requêtes",
             "use_query et use_mutation : des données partagées par clé entre les îlots, revalidées en arrière-plan, invalidées par préfixe, avec mises à jour optimistes. TanStack Query, en Rust.",
+        ),
+        item(
+            "Rapide dans une vraie app",
+            "Avec la feature compress, les réponses sont compressées aussi vite que nginx et les fichiers statiques restent en mémoire avec leurs versions compressées : jusqu'à 37 fois plus de requêtes par seconde.",
         ),
         item(
             "Des données dans le navigateur",
@@ -1028,7 +1060,7 @@ pub const FR: Texts = Texts {
     footer_ecosystem_text: "Cinq projets Rust d'un même auteur, faits pour travailler ensemble : du front-end à la base de données.",
     footer_here: "Vous êtes ici",
     footer_projects: [
-        "Front-end : composants, SSR, îlots WebAssembly",
+        "Front-end : composants, SSR, îlots WebAssembly, 3D",
         "Serveur web façon Express, HTTP/3",
         "Middlewares de sécurité pour Vitesse et tower",
         "ORM asynchrone typé, SQL et NoSQL",
@@ -1117,7 +1149,7 @@ pub const ES: Texts = Texts {
         },
         PkgText {
             role: "Front-end",
-            text: "Los componentes son funciones Rust con use_state. Renderizado en el servidor con todas las etiquetas SEO, e islas WebAssembly para la interactividad.",
+            text: "Los componentes son funciones Rust con use_state. Renderizado en el servidor con todas las etiquetas SEO, islas WebAssembly para la interactividad, y 3D al estilo Three.js y Bevy.",
             figure: "gzip para una isla contador",
         },
     ],
@@ -1197,16 +1229,32 @@ pub const ES: Texts = Texts {
             "Añade un campo a un struct: en el siguiente arranque es una columna, se crean los nuevos índices, no se borra nada. Un campo que las filas existentes no pueden rellenar detiene el arranque con un mensaje claro.",
         ),
         item(
+            "Transacciones que se relanzan",
+            "db.transaction(..) confirma todo o nada, y se vuelve a ejecutar cuando entra en conflicto con otra transacción, como el $transaction de Prisma.",
+        ),
+        item(
             "Páginas listas para el SEO",
             "HTML renderizado en el servidor con título, descripción, Open Graph, URL canónica y una CSP estricta.",
+        ),
+        item(
+            "Cambios de página instantáneos",
+            "view_transitions() pasa de una página a otra con un fundido, como una app; prefetch() carga la página siguiente mientras el puntero descansa sobre su enlace. Permitidos por la CSP de la página, y nada más.",
         ),
         item(
             "Islas WebAssembly",
             "Añade interactividad componente a componente. El bundle solo se carga en las páginas que lo necesitan.",
         ),
         item(
+            "3D en la página",
+            "Three.js y Bevy, escritos en Rust: paquets::three dibuja escenas con WebGL 2, paquets::ecs ejecuta juegos hechos de entidades y sistemas, en el canvas de una isla.",
+        ),
+        item(
             "Caché de consultas",
             "use_query y use_mutation: datos compartidos por clave entre islas, revalidados en segundo plano, invalidados por prefijo, con actualizaciones optimistas. TanStack Query, en Rust.",
+        ),
+        item(
+            "Rápido en una app real",
+            "Con la feature compress, las respuestas se comprimen tan rápido como lo hace nginx y los archivos estáticos se quedan en memoria con sus versiones comprimidas: hasta 37 veces más peticiones por segundo.",
         ),
         item(
             "Datos en el navegador",
@@ -1330,7 +1378,7 @@ pub const ES: Texts = Texts {
     footer_ecosystem_text: "Cinco proyectos Rust de un mismo autor, hechos para trabajar juntos: del front-end a la base de datos.",
     footer_here: "Estás aquí",
     footer_projects: [
-        "Front-end: componentes, SSR, islas WebAssembly",
+        "Front-end: componentes, SSR, islas WebAssembly, 3D",
         "Servidor web estilo Express, HTTP/3",
         "Middlewares de seguridad para Vitesse y tower",
         "ORM asíncrono tipado, SQL y NoSQL",

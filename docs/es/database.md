@@ -351,6 +351,31 @@ async fn transfer(req: Request) -> Result<StatusCode> {
 
 Si algo falla antes del `commit` (un `?` sale antes de tiempo), la transacción se descarta y todos los cambios se deshacen.
 
+### Todo o nada, y relanzada si hay conflictos: `db.transaction`
+
+`db.transaction` ejecuta una clausura en una transacción, como el `$transaction` de Prisma: confirma cuando la clausura devuelve `Ok`, deshace todo cuando devuelve un error, y la vuelve a ejecutar cuando entra en conflicto con otra transacción (un fallo de serialización, un interbloqueo), hasta cinco veces en total. Escribe las consultas con `tx`:
+
+```rust
+async fn transfer(req: Request) -> Result<StatusCode> {
+    let t: Transfer = req.json().await?;
+    let (from, to, amount) = (t.from, t.to, t.amount);
+    req.db()
+        .transaction(|tx| Box::pin(async move {
+            let mut a = Account::find(tx, from).await?.ok_or(paquets::orm::Error::NotFound)?;
+            let mut b = Account::find(tx, to).await?.ok_or(paquets::orm::Error::NotFound)?;
+            a.balance -= amount;
+            b.balance += amount;
+            a.update(tx).await?;
+            b.update(tx).await?;
+            Ok(())
+        }))
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+```
+
+La clausura puede ejecutarse más de una vez: dale copias de lo que necesita (`let (from, to, amount) = ...` arriba), no la petición.
+
 ## Datos al arrancar
 
 `app.on_start` se ejecuta una vez, después de abrir la base de datos y de que existan las tablas, antes de la primera petición. Úsalo para añadir los datos iniciales:
@@ -384,6 +409,8 @@ app.on_start(|db| async move {
 ## Modificar una tabla más adelante
 
 En cada arranque, cada tabla se pone al día según su struct (consulta [Las tablas se crean al arrancar](#las-tablas-se-crean-al-arrancar)): un campo nuevo se convierte en una columna, se crean los nuevos índices y **nada más cambia**. Un campo nuevo que las filas existentes no pueden rellenar (ni un `Option<T>` ni con un `default`) detiene el arranque con un mensaje claro, antes de cualquier cambio. Con la base de datos en memoria (desarrollo, pruebas) la tabla se vuelve a crear en cada arranque de todos modos.
+
+Es el `db.push::<M>()` de Memoire, como `drizzle-kit push` o `prisma db push`, que también puedes llamar tú mismo, para un modelo que la app no registra o desde un script: `let report = db.push::<Todo>().await?;` dice qué se creó o añadió.
 
 Todo lo demás es una **migración**: rellenar una columna nueva a partir de los datos existentes, renombrar, borrar o cambiar el tipo de una columna. Una migración es un cambio numerado, registrado en la base de datos para que solo se ejecute una vez. El `Migrator` de Memoire se encarga de ello, y `on_start` es el sitio donde ejecutarlo: se ejecuta cuando las tablas ya están al día. Una vez añadido `priority: i32` al struct con `#[memoire(default = "0")]`, este ejemplo da una prioridad de 1 a las tareas aún no hechas, en PostgreSQL:
 

@@ -95,6 +95,8 @@ See the [Pratique documentation](https://securite-2db4c1994be7.herokuapp.com/en/
 
 **Beyond the prelude**, through `paquets::orm`: `Migrator` and `Migration`, `Dialect`, the `params!` macro for raw SQL, `Page` (the result of `paginate`), `Json<T>` columns, `Observed` (a handle that announces every write made through it), `StorageOptions`, and the backends themselves (`SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), to open a database with your own settings and pass it to `app.database(Db::from(...))`. See [Database](database.md).
 
+Transactions that run again on conflicts (`db.transaction`, like Prisma) and tables brought up to date without migration files (`db.push::<M>()`, like Drizzle, run at every start) work on `req.db()` too.
+
 ## active: the front end
 
 [Active](https://active-c1883a966650.herokuapp.com/) builds views with one function per HTML tag, renders them on the server with complete SEO tags, and turns marked parts of a page into WebAssembly islands. It has no macros, no template language and no dependency on the server side; its counter bundle weighs 36.8 kB compressed.
@@ -104,6 +106,8 @@ See the [Pratique documentation](https://securite-2db4c1994be7.herokuapp.com/en/
 **In the prelude:** every HTML tag function (`div()`, `p()`, `a()`…) and the `html` module (for `html::main()`), `Element`, `Node`, `Seo`, `State`, `use_state`, `effect`, `memo` (a derived state that notifies only when its value changes), `untrack`, `on_cleanup`, `island`, `el`, `text`, `text_dyn`, `fragment`, `fragment_dyn`, `keyed`, `indexed` (a list whose rows follow their position) and `switch` (a view that keeps its page while the page's parameters change).
 
 **Beyond the prelude**, through `paquets::active`: `Document` to render a page without the theme and security policy of `Page`, for example to export static files. With the `client` feature (browser side): `paquets::hydrate`, `paquets::mount_to` and `paquets::mount` for apps rendered entirely in the browser, `paquets::navigate`, `paquets::location`, `paquets::query` and `paquets::query_param` for routing without reloading. See [Islands](islands.md) and [Active's documentation](https://active-c1883a966650.herokuapp.com/en/docs/introduction/).
+
+**3D:** `paquets::three` (the API of Three.js) and `paquets::ecs` (the API of Bevy) draw 3D in an island's canvas, see [3D in an island](islands.md#3d-in-an-island). And `Page::view_transitions()`, `Page::prefetch(...)` and `Page::prerender(...)` make page changes feel instant, see [Faster page changes](pages.md#faster-page-changes).
 
 ## How the names map
 

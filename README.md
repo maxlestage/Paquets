@@ -55,6 +55,7 @@ database, and a security shield in front of every request. Nothing to configure.
 | 🔎 **SEO pages** | Pages are finished HTML from the server: title, description, Open Graph, Twitter, canonical, JSON-LD. A built-in theme (light and dark) makes them look good without CSS. |
 | 📲 **Installable (PWA)** | `app.pwa(Pwa::new("My app"))`: a web app manifest and an offline service worker, so the app goes on the home screen and keeps working without network. |
 | 🏝️ **Islands** | The interactive parts are Rust components compiled to WebAssembly, and only those: the rest of the page ships no code. |
+| 🎮 **3D** | Three.js and Bevy, written in Rust: `paquets::three` draws scenes with WebGL 2, `paquets::ecs` runs games made of entities, components and systems, in an island's canvas. |
 | ⚡ **Fast** | Built on a server faster than actix-web and axum, a security pipeline of ≈ 6 µs, compile-time SQL. |
 | 📱 **Deploy from your phone** | Dockerfile, `heroku.yml`, `app.json` and GitHub Actions are generated: one tap on *Deploy to Heroku*. |
 

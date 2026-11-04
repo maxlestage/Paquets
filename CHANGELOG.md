@@ -7,6 +7,17 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- 3D, the Three.js and Bevy way: `paquets::three` (a scene of meshes, lights and cameras drawn
+  with WebGL 2, `OrbitControls`, `animation_loop`) and `paquets::ecs` (entities, components,
+  systems, an `App` with plugins and schedules, 3D in physical light units, `app.run_in(canvas)`
+  in an island), Active's two new modules. Guide: Islands, "3D in an island".
+- Faster page changes: `Page::view_transitions()` (the View Transitions API, as in Astro and
+  Next), `Page::prefetch(Prefetch::Hover)` and `Page::prerender(...)` (speculation rules, with
+  a fallback for the other browsers); `Prefetch` is in the prelude. Their inline code is added
+  to the page's Content-Security-Policy by its hash, and nothing else.
+- Documented: `db.transaction(...)`, Memoire's transaction that commits, rolls back on an
+  error and runs again on a conflict (like Prisma's `$transaction`), on `req.db()`; and
+  `db.push::<M>()`, the call behind the tables brought up to date at startup.
 - Tables follow the models: at startup, `app.api` / `app.model` now bring each table up to date
   with Memoire's `push` (like `drizzle-kit push`): a field added to a struct becomes a column,
   new indexes are created, nothing is ever dropped. A new field existing rows could not fill

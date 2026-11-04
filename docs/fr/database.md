@@ -351,6 +351,31 @@ async fn transfer(req: Request) -> Result<StatusCode> {
 
 Si quoi que ce soit échoue avant `commit` (un `?` qui sort plus tôt), la transaction est abandonnée et toutes les modifications sont annulées.
 
+### Tout ou rien, et relancée en cas de conflit : `db.transaction`
+
+`db.transaction` exécute une closure dans une transaction, comme le `$transaction` de Prisma : elle valide quand la closure renvoie `Ok`, annule tout quand elle renvoie une erreur, et la relance quand elle entre en conflit avec une autre transaction (échec de sérialisation, interblocage), jusqu'à cinq fois en tout. Écrivez les requêtes avec `tx` :
+
+```rust
+async fn transfer(req: Request) -> Result<StatusCode> {
+    let t: Transfer = req.json().await?;
+    let (from, to, amount) = (t.from, t.to, t.amount);
+    req.db()
+        .transaction(|tx| Box::pin(async move {
+            let mut a = Account::find(tx, from).await?.ok_or(paquets::orm::Error::NotFound)?;
+            let mut b = Account::find(tx, to).await?.ok_or(paquets::orm::Error::NotFound)?;
+            a.balance -= amount;
+            b.balance += amount;
+            a.update(tx).await?;
+            b.update(tx).await?;
+            Ok(())
+        }))
+        .await?;
+    Ok(StatusCode::NO_CONTENT)
+}
+```
+
+La closure peut s'exécuter plusieurs fois : donnez-lui des copies de ce dont elle a besoin (`let (from, to, amount) = ...` ci-dessus), pas la requête.
+
 ## Données au démarrage
 
 `app.on_start` s'exécute une seule fois, après l'ouverture de la base de données et la création des tables, avant la première requête. Servez-vous-en pour ajouter des données initiales :
@@ -384,6 +409,8 @@ app.on_start(|db| async move {
 ## Modifier une table plus tard
 
 À chaque démarrage, chaque table est mise à jour d'après sa struct (voir [Les tables sont créées au démarrage](#les-tables-sont-créées-au-démarrage)) : un nouveau champ devient une colonne, les nouveaux index sont créés, et **rien d'autre ne change**. Un nouveau champ que les lignes existantes ne peuvent pas remplir (ni une `Option<T>`, ni doté d'un `default`) arrête le démarrage avec un message clair, avant tout changement. Avec la base de données en mémoire (développement, tests), la table est de toute façon recréée à chaque démarrage.
+
+C'est le `db.push::<M>()` de Memoire, comme `drizzle-kit push` ou `prisma db push`, que vous pouvez aussi appeler vous-même, pour un modèle que l'app n'enregistre pas ou depuis un script : `let report = db.push::<Todo>().await?;` dit ce qui a été créé ou ajouté.
 
 Tout le reste est une **migration** : remplir une nouvelle colonne à partir des données existantes, renommer, supprimer ou changer le type d'une colonne. Une migration est une modification numérotée, enregistrée dans la base de données pour ne s'exécuter qu'une seule fois. Le `Migrator` de Memoire s'en charge, et `on_start` est l'endroit où le lancer : il s'exécute une fois les tables à jour. Une fois `priority: i32` ajouté à la struct avec `#[memoire(default = "0")]`, cet exemple donne une priorité de 1 aux tâches pas encore faites, sur PostgreSQL :
 

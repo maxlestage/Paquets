@@ -3,7 +3,7 @@
 
 use std::sync::OnceLock;
 
-use active::{Document, Node, Seo};
+use active::{Document, Node, Prefetch, Seo};
 use securite::headers::ContentSecurityPolicy;
 use vitesse::{IntoResponse, Response, StatusCode, header};
 
@@ -52,6 +52,15 @@ pub struct Page {
     head: Vec<String>,
     theme: bool,
     status: StatusCode,
+    speed: Speed,
+}
+
+/// How the page makes the next one faster (`view_transitions`, `prefetch`, `prerender`).
+#[derive(Clone, Copy, Default)]
+struct Speed {
+    transitions: bool,
+    prefetch: Option<Prefetch>,
+    prerender: Option<Prefetch>,
 }
 
 impl Page {
@@ -67,6 +76,7 @@ impl Page {
             head: Vec::new(),
             theme: true,
             status: StatusCode::OK,
+            speed: Speed::default(),
         }
     }
 
@@ -125,6 +135,46 @@ impl Page {
         self
     }
 
+    /// Animates the change to the next page of the site, like an app: the browser fades
+    /// from one page to the other, and elements with the same `view-transition-name` move
+    /// to their new place (the View Transitions API, as in Astro and Next). Nothing
+    /// happens in browsers without it, nor for visitors who prefer reduced motion.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// let html = Page::new("Home").view_transitions().render();
+    /// assert!(html.contains("@view-transition{navigation:auto}"));
+    /// ```
+    pub fn view_transitions(mut self) -> Self {
+        self.speed.transitions = true;
+        self
+    }
+
+    /// Loads the pages the visitor is about to open before they click, so that they show
+    /// at once (`Prefetch::Hover`: when the pointer rests on a link). Same-site links
+    /// only; links with `rel="nofollow"` or `download`, or inside `data-no-prefetch`, are
+    /// left alone.
+    ///
+    /// ```
+    /// use paquets::prelude::*;
+    ///
+    /// let html = Page::new("Home").prefetch(Prefetch::Hover).render();
+    /// assert!(html.contains(r#"<script type="speculationrules">"#));
+    /// ```
+    pub fn prefetch(mut self, when: Prefetch) -> Self {
+        self.speed.prefetch = Some(when);
+        self
+    }
+
+    /// Like [`prefetch`](Self::prefetch), with the next page also run and painted in the
+    /// background where the browser can (Chrome, Edge): it appears instantly. Keep it for
+    /// pages without side effects when they load.
+    pub fn prerender(mut self, when: Prefetch) -> Self {
+        self.speed.prerender = Some(when);
+        self
+    }
+
     /// The HTML of the page.
     pub fn render(self) -> String {
         self.render_with_policy().0
@@ -164,6 +214,34 @@ impl Page {
             styles.extend(ContentSecurityPolicy::hashes_for_inline_styles(&html));
             scripts.extend(ContentSecurityPolicy::hashes_for_inline_scripts(&html));
             document = document.head(html);
+        }
+        let speed = self.speed;
+        if speed.transitions {
+            document = document.view_transitions();
+            allow(
+                &mut styles,
+                &mut scripts,
+                "transitions".into(),
+                Document::view_transitions,
+            );
+        }
+        if let Some(when) = speed.prefetch {
+            document = document.prefetch(when);
+            allow(
+                &mut styles,
+                &mut scripts,
+                format!("prefetch {when:?}"),
+                |d| d.prefetch(when),
+            );
+        }
+        if let Some(when) = speed.prerender {
+            document = document.prerender(when);
+            allow(
+                &mut styles,
+                &mut scripts,
+                format!("prerender {when:?}"),
+                |d| d.prerender(when),
+            );
         }
         if let Some(manifest) = crate::pwa::manifest() {
             document = document
@@ -209,6 +287,43 @@ static ACTIVE_STYLE: OnceLock<String> = OnceLock::new();
 static THEME_HASH: OnceLock<String> = OnceLock::new();
 static REGISTER_HASH: OnceLock<String> = OnceLock::new();
 static LOADER: OnceLock<(String, String)> = OnceLock::new();
+
+/// The hashes of the inline styles and scripts `active` writes for an option of
+/// [`Document`], by option: found once, by rendering an empty page with it.
+type Hashes = (Vec<String>, Vec<String>);
+static OPTION_HASHES: std::sync::Mutex<Vec<(String, Hashes)>> = std::sync::Mutex::new(Vec::new());
+
+/// Adds to the page's policy what `option` writes inline, so that it runs and nothing
+/// else does.
+fn allow(
+    styles: &mut Vec<String>,
+    scripts: &mut Vec<String>,
+    key: String,
+    option: impl FnOnce(Document) -> Document,
+) {
+    let (style_hashes, script_hashes) = {
+        let mut known = OPTION_HASHES.lock().unwrap_or_else(|e| e.into_inner());
+        match known.iter().find(|(k, _)| *k == key) {
+            Some((_, hashes)) => hashes.clone(),
+            None => {
+                let html = option(Document::new(Node::from(""))).render();
+                let hashes = (
+                    ContentSecurityPolicy::hashes_for_inline_styles(&html),
+                    ContentSecurityPolicy::hashes_for_inline_scripts(&html),
+                );
+                known.push((key, hashes.clone()));
+                hashes
+            }
+        }
+    };
+    for (list, hashes) in [(styles, style_hashes), (scripts, script_hashes)] {
+        for hash in hashes {
+            if !list.contains(&hash) {
+                list.push(hash);
+            }
+        }
+    }
+}
 
 fn cached(cell: &'static OnceLock<String>, compute: impl FnOnce() -> String) -> String {
     cell.get_or_init(compute).clone()
@@ -261,6 +376,30 @@ impl IntoResponse for Page {
 mod tests {
     use super::*;
     use active::html::{h1, main, p};
+
+    #[test]
+    fn faster_navigations_are_allowed_by_the_policy_and_nothing_else() {
+        let (html, policy) = Page::new("Home")
+            .view_transitions()
+            .prefetch(Prefetch::Hover)
+            .render_with_policy();
+        assert!(html.contains("@view-transition{navigation:auto}"), "{html}");
+        assert!(
+            html.contains(r#"<script type="speculationrules">"#),
+            "{html}"
+        );
+        // Each inline style and script the page writes has its hash in the policy.
+        for hash in ContentSecurityPolicy::hashes_for_inline_styles(&html)
+            .into_iter()
+            .chain(ContentSecurityPolicy::hashes_for_inline_scripts(&html))
+        {
+            assert!(policy.contains(&hash), "{hash} missing from {policy}");
+        }
+        // Without them, the page has none of it.
+        let (plain, plain_policy) = Page::new("Home").render_with_policy();
+        assert!(!plain.contains("speculationrules") && !plain.contains("view-transition"));
+        assert!(plain_policy.len() < policy.len());
+    }
 
     #[test]
     fn renders_a_themed_page_with_its_seo() {

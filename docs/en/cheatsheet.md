@@ -100,6 +100,7 @@ See [Requests and responses](requests-responses.md).
 | Extra head tag | `.head(r#"<link rel="icon" href="/favicon.svg"/>"#)` |
 | No theme | `.plain()` |
 | Status | `.status(404)` |
+| Faster page changes | `.view_transitions()`, `.prefetch(Prefetch::Hover)`, `.prerender(Prefetch::Hover)` |
 | Element | `div()`, `p()`, `a()`, `ul()`, `li()`, `h1()`, `section()`, `form()`, `input()`, `button()`… |
 | `<main>` in `main.rs` | `html::main()` |
 | Text (escaped) | `.text("…")` |
@@ -141,6 +142,7 @@ Theme classes: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted`,
 | Update many | `Todo::update_many().set(Todo::DONE, true).filter(...).execute(db)` |
 | Delete many | `Todo::delete_many().filter(...).execute(db)` |
 | Transaction | `let tx = db.begin().await?; ...(&tx)...; tx.commit().await?;` |
+| Transaction, retried on conflicts | `db.transaction(\|tx\| Box::pin(async move { ...(tx)...; Ok(()) })).await?` |
 | Raw SQL | `db.raw::<(i64, String)>("SELECT …", &paquets::orm::params![…])` |
 
 `db` is `req.db()` in a handler, or the argument of `on_start`. See [Database](database.md).
@@ -223,6 +225,7 @@ See [Security](security.md).
 | Register | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |
 | Place | `island("counter", "0", counter)` |
 | Build | `paquets dev`, `paquets build` → `pkg/` |
+| 3D in a canvas | `paquets::three` (Three.js), `paquets::ecs` (Bevy): `game().run_in(canvas)` in `use_action` |
 
 See [Islands](islands.md).
 

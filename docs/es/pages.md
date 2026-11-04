@@ -322,6 +322,25 @@ fn contact_form() -> Element {
 
 No hace falta ningún token CSRF: el escudo rechaza los formularios enviados desde otros sitios web. La parte del handler está en [Peticiones y respuestas](requests-responses.md#formularios).
 
+## Cambios de página más rápidos
+
+Tres métodos de `Page` dan al paso de una página del sitio a otra la fluidez de una app, sin JavaScript que escribir:
+
+```rust
+fn layout(title: &str, content: Node) -> Page {
+    Page::new(title)
+        .view_transitions()        // la página siguiente aparece con un fundido, como una app
+        .prefetch(Prefetch::Hover) // y se carga mientras el puntero descansa sobre su enlace
+        .body(content)
+}
+```
+
+- `view_transitions()`: el navegador pasa de una página a otra con un fundido, y un elemento con el mismo `view-transition-name` (CSS) en ambas páginas se desliza a su nuevo lugar (la API View Transitions, como en Astro y Next). No pasa nada en los navegadores que no la tienen, ni para los visitantes que prefieren menos movimiento.
+- `prefetch(Prefetch::Hover)`: la página a la que lleva un enlace se carga mientras el puntero descansa sobre él (o el enlace tiene el foco), y aparece al instante al hacer clic. `Prefetch::Press` espera a la pulsación, `Prefetch::Visible` carga los enlaces en cuanto están en pantalla. Solo enlaces del mismo sitio; los que tienen `rel="nofollow"` o `download`, o están dentro de un elemento `data-no-prefetch`, se dejan de lado.
+- `prerender(...)`: lo mismo, y además la página siguiente se ejecuta y se dibuja en segundo plano donde el navegador puede (Chrome, Edge). Resérvalo para páginas sin efectos secundarios al cargarse.
+
+Su código en línea se añade a la Content-Security-Policy de la página por su hash, como el tema: nada más en línea puede ejecutarse.
+
 ## Partes interactivas
 
 Una página es HTML estático. Para que una parte reaccione en el navegador (un contador, un cuadro de búsqueda, un carrito), convierte esa parte en una **isla**: `island("counter", "0", counter)`. Solo las páginas que contienen islas cargan el bundle del navegador. Consulta [Islas](islands.md).
