@@ -7,6 +7,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- `vitrine/`: Orbite, a complete showcase site written with Paquets (French): seven pages
+  rendered on the server, an installable PWA with its own icons, a contact form and a
+  newsletter stored in the database, three `paquets::three` scenes in islands (a hero that
+  follows the pointer and the scroll, a configurable object with `OrbitControls`, boxes
+  falling with `paquets::three::Physics`), scroll animations and a full footer.
 - Physics: every 3D object has a mass (from its volume), forces, gravity and collisions,
   Active's new `active::physics`, re-exported as `paquets::physics` and built into
   `paquets::ecs` (`DefaultPlugins`: `Mass`, `LinearVelocity`, `ExternalForce`,
@@ -38,6 +43,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   IndexedDB in the background, in order.
 
 ### Fixed
+- The first page rendered with `view_transitions()`, `prefetch(...)` or `prerender(...)`
+  no longer fails with "this state was disposed" (a 500) when it holds islands with state:
+  the hashes of these options are now found after the page is rendered.
 - With SQLite or the in-memory database, the tasks spawned by `app.on_start` hooks
   (`tokio::spawn`: a purge every minute, a cache refreshed in the background…) were cancelled
   as soon as the server started, because the runtime of the startup was dropped: it now keeps
