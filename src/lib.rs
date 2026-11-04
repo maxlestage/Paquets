@@ -148,9 +148,12 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 /// Front end: views, state, SEO tags, islands ([active](https://active-c1883a966650.herokuapp.com/)).
 pub use active;
 /// Games and simulations the way Bevy writes them: entities, components, systems, an `App`
-/// with plugins and schedules, 3D in physical light units, run in an island's canvas with
-/// `app.run_in(canvas)` (`active::ecs`).
+/// with plugins and schedules, 3D in physical light units and physics, run in an island's
+/// canvas with `app.run_in(canvas)` (`active::ecs`).
 pub use active::ecs;
+/// Rigid-body physics in 3D: every object has a mass, forces, gravity and collisions
+/// (`active::physics`; built into `paquets::ecs` and `paquets::three::Physics`).
+pub use active::physics;
 /// 3D the way Three.js writes it: a scene of meshes, lights and cameras, drawn with WebGL 2
 /// in an island's canvas (`active::three`; the renderer comes with the `client` feature).
 pub use active::three;
