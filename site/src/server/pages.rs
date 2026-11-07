@@ -6,8 +6,8 @@ use super::Site;
 use super::docs::Doc;
 use crate::catalog::{self, CATEGORIES, PAGES, pages_of};
 use crate::data::{
-    AUTHOR, CRATES_IO, DOCS_RS, ECOSYSTEM, FEATURES, INSTALL, JOURNEY, LICENSE_PATH, MARQUEE_CODE,
-    NUMBERS, PACKAGES,
+    AUTHOR, CRATES_IO, DOCS_RS, ECOSYSTEM, EXTRAS, FEATURES, INSTALL, JOURNEY, LICENSE_PATH,
+    MARQUEE_CODE, NUMBERS, PACKAGES,
 };
 use crate::i18n::{Lang, Texts, number};
 use crate::icons::{icon, logo};
@@ -692,9 +692,12 @@ pub fn home(ctx: &Ctx<'_>) -> Page {
         .child(hero(ctx))
         .child(marquee(ctx))
         .child(packages(ctx))
+        .child(extra(ctx, 0, "02", "news"))
         .child(showcase(ctx))
         .child(features(ctx))
+        .child(extra(ctx, 1, "05", "games"))
         .child(numbers(ctx))
+        .child(extra(ctx, 2, "07", "speed"))
         .child(journey(ctx))
         .child(deploy(ctx))
         .child(docs_preview(ctx))
@@ -979,7 +982,7 @@ fn showcase(ctx: &Ctx<'_>) -> Element {
     section()
         .class("section showcase")
         .id("code")
-        .child(head("02", t.code_label, t.code_title, Some(t.code_lead)))
+        .child(head("03", t.code_label, t.code_title, Some(t.code_lead)))
         .child(island(
             "showcase",
             ctx.lang().code(),
@@ -993,7 +996,7 @@ fn features(ctx: &Ctx<'_>) -> Element {
         .class("section")
         .id("features")
         .child(head(
-            "03",
+            "04",
             t.features_label,
             t.features_title,
             Some(t.features_lead),
@@ -1022,6 +1025,41 @@ fn features(ctx: &Ctx<'_>) -> Element {
         )
 }
 
+/// A section of cards of version 0.3 (`Texts::extras`): what is new, 3D and physics,
+/// performance.
+fn extra(ctx: &Ctx<'_>, index: usize, num: &str, id: &str) -> Element {
+    let t = ctx.t();
+    let e = &t.extras[index];
+    section()
+        .class("section")
+        .id(id.to_owned())
+        .child(head(num, e.label, e.title, Some(e.lead)))
+        .child(
+            div().class("features features--four").children(
+                EXTRAS[index]
+                    .iter()
+                    .zip(&e.items)
+                    .enumerate()
+                    .map(|(i, ((name, tag), f))| {
+                        div()
+                            .class("features__item")
+                            .attr("data-reveal", "")
+                            .style(format!("--d:{}ms", i * 90))
+                            .child(
+                                div()
+                                    .class("tilt feature card")
+                                    .attr("data-tilt", "10")
+                                    .child(span().class("tilt__spot").attr("aria-hidden", "true"))
+                                    .child(span().class("feature__icon").child(icon(name)))
+                                    .child(h3().text(f.title))
+                                    .child(p().text(f.text))
+                                    .child(code().class("feature__tag").text(*tag)),
+                            )
+                    }),
+            ),
+        )
+}
+
 fn numbers(ctx: &Ctx<'_>) -> Element {
     let t = ctx.t();
     let lang = ctx.lang();
@@ -1029,7 +1067,7 @@ fn numbers(ctx: &Ctx<'_>) -> Element {
         .class("section numbers")
         .id("numbers")
         .child(div().class("numbers__bg").attr("aria-hidden", "true"))
-        .child(head("04", t.numbers_label, t.numbers_title, None))
+        .child(head("06", t.numbers_label, t.numbers_title, None))
         .child(
             div()
                 .class("stats")
@@ -1091,7 +1129,7 @@ fn journey(ctx: &Ctx<'_>) -> Element {
         .class("section journey")
         .id("start")
         .child(head(
-            "05",
+            "08",
             t.journey_label,
             t.journey_title,
             Some(t.journey_lead),
@@ -1219,7 +1257,7 @@ fn deploy(ctx: &Ctx<'_>) -> Element {
         .class("section deploy")
         .id("deploy")
         .child(head(
-            "06",
+            "09",
             t.deploy_label,
             t.deploy_title,
             Some(t.deploy_lead),
@@ -1291,7 +1329,7 @@ fn docs_preview(ctx: &Ctx<'_>) -> Element {
         .class("section")
         .id("docs")
         .child(head(
-            "07",
+            "10",
             t.docs_label,
             t.docs_home_title,
             Some(t.docs_home_lead),

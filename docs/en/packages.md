@@ -107,7 +107,7 @@ Transactions that run again on conflicts (`db.transaction`, like Prisma) and tab
 
 **Beyond the prelude**, through `paquets::active`: `Document` to render a page without the theme and security policy of `Page`, for example to export static files. With the `client` feature (browser side): `paquets::hydrate`, `paquets::mount_to` and `paquets::mount` for apps rendered entirely in the browser, `paquets::navigate`, `paquets::location`, `paquets::query` and `paquets::query_param` for routing without reloading. See [Islands](islands.md) and [Active's documentation](https://active-c1883a966650.herokuapp.com/en/docs/introduction/).
 
-**3D:** `paquets::three` (the API of Three.js) and `paquets::ecs` (the API of Bevy) draw 3D in an island's canvas, see [3D in an island](islands.md#3d-in-an-island). And `Page::view_transitions()`, `Page::prefetch(...)` and `Page::prerender(...)` make page changes feel instant, see [Faster page changes](pages.md#faster-page-changes).
+**3D:** `paquets::scene` (Active's 3D scene) and `paquets::ecs` (Active's game engine) draw 3D in an island's canvas, see [3D in an island](islands.md#3d-in-an-island). And `Page::view_transitions()`, `Page::prefetch(...)` and `Page::prerender(...)` make page changes feel instant, see [Faster page changes](pages.md#faster-page-changes).
 
 ## How the names map
 

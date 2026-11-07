@@ -329,21 +329,21 @@ Les données restent dans le navigateur : le serveur ne les voit jamais, sauf si
 
 ## De la 3D dans un îlot
 
-Un îlot peut dessiner en 3D dans un `<canvas>`, avec les deux modules 3D d'Active, réexportés par Paquets :
+Un îlot peut dessiner en 3D dans un `<canvas>`, avec les moteurs d'Active, réexportés par Paquets :
 
-- `paquets::three` l'écrit comme [Three.js](https://threejs.org) : une scène de maillages, de lumières et de caméras, un rendu WebGL 2, une boucle d'animation et `OrbitControls` ;
-- `paquets::ecs` l'écrit comme [Bevy](https://bevy.org) : entités, composants et systèmes, une `App` avec plugins et horaires, la 3D en unités physiques de lumière.
+- `paquets::scene`, la scène 3D : maillages, lumières et caméras, un rendu WebGL 2, une boucle d'animation et `OrbitControls` ;
+- `paquets::ecs`, le moteur de jeu : entités, composants et systèmes, une `App` avec plugins et horaires, la 3D en unités physiques de lumière.
 
-Chaque maillage a aussi sa physique : une masse tirée de son volume, la gravité, des forces et des collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… sur l'entité ; `paquets::three::Physics` pour une scène ; `paquets::physics` seul). Le guide d'Active l'explique dans sa partie sur la physique.
+Chaque maillage a aussi sa physique : une masse tirée de son volume, la gravité, des forces et des collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… sur l'entité ; `paquets::scene::Physics` pour une scène ; `paquets::physics` seul). Le guide d'Active l'explique dans sa partie sur la physique.
 
-Un jeu écrit à la manière de Bevy, dans un îlot :
+Un jeu, dans un îlot :
 
 ```rust
-// src/game.rs : le jeu, dans son propre module (le prélude de Bevy a son propre `App`).
+// src/game.rs : le jeu, dans son propre module (le prélude du moteur de jeu a son propre `App`).
 use paquets::ecs::prelude::*;
 
 struct Spinning;
-paquets::active::component!(Spinning); // #[derive(Component)] dans Bevy
+paquets::active::component!(Spinning); // un composant, en une ligne
 
 fn setup(
     mut commands: Commands,
@@ -397,7 +397,7 @@ fn play(_canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
 }
 ```
 
-Placez-le comme n'importe quel îlot : `island("scene", "", scene)`, avec une taille pour le canvas (`.scene { width: 100%; height: 360px; display: block }` dans le style de la page). Le serveur rend un canvas vide ; le navigateur lance le jeu, qui s'arrête quand l'îlot s'en va. Le jeu tourne aussi sans navigateur, dans les tests : `app.update()` exécute une image, et `RenderFrame::extract` liste ce que la caméra dessinerait. Le guide d'Active [La 3D avec Three.js et Bevy](https://active-c1883a966650.herokuapp.com/fr/docs/3d/) présente les deux modules en entier.
+Placez-le comme n'importe quel îlot : `island("scene", "", scene)`, avec une taille pour le canvas (`.scene { width: 100%; height: 360px; display: block }` dans le style de la page). Le serveur rend un canvas vide ; le navigateur lance le jeu, qui s'arrête quand l'îlot s'en va. Le jeu tourne aussi sans navigateur, dans les tests : `app.update()` exécute une image, et `RenderFrame::extract` liste ce que la caméra dessinerait. Le guide d'Active [La 3D, les jeux et la physique](https://active-c1883a966650.herokuapp.com/fr/docs/3d/) présente ses moteurs en entier.
 
 ## Compiler pour la production
 

@@ -6,15 +6,19 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-07
+
 ### Added
-- Physics: every 3D object has a mass (from its volume), forces, gravity and collisions,
-  Active's new `active::physics`, re-exported as `paquets::physics` and built into
-  `paquets::ecs` (`DefaultPlugins`: `Mass`, `LinearVelocity`, `ExternalForce`,
-  `Restitution`, `CollisionStarted`…) and `paquets::three::Physics`.
-- 3D, the Three.js and Bevy way: `paquets::three` (a scene of meshes, lights and cameras drawn
-  with WebGL 2, `OrbitControls`, `animation_loop`) and `paquets::ecs` (entities, components,
-  systems, an `App` with plugins and schedules, 3D in physical light units, `app.run_in(canvas)`
-  in an island), Active's two new modules. Guide: Islands, "3D in an island".
+- 3D, games and physics, Active's three engines: `paquets::scene` (a scene of meshes,
+  lights and cameras drawn with WebGL 2, `OrbitControls`, `animation_loop`), `paquets::ecs`
+  (the game engine: entities, components, systems, an `App` with plugins and schedules, 3D in
+  physical light units, `app.run_in(canvas)` in an island) and `paquets::physics` (every 3D
+  object has a mass from its volume, forces, gravity, friction, rolling, bounces and
+  collisions, checked against the formulas of mechanics; built into `paquets::ecs` with
+  `Mass`, `LinearVelocity`, `ExternalForce`, `CollisionStarted`… and into
+  `paquets::scene::Physics`). Guide: Islands, "3D in an island".
+- Vitesse measured again: 3.29 million pipelined requests per second on two cores, twice
+  actix-web; +36% with a real browser request.
 - Faster page changes: `Page::view_transitions()` (the View Transitions API, as in Astro and
   Next), `Page::prefetch(Prefetch::Hover)` and `Page::prerender(...)` (speculation rules, with
   a fallback for the other browsers); `Prefetch` is in the prelude. Their inline code is added
