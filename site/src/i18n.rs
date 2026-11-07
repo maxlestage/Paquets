@@ -121,6 +121,14 @@ pub struct SampleText {
     pub comments: &'static [&'static str],
 }
 
+/// A section of cards: its label, title, lead and four cards.
+pub struct Extra {
+    pub label: &'static str,
+    pub title: &'static str,
+    pub lead: &'static str,
+    pub items: [Item; 4],
+}
+
 pub struct Texts {
     // Meta
     pub meta_title: &'static str,
@@ -170,6 +178,8 @@ pub struct Texts {
     pub numbers_label: &'static str,
     pub numbers_title: &'static str,
     pub numbers: [Item; 6],
+    /// The three sections of version 0.3: what is new, 3D and physics, performance.
+    pub extras: [Extra; 3],
     // From zero to production
     pub journey_label: &'static str,
     pub journey_title: &'static str,
@@ -290,6 +300,7 @@ impl Texts {
             numbers_label,
             numbers_title,
             numbers,
+            extras,
             journey_label,
             journey_title,
             journey_lead,
@@ -454,6 +465,12 @@ impl Texts {
         {
             out.extend([i.title, i.text]);
         }
+        for e in extras {
+            out.extend([e.label, e.title, e.lead]);
+            for i in &e.items {
+                out.extend([i.title, i.text]);
+            }
+        }
         out.extend(term_out);
         out.extend(phone);
         out.extend(cta_title);
@@ -505,7 +522,7 @@ pub const EN: Texts = Texts {
         PkgText {
             role: "HTTP server",
             text: "An Express-style API: app.get, req.param, middleware, Router, WebSocket, sessions, HTTPS up to HTTP/3. Faster than actix-web and axum.",
-            figure: "requests per second on GET /",
+            figure: "requests per second, a browser's GET /json",
         },
         PkgText {
             role: "Security shield",
@@ -519,7 +536,7 @@ pub const EN: Texts = Texts {
         },
         PkgText {
             role: "Front end",
-            text: "Components are Rust functions with use_state. Server rendering with complete SEO tags, WebAssembly islands for interactivity, and 3D the Three.js and Bevy way.",
+            text: "Components are Rust functions with use_state. Server rendering with complete SEO tags, WebAssembly islands for interactivity, and 3D, games and physics.",
             figure: "gzip for a counter island",
         },
     ],
@@ -616,7 +633,7 @@ pub const EN: Texts = Texts {
         ),
         item(
             "3D in the page",
-            "Three.js and Bevy, written in Rust: paquets::three draws scenes with WebGL 2, paquets::ecs runs games made of entities and systems, in an island's canvas.",
+            "Active's engines: paquets::scene draws scenes with WebGL 2, paquets::ecs runs games made of entities and systems, in an island's canvas.",
         ),
         item(
             "Query cache",
@@ -648,7 +665,7 @@ pub const EN: Texts = Texts {
     numbers: [
         item(
             "requests per second",
-            "GET / on two cores — ahead of actix-web and axum.",
+            "GET /json sent by a browser, on two cores — 36% ahead of actix-web.",
         ),
         item(
             "pipelined requests per second",
@@ -664,6 +681,77 @@ pub const EN: Texts = Texts {
             "languages",
             "The documentation exists in English, French and Spanish.",
         ),
+    ],
+    extras: [
+        Extra {
+            label: "New in 0.3",
+            title: "Version 0.3: games, physics and speed.",
+            lead: "What this version brings, from the canvas to the database.",
+            items: [
+                item(
+                    "3D, games and physics",
+                    "paquets::scene draws 3D scenes, paquets::ecs runs games, paquets::physics gives every object a mass: in an island, in Rust.",
+                ),
+                item(
+                    "Twice as fast as actix-web",
+                    "Vitesse serves 3.29 million pipelined requests per second on two cores, and 36% more than actix-web with a real browser request.",
+                ),
+                item(
+                    "Tables that follow your models",
+                    "At startup, each table gains the columns of the fields you added, and new indexes. Nothing is ever dropped.",
+                ),
+                item(
+                    "Faster page changes",
+                    "View transitions, prefetching on hover and prerendering, with their code allowed by the Content-Security-Policy, nothing else.",
+                ),
+            ],
+        },
+        Extra {
+            label: "3D",
+            title: "3D, games and physics, in an island.",
+            lead: "Three engines from Active, written for the web: nothing to install, nothing in JavaScript.",
+            items: [
+                item(
+                    "paquets::scene",
+                    "Meshes, lights in physical units, cameras, physically based materials and orbit controls, drawn with WebGL 2.",
+                ),
+                item(
+                    "paquets::ecs",
+                    "Entities, components and systems, plugins, schedules, states and messages: a game, started in an island's canvas.",
+                ),
+                item(
+                    "paquets::physics",
+                    "Every object has a mass from its volume, falls, rolls, bounces and stacks, checked against the formulas of mechanics.",
+                ),
+                item(
+                    "Tested without a browser",
+                    "Everything but drawing runs in cargo test: step the world, check where things are.",
+                ),
+            ],
+        },
+        Extra {
+            label: "Performance",
+            title: "Fast from the socket to the page.",
+            lead: "Measured on November 7, 2026: each server on two cores, the load generator on two others.",
+            items: [
+                item(
+                    "3.29 M requests/s",
+                    "Pipelined, on two cores: twice actix-web, nine times axum.",
+                ),
+                item(
+                    "+36% with a real browser",
+                    "A request with the twelve headers of a browser: 349,424 per second, against 256,421 for actix-web.",
+                ),
+                item(
+                    "5.2 µs of CPU per request",
+                    "For a route with a parameter and JSON, against 6.4 µs for actix-web and 9.6 µs for axum.",
+                ),
+                item(
+                    "Light pages",
+                    "Only the islands reach the browser: 36.8 kB of gzipped WebAssembly for a counter, the rest is HTML.",
+                ),
+            ],
+        },
     ],
     journey_label: "From zero to production",
     journey_title: "Four steps. Not one more.",
@@ -817,7 +905,7 @@ pub const FR: Texts = Texts {
         PkgText {
             role: "Serveur HTTP",
             text: "Une API à la Express : app.get, req.param, middlewares, Router, WebSocket, sessions, HTTPS jusqu'à HTTP/3. Plus rapide qu'actix-web et axum.",
-            figure: "requêtes par seconde sur GET /",
+            figure: "requêtes par seconde, GET /json d'un navigateur",
         },
         PkgText {
             role: "Bouclier de sécurité",
@@ -831,7 +919,7 @@ pub const FR: Texts = Texts {
         },
         PkgText {
             role: "Front-end",
-            text: "Les composants sont des fonctions Rust avec use_state. Rendu serveur avec toutes les balises SEO, îlots WebAssembly pour l'interactivité, et la 3D à la Three.js et à la Bevy.",
+            text: "Les composants sont des fonctions Rust avec use_state. Rendu serveur avec toutes les balises SEO, îlots WebAssembly pour l'interactivité, et la 3D, les jeux et la physique.",
             figure: "gzip pour un îlot compteur",
         },
     ],
@@ -928,7 +1016,7 @@ pub const FR: Texts = Texts {
         ),
         item(
             "De la 3D dans la page",
-            "Three.js et Bevy, écrits en Rust : paquets::three dessine des scènes avec WebGL 2, paquets::ecs fait tourner des jeux faits d'entités et de systèmes, dans le canvas d'un îlot.",
+            "Les moteurs d'Active : paquets::scene dessine des scènes avec WebGL 2, paquets::ecs fait tourner des jeux faits d'entités et de systèmes, dans le canvas d'un îlot.",
         ),
         item(
             "Cache de requêtes",
@@ -960,7 +1048,7 @@ pub const FR: Texts = Texts {
     numbers: [
         item(
             "requêtes par seconde",
-            "GET / sur deux cœurs — devant actix-web et axum.",
+            "GET /json d'un navigateur, sur deux cœurs — 36 % devant actix-web.",
         ),
         item(
             "requêtes en pipeline par seconde",
@@ -982,6 +1070,77 @@ pub const FR: Texts = Texts {
             "langues",
             "La documentation existe en français, en anglais et en espagnol.",
         ),
+    ],
+    extras: [
+        Extra {
+            label: "Nouveau en 0.3",
+            title: "Version 0.3 : jeux, physique et vitesse.",
+            lead: "Ce que cette version apporte, du canvas à la base de données.",
+            items: [
+                item(
+                    "La 3D, les jeux et la physique",
+                    "paquets::scene dessine des scènes 3D, paquets::ecs fait tourner des jeux, paquets::physics donne une masse à chaque objet : dans un îlot, en Rust.",
+                ),
+                item(
+                    "Deux fois plus rapide qu'actix-web",
+                    "Vitesse sert 3,29 millions de requêtes pipelinées par seconde sur deux cœurs, et 36 % de plus qu'actix-web avec une vraie requête de navigateur.",
+                ),
+                item(
+                    "Des tables qui suivent vos modèles",
+                    "Au démarrage, chaque table reçoit les colonnes des champs ajoutés, et les nouveaux index. Rien n'est jamais supprimé.",
+                ),
+                item(
+                    "Des changements de page plus rapides",
+                    "Transitions de vue, préchargement au survol et prérendu, leur code autorisé par la Content-Security-Policy, rien de plus.",
+                ),
+            ],
+        },
+        Extra {
+            label: "3D",
+            title: "La 3D, les jeux et la physique, dans un îlot.",
+            lead: "Trois moteurs d'Active, écrits pour le web : rien à installer, rien en JavaScript.",
+            items: [
+                item(
+                    "paquets::scene",
+                    "Maillages, lumières en unités physiques, caméras, matériaux physiquement réalistes et contrôles d'orbite, dessinés en WebGL 2.",
+                ),
+                item(
+                    "paquets::ecs",
+                    "Entités, composants et systèmes, plugins, horaires, états et messages : un jeu, lancé dans le canvas d'un îlot.",
+                ),
+                item(
+                    "paquets::physics",
+                    "Chaque objet a une masse tirée de son volume, tombe, roule, rebondit et s'empile, vérifié contre les formules de la mécanique.",
+                ),
+                item(
+                    "Testé sans navigateur",
+                    "Tout sauf le dessin tourne dans cargo test : faites avancer le monde, vérifiez où sont les choses.",
+                ),
+            ],
+        },
+        Extra {
+            label: "Performances",
+            title: "Rapide, du socket à la page.",
+            lead: "Mesuré le 7 novembre 2026 : chaque serveur sur deux cœurs, le générateur de charge sur deux autres.",
+            items: [
+                item(
+                    "3,29 M requêtes/s",
+                    "En pipeline, sur deux cœurs : deux fois actix-web, neuf fois axum.",
+                ),
+                item(
+                    "+36 % avec un vrai navigateur",
+                    "Une requête avec les douze en-têtes d'un navigateur : 349 424 par seconde, contre 256 421 pour actix-web.",
+                ),
+                item(
+                    "5,2 µs de CPU par requête",
+                    "Pour une route avec un paramètre et du JSON, contre 6,4 µs pour actix-web et 9,6 µs pour axum.",
+                ),
+                item(
+                    "Des pages légères",
+                    "Seuls les îlots vont au navigateur : 36,8 ko de WebAssembly gzippé pour un compteur, le reste est du HTML.",
+                ),
+            ],
+        },
     ],
     journey_label: "De zéro à la production",
     journey_title: "Quatre étapes. Pas une de plus.",
@@ -1135,7 +1294,7 @@ pub const ES: Texts = Texts {
         PkgText {
             role: "Servidor HTTP",
             text: "Una API al estilo Express: app.get, req.param, middlewares, Router, WebSocket, sesiones, HTTPS hasta HTTP/3. Más rápido que actix-web y axum.",
-            figure: "peticiones por segundo en GET /",
+            figure: "peticiones por segundo, GET /json de un navegador",
         },
         PkgText {
             role: "Escudo de seguridad",
@@ -1149,7 +1308,7 @@ pub const ES: Texts = Texts {
         },
         PkgText {
             role: "Front-end",
-            text: "Los componentes son funciones Rust con use_state. Renderizado en el servidor con todas las etiquetas SEO, islas WebAssembly para la interactividad, y 3D al estilo Three.js y Bevy.",
+            text: "Los componentes son funciones Rust con use_state. Renderizado en el servidor con todas las etiquetas SEO, islas WebAssembly para la interactividad, y 3D, juegos y física.",
             figure: "gzip para una isla contador",
         },
     ],
@@ -1246,7 +1405,7 @@ pub const ES: Texts = Texts {
         ),
         item(
             "3D en la página",
-            "Three.js y Bevy, escritos en Rust: paquets::three dibuja escenas con WebGL 2, paquets::ecs ejecuta juegos hechos de entidades y sistemas, en el canvas de una isla.",
+            "Los motores de Active: paquets::scene dibuja escenas con WebGL 2, paquets::ecs ejecuta juegos hechos de entidades y sistemas, en el canvas de una isla.",
         ),
         item(
             "Caché de consultas",
@@ -1278,7 +1437,7 @@ pub const ES: Texts = Texts {
     numbers: [
         item(
             "peticiones por segundo",
-            "GET / con dos núcleos — por delante de actix-web y axum.",
+            "GET /json de un navegador, con dos núcleos — un 36 % por delante de actix-web.",
         ),
         item(
             "peticiones en pipeline por segundo",
@@ -1300,6 +1459,77 @@ pub const ES: Texts = Texts {
             "idiomas",
             "La documentación está en español, inglés y francés.",
         ),
+    ],
+    extras: [
+        Extra {
+            label: "Novedades de la 0.3",
+            title: "Versión 0.3: juegos, física y velocidad.",
+            lead: "Lo que trae esta versión, del canvas a la base de datos.",
+            items: [
+                item(
+                    "3D, juegos y física",
+                    "paquets::scene dibuja escenas 3D, paquets::ecs ejecuta juegos, paquets::physics da una masa a cada objeto: en una isla, en Rust.",
+                ),
+                item(
+                    "El doble de rápido que actix-web",
+                    "Vitesse sirve 3,29 millones de peticiones con pipelining por segundo en dos núcleos, y un 36 % más que actix-web con una petición real de navegador.",
+                ),
+                item(
+                    "Tablas que siguen a tus modelos",
+                    "Al arrancar, cada tabla recibe las columnas de los campos añadidos, y los nuevos índices. Nunca se borra nada.",
+                ),
+                item(
+                    "Cambios de página más rápidos",
+                    "Transiciones de vista, precarga al pasar el ratón y prerenderizado, con su código autorizado por la Content-Security-Policy, nada más.",
+                ),
+            ],
+        },
+        Extra {
+            label: "3D",
+            title: "3D, juegos y física, en una isla.",
+            lead: "Tres motores de Active, escritos para la web: nada que instalar, nada en JavaScript.",
+            items: [
+                item(
+                    "paquets::scene",
+                    "Mallas, luces en unidades físicas, cámaras, materiales físicamente realistas y controles de órbita, dibujados con WebGL 2.",
+                ),
+                item(
+                    "paquets::ecs",
+                    "Entidades, componentes y sistemas, plugins, horarios, estados y mensajes: un juego, lanzado en el canvas de una isla.",
+                ),
+                item(
+                    "paquets::physics",
+                    "Cada objeto tiene una masa sacada de su volumen, cae, rueda, rebota y se apila, comprobado con las fórmulas de la mecánica.",
+                ),
+                item(
+                    "Probado sin navegador",
+                    "Todo salvo el dibujo funciona en cargo test: haz avanzar el mundo, comprueba dónde están las cosas.",
+                ),
+            ],
+        },
+        Extra {
+            label: "Rendimiento",
+            title: "Rápido, del socket a la página.",
+            lead: "Medido el 7 de noviembre de 2026: cada servidor en dos núcleos, el generador de carga en otros dos.",
+            items: [
+                item(
+                    "3,29 M peticiones/s",
+                    "Con pipelining, en dos núcleos: el doble que actix-web, nueve veces axum.",
+                ),
+                item(
+                    "+36 % con un navegador real",
+                    "Una petición con las doce cabeceras de un navegador: 349.424 por segundo, frente a 256.421 de actix-web.",
+                ),
+                item(
+                    "5,2 µs de CPU por petición",
+                    "Para una ruta con un parámetro y JSON, frente a 6,4 µs de actix-web y 9,6 µs de axum.",
+                ),
+                item(
+                    "Páginas ligeras",
+                    "Solo las islas llegan al navegador: 36,8 kB de WebAssembly comprimido para un contador, el resto es HTML.",
+                ),
+            ],
+        },
     ],
     journey_label: "De cero a producción",
     journey_title: "Cuatro pasos. Ni uno más.",

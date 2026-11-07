@@ -225,7 +225,7 @@ Voir [Sécurité](security.md).
 | Enregistrer | `#[wasm_bindgen(start)] pub fn start() { paquets::hydrate(&[("counter", counter)]); }` |
 | Placer | `island("counter", "0", counter)` |
 | Compiler | `paquets dev`, `paquets build` → `pkg/` |
-| 3D dans un canvas | `paquets::three` (Three.js), `paquets::ecs` (Bevy) : `game().run_in(canvas)` dans `use_action` |
+| 3D dans un canvas | `paquets::scene` (la scène), `paquets::ecs` (le moteur de jeu) : `game().run_in(canvas)` dans `use_action` |
 
 Voir [Îlots](islands.md).
 
