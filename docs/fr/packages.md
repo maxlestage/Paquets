@@ -109,7 +109,7 @@ Les transactions relancées en cas de conflit (`db.transaction`, comme Prisma) e
 **Au-delà du prélude**, via `paquets::active` : `Document`, pour rendre une page sans le thème ni la politique de sécurité de `Page`, par exemple pour exporter des fichiers statiques. Avec la feature `client` (côté navigateur) : `paquets::hydrate`, `paquets::mount_to` et `paquets::mount` pour les applications entièrement rendues dans le navigateur, `paquets::navigate`, `paquets::location`, `paquets::query` et `paquets::query_param` pour le routage sans rechargement. Voir [Îlots](islands.md) et [la documentation d'active](https://active-c1883a966650.herokuapp.com/fr/docs/introduction/).
 
 
-**3D :** `paquets::three` (l'API de Three.js) et `paquets::ecs` (l'API de Bevy) dessinent en 3D dans le canvas d'un îlot, voir [De la 3D dans un îlot](islands.md#de-la-3d-dans-un-îlot). Et `Page::view_transitions()`, `Page::prefetch(...)` et `Page::prerender(...)` rendent les changements de page instantanés, voir [Des changements de page plus rapides](pages.md#des-changements-de-page-plus-rapides).
+**3D :** `paquets::scene` (la scène 3D d'Active) et `paquets::ecs` (le moteur de jeu d'Active) dessinent en 3D dans le canvas d'un îlot, voir [De la 3D dans un îlot](islands.md#de-la-3d-dans-un-îlot). Et `Page::view_transitions()`, `Page::prefetch(...)` et `Page::prerender(...)` rendent les changements de page instantanés, voir [Des changements de page plus rapides](pages.md#des-changements-de-page-plus-rapides).
 
 ## Correspondance des noms
 

@@ -329,21 +329,21 @@ Los datos se quedan en el navegador: el servidor nunca los ve, salvo que una isl
 
 ## 3D en una isla
 
-Una isla puede dibujar en 3D en un `<canvas>`, con los dos módulos 3D de Active, reexportados por Paquets:
+Una isla puede dibujar en 3D en un `<canvas>`, con los motores de Active, reexportados por Paquets:
 
-- `paquets::three` lo escribe como [Three.js](https://threejs.org): una escena de mallas, luces y cámaras, un renderizador WebGL 2, un bucle de animación y `OrbitControls`;
-- `paquets::ecs` lo escribe como [Bevy](https://bevy.org): entidades, componentes y sistemas, una `App` con plugins y horarios, 3D en unidades físicas de luz.
+- `paquets::scene`, la escena 3D: mallas, luces y cámaras, un renderizador WebGL 2, un bucle de animación y `OrbitControls`;
+- `paquets::ecs`, el motor de juegos: entidades, componentes y sistemas, una `App` con plugins y horarios, 3D en unidades físicas de luz.
 
-Cada malla tiene también su física: una masa a partir de su volumen, gravedad, fuerzas y colisiones (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… en la entidad; `paquets::three::Physics` para una escena; `paquets::physics` por sí solo). La guía de Active lo explica en su parte sobre la física.
+Cada malla tiene también su física: una masa a partir de su volumen, gravedad, fuerzas y colisiones (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… en la entidad; `paquets::scene::Physics` para una escena; `paquets::physics` por sí solo). La guía de Active lo explica en su parte sobre la física.
 
-Un juego escrito al estilo de Bevy, en una isla:
+Un juego, en una isla:
 
 ```rust
-// src/game.rs: el juego, en su propio módulo (el preludio de Bevy tiene su propio `App`).
+// src/game.rs: el juego, en su propio módulo (el preludio del motor de juegos tiene su propio `App`).
 use paquets::ecs::prelude::*;
 
 struct Spinning;
-paquets::active::component!(Spinning); // #[derive(Component)] en Bevy
+paquets::active::component!(Spinning); // un componente, en una línea
 
 fn setup(
     mut commands: Commands,
@@ -397,7 +397,7 @@ fn play(_canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
 }
 ```
 
-Colócala como cualquier isla: `island("scene", "", scene)`, con un tamaño para el canvas (`.scene { width: 100%; height: 360px; display: block }` en el estilo de la página). El servidor renderiza un canvas vacío; el navegador inicia el juego, que se detiene cuando la isla se va. El juego también funciona sin navegador, en los tests: `app.update()` ejecuta un fotograma, y `RenderFrame::extract` lista lo que la cámara dibujaría. La guía de Active [3D con Three.js y Bevy](https://active-c1883a966650.herokuapp.com/es/docs/3d/) presenta ambos módulos por completo.
+Colócala como cualquier isla: `island("scene", "", scene)`, con un tamaño para el canvas (`.scene { width: 100%; height: 360px; display: block }` en el estilo de la página). El servidor renderiza un canvas vacío; el navegador inicia el juego, que se detiene cuando la isla se va. El juego también funciona sin navegador, en los tests: `app.update()` ejecuta un fotograma, y `RenderFrame::extract` lista lo que la cámara dibujaría. La guía de Active [3D, juegos y física](https://active-c1883a966650.herokuapp.com/es/docs/3d/) presenta sus motores por completo.
 
 ## Compilar para producción
 
