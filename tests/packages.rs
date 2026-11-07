@@ -1,7 +1,7 @@
 //! What the four packages added lately, reached through Paquets: Memoire's relations,
 //! full-text search, indexes over several columns and transactions that retry; the options
 //! of Vitesse (sessions, compression) behind the shield; Active's view transitions,
-//! prefetching and 3D (`paquets::three`, `paquets::ecs`).
+//! prefetching and 3D (`paquets::scene`, `paquets::ecs`).
 
 use paquets::prelude::*;
 
@@ -278,12 +278,12 @@ fn the_3d_of_active_runs_on_the_server_too() {
     let frame = RenderFrame::extract(app.world(), Vec2::new(800.0, 600.0)).unwrap();
     assert_eq!(frame.mesh_count(), 1);
 
-    // And Three.js's way: a scene, a camera, what the renderer would draw.
-    use paquets::three::{
-        BoxGeometry, Mesh as ThreeMesh, MeshStandardMaterial, PerspectiveCamera, Scene,
+    // And the scene on its own: a scene, a camera, what the renderer would draw.
+    use paquets::scene::{
+        BoxGeometry, Mesh as SceneMesh, MeshStandardMaterial, PerspectiveCamera, Scene,
     };
     let mut scene = Scene::new();
-    scene.add(ThreeMesh::new(
+    scene.add(SceneMesh::new(
         BoxGeometry::new(1.0, 1.0, 1.0),
         MeshStandardMaterial::new(),
     ));

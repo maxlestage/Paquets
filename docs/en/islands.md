@@ -329,21 +329,21 @@ The data stays in the browser: the server never sees it unless an island sends i
 
 ## 3D in an island
 
-An island can draw 3D in a `<canvas>`, with Active's two 3D modules, re-exported by Paquets:
+An island can draw 3D in a `<canvas>`, with Active's engines, re-exported by Paquets:
 
-- `paquets::three` writes it like [Three.js](https://threejs.org): a scene of meshes, lights and cameras, a WebGL 2 renderer, an animation loop and `OrbitControls`;
-- `paquets::ecs` writes it like [Bevy](https://bevy.org): entities, components and systems, an `App` with plugins and schedules, 3D in physical light units.
+- `paquets::scene`, the 3D scene: meshes, lights and cameras, a WebGL 2 renderer, an animation loop and `OrbitControls`;
+- `paquets::ecs`, the game engine: entities, components and systems, an `App` with plugins and schedules, 3D in physical light units.
 
-Every mesh also has physics: a mass from its volume, gravity, forces and collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… on the entity; `paquets::three::Physics` for a scene; `paquets::physics` on its own). Active's guide explains it in its physics section.
+Every mesh also has physics: a mass from its volume, gravity, forces and collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… on the entity; `paquets::scene::Physics` for a scene; `paquets::physics` on its own). Active's guide explains it in its physics section.
 
-A game written the Bevy way, in an island:
+A game, in an island:
 
 ```rust
-// src/game.rs: the game, in its own module (Bevy's prelude has its own `App`).
+// src/game.rs: the game, in its own module (the game engine's prelude has its own `App`).
 use paquets::ecs::prelude::*;
 
 struct Spinning;
-paquets::active::component!(Spinning); // #[derive(Component)] in Bevy
+paquets::active::component!(Spinning); // a component, in one line
 
 fn setup(
     mut commands: Commands,
@@ -397,7 +397,7 @@ fn play(_canvas: &paquets::active::Dom) -> impl FnOnce() + use<> {
 }
 ```
 
-Place it like any island: `island("scene", "", scene)`, with a size for the canvas (`.scene { width: 100%; height: 360px; display: block }` in the page's style). The server renders an empty canvas; the browser starts the game, which stops when the island goes. The game also runs without a browser, in tests: `app.update()` runs one frame, and `RenderFrame::extract` lists what the camera would draw. Active's guide [3D with Three.js and Bevy](https://active-c1883a966650.herokuapp.com/en/docs/3d/) shows both modules in full.
+Place it like any island: `island("scene", "", scene)`, with a size for the canvas (`.scene { width: 100%; height: 360px; display: block }` in the page's style). The server renders an empty canvas; the browser starts the game, which stops when the island goes. The game also runs without a browser, in tests: `app.update()` runs one frame, and `RenderFrame::extract` lists what the camera would draw. Active's guide [3D, games and physics](https://active-c1883a966650.herokuapp.com/en/docs/3d/) shows its engines in full.
 
 ## Building for production
 

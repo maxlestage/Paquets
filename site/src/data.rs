@@ -42,7 +42,7 @@ pub const PACKAGES: [Package; 4] = [
         site: "https://vitesse-f16135654c3d.herokuapp.com/",
         glyph: "V",
         color: "#ffc24b",
-        figure: "291k req/s",
+        figure: "349k req/s",
         icon: "bolt",
     },
     Package {
@@ -259,10 +259,33 @@ pub const FEATURES: [(&str, &str); 16] = [
     ),
 ];
 
+/// The icon and the code tag of each card of the three sections of version 0.3:
+/// what is new, 3D and physics, performance (in the order of `Texts::extras`).
+pub const EXTRAS: [[(&str, &str); 4]; 3] = [
+    [
+        ("orbit", "paquets::scene"),
+        ("bolt", "app.run(3000)"),
+        ("layers", "app.api::<Note>(..)"),
+        ("rocket", ".view_transitions()"),
+    ],
+    [
+        ("box", "Scene::new()"),
+        ("spark", "app.run_in(canvas)"),
+        ("orbit", "RigidBody::Dynamic"),
+        ("flask", "app.update()"),
+    ],
+    [
+        ("bolt", "GET / ×16"),
+        ("globe", "GET /json"),
+        ("terminal", "GET /users/:id"),
+        ("page", "island(\"counter\", ..)"),
+    ],
+];
+
 /// The figures: value, decimals, prefix, suffix.
 pub const NUMBERS: [(f64, usize, &str, &str); 6] = [
-    (291.0, 0, "", "k"),
-    (2.78, 2, "", "M"),
+    (349.0, 0, "", "k"),
+    (3.29, 2, "", "M"),
     (6.0, 0, "≈ ", " µs"),
     (36.8, 1, "", " kB"),
     (6.0, 0, "", ""),

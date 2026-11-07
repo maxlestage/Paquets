@@ -109,7 +109,7 @@ Las transacciones que se relanzan si hay conflictos (`db.transaction`, como Pris
 **Más allá del prelude**, a través de `paquets::active`: `Document` para renderizar una página sin el tema ni la política de seguridad de `Page`, por ejemplo para exportar archivos estáticos. Con la feature `client` (lado navegador): `paquets::hydrate`, `paquets::mount_to` y `paquets::mount` para las aplicaciones renderizadas por completo en el navegador, y `paquets::navigate`, `paquets::location`, `paquets::query` y `paquets::query_param` para el enrutamiento sin recargar la página. Consulta [Islas](islands.md) y la [documentación de Active](https://active-c1883a966650.herokuapp.com/es/docs/introduction/).
 
 
-**3D:** `paquets::three` (la API de Three.js) y `paquets::ecs` (la API de Bevy) dibujan en 3D en el canvas de una isla, ver [3D en una isla](islands.md#3d-en-una-isla). Y `Page::view_transitions()`, `Page::prefetch(...)` y `Page::prerender(...)` hacen que los cambios de página sean instantáneos, ver [Cambios de página más rápidos](pages.md#cambios-de-página-más-rápidos).
+**3D:** `paquets::scene` (la escena 3D de Active) y `paquets::ecs` (el motor de juegos de Active) dibujan en 3D en el canvas de una isla, ver [3D en una isla](islands.md#3d-en-una-isla). Y `Page::view_transitions()`, `Page::prefetch(...)` y `Page::prerender(...)` hacen que los cambios de página sean instantáneos, ver [Cambios de página más rápidos](pages.md#cambios-de-página-más-rápidos).
 
 ## Correspondencia de los nombres
 
