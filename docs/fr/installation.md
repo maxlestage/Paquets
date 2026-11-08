@@ -6,7 +6,7 @@ Cette page installe tout ce qu'il faut pour créer des applications Paquets : Ru
 
 | Outil | Nécessaire pour | Version |
 |---|---|---|
-| Rust et Cargo | tout | 1.88 ou plus récente (Paquets utilise l'édition 2024) |
+| Rust et Cargo | tout | 1.89 ou plus récente (Paquets utilise l'édition 2024) |
 | Un compilateur C | la base de données SQLite, compilée dans votre programme | n'importe laquelle (`cc`, `gcc`, `clang` ou MSVC) |
 | La cible `wasm32-unknown-unknown` | les îlots seulement | installée par `paquets dev` |
 | `wasm-bindgen-cli` | les îlots seulement | exactement la version de la crate `wasm-bindgen` de votre `Cargo.lock`, installée par `paquets dev` |
@@ -28,7 +28,7 @@ Sous Windows, téléchargez plutôt `rustup-init.exe` depuis https://rustup.rs e
 Ouvrez un nouveau terminal, puis vérifiez l'installation :
 
 ```sh
-rustc --version   # rustc 1.88.0 ou plus récent
+rustc --version   # rustc 1.89.0 ou plus récent
 cargo --version
 ```
 
@@ -57,7 +57,7 @@ paquets doctor
 `paquets doctor` liste les outils qu'il trouve et vous explique comment installer ceux qui manquent :
 
 ```text
-📦 Paquets 0.3.0
+📦 Paquets 0.3.1
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✗ wasm32-unknown-unknown target (islands)
@@ -181,7 +181,7 @@ N'importe quel éditeur fait l'affaire. Pour la complétion, les erreurs en dire
 |---|---|
 | `paquets: command not found` | Cargo installe les commandes dans `~/.cargo/bin`. Ouvrez un nouveau terminal, ou ajoutez ce dossier à votre `PATH`. |
 | `linker 'cc' not found` | Installez une chaîne de compilation C (voir l'astuce de l'étape 1). |
-| `error: package ... requires rustc 1.88` ou une erreur sur l'édition 2024 | Votre Rust est trop ancien : `rustup update`. |
+| `error: package ... requires rustc 1.89` ou une erreur sur l'édition 2024 | Votre Rust est trop ancien : `rustup update`. |
 | La première compilation prend plusieurs minutes | C'est normal : Cargo compile chaque dépendance une fois. Les compilations suivantes ne recompilent que votre code. |
 | `wasm-bindgen` signale une différence de version ou de schéma | La CLI et la crate ne correspondent pas : `cargo install wasm-bindgen-cli --version <version du Cargo.lock> --locked`. `paquets doctor` affiche les deux versions. |
 
