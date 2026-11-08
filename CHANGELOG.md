@@ -6,6 +6,20 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-08
+
+### Changed
+- Active's physics runs on its new engine (`paquets::physics`, and the physics of
+  `paquets::ecs` and `paquets::scene`): eight times faster on Active's 3D demo (0.22 ms per
+  frame instead of 1.85), with the same API; the laws of mechanics Active checks still hold.
+  The physics is Active's `physics` feature, on by default.
+- Rust 1.89 or newer (it was 1.88): the physics engine is written with `nalgebra` 0.35, which
+  needs it. The MSRV job of the CI checks 1.89.
+- Vitesse's engine reads the clock for the `date` header once per batch of events instead of
+  once per connection (2% less CPU per request), and its benchmark was measured again:
+  3.29 million pipelined requests per second on two cores, twice actix-web.
+- Every dependency brought to its latest compatible version.
+
 ## [0.3.0] - 2026-11-07
 
 ### Added

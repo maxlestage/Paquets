@@ -6,7 +6,7 @@ Esta página instala todo lo que necesitas para crear aplicaciones con Paquets: 
 
 | Herramienta | Necesaria para | Versión |
 |---|---|---|
-| Rust y Cargo | todo | 1.88 o posterior (Paquets usa la edición 2024) |
+| Rust y Cargo | todo | 1.89 o posterior (Paquets usa la edición 2024) |
 | Un compilador de C | la base de datos SQLite, que se compila dentro de tu programa | cualquiera (`cc`, `gcc`, `clang` o MSVC) |
 | El target `wasm32-unknown-unknown` | solo las islas | lo instala `paquets dev` |
 | `wasm-bindgen-cli` | solo las islas | exactamente la versión del crate `wasm-bindgen` de tu `Cargo.lock`, la instala `paquets dev` |
@@ -28,7 +28,7 @@ En Windows, descarga y ejecuta en su lugar `rustup-init.exe` desde https://rustu
 Abre una terminal nueva y comprueba la instalación:
 
 ```sh
-rustc --version   # rustc 1.88.0 o posterior
+rustc --version   # rustc 1.89.0 o posterior
 cargo --version
 ```
 
@@ -57,7 +57,7 @@ paquets doctor
 `paquets doctor` enumera las herramientas que encuentra y te dice cómo instalar las que faltan:
 
 ```text
-📦 Paquets 0.3.0
+📦 Paquets 0.3.1
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✗ wasm32-unknown-unknown target (islands)
@@ -181,7 +181,7 @@ Cualquier editor sirve. Para tener autocompletado, errores en línea y «ir a la
 |---|---|
 | `paquets: command not found` | Cargo instala los comandos en `~/.cargo/bin`. Abre una terminal nueva o añade esa carpeta a tu `PATH`. |
 | `linker 'cc' not found` | Instala una toolchain de C (consulta el consejo del paso 1). |
-| `error: package ... requires rustc 1.88` o un error sobre la edición 2024 | Tu Rust es demasiado antiguo: `rustup update`. |
+| `error: package ... requires rustc 1.89` o un error sobre la edición 2024 | Tu Rust es demasiado antiguo: `rustup update`. |
 | La primera compilación tarda varios minutos | Es normal: Cargo compila cada dependencia una vez. Las compilaciones siguientes solo recompilan tu código. |
 | `wasm-bindgen` informa de una diferencia de versión o de esquema | La CLI y el crate no coinciden: `cargo install wasm-bindgen-cli --version <versión de Cargo.lock> --locked`. `paquets doctor` muestra las dos versiones. |
 
