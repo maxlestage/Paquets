@@ -6,6 +6,29 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-11-09
+
+### Added
+- Active 0.3: what its 3D lacked. Through `paquets::scene`: textures (`Texture::from_url`,
+  `from_rgba8`, `from_fn`, with repeat, offset, rotation, filters, mipmaps and anisotropic
+  filtering) as `map` on every material, plus `emissive_map`, `normal_map` (no tangents
+  needed) and `roughness_metalness_map` on `MeshStandardMaterial`, and `alpha_test` for
+  cut-outs; `SpotLight` (cone and penumbra); shadows of directional lights and spots
+  (`cast_shadow`, `receive_shadow`, `LightShadow` with map size, biases, soft edges and an
+  `extent` for large scenes); `Sprite`, an image that faces the camera. Up to 16 point lights
+  instead of 8, the nearest to the camera kept when there are more.
+- Through `paquets::ecs`: `Image` assets and `AssetServer::load`, `base_color_texture`,
+  `emissive_texture`, `normal_map_texture` and `metallic_roughness_texture` on
+  `StandardMaterial`, `AlphaMode::Mask`, `SpotLight`, `shadows_enabled` now drawn,
+  `NotShadowCaster`, `NotShadowReceiver`, `DirectionalLightShadowMap`,
+  `PointLightShadowMap`, and 2D: `Camera2d`, `Sprite` (with `Anchor`, flips, sizes and sprite
+  sheet rectangles), `Mesh2d` and `ColorMaterial`.
+
+### Changed
+- `active` 0.3 (it was 0.2): its scene types gained fields (materials, `Draw`, `Object3D`)
+  and variants (`Light::Spot`, `ObjectKind::Sprite`). Code building them with
+  `..Default::default()` or their builders is unchanged; `Draw::new` builds a mesh to draw.
+
 ## [0.3.1] - 2026-11-08
 
 ### Changed

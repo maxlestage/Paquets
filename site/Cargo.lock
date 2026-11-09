@@ -4,8 +4,8 @@ version = 4
 
 [[package]]
 name = "active"
-version = "0.2.0"
-source = "git+https://github.com/maxlestage/Active#56eb0c064a196c93bdf6c92576e04d832630b0df"
+version = "0.3.0"
+source = "git+https://github.com/maxlestage/Active#1b9509e8b17b0498f5dd5b3dc349df1a27138717"
 dependencies = [
  "approx",
  "arrayvec",
@@ -376,7 +376,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -942,7 +942,7 @@ dependencies = [
 
 [[package]]
 name = "paquets"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "active",
  "hmac",
@@ -959,7 +959,7 @@ dependencies = [
 
 [[package]]
 name = "paquets-macros"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "proc-macro2",
  "quote",
