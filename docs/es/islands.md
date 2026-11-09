@@ -331,8 +331,8 @@ Los datos se quedan en el navegador: el servidor nunca los ve, salvo que una isl
 
 Una isla puede dibujar en 3D en un `<canvas>`, con los motores de Active, reexportados por Paquets:
 
-- `paquets::scene`, la escena 3D: mallas, luces y cámaras, un renderizador WebGL 2, un bucle de animación y `OrbitControls`;
-- `paquets::ecs`, el motor de juegos: entidades, componentes y sistemas, una `App` con plugins y horarios, 3D en unidades físicas de luz.
+- `paquets::scene`, la escena 3D: mallas, sprites, luces (direccionales, puntuales, focos) con sombras, texturas (imágenes o píxeles, mapas de normales), cámaras, un renderizador WebGL 2, un bucle de animación y `OrbitControls`;
+- `paquets::ecs`, el motor de juegos: entidades, componentes y sistemas, una `App` con plugins y horarios, 3D en unidades físicas de luz con texturas, focos y sombras, y 2D (`Camera2d`, `Sprite`, `Mesh2d`).
 
 Cada malla tiene también su física: una masa a partir de su volumen, gravedad, fuerzas y colisiones (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… en la entidad; `paquets::scene::Physics` para una escena; `paquets::physics` por sí solo). La guía de Active lo explica en su parte sobre la física.
 

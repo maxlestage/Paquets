@@ -331,8 +331,8 @@ Les données restent dans le navigateur : le serveur ne les voit jamais, sauf si
 
 Un îlot peut dessiner en 3D dans un `<canvas>`, avec les moteurs d'Active, réexportés par Paquets :
 
-- `paquets::scene`, la scène 3D : maillages, lumières et caméras, un rendu WebGL 2, une boucle d'animation et `OrbitControls` ;
-- `paquets::ecs`, le moteur de jeu : entités, composants et systèmes, une `App` avec plugins et horaires, la 3D en unités physiques de lumière.
+- `paquets::scene`, la scène 3D : maillages, sprites, lumières (directionnelles, ponctuelles, spots) avec ombres, textures (images ou pixels, cartes de normales), caméras, un rendu WebGL 2, une boucle d'animation et `OrbitControls` ;
+- `paquets::ecs`, le moteur de jeu : entités, composants et systèmes, une `App` avec plugins et horaires, la 3D en unités physiques de lumière avec textures, spots et ombres, et la 2D (`Camera2d`, `Sprite`, `Mesh2d`).
 
 Chaque maillage a aussi sa physique : une masse tirée de son volume, la gravité, des forces et des collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… sur l'entité ; `paquets::scene::Physics` pour une scène ; `paquets::physics` seul). Le guide d'Active l'explique dans sa partie sur la physique.
 
