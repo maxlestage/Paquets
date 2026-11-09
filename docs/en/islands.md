@@ -331,8 +331,8 @@ The data stays in the browser: the server never sees it unless an island sends i
 
 An island can draw 3D in a `<canvas>`, with Active's engines, re-exported by Paquets:
 
-- `paquets::scene`, the 3D scene: meshes, lights and cameras, a WebGL 2 renderer, an animation loop and `OrbitControls`;
-- `paquets::ecs`, the game engine: entities, components and systems, an `App` with plugins and schedules, 3D in physical light units.
+- `paquets::scene`, the 3D scene: meshes, sprites, lights (directional, point, spot) with shadows, textures (images or pixels, normal maps), cameras, a WebGL 2 renderer, an animation loop and `OrbitControls`;
+- `paquets::ecs`, the game engine: entities, components and systems, an `App` with plugins and schedules, 3D in physical light units with textures, spots and shadows, and 2D (`Camera2d`, `Sprite`, `Mesh2d`).
 
 Every mesh also has physics: a mass from its volume, gravity, forces and collisions (`Mass`, `LinearVelocity`, `ExternalForce`, `Restitution`… on the entity; `paquets::scene::Physics` for a scene; `paquets::physics` on its own). Active's guide explains it in its physics section.
 
