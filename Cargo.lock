@@ -2494,7 +2494,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#a4f42d69ffa6fb926644d3ff3aea7d4ca6989143"
+source = "git+https://github.com/maxlestage/Securite#cda4105b8203fb463ea1bff77939185c06ee728c"
 dependencies = [
  "vitesse",
 ]
@@ -2975,7 +2975,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#a4f42d69ffa6fb926644d3ff3aea7d4ca6989143"
+source = "git+https://github.com/maxlestage/Securite#cda4105b8203fb463ea1bff77939185c06ee728c"
 dependencies = [
  "aho-corasick",
  "argon2",
@@ -3974,9 +3974,9 @@ dependencies = [
 
 [[package]]
 name = "webpki-roots"
-version = "1.0.11"
+version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5f280bbb2b287bc8e7de7e3852945a0ff50d1bbcb5ed42b6c7a568c546df171"
+checksum = "7265c9301c16a8711c992c2d8da90ee77ef54b1ed51482d6dfeb00dc756b1297"
 dependencies = [
  "rustls-pki-types",
 ]
