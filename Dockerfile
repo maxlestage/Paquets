@@ -21,7 +21,8 @@ RUN cargo build --lib --target wasm32-unknown-unknown --profile wasm-release \
     && (curl -sSfL "https://github.com/wasm-bindgen/wasm-bindgen/releases/download/${version}/wasm-bindgen-${version}-x86_64-unknown-linux-musl.tar.gz" \
             | tar -xz --strip-components=1 -C /usr/local/bin \
         || cargo install wasm-bindgen-cli --version "$version" --locked) \
-    && wasm-bindgen --target web --no-typescript --out-dir pkg \
+    && wasm-bindgen --target web --no-typescript --remove-name-section --remove-producers-section \
+        --out-dir pkg \
         target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
 # The server.
 RUN cargo build --release --bin paquets-site && cp target/release/paquets-site /server

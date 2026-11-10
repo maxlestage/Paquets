@@ -27,7 +27,7 @@ pulldown-cmark = { version = "0.13", default-features = false, features = ["html
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 paquets = { path = "..", default-features = false, features = ["client"] }
-wasm-bindgen = "=0.2.129"
+wasm-bindgen = "=0.2.130"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 web-sys = { version = "0.3", features = [
@@ -69,4 +69,7 @@ opt-level = "s"
 lto = true
 codegen-units = 1
 panic = "abort"
-strip = true
+# Not `strip = true`: wasm-bindgen reads the `target_features` section, which stripping
+# removes. It drops the names and producers sections itself (--remove-name-section
+# --remove-producers-section, on every call).
+strip = false

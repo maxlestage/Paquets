@@ -46,7 +46,7 @@ Four jobs run in parallel, and the merge waits for all of them:
 | Job | Checks |
 |---|---|
 | **Crate** | formatting; Clippy on the server with the default features and with every feature; Clippy on the browser side (`wasm32`, feature `client`); the tests with the default features and with every feature; the API documentation; the crates.io packages (`paquets-macros` completely, and the file list of `paquets`) |
-| **MSRV** | the crate compiles with Rust 1.89, the oldest supported version |
+| **MSRV** | the crate compiles with Rust 1.95, the oldest supported version |
 | **paquets new** | generates a full and a minimal project with the command line tool, and runs their own checks (formatting, Clippy, tests, and the islands' Clippy for wasm32) |
 | **Website** | the website (a Paquets app in `site/`): formatting, Clippy (server and WebAssembly), its tests (including every page of the documentation, in the three languages, with their links), the build of its islands, and its static export |
 
