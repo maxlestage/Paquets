@@ -140,7 +140,7 @@ paquets doctor
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✓ wasm32-unknown-unknown target
-  ✓ wasm-bindgen 0.2.129 (matches Cargo.lock)
+  ✓ wasm-bindgen 0.2.130 (matches Cargo.lock)
   ✓ git version 2.43.0
   ✗ docker (optional)
       → only to build the production image locally
@@ -159,8 +159,8 @@ Ready. Create an app with `paquets new my-app`.
 Run inside a project, it also compares the installed `wasm-bindgen` with the version in `Cargo.lock`, and tells you the exact command when they differ:
 
 ```text
-  ✗ wasm-bindgen 0.2.100, Cargo.lock wants 0.2.129
-      → cargo install wasm-bindgen-cli --version 0.2.129 --locked
+  ✗ wasm-bindgen 0.2.100, Cargo.lock wants 0.2.130
+      → cargo install wasm-bindgen-cli --version 0.2.130 --locked
 ```
 
 ## Generators and app commands

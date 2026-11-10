@@ -6,7 +6,7 @@ This page installs everything you need to build Paquets apps: Rust, the `paquets
 
 | Tool | Needed for | Version |
 |---|---|---|
-| Rust and Cargo | everything | 1.89 or newer (Paquets uses the 2024 edition) |
+| Rust and Cargo | everything | 1.95 or newer (Paquets uses the 2024 edition) |
 | A C compiler | the SQLite database, which is compiled into your program | any (`cc`, `gcc`, `clang` or MSVC) |
 | `wasm32-unknown-unknown` target | islands only | installed by `paquets dev` |
 | `wasm-bindgen-cli` | islands only | the exact version of the `wasm-bindgen` crate in your `Cargo.lock`, installed by `paquets dev` |
@@ -28,7 +28,7 @@ On Windows, download and run `rustup-init.exe` from https://rustup.rs instead. I
 Open a new terminal, then check the installation:
 
 ```sh
-rustc --version   # rustc 1.89.0 or newer
+rustc --version   # rustc 1.95.0 or newer
 cargo --version
 ```
 
@@ -79,10 +79,10 @@ Only `cargo` is required. The other lines are information. See [Command line too
 
 ```sh
 rustup target add wasm32-unknown-unknown
-cargo install wasm-bindgen-cli --version 0.2.129 --locked
+cargo install wasm-bindgen-cli --version 0.2.130 --locked
 ```
 
-The version of `wasm-bindgen-cli` must be **exactly** the version of the `wasm-bindgen` crate in your project's `Cargo.lock` (`0.2.129` at the time of writing). `paquets doctor`, run inside a project, tells you which version the project needs.
+The version of `wasm-bindgen-cli` must be **exactly** the version of the `wasm-bindgen` crate in your project's `Cargo.lock` (`0.2.130` at the time of writing). `paquets doctor`, run inside a project, tells you which version the project needs.
 
 If you only build pages, APIs and WebSocket routes, skip this step: a project created with `paquets new --minimal` has no islands and needs no WebAssembly tool.
 
@@ -181,7 +181,7 @@ Any editor works. For completion, inline errors and "go to definition", install 
 |---|---|
 | `paquets: command not found` | Cargo installs commands in `~/.cargo/bin`. Open a new terminal, or add that folder to your `PATH`. |
 | `linker 'cc' not found` | Install a C toolchain (see the tip in step 1). |
-| `error: package ... requires rustc 1.89` or an edition 2024 error | Your Rust is too old: `rustup update`. |
+| `error: package ... requires rustc 1.95` or an edition 2024 error | Your Rust is too old: `rustup update`. |
 | The first build takes several minutes | Normal: Cargo compiles every dependency once. Later builds only recompile your code. |
 | `wasm-bindgen` reports a version or schema mismatch | The CLI and the crate differ: `cargo install wasm-bindgen-cli --version <version in Cargo.lock> --locked`. `paquets doctor` shows both versions. |
 

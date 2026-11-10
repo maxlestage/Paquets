@@ -46,7 +46,7 @@ Cuatro jobs se ejecutan en paralelo, y la fusión espera a todos:
 | Job | Comprueba |
 |---|---|
 | **Crate** | el formato; Clippy en el servidor con las features por defecto y con todas las features; Clippy en el lado navegador (`wasm32`, feature `client`); las pruebas con las features por defecto y con todas las features; la documentación de la API; los paquetes de crates.io (`paquets-macros` por completo, y la lista de archivos de `paquets`) |
-| **MSRV** | el crate compila con Rust 1.89, la versión más antigua compatible |
+| **MSRV** | el crate compila con Rust 1.95, la versión más antigua compatible |
 | **paquets new** | genera un proyecto completo y uno mínimo con la herramienta de línea de comandos y ejecuta sus propias comprobaciones (formato, Clippy, pruebas y el Clippy de las islas para wasm32) |
 | **Website** | el sitio web (una aplicación Paquets en `site/`): formato, Clippy (servidor y WebAssembly), sus pruebas (que incluyen todas las páginas de la documentación, en los tres idiomas, con sus enlaces), la compilación de sus islas y su exportación estática |
 
