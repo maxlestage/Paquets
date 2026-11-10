@@ -35,7 +35,8 @@ current directory.
 ```bash
 # 1. The browser bundle (islands + motion) → pkg/
 cargo build --lib --target wasm32-unknown-unknown --profile wasm-release
-wasm-bindgen --target web --no-typescript --out-dir pkg \
+wasm-bindgen --target web --no-typescript --remove-name-section --remove-producers-section \
+  --out-dir pkg \
   target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm
 
 # 2. The server, on http://localhost:3000 (PORT on Heroku)
@@ -43,8 +44,8 @@ cargo run --release
 PORT=4000 cargo run --release
 ```
 
-`wasm-bindgen-cli` must match the `wasm-bindgen` version of `Cargo.toml` (`0.2.129`):
-`cargo install wasm-bindgen-cli --version 0.2.129`. Without `pkg/`, the site still works,
+`wasm-bindgen-cli` must match the `wasm-bindgen` version of `Cargo.toml` (`0.2.130`):
+`cargo install wasm-bindgen-cli --version 0.2.130`. Without `pkg/`, the site still works,
 without the islands and the animations driven by WebAssembly.
 
 Environment: `PORT`, `DATABASE_URL` (the demo's database, in memory by default),

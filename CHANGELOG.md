@@ -6,6 +6,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Rust 1.95 or newer (it was 1.89): Memoire now uses `parking_lot` 0.13, which needs it (Active,
+  Securite and pratique need 1.90). The MSRV job of the CI checks 1.95.
+- Active, Vitesse, Securite, pratique and Memoire on their latest commits. Through
+  `paquets::vitesse`, the `templates` feature uses minijinja 3 (it was 2):
+  `paquets::vitesse::templates::minijinja` is minijinja 3, so an environment given to
+  `App::templates` comes from minijinja 3. Through `paquets::orm`, the `encryption` feature
+  uses `aes-gcm` 0.11 and `argon2` 0.6 (files encrypted by earlier versions still open), and
+  `rusqlite` 0.41.
+- `paquets-macros` is built with `syn` 3 (it was 2): `#[model]` and `#[data]` generate the same
+  code and the same error messages.
+- Website: `wasm-bindgen` 0.2.130 (it was 0.2.129), with the same `wasm-bindgen-cli` in the
+  CI, the `Dockerfile` and `heroku-build.sh` (read from `site/Cargo.lock`) and in the docs.
+  The browser bundle is no longer stripped by Cargo, as `wasm-bindgen` 0.2.130 reads its
+  `target_features` section; `wasm-bindgen` drops the names and producers sections itself
+  (`--remove-name-section --remove-producers-section`), and the bundle is slightly smaller.
+- Every other dependency brought to its latest compatible version.
+
 ## [0.3.2] - 2026-11-09
 
 ### Added

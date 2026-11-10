@@ -6,7 +6,7 @@ Cette page installe tout ce qu'il faut pour créer des applications Paquets : Ru
 
 | Outil | Nécessaire pour | Version |
 |---|---|---|
-| Rust et Cargo | tout | 1.89 ou plus récente (Paquets utilise l'édition 2024) |
+| Rust et Cargo | tout | 1.95 ou plus récente (Paquets utilise l'édition 2024) |
 | Un compilateur C | la base de données SQLite, compilée dans votre programme | n'importe laquelle (`cc`, `gcc`, `clang` ou MSVC) |
 | La cible `wasm32-unknown-unknown` | les îlots seulement | installée par `paquets dev` |
 | `wasm-bindgen-cli` | les îlots seulement | exactement la version de la crate `wasm-bindgen` de votre `Cargo.lock`, installée par `paquets dev` |
@@ -28,7 +28,7 @@ Sous Windows, téléchargez plutôt `rustup-init.exe` depuis https://rustup.rs e
 Ouvrez un nouveau terminal, puis vérifiez l'installation :
 
 ```sh
-rustc --version   # rustc 1.89.0 ou plus récent
+rustc --version   # rustc 1.95.0 ou plus récent
 cargo --version
 ```
 
@@ -79,10 +79,10 @@ Les [îlots](islands.md) sont les parties d'une page qui s'exécutent dans le na
 
 ```sh
 rustup target add wasm32-unknown-unknown
-cargo install wasm-bindgen-cli --version 0.2.129 --locked
+cargo install wasm-bindgen-cli --version 0.2.130 --locked
 ```
 
-La version de `wasm-bindgen-cli` doit être **exactement** celle de la crate `wasm-bindgen` du `Cargo.lock` de votre projet (`0.2.129` au moment où ces lignes sont écrites). Lancé dans un projet, `paquets doctor` vous indique la version dont le projet a besoin.
+La version de `wasm-bindgen-cli` doit être **exactement** celle de la crate `wasm-bindgen` du `Cargo.lock` de votre projet (`0.2.130` au moment où ces lignes sont écrites). Lancé dans un projet, `paquets doctor` vous indique la version dont le projet a besoin.
 
 Si vous ne créez que des pages, des API et des routes WebSocket, passez cette étape : un projet créé avec `paquets new --minimal` n'a pas d'îlots et n'a besoin d'aucun outil WebAssembly.
 
@@ -181,7 +181,7 @@ N'importe quel éditeur fait l'affaire. Pour la complétion, les erreurs en dire
 |---|---|
 | `paquets: command not found` | Cargo installe les commandes dans `~/.cargo/bin`. Ouvrez un nouveau terminal, ou ajoutez ce dossier à votre `PATH`. |
 | `linker 'cc' not found` | Installez une chaîne de compilation C (voir l'astuce de l'étape 1). |
-| `error: package ... requires rustc 1.89` ou une erreur sur l'édition 2024 | Votre Rust est trop ancien : `rustup update`. |
+| `error: package ... requires rustc 1.95` ou une erreur sur l'édition 2024 | Votre Rust est trop ancien : `rustup update`. |
 | La première compilation prend plusieurs minutes | C'est normal : Cargo compile chaque dépendance une fois. Les compilations suivantes ne recompilent que votre code. |
 | `wasm-bindgen` signale une différence de version ou de schéma | La CLI et la crate ne correspondent pas : `cargo install wasm-bindgen-cli --version <version du Cargo.lock> --locked`. `paquets doctor` affiche les deux versions. |
 

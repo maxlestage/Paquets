@@ -46,6 +46,7 @@ if [ ! -x "$bin/wasm-bindgen" ]; then
     || cargo install wasm-bindgen-cli --version "$version" --locked --root "$bin" --bin wasm-bindgen
   [ -x "$bin/wasm-bindgen" ] || mv "$bin/bin/wasm-bindgen" "$bin/"
 fi
-"$bin/wasm-bindgen" --target web --no-typescript --out-dir pkg \
+"$bin/wasm-bindgen" --target web --no-typescript --remove-name-section --remove-producers-section \
+  --out-dir pkg \
   "$target/wasm32-unknown-unknown/wasm-release/paquets_site.wasm"
 echo "       islands ready in site/pkg"

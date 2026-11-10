@@ -446,7 +446,7 @@ Ensuite, `paquets dev` compile tout. Sans l'outil `paquets`, voici les commandes
 
 ```sh
 rustup target add wasm32-unknown-unknown
-cargo install wasm-bindgen-cli --version 0.2.129 --locked   # la version du Cargo.lock
+cargo install wasm-bindgen-cli --version 0.2.130 --locked   # la version du Cargo.lock
 cargo build --lib --target wasm32-unknown-unknown --profile wasm-release
 wasm-bindgen --target web --no-typescript --out-dir pkg \
   target/wasm32-unknown-unknown/wasm-release/mon_app.wasm

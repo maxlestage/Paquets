@@ -2,7 +2,7 @@
 name = "paquets-macros"
 version = "0.3.2"
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.95"
 description = "Attribute macros (#[model], #[data]) for the Paquets full-stack framework."
 authors = ["Maxime Nathan Lestage"]
 license-file = "../LICENSE"
@@ -19,4 +19,4 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1"
 quote = "1"
-syn = { version = "2", features = ["full"] }
+syn = { version = "3", features = ["full"] }
