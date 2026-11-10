@@ -2,7 +2,7 @@
 name = "paquets"
 version = "0.3.2"
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.95"
 description = "The simplest full-stack web framework for Rust: server, security, database, REST API, SEO pages and WebAssembly islands in one crate. Built on vitesse, securite, memoire-orm and active."
 authors = ["Maxime Nathan Lestage"]
 license-file = "LICENSE"
