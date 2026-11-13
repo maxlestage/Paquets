@@ -629,6 +629,7 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
     let credits = div()
         .class("footer__credits")
         .attr("data-reveal", "")
+        .child(seal(t.footer_by, t.footer_crafted))
         .child(p().class("footer__by").text(t.footer_by))
         .child(
             p().class("footer__name").children(
@@ -638,7 +639,7 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
                     .map(|(i, word)| span().style(format!("--i:{i}")).text(word.to_owned())),
             ),
         )
-        .child(p().class("footer__crafted").text(t.footer_crafted));
+        .child(crafted(t.footer_crafted));
     footer()
         .class("footer")
         .child(div().class("footer__glow").attr("aria-hidden", "true"))
@@ -681,6 +682,92 @@ fn site_footer(ctx: &Ctx<'_>) -> Element {
                         .child(icon("up")),
                 ),
         )
+}
+
+/// The seal: the signature written around a circle that turns slowly, the initials in
+/// the middle. Decorative (the same words are in the text right below it, for screen
+/// readers and for anyone without the stylesheet).
+///
+/// `textLength` is the circumference of the circle the text follows: whatever the
+/// language, the sentence closes the ring exactly instead of stopping short or
+/// overlapping its own start.
+fn seal(by: &str, crafted: &str) -> Element {
+    const RADIUS: f64 = 78.0;
+    // No-break spaces around the bullets: SVG collapses ordinary white space at the
+    // ends of a text, and the gap where the sentence meets its own start would vanish.
+    let ring = format!("{by} {AUTHOR}\u{a0}•\u{a0}{crafted}\u{a0}•\u{a0}").to_uppercase();
+    let initials: String = AUTHOR
+        .split(' ')
+        .filter_map(|word| word.chars().next())
+        .collect();
+    let circumference = 2.0 * std::f64::consts::PI * RADIUS;
+    div()
+        .class("seal")
+        .attr("aria-hidden", "true")
+        .child(
+            svg()
+                .class("seal__ring")
+                .attr("viewBox", "0 0 200 200")
+                .child(
+                    defs().child(
+                        path().id("seal-circle").attr(
+                            "d",
+                            format!(
+                                "M100 100m-{RADIUS} 0a{RADIUS} {RADIUS} 0 1 1 {d} 0a{RADIUS} {RADIUS} 0 1 1 -{d} 0",
+                                d = 2.0 * RADIUS
+                            ),
+                        ),
+                    ),
+                )
+                .child(
+                    circle()
+                        .class("seal__track")
+                        .attr("cx", "100")
+                        .attr("cy", "100")
+                        .attr("r", "96"),
+                )
+                .child(
+                    circle()
+                        .class("seal__track seal__track--inner")
+                        .attr("cx", "100")
+                        .attr("cy", "100")
+                        .attr("r", "62"),
+                )
+                .child(
+                    text_svg().class("seal__text").child(
+                        el("textPath")
+                            .attr("href", "#seal-circle")
+                            .attr("textLength", format!("{circumference:.1}"))
+                            .attr("lengthAdjust", "spacing")
+                            .text(ring),
+                    ),
+                ),
+        )
+        .child(span().class("seal__mono").text(initials))
+}
+
+/// "Crafted in Rust, in France", with the two words that carry the sentence picked out:
+/// Rust in its own colour, the country underlined with its flag. Matched word by word, so
+/// every language keeps its own sentence.
+fn crafted(sentence: &str) -> Element {
+    let mut line = p().class("footer__crafted");
+    for (i, word) in sentence.split(' ').enumerate() {
+        if i > 0 {
+            line = line.child(" ");
+        }
+        let bare = word.trim_end_matches([',', '.']);
+        let tail = &word[bare.len()..];
+        let class = match bare {
+            "Rust" => Some("crafted__rust"),
+            "France" | "Francia" => Some("crafted__france"),
+            _ => None,
+        };
+        line = match class {
+            Some(class) => line.child(span().class(class).text(bare.to_owned())).child(tail.to_owned()),
+            None => line.child(word.to_owned()),
+        };
+    }
+    line
 }
 
 // ----- Home ----------------------------------------------------------------------------
