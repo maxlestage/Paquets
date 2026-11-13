@@ -138,7 +138,7 @@ Features turn optional parts of Paquets on or off. The defaults suit most apps:
 |---|---|---|
 | `nuage` | ✓ | [Nuage DB](nuage.md), the database of new projects: the client of a Nuage DB server (`NUAGE_URL=https://…`), also in islands |
 | `sqlite` | ✓ | SQLite databases (`DATABASE_URL=sqlite://app.db`), compiled in: nothing to install |
-| `postgres` | ✓ | PostgreSQL with TLS (Heroku Postgres, Neon, Supabase…) |
+| `postgres` | ✓ | PostgreSQL with TLS (Heroku Postgres, Supabase…) |
 | `mysql` | | MySQL and MariaDB, with TLS |
 | `redis` | | Redis (rows stored as JSON documents), with `rediss://` TLS |
 | `mongodb` | | MongoDB |

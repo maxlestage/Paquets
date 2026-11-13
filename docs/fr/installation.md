@@ -138,7 +138,7 @@ Les features activent ou désactivent des parties facultatives de Paquets. Les v
 |---|---|---|
 | `nuage` | ✓ | [Nuage DB](nuage.md), la base des nouveaux projets : le client d'un serveur Nuage DB (`NUAGE_URL=https://…`), aussi dans les îlots |
 | `sqlite` | ✓ | les bases SQLite (`DATABASE_URL=sqlite://app.db`), compilées dans le programme : rien à installer |
-| `postgres` | ✓ | PostgreSQL avec TLS (Heroku Postgres, Neon, Supabase…) |
+| `postgres` | ✓ | PostgreSQL avec TLS (Heroku Postgres, Supabase…) |
 | `mysql` | | MySQL et MariaDB, avec TLS |
 | `redis` | | Redis (lignes stockées sous forme de documents JSON), avec TLS via `rediss://` |
 | `mongodb` | | MongoDB |
