@@ -6,7 +6,37 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-11-13
+
+### Added
+- Nuage DB, the database of Memoire written entirely in Rust, is the default database of new
+  projects. `app.nuage("data")` keeps the data in the `data/` folder in development (Nuage
+  DB's local mode: Memoire's engine, the one Nuage DB runs statements with, in
+  `data/app.memoire`), and `NUAGE_URL` and `NUAGE_TOKEN` point the same code to a Nuage DB
+  server in production. `NUAGE_BRANCH` runs the app on a branch of the server, made from the
+  main database at the first start if it is missing: previews and tests on a copy of real data.
+- The `nuage` feature, on by default: the client of a Nuage DB server (`memoire-orm/nuage`),
+  `Db::Nuage` and `DbTransaction::Nuage`, `Db::nuage(target, token)`, `From<NuageDb> for Db`,
+  and `paquets::orm::NuageDb`, also in islands (`features = ["client", "nuage"]`).
+- `Db::connect` and `DATABASE_URL` accept a Nuage DB server (`https://…`, `http://…`, with the
+  token of `NUAGE_TOKEN`) and the local mode (`nuage:data`).
+- `paquets new`: `app.nuage("data")` in `src/main.rs`, `/data` in `.gitignore` and
+  `.dockerignore`, a `data/` folder the app can write in the `Dockerfile`, `NUAGE_URL` and
+  `NUAGE_TOKEN` in `app.json`, and the README of the project explains the server.
+- Documentation: a Nuage DB page (development and production, running and deploying a
+  server, connecting an app, branches for previews and tests, `/admin` and `/app`, moving an
+  existing project), in English, French and Spanish; the database, installation, quick start,
+  configuration, deployment, command line, generators, FAQ and cheat sheet pages follow.
+- Website: a "Nuage DB" section on the home page, and Nuage DB in the ecosystem of the footer.
+
 ### Changed
+- `NUAGE_URL` wins over `DATABASE_URL`, which wins over the folder of `app.nuage(...)`.
+  Existing apps, which set neither `NUAGE_URL` nor `app.nuage(...)`, keep their database:
+  `DATABASE_URL`, in memory without it. The startup line says where Nuage DB is
+  (`database: nuage, local (data)`, `database: nuage (https://…)`), and an app on Heroku
+  without `NUAGE_URL` warns that its `data/` folder is erased at each restart.
+- With a Nuage DB server, the app runs on a multi-threaded tokio runtime, as with PostgreSQL.
+- memoire-orm 0.2.1 (it was 0.2.0), the version with the Nuage DB client.
 - Rust 1.95 or newer (it was 1.89): Memoire now uses `parking_lot` 0.13, which needs it (Active,
   Securite and pratique need 1.90). The MSRV job of the CI checks 1.95.
 - Active, Vitesse, Securite, pratique and Memoire on their latest commits. Through

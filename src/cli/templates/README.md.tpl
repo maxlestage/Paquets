@@ -13,7 +13,8 @@ cargo test           # the tests of src/main.rs
 
 - `src/main.rs`: the server (pages, the `Todo` model, its REST API at `/api/todos`).
 {{readme_lib}}- `public/`: static files, served as is.
-- The database is in memory until you set `DATABASE_URL`, e.g. `DATABASE_URL=sqlite://app.db paquets dev`.
+- `data/`: the database in development, [Nuage DB](https://github.com/maxlestage/Nuage)'s local
+  mode (`app.nuage("data")` in `src/main.rs`). Tests use a fresh in-memory database.
 
 ## Deploy to Heroku from your phone
 
@@ -26,6 +27,12 @@ cargo test           # the tests of src/main.rs
 Every branch pushed to GitHub is tested, then merged into `master` automatically when everything is
 green (`.github/workflows/ci.yml`; name a branch `wip/...` to opt out), and `master` is deployed.
 
-Add a database: Heroku → your app → *Resources* → *Heroku Postgres*. Its `DATABASE_URL` is used automatically.
+The database in production: a Nuage DB server (https://github.com/maxlestage/Nuage deploys on
+Heroku as is). Set the config vars `NUAGE_URL` (its address, `https://…`) and `NUAGE_TOKEN` (its
+token): the same code then uses the server. `NUAGE_BRANCH=preview` runs on a branch of it, made
+in an instant. Without `NUAGE_URL`, the data stays on the dyno's disk, erased at each restart.
+`DATABASE_URL` (Heroku Postgres…) still works when `NUAGE_URL` is not set.
+
+Nuage DB guide: https://paquets-90dfc06b6fea.herokuapp.com/en/docs/nuage/
 
 Guide: https://paquets-90dfc06b6fea.herokuapp.com/en/docs/deploy-heroku-mobile/

@@ -15,6 +15,7 @@ Tout ce qu'il faut pour créer des applications web full-stack avec Paquets 📦
 - [Requêtes et réponses](requests-responses.md) : query string, en-têtes, JSON et formulaires ; texte, JSON, redirections, cookies et fichiers.
 - [Pages](pages.md) : vues, mises en page, le thème intégré, les balises SEO et la Content-Security-Policy.
 - [Base de données](database.md) : modèles, choix de la base, requêtes, transactions, migrations et SQL brut.
+- [Nuage DB](nuage.md) : la base par défaut, un dossier en développement et un serveur en production, les branches, la console et le tableau de bord.
 - [API REST](rest-api.md) : une API JSON complète pour un modèle en une ligne, et comment la protéger ou l'étendre.
 - [Sécurité](security.md) : le bouclier devant chaque requête, comment le modifier, et l'authentification.
 
@@ -33,7 +34,7 @@ Tout ce qu'il faut pour créer des applications web full-stack avec Paquets 📦
 
 ## Déployer
 
-- [Déployer sur Heroku depuis votre téléphone](deploy-heroku-mobile.md) : le bouton Deploy, une base de données, les déploiements automatiques, les journaux et les domaines, le tout sans ordinateur.
+- [Déployer sur Heroku depuis votre téléphone](deploy-heroku-mobile.md) : le bouton Deploy, une base de données (Nuage DB ou Heroku Postgres), les déploiements automatiques, les journaux et les domaines, le tout sans ordinateur.
 - [Déployer avec Docker](deploy-docker.md) : l'image de production, les volumes, docker compose et les autres plateformes.
 - [Publier sur crates.io](publish-crates-io.md) : l'ordre de publication des paquets, et les releases depuis un téléphone.
 - [Automatisation](automation.md) : les tests à chaque push, la fusion automatique dans `master`, les déploiements, et comment les désactiver.
@@ -49,5 +50,5 @@ Tout ce qu'il faut pour créer des applications web full-stack avec Paquets 📦
 
 - Référence de l'API générée à partir du code source : https://docs.rs/paquets
 - Code source, issues et exemples : https://paquets-90dfc06b6fea.herokuapp.com/
-- Les quatre paquets : [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), [Active](https://active-c1883a966650.herokuapp.com/)
+- Les quatre paquets : [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), [Active](https://active-c1883a966650.herokuapp.com/), et la base de données, [Nuage DB](https://github.com/maxlestage/Nuage)
 - Aussi disponible en [anglais](../en/README.md) et en [espagnol](../es/README.md).

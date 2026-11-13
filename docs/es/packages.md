@@ -8,7 +8,7 @@ Paquets está construido sobre cuatro paquetes del mismo autor: Vitesse, Securit
 |---|---|---|---|---|
 | **Vitesse** | servidor HTTP al estilo de Express.js: rutas, middleware, routers, WebSocket, HTTPS, HTTP/2 y HTTP/3, sesiones, plantillas, cliente de pruebas | `paquets::vitesse` | [maxlestage/Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | [documentación](https://vitesse-f16135654c3d.herokuapp.com/es/docs/introduction/) |
 | **Securite** | middleware de seguridad: WAF, límite de tasa, CSRF, CORS, cabeceras de seguridad y CSP, bloqueador de bots, autenticación… | `paquets::securite` | [maxlestage/Securite](https://securite-2db4c1994be7.herokuapp.com/) | [documentación](https://securite-2db4c1994be7.herokuapp.com/es/docs/introduction/) |
-| **memoire-orm** | ORM asíncrono con tipado seguro, SQL construido en tiempo de compilación: memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | [documentación](https://memoire-7f4525f1fdaf.herokuapp.com/es/docs/introduction/) |
+| **memoire-orm** | ORM asíncrono con tipado seguro, SQL construido en tiempo de compilación: Nuage DB, memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | [documentación](https://memoire-7f4525f1fdaf.herokuapp.com/es/docs/introduction/) |
 | **active** | front end: componentes como funciones de Rust, `use_state`, renderizado en el servidor con etiquetas SEO completas, islas WebAssembly | `paquets::active` | [maxlestage/Active](https://active-c1883a966650.herokuapp.com/) | [documentación](https://active-c1883a966650.herokuapp.com/es/docs/introduction/) |
 
 Paquets también reexporta `paquets::serde` y `paquets::serde_json` (y `json!` en el prelude), para que `#[model]` y `#[data]` funcionen sin añadir serde a tu `Cargo.toml`, y `paquets::test`, los tipos del cliente de pruebas.
@@ -81,19 +81,19 @@ Consulta la [documentación de Pratique](https://securite-2db4c1994be7.herokuapp
 
 ## memoire-orm: la base de datos
 
-[memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) asocia structs de Rust a tablas y permite escribir las consultas en Rust, comprobadas por el compilador. El SQL de las operaciones por clave primaria se construye en tiempo de compilación, y el mismo código funciona en seis backends.
+[memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) asocia structs de Rust a tablas y permite escribir las consultas en Rust, comprobadas por el compilador. El SQL de las operaciones por clave primaria se construye en tiempo de compilación, y el mismo código funciona en siete backends, entre ellos Nuage DB, la base de datos de Memoire.
 
 **En Paquets:**
 
 - `#[model]` añade `#[derive(Model)]` (y serde) a tu struct, y hace que el código generado apunte a `paquets::orm`, así que tu proyecto no necesita su propia dependencia de `memoire-orm`;
-- `Db` es un único handle para todos los backends, elegido por `DATABASE_URL`, e implementa los traits `Executor` y `Database` de memoire: todos los métodos de los modelos y todas las consultas aceptan `req.db()`;
+- `Db` es un único handle para todos los backends, elegido por `NUAGE_URL` o `DATABASE_URL` ([Nuage DB](nuage.md) por defecto en los proyectos nuevos, con `app.nuage("data")`), e implementa los traits `Executor` y `Database` de memoire: todos los métodos de los modelos y todas las consultas aceptan `req.db()`;
 - `app.api::<M>()` y `app.model::<M>()` crean las tablas al arrancar; los errores de la base de datos se convierten en `404`, `409` o `400` a través de `?`.
 
 **En el prelude:** los traits `Model`, `Executor`, `Database` y `Transaction`, que dan sus métodos a los modelos y a la base de datos, y `LoadRelated`, que carga las filas relacionadas de una lista con una consulta por nivel (`users.load_children::<Post>(db)`).
 
 **Lo que Memoire aporta últimamente**, todo disponible a través de `req.db()`: relaciones leídas de las claves foráneas ([Filas relacionadas](database.md#filas-relacionadas)), búsqueda de texto completo con `Column::matches`, índices sobre varias columnas, `find_many` y `update_only`, una base de datos en memoria guardada en un archivo (`DATABASE_URL=memory://app.memoire`, cifrada con la feature `encryption`) y almacenamiento en el navegador para las islas (feature `browser-storage`, consulta [Islas](islands.md#guardar-datos-en-el-navegador)).
 
-**Más allá del prelude**, a través de `paquets::orm`: `Migrator` y `Migration`, `Dialect`, la macro `params!` para el SQL sin procesar, `Page` (el resultado de `paginate`), las columnas `Json<T>`, `Observed` (un handle que anuncia cada escritura hecha a través de él), `StorageOptions` y los propios backends (`SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), para abrir una base de datos con tus propios ajustes y pasarla a `app.database(Db::from(...))`. Consulta [Base de datos](database.md).
+**Más allá del prelude**, a través de `paquets::orm`: `Migrator` y `Migration`, `Dialect`, la macro `params!` para el SQL sin procesar, `Page` (el resultado de `paginate`), las columnas `Json<T>`, `Observed` (un handle que anuncia cada escritura hecha a través de él), `StorageOptions` y los propios backends (`NuageDb`, `SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), para abrir una base de datos con tus propios ajustes y pasarla a `app.database(Db::from(...))`. Consulta [Base de datos](database.md).
 
 
 Las transacciones que se relanzan si hay conflictos (`db.transaction`, como Prisma) y las tablas actualizadas sin archivos de migración (`db.push::<M>()`, como Drizzle, ejecutado en cada arranque) también funcionan con `req.db()`.

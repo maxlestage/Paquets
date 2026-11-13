@@ -131,7 +131,7 @@ async fn creates_a_todo() {
 
 ## La base de données dans les tests
 
-Chaque appel à `app().test()` reçoit une nouvelle base de données en mémoire, vide, quoi que dise `DATABASE_URL`. Les tests ne voient jamais les données des autres tests, ni les vôtres.
+Chaque appel à `app().test()` reçoit une nouvelle base de données en mémoire, vide, quoi que disent `NUAGE_URL`, `DATABASE_URL` ou `app.nuage(...)`. Les tests ne voient jamais les données des autres tests, ni les vôtres. Pour tester sur une copie de vraies données, donnez à un test sa propre [branche Nuage DB](nuage.md#des-branches-pour-les-aperçus-et-les-tests).
 
 Pour partir de données connues, ajoutez un hook `on_start` dans le test :
 

@@ -1,6 +1,6 @@
 # Database
 
-Paquets stores data with [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), a type-safe ORM: a Rust struct describes a table, and queries are written in Rust, checked by the compiler. The same code runs in memory, on SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: the database is chosen by a URL. This page covers models, choosing the database, reading and writing, transactions, schema changes and raw SQL.
+Paquets stores data with [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), a type-safe ORM: a Rust struct describes a table, and queries are written in Rust, checked by the compiler. The same code runs on [Nuage DB](nuage.md), the default database of new projects, in memory, on SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: the database is chosen by a URL. This page covers models, choosing the database, reading and writing, transactions, schema changes and raw SQL.
 
 ## Models
 
@@ -100,11 +100,19 @@ struct Task {
 
 ## Choosing the database
 
-The database is chosen by the `DATABASE_URL` environment variable when the app starts:
+Projects made by `paquets new` use [Nuage DB](nuage.md): `app.nuage("data")` in `src/main.rs` keeps the data in the `data/` folder while you develop, and the `NUAGE_URL` and `NUAGE_TOKEN` environment variables point the same code to a Nuage DB server in production.
+
+| `NUAGE_URL` | Database | Cargo feature |
+|---|---|---|
+| `https://my-nuage.herokuapp.com` (with `NUAGE_TOKEN`) | a Nuage DB server; `NUAGE_BRANCH` picks a branch | `nuage` (default) |
+| `data`, or any folder | the local mode of Nuage DB, in that folder | always available |
+
+When `NUAGE_URL` is not set, the database is chosen by the `DATABASE_URL` environment variable, then by the folder of `app.nuage(...)`, when the app starts:
 
 | `DATABASE_URL` | Database | Cargo feature |
 |---|---|---|
-| *(not set)* or `memory` | in memory, emptied when the server stops | always available |
+| `https://…`, `nuage:data` | Nuage DB: a server (with `NUAGE_TOKEN`), or the local mode in the folder `data` | `nuage` (default) for a server |
+| *(not set)* or `memory` | in memory, emptied when the server stops (in a project without `app.nuage(...)`) | always available |
 | `memory://data/app.memoire` | in memory, kept in a file and read back at startup | always available |
 | `sqlite://app.db`, `app.db`, `sqlite::memory:` | a SQLite file, created (with its folder) if missing | `sqlite` (default) |
 | `postgres://user:password@host:5432/name` | PostgreSQL, with TLS when the server offers it | `postgres` (default) |
@@ -118,7 +126,7 @@ DATABASE_URL=sqlite://app.db paquets dev
 
 The startup line tells you which one is used: `database: sqlite`. On Heroku, adding the Heroku Postgres add-on sets `DATABASE_URL` for you: nothing to change in the code.
 
-You can also choose the database in the code. It then wins over `DATABASE_URL`:
+You can also choose the database in the code. It then wins over `NUAGE_URL` and `DATABASE_URL`:
 
 ```rust
 let mut app = App::new();
@@ -133,7 +141,7 @@ If the URL is wrong or the server can't be reached, the app doesn't start, and s
 ```
 
 > [!NOTE]
-> Tests created with `app.test()` always use a fresh in-memory database, unless the test itself calls `app.database(...)`. `DATABASE_URL` is ignored there, so tests never touch your data.
+> Tests created with `app.test()` always use a fresh in-memory database, unless the test itself calls `app.database(...)`. `NUAGE_URL`, `DATABASE_URL` and `app.nuage(...)` are ignored there, so tests never touch your data.
 
 ### An in-memory database kept in a file
 
@@ -454,7 +462,7 @@ async fn top_visitors(req: Request) -> Result<Json<Vec<(i64, String)>>> {
 }
 ```
 
-`db.raw_execute(sql, &params![...])` runs a statement that returns no rows and gives the number of affected rows. Raw SQL works on SQLite, PostgreSQL and MySQL; the in-memory database, Redis and MongoDB return an "unsupported" error.
+`db.raw_execute(sql, &params![...])` runs a statement that returns no rows and gives the number of affected rows. Raw SQL works on SQLite, PostgreSQL and MySQL; Nuage DB, the in-memory database, Redis and MongoDB return an "unsupported" error.
 
 ## Errors
 
@@ -474,13 +482,14 @@ To react to an error yourself instead, match on it before `?`: `Todo::find` retu
 
 | Situation | Choice |
 |---|---|
+| A new project, from development to production | [Nuage DB](nuage.md): `app.nuage("data")`, then a Nuage DB server through `NUAGE_URL` |
 | Learning, prototypes, tests | in memory (nothing to set) |
 | One server with a disk that persists (a VPS, a Raspberry Pi, a Docker volume) | SQLite: one file, nothing to install, very fast; or `memory://app.memoire`, the in-memory engine kept in a file |
-| Heroku, or several servers | PostgreSQL |
+| Heroku, or several servers, with SQL written by hand | PostgreSQL |
 | An existing database | the one you have: MySQL/MariaDB, Redis or MongoDB |
 
 > [!WARNING]
-> Don't use SQLite on Heroku: the file system of a dyno is temporary, and the file is lost at every deployment and restart (at least once a day). Add the Heroku Postgres add-on instead (see [Deploy to Heroku](deploy-heroku-mobile.md#2-add-a-database)).
+> Don't use SQLite, or the local mode of Nuage DB, on Heroku: the file system of a dyno is temporary, and the files are lost at every deployment and restart (at least once a day). Use a Nuage DB server or the Heroku Postgres add-on instead (see [Deploy to Heroku](deploy-heroku-mobile.md#2-add-a-database)).
 
 With PostgreSQL, the pool opens up to 4 connections per CPU core when the traffic needs them. Small hosted plans limit connections (often to 20): to choose the pool size yourself, open the pool with Memoire (`PgPool::connect_with(&url, 10)`), and pass it with `app.database(Db::from(pool))` from an async `main` (see [Configuration](configuration.md#async-initialisation)).
 
@@ -490,6 +499,7 @@ Memoire's documentation goes further: [models](https://memoire-7f4525f1fdaf.hero
 
 ## Next steps
 
+- [Nuage DB](nuage.md): the default database, from development to production.
 - [REST API](rest-api.md): a complete JSON API for a model in one line.
 - [Testing](testing.md): test your queries with an in-memory database.
 - [Errors](errors.md): what `?` does with database errors.

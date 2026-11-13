@@ -11,7 +11,7 @@ You need:
 
 - **A Heroku account**: sign up at https://signup.heroku.com. Heroku has **no free plan**: the cheapest dynos (the containers that run your app) are **Eco**, about **$5 a month**, and **Basic**, about $7 a month. Heroku asks for a payment method before you can create an app. Prices change: check https://www.heroku.com/pricing.
 - **A GitHub account**, for your own copy of the code and for automatic deployments (sections 3 and 4).
-- Optionally, a few dollars a month more for a **Heroku Postgres** database (section 2).
+- Optionally, a few dollars a month more for a database (section 2): a **Nuage DB** server, the database of projects made by `paquets new`, or **Heroku Postgres**.
 
 ### How it works
 
@@ -48,9 +48,20 @@ Try the demo by adding these paths to the address:
 | `/api/todos` | the same to-dos as JSON |
 
 > [!NOTE]
-> Until you add a database, the app keeps its data in memory: it is lost at every restart (each deployment, each settings change, and the automatic restart Heroku performs about once a day). Section 2 fixes that.
+> Until you add a database, the app keeps its data in memory (or, for a project made by `paquets new`, in its `data/` folder on the dyno's disk): it is lost at every restart (each deployment, each settings change, and the automatic restart Heroku performs about once a day). Section 2 fixes that.
 
 ## 2. Add a database
+
+### With Nuage DB
+
+Projects made by `paquets new` use [Nuage DB](nuage.md). Its server is a Heroku app of its own, deployed once and shared by your apps if you like:
+
+1. Deploy the [Nuage repository](https://github.com/maxlestage/Nuage) on a new Heroku app, on one **Basic** dyno, with its **Deploy to Heroku** button or as in section 3. Its config vars: `NUAGE_TOKEN` (a long random value), `NUAGE_ADMIN_PASSWORD`, and the `NUAGE_BACKUP_S3_*` backups, needed on Heroku since a dyno's disk is erased at each restart: each start restores the database from them (see [Deploy a Nuage DB server](nuage.md#deploy-a-nuage-db-server)).
+2. Open your app → **Settings** → **Reveal Config Vars**, and add `NUAGE_URL` (the address of the server, `https://my-nuage.herokuapp.com`) and `NUAGE_TOKEN` (the same token).
+
+The app restarts, connects to the server and creates the tables of your models. The startup line in the logs says `database: nuage (https://my-nuage.herokuapp.com)`. The server's console is at `https://my-nuage.herokuapp.com/admin`, its live dashboard at `/app`.
+
+### With Heroku Postgres
 
 1. Open https://dashboard.heroku.com and tap your app.
 2. Open the **Resources** tab.
@@ -67,7 +78,7 @@ That's all. Heroku creates the database, sets the `DATABASE_URL` config var, and
 (The address in this line is the inside of the container: your app is reached through `https://<app-name>.herokuapp.com`.)
 
 > [!WARNING]
-> Don't use SQLite on Heroku: the file system of a dyno is temporary, and the file would be erased at every restart.
+> Don't use SQLite, or the local mode of Nuage DB, on Heroku: the file system of a dyno is temporary, and the files would be erased at every restart. When `NUAGE_URL` is not set on Heroku, the app says so in its logs.
 
 ## 3. Your own copy of the code
 
@@ -188,7 +199,7 @@ Creating the project needs Rust, once: on any computer, or in a cloud developmen
 
 - **First deployment**: the Deploy button with your repository's address, `https://heroku.com/deploy?template=https://github.com/<you>/my-app` (for a private repository, use section 4 instead: the button needs a public repository).
 - **Automatic deployments**: the secret `HEROKU_API_KEY` and the variable `HEROKU_APP_NAME`, as in section 4.
-- **A database**: the Heroku Postgres add-on, as in section 2.
+- **A database**: a Nuage DB server and the `NUAGE_URL` and `NUAGE_TOKEN` config vars, as in section 2 (or the Heroku Postgres add-on).
 
 The project's `README.md` repeats these steps.
 
@@ -213,7 +224,7 @@ Errors of your handlers that become a `500` are logged with their cause (`[vites
 
 ### Settings: config vars
 
-**Settings** → **Reveal Config Vars**. Each config var is an environment variable, read in your code with `std::env::var("NAME")`. Saving a change restarts the app. `DATABASE_URL` is managed by the Postgres add-on. Don't set `PORT`: Heroku sets it at each start.
+**Settings** → **Reveal Config Vars**. Each config var is an environment variable, read in your code with `std::env::var("NAME")`. Saving a change restarts the app. `NUAGE_URL` and `NUAGE_TOKEN` are yours to set (section 2); `DATABASE_URL` is managed by the Postgres add-on. Don't set `PORT`: Heroku sets it at each start.
 
 ### Restart, sleep, dyno type
 
@@ -258,7 +269,7 @@ The build succeeded but the app doesn't answer. Open the logs and look for an er
 
 | Code | Meaning | What to do |
 |---|---|---|
-| `H10` App crashed | the program stopped | read the lines just above: `Error: … database: …` means `DATABASE_URL` is wrong or the database is unreachable; `startup: …` means an `on_start` hook failed; `duplicate route` means two routes collide |
+| `H10` App crashed | the program stopped | read the lines just above: `Error: … database: …` means `NUAGE_URL`, `NUAGE_TOKEN` or `DATABASE_URL` is wrong, or the database is unreachable; `startup: …` means an `on_start` hook failed; `duplicate route` means two routes collide |
 | `R10` Boot timeout | the app didn't listen on `$PORT` within 60 seconds | Paquets listens on `$PORT` by itself: don't call `app.port(...)` with a fixed port in production |
 | `H14` No web dynos running | no dyno runs the `web` process | in **Resources**, check that the `web` dyno is switched on |
 | `H12` Request timeout | a request took more than 30 seconds | make the handler faster, or move the work out of the request |
@@ -269,7 +280,7 @@ All the codes are listed at https://devcenter.heroku.com/articles/error-codes.
 
 - **Every visitor gets `429 Too Many Requests`**: the shield counts requests per IP address. The default shield reads the real address behind Heroku's router; if you replaced it with `app.security(...)`, build it from `paquets::shield()`, which keeps that setting (see [Security](security.md#the-client-ip-behind-a-proxy)).
 - **The first visit is slow**: an Eco dyno was asleep.
-- **My data disappeared**: the app has no database add-on (data in memory), or uses SQLite. Add Heroku Postgres (section 2).
+- **My data disappeared**: the app has no database server (data in memory, or in the `data/` folder of the dyno), or uses SQLite. Set `NUAGE_URL` and `NUAGE_TOKEN`, or add Heroku Postgres (section 2).
 - **The app doesn't start after adding a field to a model**: existing rows need a value for it. Make it an `Option<T>` or give it a `default`. See [Database](database.md#changing-a-table-later).
 - **WebSocket connections close after a minute**: Heroku closes connections that stay silent for about 55 seconds. Send a ping regularly (see [WebSocket](websocket.md#in-production)).
 - **HTTP/3 doesn't work**: Heroku's router doesn't forward UDP. Leave the `http3` feature off on Heroku.

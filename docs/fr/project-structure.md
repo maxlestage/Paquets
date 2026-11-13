@@ -32,6 +32,7 @@ Les éléments suivants apparaissent plus tard et ne sont jamais commités (ils 
 |---|---|---|
 | `target/` | Cargo | tout ce que Cargo compile |
 | `pkg/` | `paquets dev`, `paquets build` | le bundle navigateur des îlots : `mon_app.js` et `mon_app_bg.wasm` |
+| `data/` | l'application, à son premier démarrage | la base de données pendant le développement : le mode local de [Nuage DB](nuage.md) (`app.nuage("data")`), `data/app.memoire` |
 | `*.db` | SQLite | votre base de données locale, quand `DATABASE_URL=sqlite://...` |
 
 ## src/main.rs : le serveur
@@ -152,7 +153,7 @@ Au démarrage, le serveur cherche deux dossiers **dans le répertoire de travail
 | `public/` | servi à la racine du site |
 | `pkg/` | servi sous `/pkg/` ; s'il contient un bundle (`<nom>.js` et `<nom>_bg.wasm`), les pages avec des îlots le chargent |
 
-Le fichier SQLite de `DATABASE_URL=sqlite://app.db` est lui aussi relatif au répertoire de travail. Dans l'image Docker, le répertoire de travail est `/app`, où le `Dockerfile` copie `public/` et `pkg/`. Si vous lancez le binaire release à la main, lancez-le depuis la racine du projet (ou copiez `public/` et `pkg/` là où vous le lancez).
+Le dossier `data/` de `app.nuage("data")` et le fichier SQLite de `DATABASE_URL=sqlite://app.db` sont eux aussi relatifs au répertoire de travail. Dans l'image Docker, le répertoire de travail est `/app`, où le `Dockerfile` copie `public/` et `pkg/` et crée un dossier `data/` dans lequel l'application peut écrire. Si vous lancez le binaire release à la main, lancez-le depuis la racine du projet (ou copiez `public/` et `pkg/` là où vous le lancez).
 
 ## Faire grandir le projet
 

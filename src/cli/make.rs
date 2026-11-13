@@ -621,7 +621,7 @@ fn migration(project: &mut Project, name: &str, version: &str) -> Result<Vec<Str
     project.create(
         &format!("src/migrations/{module}.rs"),
         &format!(
-            "//! Migration {version}: {}.\n\nuse paquets::prelude::*;\n\n/// The changes of this migration, applied once, in a transaction.\npub fn migration() -> Migration {{\n    // Add the changes, for example:\n    //     .create_table::<crate::models::Post>()\n    //     .sql(\"ALTER TABLE posts ADD COLUMN slug TEXT\")\n    Migration::new({version}, \"{name}\")\n}}\n",
+            "//! Migration {version}: {}.\n\nuse paquets::prelude::*;\n\n/// The changes of this migration, applied once, in a transaction.\npub fn migration() -> Migration {{\n    // Add the changes, for example:\n    //     .create_table::<crate::models::Post>()\n    //     .sql(\"ALTER TABLE posts ADD COLUMN slug TEXT\") // SQL databases only\n    Migration::new({version}, \"{name}\")\n}}\n",
             sentence(&name).to_lowercase()
         ),
     )?;

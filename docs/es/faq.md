@@ -10,7 +10,7 @@ Un framework de Rust que te da, con un solo crate y una sola `App`, un servidor 
 
 ### ¿Está listo para producción?
 
-Paquets es joven (versión 0.1). Está construido sobre cuatro paquetes que se prueban por separado (Vitesse, Securite, memoire-orm, Active), y sus valores por defecto están pensados para producción: escudo de seguridad, apagado ordenado, base de datos tomada de `DATABASE_URL`, compilaciones release en el `Dockerfile`. Pero su API todavía puede cambiar entre versiones 0.x, y no tiene años de uso a sus espaldas. Pruébalo en un proyecto en el que puedas seguir su evolución, y lee los límites en la [Introducción](introduction.md#lo-que-paquets-todavía-no-hace).
+Paquets es joven (versión 0.3). Está construido sobre cuatro paquetes que se prueban por separado (Vitesse, Securite, memoire-orm, Active), y sus valores por defecto están pensados para producción: escudo de seguridad, apagado ordenado, base de datos tomada de `NUAGE_URL` o de `DATABASE_URL`, compilaciones release en el `Dockerfile`. Pero su API todavía puede cambiar entre versiones 0.x, y no tiene años de uso a sus espaldas. Pruébalo en un proyecto en el que puedas seguir su evolución, y lee los límites en la [Introducción](introduction.md#lo-que-paquets-todavía-no-hace).
 
 ### ¿Por qué no axum, actix-web o Leptos?
 
@@ -80,11 +80,19 @@ No viene integrada. `paquets dev` compila y ejecuta la aplicación una vez; desp
 
 ### ¿Qué base de datos debería usar?
 
-En memoria mientras aprendes y en las pruebas, SQLite para un solo servidor con un disco persistente, y PostgreSQL en Heroku o con varios servidores. Consulta [Base de datos](database.md#qué-base-de-datos-usar).
+[Nuage DB](nuage.md) para un proyecto nuevo: una carpeta mientras desarrollas, un servidor Nuage DB en producción, con el mismo código. En memoria mientras aprendes y en las pruebas, SQLite para un solo servidor con un disco persistente, y PostgreSQL cuando escribes SQL a mano. Consulta [Base de datos](database.md#qué-base-de-datos-usar).
+
+### ¿Qué es Nuage DB?
+
+La base de datos de Memoire, el ORM de Paquets, escrita enteramente en Rust: datos en disco detrás de un registro de escritura anticipada, recuperación tras un fallo, puntos de control, compactación y copias de seguridad automáticas (en una carpeta o en S3, restauradas al arrancar), ramas instantáneas, y un solo servidor con una consola (`/admin`) y un panel en directo (`/app`). Desde la 0.3.3, `paquets new` la configura. Consulta [Nuage DB](nuage.md).
+
+### ¿Tengo que usar Nuage DB?
+
+No. Sin `NUAGE_URL` y sin `app.nuage(...)`, nada cambia: `DATABASE_URL` sigue eligiendo SQLite, PostgreSQL, MySQL, Redis o MongoDB, y la base está en memoria sin ella. Los proyectos creados antes de la 0.3.3 siguen funcionando tal cual; [Pasar un proyecto existente a Nuage DB](nuage.md#pasar-un-proyecto-existente-a-nuage-db) explica cómo cambiar.
 
 ### ¿Por qué han desaparecido mis datos?
 
-Sin `DATABASE_URL`, la base de datos está en memoria y se vacía cuando el servidor se detiene. En Heroku, los archivos SQLite también se borran en cada reinicio. Usa PostgreSQL (el add-on Heroku Postgres) para los datos que deben durar.
+Sin `NUAGE_URL`, `DATABASE_URL` ni `app.nuage(...)`, la base de datos está en memoria y se vacía cuando el servidor se detiene. En Heroku, los archivos de un dyno (la carpeta `data/` del modo local de Nuage DB, los archivos SQLite) también se borran en cada reinicio. Usa un servidor Nuage DB (`NUAGE_URL` y `NUAGE_TOKEN`) o PostgreSQL (el add-on Heroku Postgres) para los datos que deben durar.
 
 ### He añadido un campo a un modelo y ahora la aplicación no arranca.
 
