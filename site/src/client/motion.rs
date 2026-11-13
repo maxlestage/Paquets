@@ -1,5 +1,5 @@
 //! Page motion that CSS cannot do alone: scroll reveals, progress bar, navigation that
-//! hides, parallax, counters, the cursor, magnetic buttons, 3D tilt, menus, copy
+//! hides, parallax, counters, the cursor, magnetic buttons, card lights, menus, copy
 //! buttons and the "on this page" scroll-spy. Everything degrades to a static page.
 
 use std::cell::Cell;
@@ -183,11 +183,7 @@ fn scroll_state() {
         }
         last.set(y);
         for (el, speed) in &parallax {
-            set(
-                el,
-                "transform",
-                &format!("translate3d(0,{:.1}px,0)", y * speed),
-            );
+            set(el, "transform", &format!("translateY({:.1}px)", y * speed));
         }
         for el in &journey {
             let rect = el.get_bounding_client_rect();
@@ -388,7 +384,7 @@ fn cursor() {
         on_passive(&window(), "pointermove", move |e: web_sys::PointerEvent| {
             let (x, y) = (f64::from(e.client_x()), f64::from(e.client_y()));
             target.set((x, y));
-            set(&dot, "transform", &format!("translate3d({x}px,{y}px,0)"));
+            set(&dot, "transform", &format!("translate({x}px,{y}px)"));
             let hovered = e
                 .target()
                 .and_then(|t| t.dyn_into::<Element>().ok())
@@ -424,7 +420,7 @@ fn cursor() {
             set(
                 &ring,
                 "transform",
-                &format!("translate3d({:.1}px,{:.1}px,0)", pos.0, pos.1),
+                &format!("translate({:.1}px,{:.1}px)", pos.0, pos.1),
             );
         }
         true
@@ -450,13 +446,10 @@ fn magnetic() {
     }
 }
 
-/// Cards tilt in 3D towards the pointer, with a light that follows it (`data-tilt`).
+/// Cards lift under the pointer, with a light that follows it (`data-tilt`).
 fn tilt() {
+    // 2D: the card lifts in CSS; the light follows the pointer (--px, --py).
     for el in all("[data-tilt]") {
-        let max: f64 = el
-            .get_attribute("data-tilt")
-            .and_then(|v| v.parse().ok())
-            .unwrap_or(10.0);
         let target = el.clone();
         on(&el, "pointermove", move |e: web_sys::PointerEvent| {
             let r = target.get_bounding_client_rect();
@@ -464,18 +457,11 @@ fn tilt() {
             let y = (f64::from(e.client_y()) - r.top()) / r.height().max(1.0);
             set(&target, "--px", &format!("{:.1}%", x * 100.0));
             set(&target, "--py", &format!("{:.1}%", y * 100.0));
-            set(&target, "--ry", &format!("{:.2}deg", (x - 0.5) * max));
-            set(&target, "--rx", &format!("{:.2}deg", (0.5 - y) * max));
-        });
-        let target = el.clone();
-        on(&el, "pointerleave", move |_: web_sys::Event| {
-            set(&target, "--rx", "0deg");
-            set(&target, "--ry", "0deg");
         });
     }
 }
 
-/// The hero (its 3D scene and its blobs) follows the mouse, with some inertia.
+/// The hero (its 2D scene and its blobs) follows the mouse, with some inertia.
 fn hero_mouse() {
     let Some(hero) = all(".hero").into_iter().next() else {
         return;
