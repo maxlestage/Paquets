@@ -236,22 +236,24 @@ section[id] {
   position: relative;
   width: var(--s, 56px);
   height: var(--s, 56px);
+  transform-style: preserve-3d;
   flex: none;
 }
 
-/* A flat tile (2D): only the front face is drawn. */
 .cube__body {
   position: absolute;
   inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-28deg) rotateY(38deg);
 }
 
 .cube__body--spin {
-  animation: cube-float 6s ease-in-out infinite;
+  animation: cube-spin 10s linear infinite;
 }
 
-@keyframes cube-float {
-  0%, 100% { transform: translateY(0) rotate(-6deg); }
-  50% { transform: translateY(-8%) rotate(6deg); }
+@keyframes cube-spin {
+  from { transform: rotateX(-28deg) rotateY(0deg); }
+  to { transform: rotateX(-28deg) rotateY(360deg); }
 }
 
 .cube__face {
@@ -260,7 +262,7 @@ section[id] {
   display: grid;
   place-items: center;
   overflow: hidden;
-  border-radius: 22%;
+  border-radius: 3px;
   background: linear-gradient(140deg, color-mix(in srgb, var(--c, var(--violet)) 62%, #fff) 0%, var(--c, var(--violet)) 46%, color-mix(in srgb, var(--c, var(--violet)) 58%, #000) 100%);
   border: 1px solid color-mix(in srgb, var(--c, var(--violet)) 45%, #fff);
 }
@@ -283,11 +285,12 @@ section[id] {
   color: rgba(12, 6, 30, 0.62);
 }
 
-.cube__face:not(.cube__face--front) { display: none; }
-.cube__face--front {
-  --shade: 0;
-  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--c, var(--violet)) 75%, transparent);
-}
+.cube__face--front { transform: translateZ(var(--h)); --shade: 0.06; }
+.cube__face--back { transform: rotateY(180deg) translateZ(var(--h)); --shade: 0.3; }
+.cube__face--right { transform: rotateY(90deg) translateZ(var(--h)); --shade: 0.2; }
+.cube__face--left { transform: rotateY(-90deg) translateZ(var(--h)); --shade: 0.24; }
+.cube__face--top { transform: rotateX(90deg) translateZ(var(--h)); --shade: 0; }
+.cube__face--bottom { transform: rotateX(-90deg) translateZ(var(--h)); --shade: 0.45; }
 
 /* The Paquets box: violet and pink sides, a cyan top and a white tape. */
 .cube--brand .cube__face {
@@ -343,10 +346,9 @@ section[id] {
   position: relative;
   width: var(--u);
   height: var(--u);
-  isolation: isolate;
+  transform-style: preserve-3d;
 }
 
-/* Seen from the front (2D): the body hides what falls into it, the lid opens in the plane. */
 .pbox__face,
 .pbox__lid {
   position: absolute;
@@ -359,25 +361,20 @@ section[id] {
     0 0 calc(var(--glow) * 40px) rgba(34, 211, 238, calc(var(--glow) * 0.35));
 }
 
-.pbox__face:not(.pbox__face--front) { display: none; }
+.pbox__face--front { transform: translateZ(var(--hu)); }
+.pbox__face--back { transform: rotateY(180deg) translateZ(var(--hu)); }
+.pbox__face--right { transform: rotateY(90deg) translateZ(var(--hu)); }
+.pbox__face--left { transform: rotateY(-90deg) translateZ(var(--hu)); }
 
-.pbox__face--front {
-  inset: 26% 4% 0;
-  z-index: 2;
-  border-radius: 8px 8px 12px 12px;
-  background:
-    linear-gradient(160deg, rgba(126, 98, 255, 0.97), rgba(52, 26, 140, 0.98) 60%, rgba(150, 44, 120, 0.98));
+.pbox__face--bottom {
+  transform: rotateX(-90deg) translateZ(var(--hu));
+  background: radial-gradient(circle, rgba(109, 74, 255, 0.45), rgba(20, 10, 50, 0.75));
 }
 
-/* Hinged on its left end: 0deg = closed, -30deg = open. */
+/* Hinged on its back edge: 90deg = closed, 210deg = open. */
 .pbox__lid {
-  inset: 12% 0 auto;
-  height: 15%;
-  z-index: 3;
-  border-radius: 8px;
-  transform-origin: 0 100%;
-  transform: rotate(0deg);
-  background: linear-gradient(160deg, rgba(150, 125, 255, 0.95), rgba(70, 40, 190, 0.95));
+  transform-origin: 50% 0;
+  transform: translateZ(calc(var(--hu) * -1)) rotateX(90deg);
 }
 
 .pbox__tape {
@@ -430,6 +427,8 @@ section[id] {
   margin: 0 auto;
   display: grid;
   place-items: center;
+  perspective: calc(var(--u) * 7);
+  perspective-origin: 50% 35%;
 }
 
 .scene__halo {
@@ -448,16 +447,18 @@ section[id] {
 }
 
 .scene__tilt {
-  transform: translate(calc(var(--hx, 0) * 14px), calc(var(--hy, 0) * 10px));
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--hy, 0) * -16deg)) rotateY(calc(var(--hx, 0) * 26deg));
 }
 
 .scene__rig {
-  animation: rig-float 6s ease-in-out infinite;
+  transform-style: preserve-3d;
+  animation: rig-spin 30s linear infinite;
 }
 
-@keyframes rig-float {
-  0%, 100% { transform: translateY(calc(var(--u) * 0.18)); }
-  50% { transform: translateY(calc(var(--u) * 0.18 - 8px)); }
+@keyframes rig-spin {
+  from { transform: translateY(calc(var(--u) * 0.18)) rotateX(-24deg) rotateY(0deg); }
+  to { transform: translateY(calc(var(--u) * 0.18)) rotateX(-24deg) rotateY(-360deg); }
 }
 
 .scene .pbox {
@@ -476,10 +477,10 @@ section[id] {
 }
 
 @keyframes lid {
-  0%, 35% { transform: translateY(-14%) rotate(-30deg); }
-  42% { transform: rotate(3deg); }
-  44%, 66% { transform: rotate(0deg); }
-  74%, 100% { transform: translateY(-14%) rotate(-30deg); }
+  0%, 35% { transform: translateZ(calc(var(--hu) * -1)) rotateX(212deg); }
+  42% { transform: translateZ(calc(var(--hu) * -1)) rotateX(84deg); }
+  44%, 66% { transform: translateZ(calc(var(--hu) * -1)) rotateX(90deg); }
+  74%, 100% { transform: translateZ(calc(var(--hu) * -1)) rotateX(212deg); }
 }
 
 .pkg {
@@ -490,7 +491,7 @@ section[id] {
   top: calc(50% - var(--s) / 2);
   width: var(--s);
   height: var(--s);
-  z-index: 1;
+  transform-style: preserve-3d;
   animation: pkg-fly var(--cycle) var(--ease-in-out) infinite;
   animation-delay: calc(var(--i) * -0.25s);
 }
@@ -506,25 +507,25 @@ section[id] {
 
 @keyframes pkg-fly {
   0%, 4% {
-    transform: translate(var(--ox), var(--oy)) rotate(var(--r));
+    transform: translate3d(var(--ox), var(--oy), var(--oz)) rotateX(var(--r)) rotateY(var(--r));
   }
   11% {
-    transform: translate(var(--ox), calc(var(--oy) - var(--u) * 0.14)) rotate(calc(var(--r) + 90deg));
+    transform: translate3d(var(--ox), calc(var(--oy) - var(--u) * 0.14), var(--oz)) rotateX(calc(var(--r) + 60deg)) rotateY(calc(var(--r) + 90deg));
   }
   18% {
-    transform: translate(var(--ox), var(--oy)) rotate(calc(var(--r) + 180deg));
+    transform: translate3d(var(--ox), var(--oy), var(--oz)) rotateX(calc(var(--r) + 120deg)) rotateY(calc(var(--r) + 180deg));
   }
   27% {
-    transform: translate(var(--ax), calc(var(--u) * -1.05)) rotate(0deg);
+    transform: translate3d(var(--ax), calc(var(--u) * -1.05), var(--az)) rotateX(0deg) rotateY(0deg);
   }
   34%, 82% {
-    transform: translate(var(--ax), var(--ay)) rotate(0deg);
+    transform: translate3d(var(--ax), var(--ay), var(--az)) rotateX(0deg) rotateY(0deg);
   }
   89% {
-    transform: translate(var(--ax), calc(var(--u) * -1.05)) rotate(0deg);
+    transform: translate3d(var(--ax), calc(var(--u) * -1.05), var(--az)) rotateX(0deg) rotateY(0deg);
   }
   97%, 100% {
-    transform: translate(var(--ox), var(--oy)) rotate(var(--r));
+    transform: translate3d(var(--ox), var(--oy), var(--oz)) rotateX(var(--r)) rotateY(var(--r));
   }
 }
 
@@ -668,16 +669,18 @@ html.intro-seen .loader {
   place-items: center;
   width: 190px;
   height: 170px;
+  perspective: 700px;
 }
 
 .loader__rig {
-  animation: loader-in 2s var(--ease-out) both;
+  transform-style: preserve-3d;
+  animation: loader-spin 2s var(--ease-out) both;
 }
 
-@keyframes loader-in {
-  from { transform: translateY(24px) rotate(-12deg) scale(0.4); opacity: 0; }
+@keyframes loader-spin {
+  from { transform: rotateX(-26deg) rotateY(-230deg) scale(0.4); opacity: 0; }
   40% { opacity: 1; }
-  to { transform: none; }
+  to { transform: rotateX(-26deg) rotateY(-38deg) scale(1); }
 }
 
 .pbox--loader {
@@ -690,8 +693,8 @@ html.intro-seen .loader {
 }
 
 @keyframes lid-open {
-  from { transform: rotate(0deg); }
-  to { transform: translateY(-14%) rotate(-34deg); }
+  from { transform: translateZ(calc(var(--hu) * -1)) rotateX(90deg); }
+  to { transform: translateZ(calc(var(--hu) * -1)) rotateX(222deg); }
 }
 
 .loader__beam {
@@ -1166,7 +1169,7 @@ html.menu-open .menu nav a {
   --mx: 0px;
   --my: 0px;
   display: inline-flex;
-  transform: translate(var(--mx), var(--my));
+  transform: translate3d(var(--mx), var(--my), 0);
   transition: transform 0.5s var(--ease-out);
 }
 
@@ -1174,7 +1177,7 @@ html.menu-open .menu nav a {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  transform: translate(calc(var(--mx) * 0.4), calc(var(--my) * 0.4));
+  transform: translate3d(calc(var(--mx) * 0.4), calc(var(--my) * 0.4), 0);
   transition: transform 0.5s var(--ease-out);
 }
 
@@ -1332,14 +1335,12 @@ html.menu-open .menu nav a {
   position: relative;
   height: 100%;
   overflow: hidden;
-  /* 2D: the card lifts under the pointer, the light follows it (--px, --py). */
-  transform: translateY(0);
-  transition: transform 0.4s var(--ease-out), border-color 0.4s, background 0.4s;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.6s var(--ease-out), border-color 0.4s, background 0.4s;
 }
 
 .tilt:hover {
-  transform: translateY(-4px);
-  transition: transform 0.3s var(--ease-out), border-color 0.4s, background 0.4s;
+  transition: transform 0.12s linear, border-color 0.4s, background 0.4s;
   border-color: color-mix(in srgb, var(--c, var(--violet)) 50%, transparent);
 }
 
@@ -1473,6 +1474,8 @@ html.menu-open .menu nav a {
     linear-gradient(rgba(143, 116, 255, 0.13) 1px, transparent 1px),
     linear-gradient(90deg, rgba(143, 116, 255, 0.13) 1px, transparent 1px);
   background-size: 64px 64px;
+  transform: perspective(600px) rotateX(62deg);
+  transform-origin: bottom;
   mask-image: linear-gradient(to top, black, transparent 85%);
   -webkit-mask-image: linear-gradient(to top, black, transparent 85%);
   animation: grid-run 3s linear infinite;
@@ -1503,14 +1506,14 @@ html.menu-open .menu nav a {
   position: relative;
   z-index: 2;
   min-width: 0;
-  transform: translateY(calc(var(--scroll) * -60px));
+  transform: translate3d(0, calc(var(--scroll) * -60px), 0);
   opacity: calc(1 - var(--scroll) * 0.9);
 }
 
 .hero__visual {
   position: relative;
   min-width: 0;
-  transform: translateY(calc(var(--scroll) * 90px));
+  transform: translate3d(0, calc(var(--scroll) * 90px), 0);
 }
 
 /* Pure CSS: the hero plays even before the browser bundle arrives. */
@@ -5094,15 +5097,17 @@ button.doc-search kbd {
   place-items: center;
   width: 220px;
   height: 200px;
+  perspective: 800px;
 }
 
 .nf__rig {
-  animation: rig-float-small 5s ease-in-out infinite;
+  transform-style: preserve-3d;
+  animation: rig-spin-small 14s linear infinite;
 }
 
-@keyframes rig-float-small {
-  0%, 100% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-10px) rotate(3deg); }
+@keyframes rig-spin-small {
+  from { transform: rotateX(-24deg) rotateY(0deg); }
+  to { transform: rotateX(-24deg) rotateY(360deg); }
 }
 
 .pbox--empty {
@@ -5111,12 +5116,12 @@ button.doc-search kbd {
 }
 
 .pbox--empty .pbox__lid {
-  transform: translateY(-14%) rotate(-30deg);
+  transform: translateZ(calc(var(--hu) * -1)) rotateX(215deg);
   animation: lid-wobble 3s ease-in-out infinite alternate;
 }
 
 @keyframes lid-wobble {
-  to { transform: translateY(-10%) rotate(-18deg); }
+  to { transform: translateZ(calc(var(--hu) * -1)) rotateX(196deg); }
 }
 
 .nf__title {
@@ -5675,7 +5680,7 @@ button.doc-search kbd {
   /* The scene stays still, with the packages inside a closed, lit box. */
   .scene .pkg {
     animation: none !important;
-    transform: translate(var(--ax), var(--ay));
+    transform: translate3d(var(--ax), var(--ay), var(--az));
   }
 
   .scene .pbox {
@@ -5684,7 +5689,7 @@ button.doc-search kbd {
 
   .scene__rig {
     animation: none !important;
-    transform: translateY(calc(var(--u) * 0.18));
+    transform: translateY(calc(var(--u) * 0.18)) rotateX(-24deg) rotateY(-35deg);
   }
 
   .phone__view {
