@@ -7,7 +7,10 @@ A Paquets app works without configuration. When you need to change something, th
 | Variable | Used for | Default |
 |---|---|---|
 | `PORT` | the port the server listens on | `3000` |
-| `DATABASE_URL` | the database (see [Database](database.md#choosing-the-database)) | in memory |
+| `NUAGE_URL` | [Nuage DB](nuage.md): a server's address (`https://…`) or a folder for the local mode; wins over `DATABASE_URL` | the folder of `app.nuage(...)` |
+| `NUAGE_TOKEN` | the token of the Nuage DB server | — |
+| `NUAGE_BRANCH` | a branch of the Nuage DB server, created from the main database if it is missing (previews, tests) | the main database |
+| `DATABASE_URL` | the database when `NUAGE_URL` is not set (see [Database](database.md#choosing-the-database)) | `app.nuage(...)`, then in memory |
 | `DYNO` | set by Heroku; the default shield then reads the client IP from `X-Forwarded-For` | — |
 
 Set them in your shell for one run:
@@ -16,7 +19,7 @@ Set them in your shell for one run:
 PORT=8080 DATABASE_URL=sqlite://app.db paquets dev
 ```
 
-On Heroku, `PORT` is set for you, and `DATABASE_URL` too when you add the Heroku Postgres add-on. Your own variables go in **Settings → Config Vars** (see [Deploy to Heroku](deploy-heroku-mobile.md#settings-config-vars)). With Docker, pass them with `-e NAME=value` (see [Docker](deploy-docker.md)).
+On Heroku, `PORT` is set for you, and `DATABASE_URL` too when you add the Heroku Postgres add-on; set `NUAGE_URL` and `NUAGE_TOKEN` yourself to use a Nuage DB server (see [Nuage DB](nuage.md#connect-your-app)). Your own variables go in **Settings → Config Vars** (see [Deploy to Heroku](deploy-heroku-mobile.md#settings-config-vars)). With Docker, pass them with `-e NAME=value` (see [Docker](deploy-docker.md)).
 
 Paquets doesn't read `.env` files. If you like them, the [`dotenvy`](https://crates.io/crates/dotenvy) crate loads one with a single call at the start of `main`.
 
@@ -29,7 +32,8 @@ Paquets doesn't read `.env` files. If you like them, the [`dotenvy`](https://cra
 | `app.port(8080)` | the port, instead of `PORT` | `PORT`, then `3000` |
 | `app.quiet()` | turns off the request log | one line per request |
 | `app.pwa(manifest)` | installable app that works offline (see [Pages](pages.md#installable-app-pwa)) | not installable |
-| `app.database(url_or_db)` | the database, instead of `DATABASE_URL` | `DATABASE_URL`, then memory |
+| `app.nuage("data")` | [Nuage DB](nuage.md): the folder `data` in development, `NUAGE_URL` in production | `NUAGE_URL`, `DATABASE_URL`, then memory |
+| `app.database(url_or_db)` | the database, instead of `NUAGE_URL` and `DATABASE_URL` | `NUAGE_URL`, `DATABASE_URL`, `app.nuage(...)`, then memory |
 | `app.security(shield)` | another security shield, or `None` to turn it off | `paquets::shield()` |
 | `app.on_start(hook)` | code run once the database is ready | — |
 | `app.api::<M>(path)` | a REST API and a table for a model | — |
@@ -120,8 +124,8 @@ State lives in memory: it is lost when the server restarts, and each server has 
 ```
 
 - It listens on **every network interface** (`0.0.0.0`), which is what containers and hosts such as Heroku need.
-- With the in-memory database or SQLite, it runs **one thread per CPU core**, each with its own event loop: Vitesse's fastest mode. `app.workers(n)` and `app.thread_per_core(false)` apply in this mode.
-- With a database server (PostgreSQL, MySQL, Redis, MongoDB), it runs on a tokio runtime with one thread per core, shared by the database connections. `workers` and `thread_per_core` don't apply.
+- With the in-memory database, the local mode of Nuage DB or SQLite, it runs **one thread per CPU core**, each with its own event loop: Vitesse's fastest mode. `app.workers(n)` and `app.thread_per_core(false)` apply in this mode.
+- With a database server (Nuage DB, PostgreSQL, MySQL, Redis, MongoDB), it runs on a tokio runtime with one thread per core, shared by the database connections. `workers` and `thread_per_core` don't apply.
 - On `Ctrl+C` or `SIGTERM`, it stops accepting connections and gives the requests in progress up to 10 seconds to finish (graceful shutdown). Heroku and Docker send `SIGTERM` before stopping a container.
 
 ## Async initialisation
@@ -183,7 +187,7 @@ Databases, extra column types, HTTPS, sessions, templates and the other options 
 ## Production checklist
 
 - [ ] Build in release mode: `paquets build` (or `cargo build --release`). The `Dockerfile` of a generated project does it.
-- [ ] Use a database that persists: `DATABASE_URL` pointing to PostgreSQL on Heroku (not SQLite, not memory).
+- [ ] Use a database that persists: `NUAGE_URL` and `NUAGE_TOKEN` pointing to a Nuage DB server, or `DATABASE_URL` pointing to PostgreSQL, on Heroku (not SQLite, not the local mode, not memory).
 - [ ] Listen on `PORT` (automatic) and launch the program from the folder that contains `public/` and `pkg/`.
 - [ ] Behind a proxy other than Heroku's, tell the shield where the client IP is (see [Security](security.md#the-client-ip-behind-a-proxy)).
 - [ ] Keep secrets in environment variables.

@@ -57,7 +57,7 @@ paquets doctor
 `paquets doctor` enumera las herramientas que encuentra y te dice cómo instalar las que faltan:
 
 ```text
-📦 Paquets 0.3.2
+📦 Paquets 0.3.3
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✗ wasm32-unknown-unknown target (islands)
@@ -136,6 +136,7 @@ Las features activan o desactivan partes opcionales de Paquets. Las que vienen p
 
 | Feature | Por defecto | Añade |
 |---|---|---|
+| `nuage` | ✓ | [Nuage DB](nuage.md), la base de los proyectos nuevos: el cliente de un servidor Nuage DB (`NUAGE_URL=https://…`), también en las islas |
 | `sqlite` | ✓ | Bases de datos SQLite (`DATABASE_URL=sqlite://app.db`), compiladas dentro: nada que instalar |
 | `postgres` | ✓ | PostgreSQL con TLS (Heroku Postgres, Neon, Supabase…) |
 | `mysql` | | MySQL y MariaDB, con TLS |
@@ -164,7 +165,7 @@ Por ejemplo, para usar MySQL y fechas:
 paquets = { git = "https://github.com/maxlestage/Paquets", features = ["mysql", "chrono"] }
 ```
 
-Para que tu programa sea más pequeño y compile más rápido cuando no necesitas SQLite o PostgreSQL, desactiva las features por defecto y conserva solo lo que uses. La base de datos en memoria siempre está disponible:
+Para que tu programa sea más pequeño y compile más rápido cuando no necesitas un servidor Nuage DB, SQLite o PostgreSQL, desactiva las features por defecto y conserva solo lo que uses. La base de datos en memoria y el modo local de Nuage DB siempre están disponibles:
 
 ```toml
 [dependencies]

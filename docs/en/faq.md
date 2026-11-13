@@ -10,7 +10,7 @@ A Rust framework that gives you, with one crate and one `App`, a fast server, se
 
 ### Is it ready for production?
 
-Paquets is young (version 0.1). It is built on four packages that are tested on their own (Vitesse, Securite, memoire-orm, Active), and its defaults are made for production: security shield, graceful shutdown, a database from `DATABASE_URL`, release builds in the `Dockerfile`. But its API may still change between 0.x versions, and it doesn't have years of use behind it. Try it on a project where you can follow its evolution, and read the limits in the [Introduction](introduction.md#what-paquets-doesnt-do-yet).
+Paquets is young (version 0.3). It is built on four packages that are tested on their own (Vitesse, Securite, memoire-orm, Active), and its defaults are made for production: security shield, graceful shutdown, a database from `NUAGE_URL` or `DATABASE_URL`, release builds in the `Dockerfile`. But its API may still change between 0.x versions, and it doesn't have years of use behind it. Try it on a project where you can follow its evolution, and read the limits in the [Introduction](introduction.md#what-paquets-doesnt-do-yet).
 
 ### Why not axum, actix-web or Leptos?
 
@@ -80,11 +80,19 @@ Not built in. `paquets dev` builds and runs the app once; after a change, stop i
 
 ### Which database should I use?
 
-In memory while you learn and in tests, SQLite for a single server with a persistent disk, PostgreSQL on Heroku or with several servers. See [Database](database.md#which-database-should-i-use).
+[Nuage DB](nuage.md) for a new project: a folder while you develop, a Nuage DB server in production, with the same code. In memory while you learn and in tests, SQLite for a single server with a persistent disk, PostgreSQL when you write SQL by hand. See [Database](database.md#which-database-should-i-use).
+
+### What is Nuage DB?
+
+The database of Memoire, the ORM of Paquets, written entirely in Rust: data on disk behind a write-ahead log, crash recovery, automatic checkpoints, compaction and backups (to a folder or S3, restored at startup), instant branches, and one server with a console (`/admin`) and a live dashboard (`/app`). Since 0.3.3, `paquets new` sets it up. See [Nuage DB](nuage.md).
+
+### Do I have to use Nuage DB?
+
+No. Without `NUAGE_URL` and without `app.nuage(...)`, nothing changes: `DATABASE_URL` still chooses SQLite, PostgreSQL, MySQL, Redis or MongoDB, and the database is in memory without it. Projects made before 0.3.3 keep working as they are; [Moving an existing project](nuage.md#moving-an-existing-project) explains how to switch.
 
 ### Why did my data disappear?
 
-Without `DATABASE_URL`, the database is in memory and is emptied when the server stops. On Heroku, SQLite files are erased at every restart too. Use PostgreSQL (the Heroku Postgres add-on) for data that must last.
+Without `NUAGE_URL`, `DATABASE_URL` or `app.nuage(...)`, the database is in memory and is emptied when the server stops. On Heroku, the files of a dyno (the `data/` folder of Nuage DB's local mode, SQLite files) are erased at every restart too. Use a Nuage DB server (`NUAGE_URL` and `NUAGE_TOKEN`) or PostgreSQL (the Heroku Postgres add-on) for data that must last.
 
 ### I added a field to a model, and now the app won't start.
 

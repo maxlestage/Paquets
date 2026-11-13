@@ -15,6 +15,7 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 - [Requests and responses](requests-responses.md): query strings, headers, JSON and forms; text, JSON, redirects, cookies and files.
 - [Pages](pages.md): views, layouts, the built-in theme, SEO tags and the Content-Security-Policy.
 - [Database](database.md): models, choosing the database, queries, transactions, migrations and raw SQL.
+- [Nuage DB](nuage.md): the default database, a folder in development and a server in production, branches, the console and the dashboard.
 - [REST API](rest-api.md): a complete JSON API for a model in one line, and how to protect or extend it.
 - [Security](security.md): the shield in front of every request, how to change it, and authentication.
 
@@ -33,7 +34,7 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 
 ## Deploy
 
-- [Deploy to Heroku from your phone](deploy-heroku-mobile.md): the Deploy button, a database, automatic deployments, logs and domains, all without a computer.
+- [Deploy to Heroku from your phone](deploy-heroku-mobile.md): the Deploy button, a database (Nuage DB or Heroku Postgres), automatic deployments, logs and domains, all without a computer.
 - [Deploy with Docker](deploy-docker.md): the production image, volumes, docker compose and other platforms.
 - [Publish on crates.io](publish-crates-io.md): the publication order of the packages, and releases from a phone.
 - [Automation](automation.md): tests on every push, the automatic merge into `master`, deployments, and how to turn them off.
@@ -49,5 +50,5 @@ Everything you need to build full-stack web apps with Paquets 📦, the simplest
 
 - API reference generated from the source code: https://docs.rs/paquets
 - Source code, issues and examples: https://paquets-90dfc06b6fea.herokuapp.com/
-- The four packages: [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), [Active](https://active-c1883a966650.herokuapp.com/)
+- The four packages: [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), [Active](https://active-c1883a966650.herokuapp.com/), and the database, [Nuage DB](https://github.com/maxlestage/Nuage)
 - Also available in [French](../fr/README.md) and [Spanish](../es/README.md).

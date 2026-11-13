@@ -29,6 +29,9 @@ WORKDIR /app
 COPY --from=build /server /usr/local/bin/server
 COPY --from=build /app/pkg ./pkg
 COPY public ./public
+# Without NUAGE_URL the database is kept in data/, on the container's disk: set
+# NUAGE_URL and NUAGE_TOKEN (a Nuage DB server) to keep it across deploys.
+RUN mkdir data && chown app data
 USER app
 # Heroku sets PORT at startup; 8080 elsewhere.
 ENV PORT=8080
@@ -41,7 +44,7 @@ It has two stages:
 1. **build**, from the official Rust image: it compiles the islands to WebAssembly (with the `wasm-bindgen-cli` version that matches `Cargo.lock`), writes the bundle to `pkg/`, then compiles the server in release mode.
 2. **runtime**, from a slim Debian image: it contains only the program, `pkg/`, `public/` and the root certificates (needed for TLS connections to a database). The program runs as a non-root user.
 
-The working directory is `/app`, where the server finds `public/` and `pkg/` at startup. The minimal project's `Dockerfile` (`paquets new --minimal`) is the same without the WebAssembly steps.
+The working directory is `/app`, where the server finds `public/` and `pkg/` at startup, and where the `data/` folder of [Nuage DB](nuage.md)'s local mode can be written by the `app` user. The minimal project's `Dockerfile` (`paquets new --minimal`) is the same without the WebAssembly steps.
 
 ## Build and run it on your computer
 
@@ -61,6 +64,7 @@ Open http://localhost:8080. The first build takes several minutes: it compiles e
 ```text
 target
 pkg
+data
 .git
 *.db
 ```
@@ -73,12 +77,51 @@ Pass settings with `-e`:
 
 ```sh
 docker run --rm -p 8080:8080 \
-  -e DATABASE_URL=postgres://app:secret@db.example.com:5432/app \
+  -e NUAGE_URL=https://my-nuage.example.com \
+  -e NUAGE_TOKEN=... \
   -e ADMIN_EMAIL=me@example.com \
   my-app
 ```
 
+`NUAGE_URL` and `NUAGE_TOKEN` point a project made by `paquets new` to a [Nuage DB](nuage.md) server; `DATABASE_URL` chooses another database (`-e DATABASE_URL=postgres://app:secret@db.example.com:5432/app`).
+
 `PORT` is `8080` in the image. Platforms that choose the port (Heroku, Cloud Run…) set `PORT` when they start the container, which wins over the image's value. To reach a database running on your own computer from the container, use the host name `host.docker.internal` (Docker Desktop) instead of `localhost`.
+
+## Nuage DB: a server next to the app
+
+The [Nuage DB](nuage.md) server has its own `Dockerfile`, in the [Nuage repository](https://github.com/maxlestage/Nuage). With a clone of it next to your project, `compose.yaml` runs both:
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      NUAGE_URL: http://nuage:8080
+      NUAGE_TOKEN: dev-token
+    depends_on:
+      - nuage
+  nuage:
+    build: ../Nuage
+    ports:
+      - "8081:8080"
+    environment:
+      NUAGE_TOKEN: dev-token
+      NUAGE_ADMIN_PASSWORD: dev-password
+    volumes:
+      - nuage-data:/data
+volumes:
+  nuage-data:
+```
+
+```sh
+docker compose up --build
+```
+
+The app serves on http://localhost:8080, the console of the database on http://localhost:8081/admin. The `nuage-data` volume keeps the data between runs. If the app starts before the server answers, it stops and says why: add `restart: on-failure` to the `app` service, or start it again.
+
+Without a server, the local mode keeps the database in `/app/data`: mount a volume there (`-v my-app-data:/app/data`) to keep it between containers.
 
 ## A SQLite file in a volume
 

@@ -32,6 +32,7 @@ Estos aparecen más tarde y nunca se suben al repositorio (están en `.gitignore
 |---|---|---|
 | `target/` | Cargo | todo lo que compila Cargo |
 | `pkg/` | `paquets dev`, `paquets build` | el bundle del navegador con las islas: `my_app.js` y `my_app_bg.wasm` |
+| `data/` | la aplicación, en su primer arranque | la base de datos durante el desarrollo: el modo local de [Nuage DB](nuage.md) (`app.nuage("data")`), `data/app.memoire` |
 | `*.db` | SQLite | tu base de datos local, cuando `DATABASE_URL=sqlite://...` |
 
 ## src/main.rs: el servidor
@@ -152,7 +153,7 @@ Al arrancar, el servidor busca dos carpetas **en el directorio de trabajo actual
 | `public/` | se sirve en la raíz del sitio |
 | `pkg/` | se sirve en `/pkg/`; si contiene un bundle (`<name>.js` y `<name>_bg.wasm`), las páginas con islas lo cargan |
 
-El archivo SQLite de `DATABASE_URL=sqlite://app.db` también es relativo al directorio de trabajo. En la imagen Docker, el directorio de trabajo es `/app`, donde el `Dockerfile` copia `public/` y `pkg/`. Si ejecutas el binario release a mano, lánzalo desde la raíz del proyecto (o copia `public/` y `pkg/` junto al lugar desde el que lo lanzas).
+La carpeta `data/` de `app.nuage("data")` y el archivo SQLite de `DATABASE_URL=sqlite://app.db` también son relativos al directorio de trabajo. En la imagen Docker, el directorio de trabajo es `/app`, donde el `Dockerfile` copia `public/` y `pkg/` y crea una carpeta `data/` en la que la aplicación puede escribir. Si ejecutas el binario release a mano, lánzalo desde la raíz del proyecto (o copia `public/` y `pkg/` junto al lugar desde el que lo lanzas).
 
 ## Hacer crecer el proyecto
 

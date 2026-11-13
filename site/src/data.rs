@@ -11,13 +11,17 @@ pub const LICENSE_PATH: &str = "/LICENSE.txt";
 
 /// The sister projects of Paquets, by the same author: (name, website). The footer links
 /// them in this order; `i18n::Texts::footer_projects` describes each one in the same order.
-pub const ECOSYSTEM: [(&str, &str); 5] = [
+pub const ECOSYSTEM: [(&str, &str); 6] = [
     ("Active", "https://active-c1883a966650.herokuapp.com/"),
     ("Vitesse", "https://vitesse-f16135654c3d.herokuapp.com/"),
     ("Securite", "https://securite-2db4c1994be7.herokuapp.com/"),
     ("Memoire", "https://memoire-7f4525f1fdaf.herokuapp.com/"),
+    ("Nuage DB", NUAGE),
     ("Paquets", "https://paquets-90dfc06b6fea.herokuapp.com/"),
 ];
+
+/// Nuage DB, the default database of Paquets projects: its repository.
+pub const NUAGE: &str = "https://github.com/maxlestage/Nuage";
 
 /// The command shown (and copied) in the hero.
 pub const INSTALL: &str = "cargo install --git https://github.com/maxlestage/Paquets paquets";
@@ -259,9 +263,9 @@ pub const FEATURES: [(&str, &str); 16] = [
     ),
 ];
 
-/// The icon and the code tag of each card of the three sections of version 0.3:
-/// what is new, 3D and physics, performance (in the order of `Texts::extras`).
-pub const EXTRAS: [[(&str, &str); 4]; 3] = [
+/// The icon and the code tag of each card of the sections of cards: what is new, 3D and
+/// physics, performance, Nuage DB (in the order of `Texts::extras`).
+pub const EXTRAS: [[(&str, &str); 4]; 4] = [
     [
         ("orbit", "paquets::scene"),
         ("bolt", "app.run(3000)"),
@@ -279,6 +283,12 @@ pub const EXTRAS: [[(&str, &str); 4]; 3] = [
         ("globe", "GET /json"),
         ("terminal", "GET /users/:id"),
         ("page", "island(\"counter\", ..)"),
+    ],
+    [
+        ("db", "app.nuage(\"data\")"),
+        ("shield", "NUAGE_BACKUP_S3_BUCKET"),
+        ("layers", "NUAGE_BRANCH=preview"),
+        ("globe", "/admin · /app"),
     ],
 ];
 

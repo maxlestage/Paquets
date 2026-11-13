@@ -10,7 +10,7 @@ Paquets («paquetes» en francés) es una biblioteca de Rust para crear sitios w
 |---|---|
 | [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | El servidor HTTP, con una API al estilo de Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
 | [Securite](https://securite-2db4c1994be7.herokuapp.com/) | El escudo de seguridad delante de cada petición: cortafuegos, límite de tasa, protección CSRF, cabeceras de seguridad y más. |
-| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | La base de datos: modelos y consultas con tipado seguro, en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
+| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | La base de datos: modelos y consultas con tipado seguro, en [Nuage DB](nuage.md) (la base por defecto de los proyectos nuevos), en memoria, SQLite, PostgreSQL, MySQL, Redis o MongoDB. |
 | [Active](https://active-c1883a966650.herokuapp.com/) | El front end: vistas escritas como funciones de Rust, renderizado en el servidor con etiquetas SEO e islas WebAssembly. |
 
 No necesitas aprender cuatro bibliotecas para empezar. Paquets las conecta, elige buenos valores por defecto y expone una sola API, pequeña. Cuando necesites más, cada paquete está a un import de distancia (consulta [Los cuatro paquetes](packages.md)).
@@ -65,7 +65,7 @@ Ejecútalo y obtendrás:
 |---|---|---|
 | Servidor | Puerto tomado de la variable `PORT` (Heroku), `3000` si no existe. `Ctrl+C` o `SIGTERM` lo detienen de forma ordenada. | `app.port(8080)` |
 | Seguridad | El escudo recomendado de Securite en cada petición: identificadores de petición, comprobaciones del protocolo, límite de 2 MiB para el cuerpo, límite de tasa de 20 peticiones por segundo por IP, bloqueador de bots, cortafuegos, protección CSRF, cabeceras de seguridad, cookies reforzadas. | `app.security(...)` |
-| Base de datos | Tomada de la variable `DATABASE_URL`; en memoria cuando no está definida. Las tablas de tus modelos se crean al arrancar. | `app.database(...)` |
+| Base de datos | Tomada de la variable `NUAGE_URL` (un servidor Nuage DB), y luego de `DATABASE_URL`; en la carpeta `data/` con `app.nuage("data")`, como en los proyectos creados con `paquets new`; en memoria si no. Las tablas de tus modelos se crean al arrancar. | `app.nuage(...)`, `app.database(...)` |
 | Páginas | HTML renderizado en el servidor con etiquetas SEO, un tema integrado y una Content-Security-Policy que permite exactamente lo que contiene la página. | Métodos de `Page` |
 | Archivos estáticos | La carpeta `public/` se sirve en la raíz del sitio. | `app.static_dir(...)` |
 | Islas | El bundle del navegador en `pkg/` (generado por `paquets build`) se detecta al arrancar y solo lo cargan las páginas que contienen islas. | — |

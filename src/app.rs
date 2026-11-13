@@ -77,9 +77,9 @@ type StartHook = Box<dyn FnOnce(&'static Db) -> BoxFuture<crate::Result<()>> + S
 ///
 /// - **security**: securite's shield in front of every request (see
 ///   [`App::security`]);
-/// - **a database** from `DATABASE_URL`, in memory otherwise (see
-///   [`App::database`]), available in handlers with
-///   [`req.db()`](crate::RequestExt::db);
+/// - **a database** from `NUAGE_URL` (Nuage DB) or `DATABASE_URL`, in memory
+///   otherwise (see [`App::nuage`] and [`App::database`]), available in handlers
+///   with [`req.db()`](crate::RequestExt::db);
 /// - **REST APIs** for your models with [`App::api`], tables created at startup;
 /// - **static files** from `public/`, and the browser bundle of your islands from
 ///   `pkg/` (built by `paquets build`);
@@ -90,6 +90,7 @@ pub struct App {
     security: Option<Option<Shield>>,
     logs: Arc<OnceLock<bool>>,
     database: Option<DbSource>,
+    nuage: Option<String>,
     tables: Vec<CreateTable>,
     startup: Vec<StartHook>,
     port: Option<u16>,
@@ -141,6 +142,7 @@ impl App {
             security: None,
             logs,
             database: None,
+            nuage: None,
             tables: Vec::new(),
             startup: Vec::new(),
             port: None,
@@ -364,9 +366,10 @@ impl App {
         self
     }
 
-    /// The database: a URL or an open handle. By default it comes from the
-    /// `DATABASE_URL` environment variable (Heroku sets it), and is in memory when
-    /// there is none.
+    /// The database: a URL or an open handle, which wins over the environment.
+    /// By default it comes from the `NUAGE_URL` environment variable (Nuage DB,
+    /// with `NUAGE_TOKEN`), then from `DATABASE_URL` (Heroku sets it), then from
+    /// [`App::nuage`], and is in memory when there is none.
     ///
     /// ```no_run
     /// # let mut app = paquets::App::new();
@@ -374,6 +377,27 @@ impl App {
     /// ```
     pub fn database(&mut self, source: impl Into<DbSource>) -> &mut Self {
         self.database = Some(source.into());
+        self
+    }
+
+    /// Nuage DB, the database of projects made by `paquets new`: kept in `folder`
+    /// in development, on a Nuage DB server in production, with the same code.
+    ///
+    /// | Environment | Database |
+    /// |---|---|
+    /// | nothing | the local mode of Nuage DB, in `folder` (created if missing) |
+    /// | `NUAGE_URL=https://…`, `NUAGE_TOKEN=…` | a Nuage DB server (`NUAGE_BRANCH` picks a branch) |
+    /// | `NUAGE_URL=other-folder` | the local mode, in that folder |
+    /// | `DATABASE_URL=…` (and no `NUAGE_URL`) | that database (see [`Db`]) |
+    ///
+    /// Tests made with [`App::test`] still use a fresh in-memory database.
+    ///
+    /// ```no_run
+    /// # let mut app = paquets::App::new();
+    /// app.nuage("data"); // data/ in development, NUAGE_URL in production
+    /// ```
+    pub fn nuage(&mut self, folder: impl Into<String>) -> &mut Self {
+        self.nuage = Some(folder.into());
         self
     }
 
@@ -591,7 +615,7 @@ impl App {
             Some(DbSource::Url(url)) => url.clone(),
             Some(DbSource::Handle(db)) => db.kind().to_owned(),
             None if testing => "memory".to_owned(),
-            None => std::env::var("DATABASE_URL").unwrap_or_default(),
+            None => database_from_env(self.nuage.as_deref()),
         }
     }
 
@@ -618,8 +642,8 @@ impl App {
     }
 
     async fn database_command(mut self, command: &str) -> io::Result<()> {
-        let db = self.open_database(false).await?;
-        println!("📦 database: {}", db.kind());
+        let (db, label) = self.open_database(false).await?;
+        println!("📦 database: {label}");
         if command == "seed" {
             let seeds = std::mem::take(&mut self.seeds);
             if seeds.is_empty() {
@@ -639,7 +663,7 @@ impl App {
     }
 
     /// Opens the database, runs the migrations and creates the tables of the models.
-    async fn open_database(&mut self, testing: bool) -> io::Result<&'static Db> {
+    async fn open_database(&mut self, testing: bool) -> io::Result<(&'static Db, String)> {
         let url = self.database_url(testing);
         let db = match self.database.take() {
             Some(DbSource::Handle(db)) => db,
@@ -648,6 +672,12 @@ impl App {
                 .map_err(|e| io::Error::other(format!("database: {e}")))?,
         };
         let db: &'static Db = Box::leak(Box::new(db));
+        let label = database_label(&url, db);
+        if !testing && label.starts_with("nuage, local") && crate::db::env("DYNO").is_some() {
+            eprintln!(
+                "📦 NUAGE_URL is not set: the database is on the dyno's disk, erased at each restart. Set NUAGE_URL and NUAGE_TOKEN (a Nuage DB server)."
+            );
+        }
         for migrator in &self.migrators {
             let applied = migrator
                 .run(db)
@@ -662,13 +692,13 @@ impl App {
                 .await
                 .map_err(|e| io::Error::other(format!("database: {e}")))?;
         }
-        Ok(db)
+        Ok((db, label))
     }
 
     /// Opens the database, creates the tables, runs the startup hooks and plugs in
     /// security, static files and islands.
     async fn prepare(mut self, testing: bool) -> io::Result<(vitesse::App, u16)> {
-        let db = self.open_database(testing).await?;
+        let (db, label) = self.open_database(testing).await?;
         for hook in std::mem::take(&mut self.startup) {
             hook(db)
                 .await
@@ -714,11 +744,63 @@ impl App {
             let islands = bundle.map_or("none".to_owned(), |(js, _)| js);
             let scheme = if self.https { "https" } else { "http" };
             println!(
-                "📦 Paquets · {scheme}://localhost:{port}\n   database: {} · security: {security} · islands: {islands}",
-                db.kind()
+                "📦 Paquets · {scheme}://localhost:{port}\n   database: {label} · security: {security} · islands: {islands}"
             );
         }
         Ok((self.inner, port))
+    }
+}
+
+/// The database the environment chooses: `NUAGE_URL` (a Nuage DB server, or a
+/// folder for the local mode), then `DATABASE_URL`, then the folder of
+/// [`App::nuage`], then memory.
+fn database_from_env(nuage: Option<&str>) -> String {
+    choose_database(
+        crate::db::env("NUAGE_URL"),
+        crate::db::env("DATABASE_URL"),
+        nuage,
+    )
+}
+
+/// [`database_from_env`], with the values of `NUAGE_URL` and `DATABASE_URL`.
+fn choose_database(
+    nuage_url: Option<String>,
+    database_url: Option<String>,
+    folder: Option<&str>,
+) -> String {
+    let nuage = |target: &str| {
+        let target = target.trim();
+        if Db::kind_of(target) == "nuage" {
+            target.to_owned()
+        } else {
+            format!("nuage:{}", target.strip_prefix("nuage:").unwrap_or(target))
+        }
+    };
+    if let Some(target) = nuage_url {
+        return nuage(&target);
+    }
+    if let Some(url) = database_url {
+        return url;
+    }
+    folder.map(nuage).unwrap_or_default()
+}
+
+/// What the startup line says about the database: its kind, and where it is for
+/// Nuage DB.
+fn database_label(url: &str, db: &Db) -> String {
+    let url = url.trim();
+    match url.get(..6) {
+        Some(prefix) if prefix.eq_ignore_ascii_case("nuage:") => {
+            let folder = url[6..].trim_start_matches("//");
+            format!("nuage, local ({folder})")
+        }
+        _ if Db::kind_of(url) == "nuage" => {
+            let branch = crate::db::env("NUAGE_BRANCH")
+                .map(|b| format!(", branch {b}"))
+                .unwrap_or_default();
+            format!("nuage ({url}{branch})")
+        }
+        _ => db.kind().to_owned(),
     }
 }
 
@@ -840,5 +922,39 @@ mod tests {
             Some(("/pkg/app.js".into(), "/pkg/app_bg.wasm".into()))
         );
         std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn nuage_url_then_database_url_then_the_folder() {
+        let some = |v: &str| Some(v.to_owned());
+        // A new project in development: the folder of `app.nuage("data")`.
+        assert_eq!(choose_database(None, None, Some("data")), "nuage:data");
+        // In production: the Nuage DB server, whatever DATABASE_URL says.
+        assert_eq!(
+            choose_database(
+                some("https://db.example.com"),
+                some("postgres://h/db"),
+                Some("data")
+            ),
+            "https://db.example.com"
+        );
+        assert_eq!(choose_database(some("other"), None, None), "nuage:other");
+        assert_eq!(
+            choose_database(some("nuage:other"), None, None),
+            "nuage:other"
+        );
+        // Existing apps: DATABASE_URL, then memory, as before.
+        assert_eq!(
+            choose_database(None, some("sqlite://app.db"), Some("data")),
+            "sqlite://app.db"
+        );
+        assert_eq!(choose_database(None, None, None), "");
+    }
+
+    #[test]
+    fn the_startup_line_says_where_nuage_db_is() {
+        let db = Db::memory();
+        assert_eq!(database_label("nuage:data", &db), "nuage, local (data)");
+        assert_eq!(database_label("", &db), "memory");
     }
 }

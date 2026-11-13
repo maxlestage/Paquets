@@ -65,11 +65,15 @@ paquets new my-app
   cd my-app
   paquets dev        # http://localhost:3000
 
+Database: Nuage DB, in data/ while you develop; set NUAGE_URL and NUAGE_TOKEN in production.
+
 The first `paquets dev` also prepares the WebAssembly tools for the islands.
 Deploy from your phone: push the project to GitHub, then see README.md.
 ```
 
 Crea una carpeta con el nombre del proyecto que contiene todos los archivos descritos en [Estructura del proyecto](project-structure.md): `Cargo.toml`, `src/main.rs`, `src/lib.rs`, `public/favicon.svg`, `Dockerfile`, `heroku.yml`, `app.json`, `.github/workflows/ci.yml`, `.github/workflows/heroku.yml`, `README.md`, `.gitignore` y `.dockerignore`. Después ejecuta `git init` con una rama `master` (la rama en la que fusiona la CI), salvo que falte Git o que la carpeta ya esté dentro de un repositorio Git.
+
+El proyecto usa [Nuage DB](nuage.md): `app.nuage("data")` en `src/main.rs` guarda la base en la carpeta `data/` mientras desarrollas (incluida en `.gitignore` y `.dockerignore`), y las variables de entorno `NUAGE_URL` y `NUAGE_TOKEN` la llevan a un servidor Nuage DB en producción, sin cambiar el código.
 
 | Opción | Efecto |
 |---|---|
@@ -102,7 +106,7 @@ Ejecútalo en la carpeta del proyecto. Este comando:
 
 Si las islas no se pueden compilar, muestra un aviso y ejecuta la aplicación de todos modos: las páginas funcionan, y las islas simplemente se quedan estáticas hasta que se resuelva el problema (`paquets doctor` ayuda).
 
-Los argumentos que van después de `--` se pasan a tu programa: `paquets dev -- --some-flag`. Las variables de entorno funcionan como siempre: `DATABASE_URL=sqlite://app.db paquets dev`.
+Los argumentos que van después de `--` se pasan a tu programa: `paquets dev -- --some-flag`. Las variables de entorno funcionan como siempre: `NUAGE_URL=http://localhost:8080 NUAGE_TOKEN=dev-token paquets dev` usa un servidor [Nuage DB](nuage.md#ejecutar-un-servidor-en-tu-máquina) ejecutado en tu máquina, `DATABASE_URL=sqlite://app.db paquets dev` un archivo SQLite.
 
 `paquets dev` no vigila tus archivos: después de un cambio, detén el servidor (`Ctrl+C`) y vuelve a ejecutarlo. `paquets dev --watch` lo hace por ti: recompila y reinicia la aplicación con cada cambio de `src/`, `public/` o `Cargo.toml`, y las páginas abiertas en el navegador se recargan solas (ver [Operaciones](operations.md#recarga-automática)).
 
@@ -136,7 +140,7 @@ paquets doctor
 ```
 
 ```text
-📦 Paquets 0.3.2
+📦 Paquets 0.3.3
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✓ wasm32-unknown-unknown target

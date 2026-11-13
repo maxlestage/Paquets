@@ -25,6 +25,7 @@ Consulta [Herramienta de línea de comandos](cli.md).
 | Elegir el puerto | `app.port(8080);` |
 | Desactivar el log de peticiones | `app.quiet();` |
 | Aplicación instalable, sin conexión (PWA) | `app.pwa(Pwa::new("Mi app").theme_color("#6d4aff"));` |
+| Nuage DB: `data/` en desarrollo, `NUAGE_URL` en producción | `app.nuage("data");` |
 | Elegir la base de datos | `app.database("sqlite://app.db");` o `app.database(Db::memory());` |
 | Modificar el escudo | `app.security(paquets::shield().guard(...).build());` |
 | Desactivar el escudo | `app.security(None);` |
@@ -149,9 +150,14 @@ Clases del tema: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted
 
 ## Bases de datos
 
+| `NUAGE_URL` (tiene prioridad sobre `DATABASE_URL`) | Base de datos |
+|---|---|
+| `https://mi-nuage.herokuapp.com` + `NUAGE_TOKEN` | un servidor Nuage DB (feature `nuage`, por defecto) |
+| `data` | el modo local de Nuage DB, en la carpeta `data` |
+
 | `DATABASE_URL` | Base de datos |
 |---|---|
-| sin definir, `memory` | en memoria |
+| sin definir, `memory` | en memoria, o la carpeta de `app.nuage(...)` |
 | `memory://app.memoire` | en memoria, guardada en un archivo |
 | `sqlite://app.db` | archivo SQLite |
 | `postgres://…` | PostgreSQL (Heroku Postgres) |
@@ -246,7 +252,9 @@ Consulta [Pruebas](testing.md).
 | Variable | Efecto |
 |---|---|
 | `PORT` | el puerto (por defecto `3000`) |
-| `DATABASE_URL` | la base de datos (por defecto: en memoria) |
+| `NUAGE_URL`, `NUAGE_TOKEN` | Nuage DB: un servidor (`https://…`) o una carpeta |
+| `NUAGE_BRANCH` | una rama del servidor Nuage DB (creada si falta) |
+| `DATABASE_URL` | la base de datos sin `NUAGE_URL` (por defecto: `app.nuage(...)`, y si no en memoria) |
 | `DYNO` | la define Heroku: la IP del cliente se lee de `X-Forwarded-For` |
 
 ## Despliegue
@@ -255,7 +263,7 @@ Consulta [Pruebas](testing.md).
 |---|---|
 | Heroku con un toque | `https://heroku.com/deploy?template=https://github.com/<you>/<repo>` |
 | Despliegues automáticos en Heroku | secreto de GitHub `HEROKU_API_KEY`, variable `HEROKU_APP_NAME` (opcional `HEROKU_REGION`) |
-| Base de datos en Heroku | Resources → Heroku Postgres |
+| Base de datos en Heroku | una aplicación [Nuage DB](nuage.md#desplegar-un-servidor-nuage-db), y luego las config vars `NUAGE_URL` y `NUAGE_TOKEN` (o Resources → Heroku Postgres) |
 | Redesplegar a mano | Actions → Deploy to Heroku → Run workflow |
 | Docker | `docker build -t my-app . && docker run -p 8080:8080 my-app` |
 | Evitar la fusión automática | llama a la rama `wip/...` |
