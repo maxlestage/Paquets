@@ -75,9 +75,9 @@ pub async fn pricing(_req: Request) -> Page {
 }
 ```
 
-`paquets make:migration add_slug_to_posts` adds a versioned migration (its version is the UTC time) to the list of `src/migrations.rs`; describe its changes with memoire's `Migration` (`.create_table::<M>()`, `.sql(…)`, `.sql_for(dialect, …)`). See [Operations](operations.md#migrations-and-seeds).
+`paquets make:migration add_slug_to_posts` adds a versioned migration (its version is the UTC time) to the list of `src/migrations.rs`; describe its changes with memoire's `Migration` (`.create_table::<M>()`, `.sql(…)`, `.sql_for(dialect, …)`; the SQL steps need a SQL database, not [Nuage DB](nuage.md#limits)). See [Operations](operations.md#migrations-and-seeds).
 
-`paquets make:test checkout` writes a feature test that goes through the whole app, in memory:
+`paquets make:test checkout` writes a feature test that goes through the whole app, in memory (never in the `data/` folder of Nuage DB):
 
 ```rust
 #[tokio::test]

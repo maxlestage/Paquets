@@ -65,11 +65,14 @@ paquets new my-app
   cd my-app
   paquets dev        # http://localhost:3000
 
+Database: Nuage DB, in data/ while you develop; set NUAGE_URL and NUAGE_TOKEN in production.
 The first `paquets dev` also prepares the WebAssembly tools for the islands.
 Deploy from your phone: push the project to GitHub, then see README.md.
 ```
 
 It creates a folder named after the project with every file described in [Project structure](project-structure.md): `Cargo.toml`, `src/main.rs`, `src/lib.rs`, `public/favicon.svg`, `Dockerfile`, `heroku.yml`, `app.json`, `.github/workflows/ci.yml`, `.github/workflows/heroku.yml`, `README.md`, `.gitignore` and `.dockerignore`. Then it runs `git init` with a `master` branch (the branch the CI merges into), unless Git is missing or the folder is already inside a Git repository.
+
+The project uses [Nuage DB](nuage.md): `app.nuage("data")` in `src/main.rs` keeps the database in the `data/` folder while you develop (listed in `.gitignore` and `.dockerignore`), and the `NUAGE_URL` and `NUAGE_TOKEN` environment variables point it to a Nuage DB server in production, without changing the code.
 
 | Option | Effect |
 |---|---|
@@ -102,7 +105,7 @@ Run it in the project folder. It:
 
 If the islands can't be built, it prints a warning and runs the app anyway: pages work, the islands just stay static until the problem is fixed (`paquets doctor` helps).
 
-Arguments after `--` go to your program: `paquets dev -- --some-flag`. Environment variables work as usual: `DATABASE_URL=sqlite://app.db paquets dev`.
+Arguments after `--` go to your program: `paquets dev -- --some-flag`. Environment variables work as usual: `NUAGE_URL=http://localhost:8080 NUAGE_TOKEN=dev-token paquets dev` uses a [Nuage DB](nuage.md#run-a-server-on-your-machine) server running on your machine, `DATABASE_URL=sqlite://app.db paquets dev` a SQLite file.
 
 `paquets dev` doesn't watch your files: after a change, stop the server (`Ctrl+C`) and run it again. `paquets dev --watch` does it for you: it rebuilds and restarts the app at every change of `src/`, `public/` or `Cargo.toml`, and the pages opened in the browser reload by themselves (see [Operations](operations.md#live-reload)).
 
@@ -136,7 +139,7 @@ paquets doctor
 ```
 
 ```text
-📦 Paquets 0.3.2
+📦 Paquets 0.3.3
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✓ wasm32-unknown-unknown target

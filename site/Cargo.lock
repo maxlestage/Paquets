@@ -101,6 +101,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "atomic-waker"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
+
+[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -657,6 +663,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyper"
+version = "1.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c3e324da4c95177d6291d4c8730197c0d1822f8a9766814a4a44fa5ab797c9c"
+dependencies = [
+ "atomic-waker",
+ "bytes",
+ "futures-core",
+ "http",
+ "http-body",
+ "httparse",
+ "itoa",
+ "pin-project-lite",
+ "smallvec",
+ "tokio",
+ "want",
+]
+
+[[package]]
+name = "hyper-util"
+version = "0.1.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ddc03d96684f9226b8a787cdb71488417b53ab5ea8fdb1dac946cb9431cc8bff"
+dependencies = [
+ "bytes",
+ "http",
+ "http-body",
+ "hyper",
+ "pin-project-lite",
+ "tokio",
+]
+
+[[package]]
 name = "inout"
 version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -775,29 +814,38 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "memoire-orm"
-version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#a141e49b20a544be5a70712140e408eeee7f42ea"
+version = "0.2.1"
+source = "git+https://github.com/maxlestage/Memoire#8b334f373acec6be8a1840a5909928a70ec07b8f"
 dependencies = [
  "async-lock",
  "bytes",
  "deadpool-postgres",
  "foldhash",
  "hashbrown 0.17.1",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "js-sys",
  "memoire-orm-derive",
  "parking_lot 0.13.0",
  "rusqlite",
  "rustls",
+ "serde_json",
  "thiserror",
  "tokio",
  "tokio-postgres",
  "tokio-postgres-rustls",
+ "tokio-rustls",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
  "webpki-roots",
 ]
 
 [[package]]
 name = "memoire-orm-derive"
-version = "0.2.0"
-source = "git+https://github.com/maxlestage/Memoire#a141e49b20a544be5a70712140e408eeee7f42ea"
+version = "0.2.1"
+source = "git+https://github.com/maxlestage/Memoire#8b334f373acec6be8a1840a5909928a70ec07b8f"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -951,7 +999,7 @@ dependencies = [
 
 [[package]]
 name = "paquets"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "active",
  "hmac",
@@ -968,7 +1016,7 @@ dependencies = [
 
 [[package]]
 name = "paquets-macros"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1829,6 +1877,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "try-lock"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
+
+[[package]]
 name = "tungstenite"
 version = "0.30.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1928,6 +1982,15 @@ dependencies = [
  "socket2",
  "tokio",
  "tokio-tungstenite",
+]
+
+[[package]]
+name = "want"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec4cdd0dd910afe868b7ef477227d8d538b46b3075031afee8a9f2acb0a2ed0b"
+dependencies = [
+ "try-lock",
 ]
 
 [[package]]

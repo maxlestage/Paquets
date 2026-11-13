@@ -1,6 +1,6 @@
 # Base de données
 
-Paquets enregistre les données avec [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), un ORM typé : une struct Rust décrit une table, et les requêtes s'écrivent en Rust, vérifiées par le compilateur. Le même code fonctionne en mémoire, sur SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : la base de données est choisie par une URL. Cette page couvre les modèles, le choix de la base, la lecture et l'écriture, les transactions, les changements de schéma et le SQL brut.
+Paquets enregistre les données avec [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/), un ORM typé : une struct Rust décrit une table, et les requêtes s'écrivent en Rust, vérifiées par le compilateur. Le même code fonctionne sur [Nuage DB](nuage.md), la base par défaut des nouveaux projets, en mémoire, sur SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : la base de données est choisie par une URL. Cette page couvre les modèles, le choix de la base, la lecture et l'écriture, les transactions, les changements de schéma et le SQL brut.
 
 ## Modèles
 
@@ -100,11 +100,19 @@ struct Task {
 
 ## Choisir la base de données
 
-La base de données est choisie par la variable d'environnement `DATABASE_URL` au démarrage de l'application :
+Les projets créés par `paquets new` utilisent [Nuage DB](nuage.md) : `app.nuage("data")` dans `src/main.rs` garde les données dans le dossier `data/` pendant que vous développez, et les variables d'environnement `NUAGE_URL` et `NUAGE_TOKEN` envoient le même code vers un serveur Nuage DB en production.
+
+| `NUAGE_URL` | Base de données | Feature Cargo |
+|---|---|---|
+| `https://mon-nuage.herokuapp.com` (avec `NUAGE_TOKEN`) | un serveur Nuage DB ; `NUAGE_BRANCH` choisit une branche | `nuage` (par défaut) |
+| `data`, ou n'importe quel dossier | le mode local de Nuage DB, dans ce dossier | toujours disponible |
+
+Quand `NUAGE_URL` n'est pas définie, la base de données est choisie par la variable d'environnement `DATABASE_URL`, puis par le dossier de `app.nuage(...)`, au démarrage de l'application :
 
 | `DATABASE_URL` | Base de données | Feature Cargo |
 |---|---|---|
-| *(non définie)* ou `memory` | en mémoire, vidée à l'arrêt du serveur | toujours disponible |
+| `https://…`, `nuage:data` | Nuage DB : un serveur (avec `NUAGE_TOKEN`), ou le mode local dans le dossier `data` | `nuage` (par défaut) pour un serveur |
+| *(non définie)* ou `memory` | en mémoire, vidée à l'arrêt du serveur (dans un projet sans `app.nuage(...)`) | toujours disponible |
 | `memory://data/app.memoire` | en mémoire, gardée dans un fichier et relue au démarrage | toujours disponible |
 | `sqlite://app.db`, `app.db`, `sqlite::memory:` | un fichier SQLite, créé (avec son dossier) s'il n'existe pas | `sqlite` (par défaut) |
 | `postgres://user:password@host:5432/name` | PostgreSQL, avec TLS quand le serveur le propose | `postgres` (par défaut) |
@@ -118,7 +126,7 @@ DATABASE_URL=sqlite://app.db paquets dev
 
 La ligne de démarrage vous indique celle qui est utilisée : `database: sqlite`. Sur Heroku, ajouter l'add-on Heroku Postgres définit `DATABASE_URL` pour vous : rien à changer dans le code.
 
-Vous pouvez aussi choisir la base de données dans le code. Elle l'emporte alors sur `DATABASE_URL` :
+Vous pouvez aussi choisir la base de données dans le code. Elle l'emporte alors sur `NUAGE_URL` et `DATABASE_URL` :
 
 ```rust
 let mut app = App::new();
@@ -133,7 +141,7 @@ Si l'URL est fausse ou que le serveur est injoignable, l'application ne démarre
 ```
 
 > [!NOTE]
-> Les tests créés avec `app.test()` utilisent toujours une base de données neuve en mémoire, sauf si le test appelle lui-même `app.database(...)`. `DATABASE_URL` y est ignorée : les tests ne touchent donc jamais à vos données.
+> Les tests créés avec `app.test()` utilisent toujours une base de données neuve en mémoire, sauf si le test appelle lui-même `app.database(...)`. `NUAGE_URL`, `DATABASE_URL` et `app.nuage(...)` y sont ignorés : les tests ne touchent donc jamais à vos données.
 
 ### Une base en mémoire gardée dans un fichier
 
@@ -454,7 +462,7 @@ async fn top_visitors(req: Request) -> Result<Json<Vec<(i64, String)>>> {
 }
 ```
 
-`db.raw_execute(sql, &params![...])` exécute une instruction qui ne renvoie pas de lignes et donne le nombre de lignes touchées. Le SQL brut fonctionne sur SQLite, PostgreSQL et MySQL ; la base de données en mémoire, Redis et MongoDB renvoient une erreur « non pris en charge ».
+`db.raw_execute(sql, &params![...])` exécute une instruction qui ne renvoie pas de lignes et donne le nombre de lignes touchées. Le SQL brut fonctionne sur SQLite, PostgreSQL et MySQL ; Nuage DB, la base de données en mémoire, Redis et MongoDB renvoient une erreur « non pris en charge ».
 
 ## Erreurs
 
@@ -474,13 +482,14 @@ Pour réagir vous-même à une erreur, examinez-la avant le `?` : `Todo::find` r
 
 | Situation | Choix |
 |---|---|
+| Un nouveau projet, du développement à la production | [Nuage DB](nuage.md) : `app.nuage("data")`, puis un serveur Nuage DB via `NUAGE_URL` |
 | Apprentissage, prototypes, tests | en mémoire (rien à définir) |
 | Un seul serveur avec un disque persistant (un VPS, un Raspberry Pi, un volume Docker) | SQLite : un seul fichier, rien à installer, très rapide ; ou `memory://app.memoire`, le moteur en mémoire gardé dans un fichier |
-| Heroku, ou plusieurs serveurs | PostgreSQL |
+| Heroku, ou plusieurs serveurs, avec du SQL écrit à la main | PostgreSQL |
 | Une base de données existante | celle que vous avez : MySQL/MariaDB, Redis ou MongoDB |
 
 > [!WARNING]
-> N'utilisez pas SQLite sur Heroku : le système de fichiers d'un dyno est temporaire, et le fichier est perdu à chaque déploiement et à chaque redémarrage (au moins une fois par jour). Ajoutez plutôt l'add-on Heroku Postgres (voir [Déployer sur Heroku](deploy-heroku-mobile.md#2-ajouter-une-base-de-données)).
+> N'utilisez pas SQLite, ni le mode local de Nuage DB, sur Heroku : le système de fichiers d'un dyno est temporaire, et les fichiers sont perdus à chaque déploiement et à chaque redémarrage (au moins une fois par jour). Utilisez plutôt un serveur Nuage DB ou l'add-on Heroku Postgres (voir [Déployer sur Heroku](deploy-heroku-mobile.md#2-ajouter-une-base-de-données)).
 
 Avec PostgreSQL, le pool ouvre jusqu'à 4 connexions par cœur de processeur quand le trafic le demande. Les petites offres hébergées limitent le nombre de connexions (souvent à 20) : pour choisir vous-même la taille du pool, ouvrez-le avec Memoire (`PgPool::connect_with(&url, 10)`) et passez-le avec `app.database(Db::from(pool))` depuis un `main` asynchrone (voir [Configuration](configuration.md#initialisation-asynchrone)).
 
@@ -490,6 +499,7 @@ La documentation de Memoire va plus loin : [modèles](https://memoire-7f4525f1fd
 
 ## Étapes suivantes
 
+- [Nuage DB](nuage.md) : la base par défaut, du développement à la production.
 - [API REST](rest-api.md) : une API JSON complète pour un modèle, en une ligne.
 - [Tests](testing.md) : tester vos requêtes avec une base de données en mémoire.
 - [Erreurs](errors.md) : ce que fait `?` des erreurs de base de données.

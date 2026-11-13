@@ -34,7 +34,7 @@
 //! |---|---|---|
 //! | [vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | HTTP server in the style of Express: routes, middlewares, WebSocket | [`vitesse`], [`App`] dereferences to `vitesse::App` |
 //! | [securite](https://securite-2db4c1994be7.herokuapp.com/) | security in front of every request: WAF, rate limit, CSRF, headers… | [`securite`], [`App::security`] |
-//! | [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | database: memory, SQLite, PostgreSQL, MySQL, Redis, MongoDB | [`orm`], [`Db`], [`macro@model`] |
+//! | [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | database: Nuage DB, memory, SQLite, PostgreSQL, MySQL, Redis, MongoDB | [`orm`], [`Db`], [`macro@model`] |
 //! | [active](https://active-c1883a966650.herokuapp.com/) | pages rendered on the server, SEO tags, WebAssembly islands | [`active`], [`Page`] |
 //!
 //! ## In handlers
@@ -76,6 +76,7 @@
 //!
 //! | Feature | Default | Adds |
 //! |---|---|---|
+//! | `nuage` | ✓ | [Nuage DB](https://github.com/maxlestage/Nuage): a server (`NUAGE_URL=https://…`, [`App::nuage`]), `orm::NuageDb` also on `wasm32` |
 //! | `sqlite` | ✓ | SQLite (`DATABASE_URL=sqlite://app.db`) |
 //! | `postgres` | ✓ | PostgreSQL with TLS (Heroku Postgres) |
 //! | `mysql`, `redis`, `mongodb` | | the other databases |
@@ -142,7 +143,7 @@ pub use shield::{default_shield, shield};
 #[cfg(not(target_arch = "wasm32"))]
 pub use active::pwa::Manifest as Pwa;
 
-/// The version of this crate, e.g. `"0.3.2"`.
+/// The version of this crate, e.g. `"0.3.3"`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Front end: views, state, SEO tags, islands ([active](https://active-c1883a966650.herokuapp.com/)).

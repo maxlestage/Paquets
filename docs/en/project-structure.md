@@ -32,6 +32,7 @@ These appear later, and are never committed (they are in `.gitignore`):
 |---|---|---|
 | `target/` | Cargo | everything Cargo compiles |
 | `pkg/` | `paquets dev`, `paquets build` | the browser bundle of the islands: `my_app.js` and `my_app_bg.wasm` |
+| `data/` | the app, at its first start | the database while you develop: [Nuage DB](nuage.md)'s local mode (`app.nuage("data")`), `data/app.memoire` |
 | `*.db` | SQLite | your local database, when `DATABASE_URL=sqlite://...` |
 
 ## src/main.rs: the server
@@ -152,7 +153,7 @@ When it starts, the server looks for two folders **in the current working direct
 | `public/` | served at the root of the site |
 | `pkg/` | served at `/pkg/`; if it contains a bundle (`<name>.js` and `<name>_bg.wasm`), pages with islands load it |
 
-The SQLite file of `DATABASE_URL=sqlite://app.db` is also relative to the working directory. In the Docker image, the working directory is `/app`, where the `Dockerfile` copies `public/` and `pkg/`. If you run the release binary by hand, launch it from the project root (or copy `public/` and `pkg/` next to where you launch it).
+The `data/` folder of `app.nuage("data")` and the SQLite file of `DATABASE_URL=sqlite://app.db` are also relative to the working directory. In the Docker image, the working directory is `/app`, where the `Dockerfile` copies `public/` and `pkg/` and creates a `data/` folder the app can write to. If you run the release binary by hand, launch it from the project root (or copy `public/` and `pkg/` next to where you launch it).
 
 ## Growing the project
 

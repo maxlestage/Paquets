@@ -8,7 +8,7 @@ Paquets is built on four packages by the same author: Vitesse, Securite, memoire
 |---|---|---|---|---|
 | **Vitesse** | HTTP server in the style of Express.js: routes, middleware, routers, WebSocket, HTTPS, HTTP/2 and HTTP/3, sessions, templates, test client | `paquets::vitesse` | [maxlestage/Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | [docs](https://vitesse-f16135654c3d.herokuapp.com/en/docs/introduction/) |
 | **Securite** | security middleware: WAF, rate limit, CSRF, CORS, security headers and CSP, bot blocker, authentication… | `paquets::securite` | [maxlestage/Securite](https://securite-2db4c1994be7.herokuapp.com/) | [docs](https://securite-2db4c1994be7.herokuapp.com/en/docs/introduction/) |
-| **memoire-orm** | type-safe async ORM, SQL built at compile time: memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | [docs](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/introduction/) |
+| **memoire-orm** | type-safe async ORM, SQL built at compile time: Nuage DB, memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB | `paquets::orm` | [maxlestage/Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) | [docs](https://memoire-7f4525f1fdaf.herokuapp.com/en/docs/introduction/) |
 | **active** | front end: components as Rust functions, `use_state`, server rendering with complete SEO tags, WebAssembly islands | `paquets::active` | [maxlestage/Active](https://active-c1883a966650.herokuapp.com/) | [docs](https://active-c1883a966650.herokuapp.com/en/docs/introduction/) |
 
 Paquets also re-exports `paquets::serde` and `paquets::serde_json` (and `json!` in the prelude), so that `#[model]` and `#[data]` work without adding serde to your `Cargo.toml`, and `paquets::test`, the test client types.
@@ -81,19 +81,19 @@ See the [Pratique documentation](https://securite-2db4c1994be7.herokuapp.com/en/
 
 ## memoire-orm: the database
 
-[memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) maps Rust structs to tables and writes queries in Rust, checked by the compiler. The SQL of primary-key operations is built at compile time, and the same code runs on six backends.
+[memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) maps Rust structs to tables and writes queries in Rust, checked by the compiler. The SQL of primary-key operations is built at compile time, and the same code runs on seven backends, among them Nuage DB, Memoire's own database.
 
 **In Paquets:**
 
 - `#[model]` adds `#[derive(Model)]` (and serde) to your struct, and points the generated code to `paquets::orm`, so your project doesn't need its own `memoire-orm` dependency;
-- `Db` is one handle for every backend, chosen by `DATABASE_URL`, and implements Memoire's `Executor` and `Database` traits: every model method and query accepts `req.db()`;
+- `Db` is one handle for every backend, chosen by `NUAGE_URL` or `DATABASE_URL` ([Nuage DB](nuage.md) by default in new projects, with `app.nuage("data")`), and implements Memoire's `Executor` and `Database` traits: every model method and query accepts `req.db()`;
 - `app.api::<M>()` and `app.model::<M>()` create tables at startup; database errors become `404`, `409` or `400` through `?`.
 
 **In the prelude:** the traits `Model`, `Executor`, `Database` and `Transaction`, which give models and the database their methods, and `LoadRelated`, which loads the related rows of a list in one query per level (`users.load_children::<Post>(db)`).
 
 **What Memoire brings lately**, all available through `req.db()`: relations read from the foreign keys ([Related rows](database.md#related-rows)), full-text search with `Column::matches`, indexes over several columns, `find_many` and `update_only`, an in-memory database kept in a file (`DATABASE_URL=memory://app.memoire`, encrypted with the `encryption` feature), and browser storage for islands (`browser-storage` feature, see [Islands](islands.md#keeping-data-in-the-browser)).
 
-**Beyond the prelude**, through `paquets::orm`: `Migrator` and `Migration`, `Dialect`, the `params!` macro for raw SQL, `Page` (the result of `paginate`), `Json<T>` columns, `Observed` (a handle that announces every write made through it), `StorageOptions`, and the backends themselves (`SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), to open a database with your own settings and pass it to `app.database(Db::from(...))`. See [Database](database.md).
+**Beyond the prelude**, through `paquets::orm`: `Migrator` and `Migration`, `Dialect`, the `params!` macro for raw SQL, `Page` (the result of `paginate`), `Json<T>` columns, `Observed` (a handle that announces every write made through it), `StorageOptions`, and the backends themselves (`NuageDb`, `SqliteDb`, `PgPool`, `MySqlPool`, `RedisDb`, `MongoDb`, `MemoryDb`), to open a database with your own settings and pass it to `app.database(Db::from(...))`. See [Database](database.md).
 
 Transactions that run again on conflicts (`db.transaction`, like Prisma) and tables brought up to date without migration files (`db.push::<M>()`, like Drizzle, run at every start) work on `req.db()` too.
 

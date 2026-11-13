@@ -83,6 +83,9 @@ async fn add(req: Request) -> Result<Redirect> {
 
 fn app() -> App {
     let mut app = App::new();
+    // Nuage DB: kept in data/ in development, on a Nuage DB server in production
+    // (NUAGE_URL and NUAGE_TOKEN), without changing this code.
+    app.nuage("data");
     app.get("/", home);
     app.post("/todos", add);
     app.api::<Todo>("/api/todos"); // GET, POST, PUT, PATCH, DELETE
