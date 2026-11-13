@@ -105,8 +105,7 @@ fn split(text: &str, offset: usize) -> Element {
     root
 }
 
-/// A package tile, flat (2D): one face with its colour and glyph. `size` 0 leaves the
-/// size to the CSS.
+/// A cube with six faces (CSS 3D). `size` 0 leaves the size to the CSS.
 fn cube(size: u32, color: Option<&str>, glyph: Option<&str>, spin: bool, wire: bool) -> Element {
     let mut style = String::new();
     if size > 0 {
@@ -130,15 +129,19 @@ fn cube(size: u32, color: Option<&str>, glyph: Option<&str>, spin: bool, wire: b
     } else {
         "cube__body"
     });
-    let face = span().class("cube__face cube__face--front");
-    root.child(body.child(match glyph {
-        Some(g) => face.child(b().text(g.to_owned())),
-        None => face,
-    }))
+    root.child(body.children(
+        ["front", "back", "right", "left", "top", "bottom"].map(|face| {
+            let face = span().class(format!("cube__face cube__face--{face}"));
+            match glyph {
+                Some(g) => face.child(b().text(g.to_owned())),
+                None => face,
+            }
+        }),
+    ))
 }
 
-/// The Paquets box, seen from the front (2D): its body and a lid that opens in the plane;
-/// `content` (the packages) passes behind the body.
+/// The Paquets box: five glass faces and a lid hinged on its back edge; `content`
+/// shares its 3D space.
 fn pbox(class: &str, content: Vec<Node>) -> Element {
     div()
         .class("pbox")
@@ -150,6 +153,14 @@ fn pbox(class: &str, content: Vec<Node>) -> Element {
                 .child(span().class("pbox__tape"))
                 .child(span().class("pbox__mark").child(logo())),
         )
+        .child(span().class("pbox__face pbox__face--back"))
+        .child(
+            span()
+                .class("pbox__face pbox__face--right")
+                .child(span().class("pbox__tape")),
+        )
+        .child(span().class("pbox__face pbox__face--left"))
+        .child(span().class("pbox__face pbox__face--bottom"))
         .child(
             span()
                 .class("pbox__lid")
