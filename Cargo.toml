@@ -36,7 +36,7 @@ default = ["nuage", "sqlite", "postgres"]
 nuage = ["memoire-orm/nuage"]
 ## SQLite database (`DATABASE_URL=sqlite://app.db`), compiled in: nothing to install.
 sqlite = ["memoire-orm/sqlite"]
-## PostgreSQL with TLS (Heroku Postgres, Neon, Supabase…).
+## PostgreSQL with TLS (Heroku Postgres, Supabase…).
 postgres = ["memoire-orm/postgres", "memoire-orm/postgres-tls"]
 ## MySQL / MariaDB with TLS.
 mysql = ["memoire-orm/mysql", "memoire-orm/mysql-tls"]
