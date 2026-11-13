@@ -763,7 +763,9 @@ fn crafted(sentence: &str) -> Element {
             _ => None,
         };
         line = match class {
-            Some(class) => line.child(span().class(class).text(bare.to_owned())).child(tail.to_owned()),
+            Some(class) => line
+                .child(span().class(class).text(bare.to_owned()))
+                .child(tail.to_owned()),
             None => line.child(word.to_owned()),
         };
     }
