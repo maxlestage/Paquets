@@ -322,9 +322,9 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.20.3"
+version = "3.20.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72f5acc6cb2ba439de613abc23857ec3d78374d8ed5ac84e9d11336e87da8649"
+checksum = "87a0cf66fd1eb2fb7b822cb78370d82303750809bc6ba855f3f58e517d3238db"
 
 [[package]]
 name = "bytemuck"
@@ -2532,7 +2532,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#f8d1bfd969d7415354bf25a5e87e6fd31b84775f"
+source = "git+https://github.com/maxlestage/Securite#56f22a04ca1be9c6e509f3a5d7a73e6e2d790161"
 dependencies = [
  "vitesse",
 ]
@@ -3013,7 +3013,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#f8d1bfd969d7415354bf25a5e87e6fd31b84775f"
+source = "git+https://github.com/maxlestage/Securite#56f22a04ca1be9c6e509f3a5d7a73e6e2d790161"
 dependencies = [
  "aho-corasick",
  "argon2",
