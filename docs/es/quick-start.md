@@ -21,10 +21,10 @@ La primera ejecución compila todas las dependencias, lo que lleva unos minutos.
 
 ```text
 📦 Paquets · http://localhost:3000
-   database: memory · security: on (10 guards) · islands: none
+   database: nuage, local (data) · security: on (10 guards) · islands: none
 ```
 
-Abre http://localhost:3000 en tu navegador: verás la página inicial del proyecto. La segunda línea te dice que la base de datos está en memoria, que el escudo de seguridad está activo con sus 10 guards y que el proyecto no tiene islas.
+Abre http://localhost:3000 en tu navegador: verás la página inicial del proyecto. La segunda línea te dice que la base de datos es [Nuage DB](nuage.md), guardada en la carpeta `data/` del proyecto, que el escudo de seguridad está activo con sus 10 guards y que el proyecto no tiene islas.
 
 A partir de ahí, cada petición muestra una línea, como `GET / 200 0.339 ms`. Detén el servidor con `Ctrl+C`.
 
@@ -123,7 +123,7 @@ Qué ha pasado:
 
 - `#[model]` convirtió el struct en una tabla de la base de datos llamada `note`, con columnas tipadas. El campo `id` es la clave primaria, generada por la base de datos. El struct también se puede convertir a JSON y desde JSON.
 - Al arrancar, `app.api::<Note>(...)` creó la tabla (todavía no existía) y añadió seis rutas: listar, leer, crear, reemplazar, modificar y eliminar. Consulta [API REST](rest-api.md).
-- De momento la base de datos está en memoria: si detienes el servidor, las notas desaparecen. El paso 7 lo soluciona.
+- El programa del paso 3 no tiene la línea `app.nuage("data")`: de momento la base de datos está en memoria, y si detienes el servidor, las notas desaparecen. El paso 7 lo soluciona.
 
 ## 6. Muestra las notas en la página, con un formulario
 
@@ -181,13 +181,13 @@ Reinicia, añade algunas notas con el formulario y mira cómo aparecen. Algunas 
 
 ## 7. Conserva los datos
 
-La base de datos se toma de la variable de entorno `DATABASE_URL`. Haz que apunte a un archivo SQLite:
+Elige [Nuage DB](nuage.md), la base que `paquets new` había preparado, con una línea en `app()`, justo después de `App::new()`:
 
-```sh
-DATABASE_URL=sqlite://notebook.db paquets dev
+```rust
+app.nuage("data");
 ```
 
-Ahora la línea de arranque dice `database: sqlite`. El archivo `notebook.db` se crea junto a `Cargo.toml`, la tabla `note` se crea dentro y tus notas sobreviven a los reinicios. En Windows PowerShell, escribe `$env:DATABASE_URL="sqlite://notebook.db"; paquets dev`.
+Ahora la línea de arranque dice `database: nuage, local (data)`. La carpeta `data/` se crea junto a `Cargo.toml`, la tabla `note` se crea dentro y tus notas sobreviven a los reinicios. La carpeta está en `.gitignore`: se queda en tu ordenador.
 
 ¿Quieres una primera nota en una base de datos vacía? Añade esto a `app()`, antes de `app`:
 
@@ -200,7 +200,7 @@ app.on_start(|db| async move {
 });
 ```
 
-`on_start` se ejecuta una vez, cuando la base de datos está lista y las tablas existen, antes de la primera petición. En producción en Heroku, `DATABASE_URL` apunta a PostgreSQL y el mismo código funciona sin cambios. Consulta [Base de datos](database.md).
+`on_start` se ejecuta una vez, cuando la base de datos está lista y las tablas existen, antes de la primera petición. En producción, las config vars `NUAGE_URL` y `NUAGE_TOKEN` llevan el mismo código a un servidor Nuage DB, sin cambios. Las otras bases (SQLite, PostgreSQL…) se eligen con `DATABASE_URL`, por ejemplo `DATABASE_URL=sqlite://notebook.db paquets dev`. Consulta [Base de datos](database.md).
 
 ## 8. Pruébalo
 
@@ -231,7 +231,7 @@ Ejecuta las pruebas:
 cargo test
 ```
 
-`app().test().await` arranca tu aplicación real, con sus rutas, su seguridad y su hook `on_start`, sin abrir ningún puerto. La base de datos está en memoria y vacía en cada prueba, diga lo que diga `DATABASE_URL`, así que las pruebas nunca tocan tus datos. Consulta [Pruebas](testing.md).
+`app().test().await` arranca tu aplicación real, con sus rutas, su seguridad y su hook `on_start`, sin abrir ningún puerto. La base de datos está en memoria y vacía en cada prueba, digan lo que digan `NUAGE_URL` o `DATABASE_URL`, y no se escribe nada en `data/`, así que las pruebas nunca tocan tus datos. Consulta [Pruebas](testing.md).
 
 ## El programa completo
 
@@ -282,6 +282,7 @@ async fn add_note(req: Request) -> Result<Redirect> {
 
 fn app() -> App {
     let mut app = App::new();
+    app.nuage("data");
     app.get("/", home);
     app.post("/notes", add_note);
     app.get("/hello/:name", |req: Request| async move {
@@ -329,3 +330,4 @@ Tu proyecto ya contiene todo lo necesario para desplegarlo: un `Dockerfile`, los
 - [Páginas](pages.md): layouts, el tema, las etiquetas SEO.
 - [Islas](islands.md): añade partes interactivas que se ejecutan en el navegador.
 - [Base de datos](database.md): consultas, transacciones, PostgreSQL.
+- [Nuage DB](nuage.md): la base en producción, las ramas, la consola.

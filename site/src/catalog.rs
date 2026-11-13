@@ -50,7 +50,7 @@ pub const CATEGORIES: [Category; 5] = [
     },
 ];
 
-pub const PAGES: [Page; 28] = [
+pub const PAGES: [Page; 29] = [
     // ----- Getting started
     Page {
         slug: "introduction",
@@ -136,9 +136,19 @@ pub const PAGES: [Page; 28] = [
         category: 1,
         title: ["Base de données", "Database", "Base de datos"],
         summary: [
-            "Modèles, requêtes, transactions, et les six bases prises en charge.",
-            "Models, queries, transactions, and the six supported databases.",
-            "Modelos, consultas, transacciones y las seis bases compatibles.",
+            "Modèles, requêtes, transactions, et les sept bases prises en charge.",
+            "Models, queries, transactions, and the seven supported databases.",
+            "Modelos, consultas, transacciones y las siete bases compatibles.",
+        ],
+    },
+    Page {
+        slug: "nuage",
+        category: 1,
+        title: ["Nuage DB", "Nuage DB", "Nuage DB"],
+        summary: [
+            "La base par défaut : un dossier en développement, un serveur en production, des branches et une console.",
+            "The default database: a folder in development, a server in production, branches and a console.",
+            "La base por defecto: una carpeta en desarrollo, un servidor en producción, ramas y una consola.",
         ],
     },
     Page {
@@ -426,6 +436,7 @@ mod tests {
                     "requests-responses",
                     "pages",
                     "database",
+                    "nuage",
                     "rest-api",
                     "security"
                 ],

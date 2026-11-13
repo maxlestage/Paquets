@@ -208,6 +208,12 @@ section[id] {
   margin-top: 48px;
 }
 
+/* The two links of the Nuage DB section: its guide and its repository. */
+.nuage__links {
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 /* ----- Grain --------------------------------------------------------------- */
 
 .noise {

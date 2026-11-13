@@ -40,6 +40,9 @@ pub fn run(args: &[String]) -> Result<(), String> {
     );
     println!("  cd {}", options.name);
     println!("  paquets dev        # http://localhost:3000\n");
+    println!(
+        "Database: Nuage DB, in data/ while you develop; set NUAGE_URL and NUAGE_TOKEN in production."
+    );
     if !options.minimal {
         println!("The first `paquets dev` also prepares the WebAssembly tools for the islands.");
     }
@@ -294,6 +297,11 @@ mod tests {
         assert!(docker.contains("wasm-release/my_app.wasm"));
         let manifest = &files.iter().find(|(n, _)| *n == "Cargo.toml").unwrap().1;
         assert!(manifest.contains(r#"features = ["client"]"#));
+        // Nuage DB: data/ in development, kept out of git and of the image.
+        assert!(main.contains(r#"app.nuage("data");"#));
+        let ignored = &files.iter().find(|(n, _)| *n == ".gitignore").unwrap().1;
+        assert!(ignored.lines().any(|l| l == "/data"));
+        assert!(docker.contains("chown app data"));
         // GitHub expressions are not template placeholders.
         let ci = &files
             .iter()

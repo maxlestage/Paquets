@@ -10,7 +10,7 @@ Paquets est une bibliothèque Rust pour créer des sites et des API web. Il asse
 |---|---|
 | [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | Le serveur HTTP, avec une API dans le style d'Express.js : `app.get(...)`, `req.param(...)`, middlewares, routeurs, WebSocket. |
 | [Securite](https://securite-2db4c1994be7.herokuapp.com/) | Le bouclier de sécurité devant chaque requête : pare-feu, limitation de débit, protection CSRF, en-têtes de sécurité, et bien plus. |
-| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | La base de données : modèles et requêtes typés, en mémoire, SQLite, PostgreSQL, MySQL, Redis ou MongoDB. |
+| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | La base de données : modèles et requêtes typés, sur [Nuage DB](nuage.md) (la base par défaut des nouveaux projets), en mémoire, SQLite, PostgreSQL, MySQL, Redis ou MongoDB. |
 | [Active](https://active-c1883a966650.herokuapp.com/) | Le front-end : des vues écrites comme des fonctions Rust, le rendu serveur avec les balises SEO, et les îlots WebAssembly. |
 
 Pas besoin d'apprendre quatre bibliothèques pour commencer. Paquets les relie, choisit de bons réglages par défaut et expose une seule petite API. Quand il vous en faut plus, chaque paquet n'est qu'à un import de distance (voir [Les quatre paquets](packages.md)).
@@ -65,7 +65,7 @@ Lancez-le, et vous obtenez :
 |---|---|---|
 | Serveur | Le port de la variable `PORT` (Heroku), sinon `3000`. `Ctrl+C` ou `SIGTERM` l'arrête proprement. | `app.port(8080)` |
 | Sécurité | Le bouclier recommandé de Securite sur chaque requête : identifiants de requête, contrôles du protocole, corps limité à 2 Mio, limite de 20 requêtes par seconde et par IP, blocage des robots, pare-feu, protection CSRF, en-têtes de sécurité, cookies durcis. | `app.security(...)` |
-| Base de données | D'après la variable `DATABASE_URL` ; en mémoire si elle n'est pas définie. Les tables de vos modèles sont créées au démarrage. | `app.database(...)` |
+| Base de données | D'après la variable `NUAGE_URL` (un serveur Nuage DB), puis `DATABASE_URL` ; dans le dossier `data/` avec `app.nuage("data")`, comme dans les projets créés par `paquets new` ; en mémoire sinon. Les tables de vos modèles sont créées au démarrage. | `app.nuage(...)`, `app.database(...)` |
 | Pages | Du HTML rendu par le serveur avec les balises SEO, un thème intégré et une Content-Security-Policy qui autorise exactement ce que contient la page. | les méthodes de `Page` |
 | Fichiers statiques | Le dossier `public/` est servi à la racine du site. | `app.static_dir(...)` |
 | Îlots | Le bundle du navigateur dans `pkg/` (construit par `paquets build`) est trouvé au démarrage et chargé uniquement par les pages qui contiennent des îlots. | — |

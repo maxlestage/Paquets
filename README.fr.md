@@ -52,7 +52,7 @@ Rien à configurer.
 |---|---|
 | ✨ **Simple** | `use paquets::prelude::*;`, `App::new()`, `app.run()`. Les handlers sont des fonctions `async` ; `?` fonctionne sur toutes les erreurs et choisit le bon statut HTTP. |
 | 🛡️ **Sécurisé par défaut** | WAF (injection SQL, XSS, RCE, Log4Shell…), limitation de débit, CSRF, en-têtes de sécurité, identifiants de requête, blocage des robots d'attaque. Les pages envoient une Content-Security-Policy qui n'autorise que leur propre code. |
-| 🗄️ **Toutes les bases** | En mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB, choisies par `DATABASE_URL`. `#[model]` donne des requêtes typées et une API REST en une ligne. |
+| 🗄️ **Toutes les bases** | [Nuage DB](https://github.com/maxlestage/Nuage) par défaut dans les nouveaux projets ; en mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis, MongoDB, choisies par `NUAGE_URL` ou `DATABASE_URL`. `#[model]` donne des requêtes typées et une API REST en une ligne. |
 | 🔎 **Pages SEO** | Les pages sont du HTML fini, rendu par le serveur : titre, description, Open Graph, Twitter, URL canonique, JSON-LD. Un thème intégré (clair et sombre) les rend belles sans CSS. |
 | 📲 **Installable (PWA)** | `app.pwa(Pwa::new("Mon app"))` : un manifeste d'application web et un service worker hors ligne, pour que l'application aille sur l'écran d'accueil et fonctionne sans réseau. |
 | 🏝️ **Îlots** | Les parties interactives sont des composants Rust compilés en WebAssembly, et seulement elles : le reste de la page n'envoie aucun code. |
@@ -70,6 +70,28 @@ Paquets assemble quatre crates, chacune utilisable seule :
 | [**Securite**](https://securite-2db4c1994be7.herokuapp.com/) | Middlewares de sécurité : WAF, limitation de débit, CSRF, CORS, en-têtes et CSP, authentification… | devant chaque requête, `app.security(...)` |
 | [**memoire-orm**](https://memoire-7f4525f1fdaf.herokuapp.com/) | ORM asynchrone typé, SQL généré à la compilation, SQL et NoSQL, relations et recherche plein texte | `#[model]`, `req.db()`, `app.api::<M>()` |
 | [**active**](https://active-c1883a966650.herokuapp.com/) | Front-end : composants, état, rendu serveur, SEO, îlots WebAssembly | `Page`, `div()`, `h1()`, `island(...)`, `use_state` |
+
+## Nuage DB, la base par défaut
+
+Depuis la 0.3.3, les projets créés par `paquets new` utilisent [Nuage DB](https://github.com/maxlestage/Nuage),
+la base de données de Memoire, écrite entièrement en Rust : un dossier du projet pendant que vous
+développez, un serveur Nuage DB en production, avec le même code.
+
+```rust
+let mut app = paquets::App::new();
+app.nuage("data"); // data/ en développement, NUAGE_URL + NUAGE_TOKEN en production
+```
+
+- **Elle s'entretient seule** : journal d'écriture anticipée, reprise après un crash, points de
+  contrôle et compactage automatiques, sommes de contrôle, et sauvegardes automatiques dans un
+  dossier ou sur S3, restaurées au démarrage.
+- **Sur disque**, sans limite de mémoire, avec des **branches copy-on-write instantanées** pour
+  les aperçus et les tests (`NUAGE_BRANCH`).
+- **Un seul serveur, toujours allumé**, avec la console `/admin` et le tableau de bord en direct
+  `/app` ; son client tourne aussi en WebAssembly.
+
+Les projets existants ne changent pas : sans `NUAGE_URL` ni `app.nuage(...)`, `DATABASE_URL`
+choisit toujours la base. Guide : [Nuage DB](docs/fr/nuage.md).
 
 ## Démarrer
 
@@ -155,7 +177,7 @@ Tout est expliqué sur le [site](https://paquets-90dfc06b6fea.herokuapp.com/fr/d
 | [Introduction](docs/fr/introduction.md) | [Routes](docs/fr/routing.md) | [Îlots](docs/fr/islands.md) | [Heroku depuis un téléphone](docs/fr/deploy-heroku-mobile.md) | [Ligne de commande](docs/fr/cli.md) |
 | [Installation](docs/fr/installation.md) | [Requêtes et réponses](docs/fr/requests-responses.md) | [WebSocket](docs/fr/websocket.md) | [Docker](docs/fr/deploy-docker.md) | [Aide-mémoire](docs/fr/cheatsheet.md) |
 | [Démarrage rapide](docs/fr/quick-start.md) | [Pages](docs/fr/pages.md) | [Tests](docs/fr/testing.md) | [Publier sur crates.io](docs/fr/publish-crates-io.md) | [Les quatre paquets](docs/fr/packages.md) |
-| [Structure d'un projet](docs/fr/project-structure.md) | [Base de données](docs/fr/database.md) | [Erreurs](docs/fr/errors.md) | [Automatisation](docs/fr/automation.md) | [FAQ](docs/fr/faq.md) |
+| [Structure d'un projet](docs/fr/project-structure.md) | [Base de données](docs/fr/database.md) · [Nuage DB](docs/fr/nuage.md) | [Erreurs](docs/fr/errors.md) | [Automatisation](docs/fr/automation.md) | [FAQ](docs/fr/faq.md) |
 | | [API REST](docs/fr/rest-api.md) · [Sécurité](docs/fr/security.md) | [Configuration](docs/fr/configuration.md) · [Performances](docs/fr/performance.md) | | |
 
 Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
@@ -173,8 +195,10 @@ Référence de l'API : [docs.rs/paquets](https://docs.rs/paquets).
    variable `HEROKU_APP_NAME`. [`heroku.yml`](.github/workflows/heroku.yml) déploie alors chaque fusion.
    Avec la variable facultative `HEROKU_BUILD` à `docker`, il construit le [`Dockerfile`](Dockerfile)
    à la place ([`heroku.yml`](heroku.yml), pile « container »).
-3. Une base de données : Heroku → votre application → *Resources* → *Heroku Postgres*. Sa
-   `DATABASE_URL` est utilisée automatiquement.
+3. Une base de données : déployez un serveur [Nuage DB](https://github.com/maxlestage/Nuage) (son
+   dépôt se déploie tel quel sur Heroku) et définissez les config vars `NUAGE_URL` et `NUAGE_TOKEN` ;
+   ou Heroku → votre application → *Resources* → *Heroku Postgres*, dont la `DATABASE_URL` est
+   utilisée automatiquement.
 
 Sans GitHub Actions : `heroku create --stack heroku-26 --buildpack emk/rust` (sur une application
 existante, `heroku stack:set heroku-26` puis `heroku buildpacks:set emk/rust`), puis
@@ -237,4 +261,4 @@ les droits à l'auteur, comme l'indique la licence.
 ## Crédits
 
 Conçu et développé par Maxime Nathan Lestage,
-au sein d'une même famille de projets Rust : [Active](https://active-c1883a966650.herokuapp.com/), [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/) et [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/).
+au sein d'une même famille de projets Rust : [Active](https://active-c1883a966650.herokuapp.com/), [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/), [Securite](https://securite-2db4c1994be7.herokuapp.com/), [Memoire](https://memoire-7f4525f1fdaf.herokuapp.com/), [Nuage DB](https://github.com/maxlestage/Nuage) et [Paquets](https://paquets-90dfc06b6fea.herokuapp.com/).

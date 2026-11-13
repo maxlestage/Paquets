@@ -10,7 +10,7 @@ Paquets (French for "packages") is a Rust library for building websites and web 
 |---|---|
 | [Vitesse](https://vitesse-f16135654c3d.herokuapp.com/) | The HTTP server, with an API in the style of Express.js: `app.get(...)`, `req.param(...)`, middleware, routers, WebSocket. |
 | [Securite](https://securite-2db4c1994be7.herokuapp.com/) | The security shield in front of every request: firewall, rate limit, CSRF protection, security headers and more. |
-| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | The database: type-safe models and queries, in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
+| [memoire-orm](https://memoire-7f4525f1fdaf.herokuapp.com/) | The database: type-safe models and queries, on [Nuage DB](nuage.md) (the default of new projects), in memory, SQLite, PostgreSQL, MySQL, Redis or MongoDB. |
 | [Active](https://active-c1883a966650.herokuapp.com/) | The front end: views written as Rust functions, server rendering with SEO tags, and WebAssembly islands. |
 
 You don't need to learn four libraries to start. Paquets connects them, chooses good defaults, and exposes one small API. When you need more, every package is one import away (see [The four packages](packages.md)).
@@ -65,7 +65,7 @@ Run it and you get:
 |---|---|---|
 | Server | Port from the `PORT` variable (Heroku), `3000` otherwise. `Ctrl+C` or `SIGTERM` stops it gracefully. | `app.port(8080)` |
 | Security | Securite's recommended shield on every request: request ids, protocol checks, 2 MiB body limit, rate limit of 20 requests per second per IP, bot blocker, firewall, CSRF protection, security headers, hardened cookies. | `app.security(...)` |
-| Database | From the `DATABASE_URL` variable; in memory when it is not set. Tables of your models are created at startup. | `app.database(...)` |
+| Database | From the `NUAGE_URL` variable (a Nuage DB server), then `DATABASE_URL`; in the `data/` folder with `app.nuage("data")`, as in projects made by `paquets new`; in memory otherwise. Tables of your models are created at startup. | `app.nuage(...)`, `app.database(...)` |
 | Pages | Server-rendered HTML with SEO tags, a built-in theme and a Content-Security-Policy that allows exactly what the page contains. | `Page` methods |
 | Static files | The `public/` folder is served at the root of the site. | `app.static_dir(...)` |
 | Islands | The browser bundle in `pkg/` (built by `paquets build`) is found at startup and loaded only by pages that contain islands. | — |

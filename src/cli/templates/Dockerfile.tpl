@@ -27,6 +27,9 @@ WORKDIR /app
 COPY --from=build /server /usr/local/bin/server
 COPY --from=build /app/pkg ./pkg
 COPY public ./public
+# Without NUAGE_URL the database is kept in data/, on the container's disk: set
+# NUAGE_URL and NUAGE_TOKEN (a Nuage DB server) to keep it across deploys.
+RUN mkdir data && chown app data
 USER app
 # Heroku sets PORT at startup; 8080 elsewhere.
 ENV PORT=8080

@@ -131,7 +131,7 @@ async fn creates_a_todo() {
 
 ## La base de datos en las pruebas
 
-Cada llamada a `app().test()` obtiene una base de datos en memoria nueva y vacía, diga lo que diga `DATABASE_URL`. Las pruebas nunca ven los datos de las demás, ni los tuyos.
+Cada llamada a `app().test()` obtiene una base de datos en memoria nueva y vacía, digan lo que digan `NUAGE_URL`, `DATABASE_URL` o `app.nuage(...)`. Las pruebas nunca ven los datos de las demás, ni los tuyos. Para probar con una copia de datos reales, dale a una prueba su propia [rama de Nuage DB](nuage.md#ramas-para-previsualizaciones-y-pruebas).
 
 Para partir de datos conocidos, añade un hook `on_start` en la prueba:
 

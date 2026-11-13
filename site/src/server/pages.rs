@@ -7,7 +7,7 @@ use super::docs::Doc;
 use crate::catalog::{self, CATEGORIES, PAGES, pages_of};
 use crate::data::{
     AUTHOR, CRATES_IO, DOCS_RS, ECOSYSTEM, EXTRAS, FEATURES, INSTALL, JOURNEY, LICENSE_PATH,
-    MARQUEE_CODE, NUMBERS, PACKAGES,
+    MARQUEE_CODE, NUAGE, NUMBERS, PACKAGES,
 };
 use crate::i18n::{Lang, Texts, number};
 use crate::icons::{icon, logo};
@@ -782,11 +782,12 @@ pub fn home(ctx: &Ctx<'_>) -> Page {
         .child(marquee(ctx))
         .child(packages(ctx))
         .child(extra(ctx, 0, "02", "news"))
+        .child(nuage(ctx))
         .child(showcase(ctx))
         .child(features(ctx))
-        .child(extra(ctx, 1, "05", "games"))
+        .child(extra(ctx, 1, "06", "games"))
         .child(numbers(ctx))
-        .child(extra(ctx, 2, "07", "speed"))
+        .child(extra(ctx, 2, "08", "speed"))
         .child(journey(ctx))
         .child(deploy(ctx))
         .child(docs_preview(ctx))
@@ -1071,7 +1072,7 @@ fn showcase(ctx: &Ctx<'_>) -> Element {
     section()
         .class("section showcase")
         .id("code")
-        .child(head("03", t.code_label, t.code_title, Some(t.code_lead)))
+        .child(head("04", t.code_label, t.code_title, Some(t.code_lead)))
         .child(island(
             "showcase",
             ctx.lang().code(),
@@ -1085,7 +1086,7 @@ fn features(ctx: &Ctx<'_>) -> Element {
         .class("section")
         .id("features")
         .child(head(
-            "04",
+            "05",
             t.features_label,
             t.features_title,
             Some(t.features_lead),
@@ -1114,8 +1115,35 @@ fn features(ctx: &Ctx<'_>) -> Element {
         )
 }
 
-/// A section of cards of version 0.3 (`Texts::extras`): what is new, 3D and physics,
-/// performance.
+/// The section of Nuage DB, the default database: its cards, then a link to its guide
+/// and one to its repository.
+fn nuage(ctx: &Ctx<'_>) -> Element {
+    let t = ctx.t();
+    extra(ctx, 3, "03", "nuage").child(
+        div()
+            .class("center nuage__links")
+            .attr("data-reveal", "")
+            .child(
+                magnetic(
+                    &doc_href(ctx.lang(), "nuage", None),
+                    "btn--primary btn--lg",
+                    false,
+                )
+                .child(inner([
+                    icon("db").into(),
+                    span().text(t.nuage_guide).into(),
+                ])),
+            )
+            .child(magnetic(NUAGE, "btn--ghost btn--lg", true).child(inner([
+                icon("git").into(),
+                span().text(t.nuage_repo).into(),
+                icon("external").into(),
+            ]))),
+    )
+}
+
+/// A section of cards (`Texts::extras`): what is new in 0.3, 3D and physics,
+/// performance, Nuage DB.
 fn extra(ctx: &Ctx<'_>, index: usize, num: &str, id: &str) -> Element {
     let t = ctx.t();
     let e = &t.extras[index];
@@ -1156,7 +1184,7 @@ fn numbers(ctx: &Ctx<'_>) -> Element {
         .class("section numbers")
         .id("numbers")
         .child(div().class("numbers__bg").attr("aria-hidden", "true"))
-        .child(head("06", t.numbers_label, t.numbers_title, None))
+        .child(head("07", t.numbers_label, t.numbers_title, None))
         .child(
             div()
                 .class("stats")
@@ -1218,7 +1246,7 @@ fn journey(ctx: &Ctx<'_>) -> Element {
         .class("section journey")
         .id("start")
         .child(head(
-            "08",
+            "09",
             t.journey_label,
             t.journey_title,
             Some(t.journey_lead),
@@ -1346,7 +1374,7 @@ fn deploy(ctx: &Ctx<'_>) -> Element {
         .class("section deploy")
         .id("deploy")
         .child(head(
-            "09",
+            "10",
             t.deploy_label,
             t.deploy_title,
             Some(t.deploy_lead),
@@ -1418,7 +1446,7 @@ fn docs_preview(ctx: &Ctx<'_>) -> Element {
         .class("section")
         .id("docs")
         .child(head(
-            "10",
+            "11",
             t.docs_label,
             t.docs_home_title,
             Some(t.docs_home_lead),

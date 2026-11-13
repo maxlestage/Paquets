@@ -79,7 +79,8 @@ async fn the_home_page_has_every_section() {
         assert!(html.contains(r#"<meta property="og:image:alt" content="#));
         assert!(html.contains(r#"<meta name="twitter:card" content="summary_large_image"/>"#));
         for id in [
-            "top", "packages", "code", "features", "numbers", "start", "deploy", "docs",
+            "top", "packages", "news", "nuage", "code", "features", "games", "numbers", "speed",
+            "start", "deploy", "docs",
         ] {
             assert!(
                 html.contains(&format!("id=\"{id}\"")),
@@ -94,6 +95,9 @@ async fn the_home_page_has_every_section() {
             );
         }
         assert!(html.contains(t.hero_lead));
+        // Nuage DB, the default database: its section links its guide and its repository.
+        assert!(html.contains(t.extras[3].title));
+        assert!(html.contains(&format!(r#"href="/{}/docs/nuage/""#, lang.code())));
         assert!(html.contains("cargo install --git https://github.com/maxlestage/Paquets paquets"));
         // On a phone, the install command wraps after the slashes of its URL.
         assert!(html.contains(
@@ -123,11 +127,12 @@ async fn the_home_page_has_every_section() {
             "https://vitesse-f16135654c3d.herokuapp.com/",
             "https://securite-2db4c1994be7.herokuapp.com/",
             "https://memoire-7f4525f1fdaf.herokuapp.com/",
+            "https://github.com/maxlestage/Nuage",
             "https://paquets-90dfc06b6fea.herokuapp.com/",
         ] {
             assert!(html.contains(&format!(r#"href="{url}""#)), "{url}");
         }
-        assert_eq!(html.matches(r#"class="eco__name""#).count(), 5);
+        assert_eq!(html.matches(r#"class="eco__name""#).count(), 6);
         assert!(!html.contains("github.io"));
         assert!(html.contains(r#"aria-current="page""#));
         assert!(html.contains(r#"<meta name="author" content="Maxime Nathan Lestage"/>"#));

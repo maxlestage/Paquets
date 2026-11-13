@@ -11,6 +11,8 @@ use memoire_orm::{
 use memoire_orm::{MongoDb, MongoTransaction};
 #[cfg(feature = "mysql")]
 use memoire_orm::{MySqlPool, MySqlTransaction};
+#[cfg(feature = "nuage")]
+use memoire_orm::{NuageDb, NuageTransaction};
 #[cfg(feature = "postgres")]
 use memoire_orm::{PgPool, PgTransaction};
 #[cfg(feature = "redis")]
@@ -43,11 +45,13 @@ use memoire_orm::{SqliteDb, SqliteTransaction};
 /// }
 /// ```
 ///
-/// The backend comes from the `DATABASE_URL` environment variable (or
-/// [`App::database`](crate::App::database)):
+/// The backend comes from the `NUAGE_URL` or `DATABASE_URL` environment variable
+/// (or [`App::database`](crate::App::database), [`App::nuage`](crate::App::nuage)):
 ///
 /// | URL | Backend | Cargo feature |
 /// |---|---|---|
+/// | `https://…`, `http://…` | a Nuage DB server, with the token of `NUAGE_TOKEN` | `nuage` (default) |
+/// | `nuage:data` | Nuage DB's local mode: a database kept in the folder `data` | always |
 /// | *(none)*, `memory` | in memory, emptied when the server stops | always |
 /// | `memory://data/app.memoire` | in memory, stored in a file and read back at startup | always |
 /// | `sqlite://app.db`, `app.db`, `sqlite::memory:` | SQLite file | `sqlite` (default) |
@@ -75,6 +79,10 @@ pub enum Db {
     /// MongoDB.
     #[cfg(feature = "mongodb")]
     Mongo(MongoDb),
+    /// A Nuage DB server ([`NuageDb`]): branches with
+    /// [`create_branch`](NuageDb::create_branch) and [`on_branch`](NuageDb::on_branch).
+    #[cfg(feature = "nuage")]
+    Nuage(NuageDb),
 }
 
 /// Runs the same expression on whichever backend `$db` holds.
@@ -92,6 +100,8 @@ macro_rules! each {
             $enum::Redis($d) => $e,
             #[cfg(feature = "mongodb")]
             $enum::Mongo($d) => $e,
+            #[cfg(feature = "nuage")]
+            $enum::Nuage($d) => $e,
         }
     };
 }
@@ -114,6 +124,9 @@ impl Db {
     pub async fn connect(url: &str) -> Result<Self> {
         let url = url.trim();
         let scheme = url.split_once(':').map_or("", |(s, _)| s);
+        if let Some(folder) = nuage_folder(url) {
+            return Self::nuage_local(folder);
+        }
         match Self::kind_of(url) {
             "memory" => match memory_file(url) {
                 Some(path) => {
@@ -147,8 +160,14 @@ impl Db {
             "redis" => Ok(Db::Redis(RedisDb::connect(url).await?)),
             #[cfg(feature = "mongodb")]
             "mongodb" => Ok(Db::Mongo(MongoDb::connect(url).await?)),
+            #[cfg(feature = "nuage")]
+            "nuage" => {
+                let token = env("NUAGE_TOKEN");
+                let branch = env("NUAGE_BRANCH");
+                Self::nuage_server(url, token.as_deref(), branch.as_deref()).await
+            }
             "unknown" => Err(memoire_orm::Error::Unsupported(format!(
-                "unknown database URL scheme `{scheme}` (expected memory, sqlite, postgres, mysql, redis or mongodb)"
+                "unknown database URL scheme `{scheme}` (expected https:// or nuage: for Nuage DB, memory, sqlite, postgres, mysql, redis or mongodb)"
             ))),
             kind => Err(memoire_orm::Error::Unsupported(format!(
                 "`{scheme}` URLs need the `{kind}` feature: paquets = {{ git = \"https://github.com/maxlestage/Paquets\", features = [\"{kind}\"] }}"
@@ -156,14 +175,85 @@ impl Db {
         }
     }
 
+    /// Nuage DB: a server for an `https://` or `http://` URL, with `token`, or
+    /// the local mode for anything else, a folder (`"data"`), where the database
+    /// is kept by Memoire's engine, the one Nuage DB runs statements with.
+    ///
+    /// It is what `NUAGE_URL` and `NUAGE_TOKEN` open: the same code uses a folder
+    /// in development and a server in production.
+    ///
+    /// ```
+    /// # paquets::orm::block_on(async {
+    /// # let folder = std::env::temp_dir().join(format!("paquets-doc-{}", std::process::id()));
+    /// # let folder = folder.to_str().unwrap();
+    /// let db = paquets::Db::nuage(folder, None).await?; // e.g. "data"
+    /// assert_eq!(db.kind(), "memory");
+    /// # drop(db); std::fs::remove_dir_all(folder).unwrap();
+    /// # Ok::<(), paquets::orm::Error>(())
+    /// # }).unwrap();
+    /// ```
+    pub async fn nuage(target: &str, token: Option<&str>) -> Result<Self> {
+        let target = target.trim();
+        if Self::kind_of(target) != "nuage" {
+            return Self::nuage_local(nuage_folder(target).unwrap_or(target));
+        }
+        #[cfg(feature = "nuage")]
+        {
+            let branch = env("NUAGE_BRANCH");
+            Self::nuage_server(target, token, branch.as_deref()).await
+        }
+        #[cfg(not(feature = "nuage"))]
+        {
+            let _ = token;
+            Self::connect(target).await
+        }
+    }
+
+    /// The local mode of Nuage DB: the folder is created if it is missing, and
+    /// the database is kept in `app.memoire` inside it.
+    fn nuage_local(folder: &str) -> Result<Self> {
+        let folder = if folder.is_empty() { "." } else { folder };
+        let file = std::path::Path::new(folder).join(LOCAL_FILE);
+        std::fs::create_dir_all(folder).map_err(|e| memoire_orm::Error::Database(Box::new(e)))?;
+        Ok(Db::Memory(MemoryDb::open(file)?))
+    }
+
+    /// A Nuage DB server, on the branch `branch` if one is given: it is made
+    /// from the main database the first time (instant, copy-on-write), for a
+    /// preview or a test.
+    #[cfg(feature = "nuage")]
+    async fn nuage_server(url: &str, token: Option<&str>, branch: Option<&str>) -> Result<Self> {
+        let mut builder = NuageDb::builder(url);
+        if let Some(token) = token {
+            builder = builder.token(token);
+        }
+        let db = builder.connect().await?;
+        let Some(branch) = branch else {
+            return Ok(Db::Nuage(db));
+        };
+        let exists = |list: Vec<memoire_orm::nuage::Branch>| list.iter().any(|b| b.name == branch);
+        // Another instance may have made it in the meantime.
+        if !exists(db.branches().await?)
+            && let Err(error) = db.create_branch(branch, None).await
+            && !exists(db.branches().await?)
+        {
+            return Err(error);
+        }
+        Ok(Db::Nuage(db.on_branch(branch)))
+    }
+
     /// The backend named by `url`, whether or not its feature is enabled.
     pub(crate) fn kind_of(url: &str) -> &'static str {
         let url = url.trim();
         let lower = url.to_ascii_lowercase();
         let scheme = lower.split_once("://").map(|(s, _)| s);
+        if nuage_folder(&lower).is_some() {
+            return "memory";
+        }
         match scheme {
             None if lower.is_empty() || lower == "memory" || lower == "memory:" => "memory",
             Some("memory") => "memory",
+            Some("http" | "https") => "nuage",
             Some("sqlite") => "sqlite",
             Some("postgres" | "postgresql") => "postgres",
             Some("mysql" | "mariadb") => "mysql",
@@ -181,8 +271,9 @@ impl Db {
         }
     }
 
-    /// The backend: `"memory"`, `"sqlite"`, `"postgres"`, `"mysql"`, `"redis"` or
-    /// `"mongodb"`.
+    /// The backend: `"memory"` (Nuage DB's local mode too), `"sqlite"`,
+    /// `"postgres"`, `"mysql"`, `"redis"`, `"mongodb"` or `"nuage"` (a Nuage DB
+    /// server).
     pub fn kind(&self) -> &'static str {
         match self {
             Db::Memory(_) => "memory",
@@ -196,8 +287,28 @@ impl Db {
             Db::Redis(_) => "redis",
             #[cfg(feature = "mongodb")]
             Db::Mongo(_) => "mongodb",
+            #[cfg(feature = "nuage")]
+            Db::Nuage(_) => "nuage",
         }
     }
+}
+
+/// The file of Nuage DB's local mode, in its folder.
+const LOCAL_FILE: &str = "app.memoire";
+
+/// The folder of `nuage:data` (or `nuage://data`), the local mode of Nuage DB.
+fn nuage_folder(url: &str) -> Option<&str> {
+    let lower = url.get(..6)?.to_ascii_lowercase();
+    if lower != "nuage:" {
+        return None;
+    }
+    let rest = &url[6..];
+    Some(rest.strip_prefix("//").unwrap_or(rest))
+}
+
+/// An environment variable that is set and not empty.
+pub(crate) fn env(name: &str) -> Option<String> {
+    std::env::var(name).ok().filter(|v| !v.trim().is_empty())
 }
 
 /// The file of `memory://path`: `None` for a database that is only in memory.
@@ -269,6 +380,13 @@ impl From<MongoDb> for Db {
     }
 }
 
+#[cfg(feature = "nuage")]
+impl From<NuageDb> for Db {
+    fn from(db: NuageDb) -> Self {
+        Db::Nuage(db)
+    }
+}
+
 impl Executor for Db {
     fn dialect(&self) -> Option<Dialect> {
         each!(self, Db, d => d.dialect())
@@ -306,6 +424,8 @@ impl Database for Db {
             Db::Redis(d) => DbTransaction::Redis(d.begin().await?),
             #[cfg(feature = "mongodb")]
             Db::Mongo(d) => DbTransaction::Mongo(d.begin().await?),
+            #[cfg(feature = "nuage")]
+            Db::Nuage(d) => DbTransaction::Nuage(d.begin().await?),
         })
     }
 }
@@ -352,6 +472,9 @@ pub enum DbTransaction {
     /// MongoDB.
     #[cfg(feature = "mongodb")]
     Mongo(MongoTransaction),
+    /// A Nuage DB server.
+    #[cfg(feature = "nuage")]
+    Nuage(NuageTransaction),
 }
 
 impl Executor for DbTransaction {
@@ -403,6 +526,60 @@ mod tests {
         assert_eq!(Db::kind_of("rediss://host:6379"), "redis");
         assert_eq!(Db::kind_of("mongodb+srv://cluster/db"), "mongodb");
         assert_eq!(Db::kind_of("ftp://nope"), "unknown");
+        assert_eq!(Db::kind_of("https://db.example.com"), "nuage");
+        assert_eq!(Db::kind_of("http://127.0.0.1:8080"), "nuage");
+        assert_eq!(Db::kind_of("nuage:data"), "memory");
+        assert_eq!(Db::kind_of("NUAGE://data"), "memory");
+        assert_eq!(nuage_folder("nuage:data"), Some("data"));
+        assert_eq!(nuage_folder("nuage:///srv/app"), Some("/srv/app"));
+        assert_eq!(nuage_folder("data"), None);
+    }
+
+    #[test]
+    fn nuage_local_mode_keeps_the_data_in_its_folder() {
+        use memoire_orm::Model;
+
+        #[derive(memoire_orm::Model, Clone, Debug)]
+        #[memoire(table = "notes")]
+        struct Note {
+            id: i64,
+            text: String,
+        }
+
+        let dir = std::env::temp_dir().join(format!("paquets-nuage-{}", std::process::id()));
+        let folder = dir.join("data");
+        memoire_orm::block_on(async {
+            let db = Db::nuage(folder.to_str().unwrap(), None).await.unwrap();
+            db.create_table_if_not_exists::<Note>().await.unwrap();
+            Note::insert_many(
+                &db,
+                &[Note {
+                    id: 1,
+                    text: "kept".into(),
+                }],
+            )
+            .await
+            .unwrap();
+            drop(db);
+
+            let db = Db::connect(&format!("nuage:{}", folder.display()))
+                .await
+                .unwrap();
+            db.create_table_if_not_exists::<Note>().await.unwrap();
+            assert_eq!(Note::get(&db, 1).await.unwrap().text, "kept");
+        });
+        assert!(folder.join(LOCAL_FILE).is_file());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(feature = "nuage")]
+    #[tokio::test]
+    async fn a_nuage_server_that_does_not_answer_is_an_error() {
+        assert!(
+            Db::nuage("http://127.0.0.1:9", Some("token"))
+                .await
+                .is_err()
+        );
     }
 
     #[test]

@@ -25,6 +25,7 @@ See [Command line tool](cli.md).
 | Choose the port | `app.port(8080);` |
 | Turn the request log off | `app.quiet();` |
 | Installable app, offline (PWA) | `app.pwa(Pwa::new("My app").theme_color("#6d4aff"));` |
+| Nuage DB: `data/` in development, `NUAGE_URL` in production | `app.nuage("data");` |
 | Choose the database | `app.database("sqlite://app.db");` or `app.database(Db::memory());` |
 | Change the shield | `app.security(paquets::shield().guard(...).build());` |
 | Turn the shield off | `app.security(None);` |
@@ -149,9 +150,14 @@ Theme classes: `.hero`, `.card`, `.grid`, `.row`, `.stack`, `.center`, `.muted`,
 
 ## Databases
 
+| `NUAGE_URL` (wins over `DATABASE_URL`) | Database |
+|---|---|
+| `https://my-nuage.herokuapp.com` + `NUAGE_TOKEN` | a Nuage DB server (feature `nuage`, default) |
+| `data` | Nuage DB's local mode, in the folder `data` |
+
 | `DATABASE_URL` | Database |
 |---|---|
-| not set, `memory` | in memory |
+| not set, `memory` | in memory, or the folder of `app.nuage(...)` |
 | `memory://app.memoire` | in memory, kept in a file |
 | `sqlite://app.db` | SQLite file |
 | `postgres://…` | PostgreSQL (Heroku Postgres) |
@@ -246,7 +252,9 @@ See [Testing](testing.md).
 | Variable | Effect |
 |---|---|
 | `PORT` | the port (default `3000`) |
-| `DATABASE_URL` | the database (default: memory) |
+| `NUAGE_URL`, `NUAGE_TOKEN` | Nuage DB: a server (`https://…`) or a folder |
+| `NUAGE_BRANCH` | a branch of the Nuage DB server (created if missing) |
+| `DATABASE_URL` | the database without `NUAGE_URL` (default: `app.nuage(...)`, then memory) |
 | `DYNO` | set by Heroku: client IP read from `X-Forwarded-For` |
 
 ## Deployment
@@ -255,7 +263,7 @@ See [Testing](testing.md).
 |---|---|
 | One-tap Heroku | `https://heroku.com/deploy?template=https://github.com/<you>/<repo>` |
 | Automatic Heroku deploys | GitHub secret `HEROKU_API_KEY`, variable `HEROKU_APP_NAME` (optional `HEROKU_REGION`) |
-| Database on Heroku | Resources → Heroku Postgres |
+| Database on Heroku | a [Nuage DB](nuage.md#deploy-a-nuage-db-server) app, then config vars `NUAGE_URL` and `NUAGE_TOKEN` (or Resources → Heroku Postgres) |
 | Redeploy by hand | Actions → Deploy to Heroku → Run workflow |
 | Docker | `docker build -t my-app . && docker run -p 8080:8080 my-app` |
 | Skip the automatic merge | name the branch `wip/...` |

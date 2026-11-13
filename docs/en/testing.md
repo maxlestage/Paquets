@@ -131,7 +131,7 @@ async fn creates_a_todo() {
 
 ## The database in tests
 
-Every call to `app().test()` gets a new, empty, in-memory database, whatever `DATABASE_URL` says. Tests never see each other's data, nor yours.
+Every call to `app().test()` gets a new, empty, in-memory database, whatever `NUAGE_URL`, `DATABASE_URL` or `app.nuage(...)` say. Tests never see each other's data, nor yours. To test against a copy of real data, give a test its own [Nuage DB branch](nuage.md#branches-for-previews-and-tests).
 
 To start from known data, add an `on_start` hook in the test:
 
