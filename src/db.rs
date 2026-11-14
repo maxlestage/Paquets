@@ -307,8 +307,9 @@ fn nuage_folder(url: &str) -> Option<&str> {
 }
 
 /// An environment variable that is set and not empty.
+/// A setting: the environment's, else the one of the project's `.env` (see [`crate::env`]).
 pub(crate) fn env(name: &str) -> Option<String> {
-    std::env::var(name).ok().filter(|v| !v.trim().is_empty())
+    crate::envfile::env(name)
 }
 
 /// The file of `memory://path`: `None` for a database that is only in memory.

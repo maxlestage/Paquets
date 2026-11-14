@@ -367,7 +367,7 @@ pub(crate) fn install(app: &mut vitesse::App, config: Auth) {
     let secret = config
         .secret
         .clone()
-        .or_else(|| std::env::var("APP_KEY").ok().filter(|k| !k.trim().is_empty()))
+        .or_else(|| crate::env("APP_KEY"))
         .unwrap_or_else(|| {
             eprintln!(
                 "📦 Paquets auth: no APP_KEY: a random key is used, so sessions and two-factor codes \
@@ -1024,9 +1024,7 @@ fn base_url(req: &Request, state: &AuthState) -> String {
     if let Some(url) = &state.config.url {
         return url.clone();
     }
-    if let Ok(url) = std::env::var("APP_URL")
-        && !url.trim().is_empty()
-    {
+    if let Some(url) = crate::env("APP_URL") {
         return url.trim().trim_end_matches('/').to_owned();
     }
     format!("{}://{}", req.protocol(), req.host().unwrap_or("localhost"))
