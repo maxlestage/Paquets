@@ -538,7 +538,7 @@ pub const EN: Texts = Texts {
         },
         PkgText {
             role: "Type-safe ORM",
-            text: "Async models and queries checked at compile time, relations and full-text search, on memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis and MongoDB.",
+            text: "Async models and queries checked at compile time, relations and full-text search, on Nuage DB, memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis and MongoDB.",
             figure: "databases, one API",
         },
         PkgText {
@@ -616,7 +616,7 @@ pub const EN: Texts = Texts {
         ),
         item(
             "Any database",
-            "In memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: set DATABASE_URL and keep the same code.",
+            "Nuage DB, memory, SQLite, PostgreSQL, MySQL/MariaDB, Redis or MongoDB: set NUAGE_URL or DATABASE_URL and keep the same code.",
         ),
         item(
             "Tables follow your models",
@@ -683,7 +683,7 @@ pub const EN: Texts = Texts {
             "WAF, rate limiting, CSRF and headers: the whole shield, per request.",
         ),
         item("island bundle", "Gzipped WebAssembly for a counter island."),
-        item("databases", "From in-memory to MongoDB, with a single ORM."),
+        item("databases", "From Nuage DB to MongoDB, with a single ORM."),
         item(
             "languages",
             "The documentation exists in English, French and Spanish.",
@@ -947,7 +947,7 @@ pub const FR: Texts = Texts {
         },
         PkgText {
             role: "ORM typé",
-            text: "Modèles et requêtes asynchrones vérifiés à la compilation, relations et recherche plein texte, en mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis et MongoDB.",
+            text: "Modèles et requêtes asynchrones vérifiés à la compilation, relations et recherche plein texte, sur Nuage DB, en mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis et MongoDB.",
             figure: "bases de données, une seule API",
         },
         PkgText {
@@ -1025,7 +1025,7 @@ pub const FR: Texts = Texts {
         ),
         item(
             "Toutes les bases",
-            "En mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : changez DATABASE_URL, gardez le même code.",
+            "Nuage DB, mémoire, SQLite, PostgreSQL, MySQL/MariaDB, Redis ou MongoDB : changez NUAGE_URL ou DATABASE_URL, gardez le même code.",
         ),
         item(
             "Les tables suivent les modèles",
@@ -1097,7 +1097,7 @@ pub const FR: Texts = Texts {
         ),
         item(
             "bases de données",
-            "De la mémoire à MongoDB, avec un seul ORM.",
+            "De Nuage DB à MongoDB, avec un seul ORM.",
         ),
         item(
             "langues",
@@ -1362,7 +1362,7 @@ pub const ES: Texts = Texts {
         },
         PkgText {
             role: "ORM con tipos",
-            text: "Modelos y consultas asíncronos comprobados al compilar, relaciones y búsqueda de texto completo, en memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis y MongoDB.",
+            text: "Modelos y consultas asíncronos comprobados al compilar, relaciones y búsqueda de texto completo, en Nuage DB, memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis y MongoDB.",
             figure: "bases de datos, una sola API",
         },
         PkgText {
@@ -1440,7 +1440,7 @@ pub const ES: Texts = Texts {
         ),
         item(
             "Cualquier base de datos",
-            "En memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis o MongoDB: cambia DATABASE_URL y conserva el mismo código.",
+            "Nuage DB, memoria, SQLite, PostgreSQL, MySQL/MariaDB, Redis o MongoDB: cambia NUAGE_URL o DATABASE_URL y conserva el mismo código.",
         ),
         item(
             "Las tablas siguen a los modelos",
@@ -1510,10 +1510,7 @@ pub const ES: Texts = Texts {
             "bundle de una isla",
             "WebAssembly comprimido con gzip para una isla contador.",
         ),
-        item(
-            "bases de datos",
-            "De la memoria a MongoDB, con un solo ORM.",
-        ),
+        item("bases de datos", "De Nuage DB a MongoDB, con un solo ORM."),
         item(
             "idiomas",
             "La documentación está en español, inglés y francés.",
