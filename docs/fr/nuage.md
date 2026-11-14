@@ -65,6 +65,8 @@ Ouvrez http://localhost:8080/admin pour la console et http://localhost:8080/app 
 
 ## Déployer un serveur Nuage DB
 
+Le serveur tourne partout : sur Heroku, sur un serveur, sur votre propre ordinateur (Linux, macOS, Windows), avec les sauvegardes où vous voulez. Une commande l'installe comme un service lancé avec l'ordinateur, avec sa clé, ses jetons et ses sauvegardes : `curl -fsSL https://raw.githubusercontent.com/maxlestage/Nuage/master/install.sh | sudo bash` (Windows : `irm https://raw.githubusercontent.com/maxlestage/Nuage/master/install.ps1 | iex`), ou `cargo install --locked --git https://github.com/maxlestage/Nuage nuage` (voir [Installer sur n'importe quel ordinateur](https://github.com/maxlestage/Nuage/blob/master/README.fr.md#installer-sur-nimporte-quel-ordinateur)).
+
 Le serveur est un seul programme, configuré par des variables d'environnement. Déployez-le une fois, à côté de vos applications :
 
 | Variable | Rôle |
@@ -72,6 +74,7 @@ Le serveur est un seul programme, configuré par des variables d'environnement. 
 | `PORT` | le port (défini par Heroku et la plupart des hébergeurs ; `8080` sinon) |
 | `NUAGE_TOKEN` | le jeton de l'API de la base : sans lui, l'API refuse toutes les requêtes |
 | `NUAGE_ADMIN_PASSWORD` | le mot de passe de `/admin` et `/app` : sans lui, la console est éteinte |
+| `NUAGE_ADMIN_TOKEN` | le jeton de gestion (`paquets nuage create`, `nuage apps create`) : crée les applications et leurs jetons ; 32 caractères au moins |
 | `NUAGE_DATA_DIR` | le dossier des données (`nuage-data` par défaut) |
 | `NUAGE_BACKUP_DIR` | sauvegardes dans un dossier |
 | `NUAGE_BACKUP_S3_BUCKET`, `_REGION`, `_ENDPOINT`, `_ACCESS_KEY_ID`, `_SECRET_ACCESS_KEY` | sauvegardes sur un stockage compatible S3 |
@@ -107,12 +110,25 @@ Servez le serveur en HTTPS (Heroku et la plupart des hébergeurs le font pour vo
 
 ## Connecter votre application
 
-Donnez à votre application l'adresse et le jeton du serveur. Sur Heroku : votre application → **Settings** → **Reveal Config Vars** :
+Chaque application a la sienne sur le serveur : une base à elle, ouverte par son propre jeton. Une commande la crée, dans le dossier du projet :
+
+```bash
+export NUAGE_URL=https://mon-nuage.herokuapp.com NUAGE_ADMIN_TOKEN=…   # le serveur, et son jeton de gestion
+paquets nuage create            # l'application prend le nom du paquet ; ou : paquets nuage create boutique
+#   📦 application `mon-app` created on https://mon-nuage.herokuapp.com, with its own database
+#   .env: NUAGE_URL and NUAGE_TOKEN written: `paquets dev` runs on it
+#   production: set the same two variables on your host, e.g. on Heroku:
+#   heroku config:set NUAGE_URL=https://mon-nuage.herokuapp.com NUAGE_TOKEN=nuage_…
+```
+
+`NUAGE_ADMIN_TOKEN` est celui du serveur (son fichier de réglages, ou ses Config Vars sur Heroku) : il ouvre toutes les applications du serveur, il reste donc dans votre terminal, jamais dans `.env` ni dans une application. `paquets nuage create --print` affiche les deux lignes au lieu de les écrire, `paquets nuage list` liste les applications. Sur l'ordinateur du serveur lui-même, `sudo nuage apps create mon-app` ne demande aucun jeton ; depuis Rust, `paquets::orm::NuageAdmin` fait de même (voir [le guide de Memoire](https://github.com/maxlestage/Memoire/blob/master/docs/fr/nuage.md#plusieurs-applications)).
+
+Donnez ensuite à votre application l'adresse et son jeton en production. Sur Heroku : votre application → **Settings** → **Reveal Config Vars** :
 
 | Config var | Valeur |
 |---|---|
 | `NUAGE_URL` | `https://mon-nuage.herokuapp.com` |
-| `NUAGE_TOKEN` | le `NUAGE_TOKEN` du serveur |
+| `NUAGE_TOKEN` | le jeton de l'application (`paquets nuage create`), ou le `NUAGE_TOKEN` du serveur pour sa première application |
 
 L'application redémarre, se connecte, vérifie le jeton et crée les tables de vos modèles. Si le serveur est injoignable ou refuse le jeton, l'application ne démarre pas et dit pourquoi. Le jeton ne fait jamais partie de l'URL, et la ligne de démarrage ne l'affiche jamais.
 
