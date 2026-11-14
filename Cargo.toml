@@ -1,6 +1,6 @@
 [package]
 name = "paquets"
-version = "0.3.3"
+version = "0.3.4"
 edition = "2024"
 rust-version = "1.95"
 description = "The simplest full-stack web framework for Rust: server, security, database, REST API, SEO pages and WebAssembly islands in one crate. Built on vitesse, securite, memoire-orm and active."
@@ -103,11 +103,11 @@ members = ["macros"]
 exclude = ["site"]
 
 [dependencies]
-paquets-macros = { version = "=0.3.3", path = "macros" }
+paquets-macros = { version = "=0.3.4", path = "macros" }
 # Each package is published on crates.io under the version below; the `git`
 # source is used while developing (and ignored by `cargo publish`).
 active = { version = "0.3", git = "https://github.com/maxlestage/Active" }
-memoire-orm = { version = "0.2.1", git = "https://github.com/maxlestage/Memoire", default-features = false, features = ["memory"] }
+memoire-orm = { version = "0.2.2", git = "https://github.com/maxlestage/Memoire", default-features = false, features = ["memory"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
@@ -120,6 +120,8 @@ pratique = { version = "0.2", git = "https://github.com/maxlestage/Securite" }
 # Keys derived from APP_KEY for `paquets::auth` (the versions securite already uses).
 hmac = "0.13"
 sha2 = "0.11"
+# The CSP hashes of a page's own styles (the version securite already uses).
+base64 = "0.23"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
 # IndexedDB, for `IndexedDbStorage` (feature `browser-storage`).

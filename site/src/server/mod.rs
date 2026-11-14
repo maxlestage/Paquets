@@ -185,12 +185,7 @@ fn search_index(site: &Site, req: &Request) -> Response {
     let Some(lang) = file.strip_suffix(".txt").and_then(Lang::parse) else {
         return not_found(site, req);
     };
-    let body: String = site
-        .docs
-        .search_index(lang)
-        .iter()
-        .map(|e| e.line())
-        .collect();
+    let body = site.docs.search_text(lang);
     Response::new()
         .header("content-type", "text/plain; charset=utf-8")
         .header("cache-control", "public, max-age=300")

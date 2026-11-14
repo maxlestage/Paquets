@@ -1,6 +1,7 @@
 //! Web pages: `active` views rendered on the server, with SEO tags, a default theme
 //! and a Content-Security-Policy that allows exactly what the page contains.
 
+use std::borrow::Cow;
 use std::sync::OnceLock;
 
 use active::{Document, Node, Prefetch, Seo};
@@ -10,6 +11,10 @@ use vitesse::{IntoResponse, Response, StatusCode, header};
 /// The default theme: readable typography, forms, buttons, tables, cards, light and
 /// dark modes. Remove it with [`Page::plain`].
 pub const THEME: &str = include_str!("theme.css");
+
+/// [`THEME`] in its `<style>` element, as every themed page writes it: written once,
+/// at compile time, instead of formatted again for each page.
+const THEME_TAG: &str = concat!("<style>", include_str!("theme.css"), "</style>");
 
 /// The browser bundle (`pkg/<name>.js` and `pkg/<name>_bg.wasm`), found by the
 /// app at startup. Pages that contain islands load it.
@@ -185,34 +190,51 @@ impl Page {
     /// (the theme, [`style`](Self::style), [`head`](Self::head), the islands loader).
     /// Nothing else inline can run, even if some HTML slipped into the body.
     fn render_with_policy(self) -> (String, String) {
-        let seo = Seo::new().title(self.title).merged(&self.seo);
-        let lang = self.lang;
-        let mut document = Document::new(self.body).lang(lang.clone()).seo(seo);
+        let mut seo = Seo::new().title(self.title);
+        seo.merge(&self.seo);
+        // The manifest's address depends on the language, given to the document below.
+        let pwa = crate::pwa::manifest().map(|m| (crate::pwa::manifest_url(&self.lang), m));
+        let mut document = Document::new(self.body).lang(self.lang).seo(seo);
+        // The sources of the policy: the hashes of what is written once for every page
+        // are borrowed, not copied.
         // `active` always writes this style for islands.
-        let mut styles = vec![cached(&ACTIVE_STYLE, || style_hash(ACTIVE_STYLE_CSS))];
-        let mut scripts = Vec::new();
-        let mut fonts = Vec::new();
+        let mut styles: Vec<Source> = vec![cached(&ACTIVE_STYLE, || style_hash(ACTIVE_STYLE_CSS))];
+        let mut scripts: Vec<Source> = Vec::new();
+        let mut fonts: Vec<Source> = Vec::new();
         if self.theme {
             styles.push(cached(&THEME_HASH, || style_hash(THEME)));
-            document = document.head(format!("<style>{THEME}</style>"));
+            document = document.head(THEME_TAG);
         }
         for css in self.styles {
-            let css = css.replace("</", "<\\/");
-            styles.push(style_hash(&css));
-            document = document.head(format!("<style>{css}</style>"));
+            let (tag, hash) = style_tag(&css);
+            styles.push(Source::Owned(hash));
+            document = document.head(tag);
         }
         for href in self.stylesheets {
             if let Some(origin) = crate::shield::origin_of(&href) {
                 if origin == "https://fonts.googleapis.com" {
-                    fonts.push("https://fonts.gstatic.com".to_owned());
+                    fonts.push(Source::Borrowed("https://fonts.gstatic.com"));
                 }
-                styles.push(origin);
+                styles.push(Source::Owned(origin));
             }
             document = document.stylesheet(href);
         }
         for html in self.head {
-            styles.extend(ContentSecurityPolicy::hashes_for_inline_styles(&html));
-            scripts.extend(ContentSecurityPolicy::hashes_for_inline_scripts(&html));
+            // Most of it has neither (an icon, a font preload): no search for nothing.
+            if has_tag(&html, b"<style") {
+                styles.extend(
+                    ContentSecurityPolicy::hashes_for_inline_styles(&html)
+                        .into_iter()
+                        .map(Source::Owned),
+                );
+            }
+            if has_tag(&html, b"<script") {
+                scripts.extend(
+                    ContentSecurityPolicy::hashes_for_inline_scripts(&html)
+                        .into_iter()
+                        .map(Source::Owned),
+                );
+            }
             document = document.head(html);
         }
         let speed = self.speed;
@@ -225,9 +247,9 @@ impl Page {
         if let Some(when) = speed.prerender {
             document = document.prerender(when);
         }
-        if let Some(manifest) = crate::pwa::manifest() {
+        if let Some((url, manifest)) = pwa {
             document = document
-                .manifest(&crate::pwa::manifest_url(&lang), manifest)
+                .manifest(&url, manifest)
                 .service_worker(crate::pwa::WORKER_URL);
             scripts.push(cached(&REGISTER_HASH, || {
                 let script = active::pwa::register_script(crate::pwa::WORKER_URL);
@@ -241,7 +263,7 @@ impl Page {
         if crate::ops::live_reload() {
             let (script, hash) = crate::ops::live_reload_script();
             document = document.head(format!("<script>{script}</script>"));
-            scripts.push(hash.clone());
+            scripts.push(Source::Borrowed(hash));
         }
         let mut html = document.render();
         // The hashes of what these options write inline, found by rendering an empty
@@ -276,19 +298,79 @@ impl Page {
             && let Some(at) = html.find("</head>")
         {
             html.insert_str(at, tags);
-            scripts.push(hash.clone());
+            scripts.push(Source::Borrowed(hash));
         }
-        let policy = format!(
-            "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'{}; style-src 'self'{}; \
-             style-src-attr 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'{}; \
-             connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; \
-             frame-ancestors 'none'",
-            sources(&scripts),
-            sources(&styles),
-            sources(&fonts),
-        );
-        (html, policy)
+        (html, policy(&scripts, &styles, &fonts))
     }
+}
+
+/// A source of the page's policy: a hash or an origin.
+type Source = Cow<'static, str>;
+
+/// The Content-Security-Policy of a page, written in one buffer.
+fn policy(scripts: &[Source], styles: &[Source], fonts: &[Source]) -> String {
+    let sources = scripts.iter().chain(styles).chain(fonts);
+    let mut out = String::with_capacity(POLICY_TEXT + sources.map(|s| s.len() + 1).sum::<usize>());
+    out.push_str("default-src 'self'; script-src 'self' 'wasm-unsafe-eval'");
+    push_sources(&mut out, scripts);
+    out.push_str("; style-src 'self'");
+    push_sources(&mut out, styles);
+    out.push_str("; style-src-attr 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'");
+    push_sources(&mut out, fonts);
+    out.push_str(
+        "; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; \
+         frame-ancestors 'none'",
+    );
+    out
+}
+
+/// The length of the policy without its hashes and origins.
+const POLICY_TEXT: usize = 256;
+
+fn push_sources(out: &mut String, list: &[Source]) {
+    for source in list {
+        out.push(' ');
+        out.push_str(source);
+    }
+}
+
+/// Whether `html` contains `open` (`<style`, `<script`), in any case: without it,
+/// [`ContentSecurityPolicy`] finds no inline code of that kind in `html`.
+fn has_tag(html: &str, open: &[u8]) -> bool {
+    html.as_bytes()
+        .windows(open.len())
+        .any(|w| w.eq_ignore_ascii_case(open))
+}
+
+/// The `<style>` element of `css`, which cannot close itself early (`</` is written
+/// `<\/`), and the `'sha256-…'` of its content: what
+/// [`ContentSecurityPolicy::hashes_for_inline_styles`] finds in that element, without
+/// searching the element for it again.
+fn style_tag(css: &str) -> (String, String) {
+    let mut tag = String::with_capacity(css.len() + 16);
+    tag.push_str("<style>");
+    let mut rest = css;
+    while let Some(at) = rest.find("</") {
+        tag.push_str(&rest[..at]);
+        tag.push_str("<\\/");
+        rest = &rest[at + 2..];
+    }
+    tag.push_str(rest);
+    let content = &tag["<style>".len()..];
+    let hash = sha256_source(content.as_bytes());
+    tag.push_str("</style>");
+    (tag, hash)
+}
+
+/// `'sha256-…'`: the CSP source of inline code whose content is `content`.
+fn sha256_source(content: &[u8]) -> String {
+    use base64::Engine;
+    use sha2::{Digest, Sha256};
+    let mut out = String::with_capacity(54);
+    out.push_str("'sha256-");
+    base64::engine::general_purpose::STANDARD.encode_string(Sha256::digest(content), &mut out);
+    out.push('\'');
+    out
 }
 
 const ACTIVE_STYLE_CSS: &str = "active-island{display:contents}";
@@ -305,8 +387,8 @@ static OPTION_HASHES: std::sync::Mutex<Vec<(String, Hashes)>> = std::sync::Mutex
 /// Adds to the page's policy what `option` writes inline, so that it runs and nothing
 /// else does.
 fn allow(
-    styles: &mut Vec<String>,
-    scripts: &mut Vec<String>,
+    styles: &mut Vec<Source>,
+    scripts: &mut Vec<Source>,
     key: String,
     option: impl FnOnce(Document) -> Document,
 ) {
@@ -327,15 +409,15 @@ fn allow(
     };
     for (list, hashes) in [(styles, style_hashes), (scripts, script_hashes)] {
         for hash in hashes {
-            if !list.contains(&hash) {
-                list.push(hash);
+            if !list.iter().any(|known| *known == hash) {
+                list.push(Source::Owned(hash));
             }
         }
     }
 }
 
-fn cached(cell: &'static OnceLock<String>, compute: impl FnOnce() -> String) -> String {
-    cell.get_or_init(compute).clone()
+fn cached(cell: &'static OnceLock<String>, compute: impl FnOnce() -> String) -> Source {
+    Source::Borrowed(cell.get_or_init(compute))
 }
 
 /// `'sha256-…'` of a `<style>` content.
@@ -343,14 +425,6 @@ fn style_hash(css: &str) -> String {
     ContentSecurityPolicy::hashes_for_inline_styles(&format!("<style>{css}</style>"))
         .pop()
         .unwrap_or_default()
-}
-
-fn sources(list: &[String]) -> String {
-    list.iter().fold(String::new(), |mut out, source| {
-        out.push(' ');
-        out.push_str(source);
-        out
-    })
 }
 
 /// The tags `active` writes to start the browser bundle (the module, the binary
@@ -446,6 +520,78 @@ mod tests {
         assert!(csp.contains("font-src 'self' https://fonts.gstatic.com"));
         assert!(csp.contains("style-src-attr 'unsafe-inline'"));
         assert!(csp.contains("frame-ancestors 'none'"));
+    }
+
+    #[test]
+    fn style_tags_are_hashed_as_securite_finds_them() {
+        for css in [
+            "",
+            "p{color:red}",
+            "a::after{content:\"</style><script>alert(1)</script>\"}",
+            "</STYLE></style</ </",
+            "é{content:\"✓\"}<<//",
+        ] {
+            let (tag, hash) = style_tag(css);
+            assert_eq!(
+                tag,
+                format!("<style>{}</style>", css.replace("</", "<\\/")),
+                "{css}"
+            );
+            assert_eq!(
+                ContentSecurityPolicy::hashes_for_inline_styles(&tag),
+                [hash],
+                "{css}"
+            );
+        }
+    }
+
+    #[test]
+    fn head_html_without_inline_code_is_not_searched() {
+        for html in [
+            r#"<link rel="icon" href="/favicon.svg"/>"#,
+            r#"<link rel="preload" href="/font.woff2" as="font"/><meta name="x" content="<s>"/>"#,
+            "<STYLE>p{}</STYLE><Script>x()</Script>",
+            "<style>p{}</style>",
+            "<script>x()</script>",
+            "",
+        ] {
+            let styles = ContentSecurityPolicy::hashes_for_inline_styles(html);
+            let scripts = ContentSecurityPolicy::hashes_for_inline_scripts(html);
+            assert!(has_tag(html, b"<style") || styles.is_empty(), "{html}");
+            assert!(has_tag(html, b"<script") || scripts.is_empty(), "{html}");
+            assert_eq!(has_tag(html, b"<style"), !styles.is_empty(), "{html}");
+            assert_eq!(has_tag(html, b"<script"), !scripts.is_empty(), "{html}");
+        }
+    }
+
+    #[test]
+    fn the_policy_lists_every_source_in_its_directive() {
+        let list = |items: &[&'static str]| {
+            items
+                .iter()
+                .map(|s| Source::Borrowed(*s))
+                .collect::<Vec<_>>()
+        };
+        for (scripts, styles, fonts) in [
+            (list(&[]), list(&[]), list(&[])),
+            (
+                list(&["'sha256-a'"]),
+                list(&["'sha256-b'", "https://fonts.googleapis.com"]),
+                list(&["https://fonts.gstatic.com"]),
+            ),
+        ] {
+            let join = |l: &[Source]| l.iter().map(|s| format!(" {s}")).collect::<String>();
+            let expected = format!(
+                "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'{}; style-src 'self'{}; \
+                 style-src-attr 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'{}; \
+                 connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; \
+                 frame-ancestors 'none'",
+                join(&scripts),
+                join(&styles),
+                join(&fonts),
+            );
+            assert_eq!(policy(&scripts, &styles, &fonts), expected);
+        }
     }
 
     #[test]
