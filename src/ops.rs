@@ -149,9 +149,7 @@ pub(crate) fn metrics(app: &mut vitesse::App, path: &str) {
 }
 
 fn metrics_allowed(req: &Request) -> bool {
-    if let Ok(token) = std::env::var("METRICS_TOKEN")
-        && !token.is_empty()
-    {
+    if let Some(token) = crate::env("METRICS_TOKEN") {
         let given = req
             .header("authorization")
             .and_then(|h| h.strip_prefix("Bearer "))

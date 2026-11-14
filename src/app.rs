@@ -734,7 +734,7 @@ impl App {
 
         let port = self
             .port
-            .or_else(|| std::env::var("PORT").ok()?.parse().ok())
+            .or_else(|| crate::env("PORT")?.trim().parse().ok())
             .unwrap_or(3000);
         if !testing && self.logs.get() != Some(&false) {
             let security = match guards {
