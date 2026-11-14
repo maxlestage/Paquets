@@ -3,6 +3,9 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
+
+use paquets::vitesse::Bytes;
 
 use super::markdown::{TocEntry, render};
 use crate::catalog::{self, CATEGORIES, PAGES};
@@ -22,6 +25,9 @@ pub struct Doc {
 
 pub struct Docs {
     pages: HashMap<(Lang, &'static str), Doc>,
+    /// The text of each language's search index, written at its first request: the
+    /// pages do not change while the server runs.
+    search_text: HashMap<Lang, OnceLock<Bytes>>,
 }
 
 /// Where the Markdown pages are: `DOCS_DIR`, else `../docs` next to this crate (a
@@ -73,7 +79,10 @@ impl Docs {
                 );
             }
         }
-        Docs { pages }
+        Docs {
+            pages,
+            search_text: Lang::ALL.map(|lang| (lang, OnceLock::new())).into(),
+        }
     }
 
     pub fn get(&self, lang: Lang, slug: &str) -> Option<&Doc> {
@@ -87,6 +96,23 @@ impl Docs {
             .iter()
             .filter(|((l, _), doc)| *l == lang && !doc.fallback)
             .count()
+    }
+
+    /// [`search_index`](Self::search_index) as the browser downloads it, one
+    /// [`Entry::line`] after the other.
+    pub fn search_text(&self, lang: Lang) -> Bytes {
+        let text = || {
+            Bytes::from(
+                self.search_index(lang)
+                    .iter()
+                    .map(Entry::line)
+                    .collect::<String>(),
+            )
+        };
+        match self.search_text.get(&lang) {
+            Some(cell) => cell.get_or_init(text).clone(),
+            None => text(),
+        }
     }
 
     /// The search index of `lang`: every page, then its headings, in reading order.
