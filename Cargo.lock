@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.3.0"
-source = "git+https://github.com/maxlestage/Active#dc77b2d0799f77e4a1651cb6c712bc2a92900550"
+source = "git+https://github.com/maxlestage/Active#e3d210dda33dae32d8bb07061fcb717b314423b9"
 dependencies = [
  "approx",
  "arrayvec",
@@ -2532,7 +2532,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#dd7941eb5be71dc2bff2e23148e397db11067cd8"
+source = "git+https://github.com/maxlestage/Securite#17e3bb781d1c6694b96d3c14c8211139209dea07"
 dependencies = [
  "vitesse",
 ]
@@ -3013,7 +3013,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#dd7941eb5be71dc2bff2e23148e397db11067cd8"
+source = "git+https://github.com/maxlestage/Securite#17e3bb781d1c6694b96d3c14c8211139209dea07"
 dependencies = [
  "aho-corasick",
  "argon2",
