@@ -8,6 +8,7 @@
 //! paquets make:model Post title:string --api   generators (model, api, page…)
 //! paquets routes          lists the routes of the app
 //! paquets db:migrate      runs the migrations
+//! paquets nuage create    a Nuage DB application, its NUAGE_URL and NUAGE_TOKEN in .env
 //! ```
 
 mod cli;
@@ -30,6 +31,9 @@ Usage:
   paquets db:migrate               run the pending migrations (app.migrate)
   paquets db:seed                  fill the database (app.seed)
 
+Nuage DB (a server: NUAGE_URL, and its management token NUAGE_ADMIN_TOKEN):
+{NUAGE}
+
 Generators (they write the code and wire it into src/main.rs):
 {MAKE}
   paquets help                     this help
@@ -43,6 +47,7 @@ Documentation: https://paquets-90dfc06b6fea.herokuapp.com/";
 
 fn help() -> String {
     HELP.replace("{MAKE}", cli::make::USAGE)
+        .replace("{NUAGE}", cli::nuage::USAGE)
 }
 
 fn main() -> ExitCode {
@@ -63,6 +68,7 @@ fn main() -> ExitCode {
         Some("routes") => cli::app_command("routes", &args[1..]),
         Some("db:migrate") => cli::app_command("migrate", &args[1..]),
         Some("db:seed") => cli::app_command("seed", &args[1..]),
+        Some("nuage") => cli::nuage::run(&args[1..]),
         Some(make) if make.starts_with("make:") => cli::make::run(make, &args[1..]),
         Some(other) => Err(format!(
             "unknown command `{other}`\n\nRun `paquets help` to see the commands."
