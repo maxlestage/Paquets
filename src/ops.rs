@@ -227,9 +227,11 @@ pub(crate) fn prometheus() -> String {
 
 // ----- Live reload -----------------------------------------------------------------
 
-/// Whether `paquets dev --watch` runs this server.
+/// Whether `paquets dev --watch` runs this server. Read once: every page asks, and
+/// `paquets dev` sets the variable before starting the process.
 pub(crate) fn live_reload() -> bool {
-    std::env::var_os(LIVE_RELOAD_VAR).is_some_and(|v| v != "0" && !v.is_empty())
+    static ON: OnceLock<bool> = OnceLock::new();
+    *ON.get_or_init(|| std::env::var_os(LIVE_RELOAD_VAR).is_some_and(|v| v != "0" && !v.is_empty()))
 }
 
 /// The identity of this run of the server: a new one after each restart.

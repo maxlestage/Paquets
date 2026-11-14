@@ -6,6 +6,29 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-11-14
+
+### Changed
+- Pages are rendered faster: 45% less time to render a typical page and build its
+  Content-Security-Policy (2.98 µs → 1.63 µs, median of 12 runs, for a themed page with an
+  icon in `<head>`, a `.style(...)` and a list in its body), and 17% less server CPU time per
+  `GET` of that page under load (20.6 µs → 17.0 µs per request, wrk with 128 connections,
+  server and load generator on separate cores, median of 15 runs). The HTML and the policy
+  are byte for byte the same:
+  - the `<style>` element of the theme is written once at compile time instead of being
+    formatted for each page;
+  - whether `paquets dev --watch` runs the server (`PAQUETS_LIVE_RELOAD`) is read once
+    instead of at every page;
+  - the policy is written in one buffer, and the hashes known at startup (the theme,
+    active's style, the service worker, the islands loader) are borrowed instead of copied;
+  - the hash of each `.style(...)` is computed directly from its content, without
+    searching the page element again;
+  - the HTML of `.head(...)` is only searched for inline code when it contains `<style` or
+    `<script` (an icon or a font preload has none).
+- memoire-orm 0.2.2 (it was 0.2.1), with a faster Nuage DB client.
+- Website: the search index of each language (`/search/{lang}.txt`) is written at its first
+  request and then served as is (about 390 µs → under 1 µs per request).
+
 ### Fixed
 - The islands bundle is loaded from versioned URLs (`/pkg/<name>.js?v=…` and
   `/pkg/<name>_bg.wasm?v=…`, a hash of both files): a browser or the service worker can no
