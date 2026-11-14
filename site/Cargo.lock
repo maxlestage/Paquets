@@ -815,7 +815,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.1"
-source = "git+https://github.com/maxlestage/Memoire#9df79169c05f5a0ab9f71b10c6c9509afdd4eafa"
+source = "git+https://github.com/maxlestage/Memoire#f08f87a2ac4f9e856a516c069cb4c919c5de58d9"
 dependencies = [
  "async-lock",
  "bytes",
@@ -845,7 +845,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.1"
-source = "git+https://github.com/maxlestage/Memoire#9df79169c05f5a0ab9f71b10c6c9509afdd4eafa"
+source = "git+https://github.com/maxlestage/Memoire#f08f87a2ac4f9e856a516c069cb4c919c5de58d9"
 dependencies = [
  "proc-macro2",
  "quote",
