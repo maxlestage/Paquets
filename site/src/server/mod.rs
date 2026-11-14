@@ -29,11 +29,19 @@ pub struct Site {
     pub css_version: String,
 }
 
-/// The `site/` folder: `SITE_DIR`, the current directory when it has `public/`, else
-/// the crate folder.
+/// The `site/` folder: `SITE_DIR` when it has `public/`, else the current directory when
+/// it has `public/`, else the crate folder.
+///
+/// `SITE_DIR` is relative to where the server starts (`SITE_DIR=site` in the Procfile):
+/// once [`run`] has moved into that folder, `site/public` no longer exists from there and
+/// the current directory is the site folder.
 pub fn site_dir() -> PathBuf {
-    if let Some(dir) = std::env::var_os("SITE_DIR") {
-        return PathBuf::from(dir);
+    resolve_site_dir(std::env::var_os("SITE_DIR").map(PathBuf::from))
+}
+
+fn resolve_site_dir(env: Option<PathBuf>) -> PathBuf {
+    if let Some(dir) = env.filter(|dir| dir.join("public").is_dir()) {
+        return dir;
     }
     if Path::new("public").is_dir() {
         return PathBuf::from(".");
@@ -57,7 +65,14 @@ impl Site {
 
     /// [`Site::load`] with the Markdown pages read from `docs_dir`.
     pub fn load_with_docs(live: bool, site_url: Option<String>, docs_dir: &Path) -> Site {
-        let css = std::fs::read(site_dir().join("public/site.css")).unwrap_or_default();
+        let path = site_dir().join("public/site.css");
+        let css = std::fs::read(&path).unwrap_or_else(|e| {
+            eprintln!(
+                "warning: {} unreadable ({e}): site.css?v= will not change",
+                path.display()
+            );
+            Vec::new()
+        });
         Site {
             docs: Docs::load(docs_dir),
             site_url: site_url
@@ -292,5 +307,25 @@ mod tests {
     fn versions_change_with_the_content() {
         assert_eq!(version(b"a").len(), 10);
         assert_ne!(version(b"a"), version(b"b"));
+    }
+
+    /// `run` moves into `SITE_DIR` (`site`) before reading the stylesheet: from there,
+    /// `site/public` does not exist and the current folder is the one served. The
+    /// version of an empty file (`cbf29ce484`) would never change between deployments.
+    #[test]
+    fn the_stylesheet_is_found_after_moving_into_the_site_folder() {
+        assert_eq!(resolve_site_dir(Some("site".into())), PathBuf::from("."));
+        assert_eq!(resolve_site_dir(None), PathBuf::from("."));
+        let parent =
+            Path::new("..").join(Path::new(env!("CARGO_MANIFEST_DIR")).file_name().unwrap());
+        assert_eq!(resolve_site_dir(Some(parent.clone())), parent);
+        let site = Site::load_with_docs(false, None, &docs::docs_dir());
+        assert_ne!(
+            site.css_version,
+            version(b""),
+            "public/site.css was not read"
+        );
+        let css = std::fs::read("public/site.css").unwrap();
+        assert_eq!(site.css_version, version(&css));
     }
 }

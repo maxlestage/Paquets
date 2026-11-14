@@ -6,6 +6,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The islands bundle is loaded from versioned URLs (`/pkg/<name>.js?v=…` and
+  `/pkg/<name>_bg.wasm?v=…`, a hash of both files): a browser or the service worker can no
+  longer start an old module with a new binary, or the reverse, after a deployment. The
+  service worker's version also follows the stylesheets and scripts of `public/`.
+
 ## [0.3.3] - 2026-11-13
 
 ### Added

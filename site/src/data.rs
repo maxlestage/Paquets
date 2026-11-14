@@ -62,7 +62,7 @@ pub const PACKAGES: [Package; 4] = [
         site: "https://memoire-7f4525f1fdaf.herokuapp.com/",
         glyph: "M",
         color: "#8b6dff",
-        figure: "6 DB",
+        figure: "7 DB",
         icon: "db",
     },
     Package {
@@ -298,7 +298,7 @@ pub const NUMBERS: [(f64, usize, &str, &str); 6] = [
     (3.29, 2, "", "M"),
     (6.0, 0, "≈ ", " µs"),
     (36.8, 1, "", " kB"),
-    (6.0, 0, "", ""),
+    (7.0, 0, "", ""),
     (3.0, 0, "", ""),
 ];
 

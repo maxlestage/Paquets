@@ -156,11 +156,15 @@ fn worker(
     if let Some((js, wasm)) = bundle {
         for url in [js, wasm] {
             precache.push(url.clone());
-            if let Ok(bytes) = std::fs::read(Path::new(url.trim_start_matches('/'))) {
+            let path = url.split('?').next().unwrap_or(url);
+            if let Ok(bytes) = std::fs::read(Path::new(path.trim_start_matches('/'))) {
                 fingerprint.push(bytes);
             }
         }
     }
+    // The stylesheets and scripts of `public/` too: a deployment that changes one of them
+    // installs a new worker, which drops the old caches.
+    public_assets(Path::new("public"), &mut fingerprint);
     // The worker saves a URL given twice only once.
     for icon in manifest.icons() {
         if icon.src.starts_with('/') {
@@ -176,6 +180,27 @@ fn worker(
         worker = worker.network_only(path.clone());
     }
     worker.to_js()
+}
+
+/// The content of every `.css` and `.js` file under `dir`, in a stable order.
+fn public_assets(dir: &Path, out: &mut Vec<Vec<u8>>) {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return;
+    };
+    let mut paths: Vec<_> = entries.filter_map(|e| Some(e.ok()?.path())).collect();
+    paths.sort();
+    for path in paths {
+        if path.is_dir() {
+            public_assets(&path, out);
+        } else if matches!(
+            path.extension().and_then(|e| e.to_str()),
+            Some("css" | "js")
+        ) && let Ok(bytes) = std::fs::read(&path)
+        {
+            out.push(path.to_string_lossy().into_owned().into_bytes());
+            out.push(bytes);
+        }
+    }
 }
 
 /// The start page as an absolute path (`./` or `.` is the root).
@@ -230,10 +255,13 @@ mod tests {
             Manifest::new("Todo")
                 .start_url("/demo")
                 .icon("/i.png", "192x192", "image/png");
-        let bundle = ("/pkg/app.js".to_owned(), "/pkg/app_bg.wasm".to_owned());
+        let bundle = (
+            "/pkg/app.js?v=0123456789".to_owned(),
+            "/pkg/app_bg.wasm?v=0123456789".to_owned(),
+        );
         let js = worker(&manifest, "{}", Some(&bundle), &["/api/todos".to_owned()]);
         assert!(
-            js.contains(r#"const PRECACHE = ["/demo","/pkg/app.js","/pkg/app_bg.wasm","/i.png"];"#)
+            js.contains(r#"const PRECACHE = ["/demo","/pkg/app.js?v=0123456789","/pkg/app_bg.wasm?v=0123456789","/i.png"];"#)
         );
         assert!(js.contains(r#"const NETWORK_ONLY = ["/api/todos"];"#));
         assert!(js.contains(r#"const OFFLINE = "/demo";"#));
