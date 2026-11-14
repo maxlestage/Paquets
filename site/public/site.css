@@ -5253,7 +5253,7 @@ button.doc-search kbd {
   /* On phones and tablets the bar always has its background: the page can never show
      through the logo, the search and the menu button, whatever the script does. */
   .nav {
-    background: rgba(7, 6, 13, 0.94);
+    background: rgb(7, 6, 13);
     border-bottom-color: var(--border);
     backdrop-filter: blur(18px) saturate(150%);
     -webkit-backdrop-filter: blur(18px) saturate(150%);
