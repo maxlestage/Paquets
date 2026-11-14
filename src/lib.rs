@@ -143,7 +143,7 @@ pub use shield::{default_shield, shield};
 #[cfg(not(target_arch = "wasm32"))]
 pub use active::pwa::Manifest as Pwa;
 
-/// The version of this crate, e.g. `"0.3.3"`.
+/// The version of this crate, e.g. `"0.3.4"`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Front end: views, state, SEO tags, islands ([active](https://active-c1883a966650.herokuapp.com/)).
