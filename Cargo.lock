@@ -2532,7 +2532,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#17e3bb781d1c6694b96d3c14c8211139209dea07"
+source = "git+https://github.com/maxlestage/Securite#7a4402c3973e4059c5d43768bef0b10aa9aaff0d"
 dependencies = [
  "vitesse",
 ]
@@ -3013,7 +3013,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#17e3bb781d1c6694b96d3c14c8211139209dea07"
+source = "git+https://github.com/maxlestage/Securite#7a4402c3973e4059c5d43768bef0b10aa9aaff0d"
 dependencies = [
  "aho-corasick",
  "argon2",
