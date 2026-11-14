@@ -114,6 +114,8 @@ mod db;
 #[cfg(not(target_arch = "wasm32"))]
 mod docs;
 #[cfg(not(target_arch = "wasm32"))]
+mod envfile;
+#[cfg(not(target_arch = "wasm32"))]
 mod error;
 #[cfg(not(target_arch = "wasm32"))]
 mod ops;
@@ -133,6 +135,8 @@ pub use db::{Db, DbTransaction};
 #[cfg(not(target_arch = "wasm32"))]
 pub use docs::RouteInfo;
 #[cfg(not(target_arch = "wasm32"))]
+pub use envfile::env;
+#[cfg(not(target_arch = "wasm32"))]
 pub use error::{Error, Result};
 #[cfg(not(target_arch = "wasm32"))]
 pub use page::{Page, THEME};
@@ -143,7 +147,7 @@ pub use shield::{default_shield, shield};
 #[cfg(not(target_arch = "wasm32"))]
 pub use active::pwa::Manifest as Pwa;
 
-/// The version of this crate, e.g. `"0.3.4"`.
+/// The version of this crate, e.g. `"0.3.5"`.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Front end: views, state, SEO tags, islands ([active](https://active-c1883a966650.herokuapp.com/)).

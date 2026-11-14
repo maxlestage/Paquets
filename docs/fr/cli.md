@@ -27,6 +27,8 @@ Voir [Installation](installation.md) pour Rust lui-même et les outils facultati
 | `paquets routes` | liste les routes de l'application (méthode, chemin, description) |
 | `paquets db:migrate` | exécute les migrations en attente (`app.migrate`) |
 | `paquets db:seed` | remplit la base de données (`app.seed`) |
+| `paquets nuage create [nom]` | crée l'application du projet sur un serveur Nuage DB (`NUAGE_URL`, `NUAGE_ADMIN_TOKEN`) et écrit son `NUAGE_URL` et son `NUAGE_TOKEN` dans `.env` ; le nom est celui du paquet par défaut (voir [Nuage DB](nuage.md#connecter-votre-application)) |
+| `paquets nuage list` | les applications du serveur Nuage DB |
 | `paquets make:*` | générateurs : `make:model`, `make:api`, `make:page`, `make:migration`, `make:test`, `make:auth`, `make:admin` (voir [Générateurs](generators.md)) |
 | `paquets build` | compilation release : les îlots dans `pkg/`, puis le serveur avec `cargo build --release` |
 | `paquets doctor` | vérifie Cargo, la cible `wasm32-unknown-unknown`, `wasm-bindgen-cli` et sa version, Git et Docker |
