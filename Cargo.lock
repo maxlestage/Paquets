@@ -1841,7 +1841,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.1"
-source = "git+https://github.com/maxlestage/Memoire#074fbde91836719241567643eb51dad141b370e3"
+source = "git+https://github.com/maxlestage/Memoire#f08f87a2ac4f9e856a516c069cb4c919c5de58d9"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -1879,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.1"
-source = "git+https://github.com/maxlestage/Memoire#074fbde91836719241567643eb51dad141b370e3"
+source = "git+https://github.com/maxlestage/Memoire#f08f87a2ac4f9e856a516c069cb4c919c5de58d9"
 dependencies = [
  "proc-macro2",
  "quote",
