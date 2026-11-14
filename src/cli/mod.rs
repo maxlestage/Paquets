@@ -4,6 +4,7 @@ pub mod build;
 pub mod doctor;
 pub mod make;
 pub mod new;
+pub mod nuage;
 mod tools;
 
 /// `paquets routes`, `paquets db:migrate`, `paquets db:seed`: runs the app with
