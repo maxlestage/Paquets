@@ -6,6 +6,27 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-11-14
+
+### Added
+- **`paquets nuage create [name] [description]`**: makes the app's application on a Nuage DB
+  server, a database of its own, through its management API (`NUAGE_URL`, and the server's
+  `NUAGE_ADMIN_TOKEN` in the environment), and writes its `NUAGE_URL` and `NUAGE_TOKEN` in
+  `.env`: the next `paquets dev` runs on it. The name is the package's by default; `--print`
+  shows the two lines instead; the answer gives the `heroku config:set` line for production.
+  A name already taken, a wrong token or a server without the API is said plainly.
+  `paquets nuage list` lists the applications.
+- **`.env`**: Paquets reads its settings (`NUAGE_URL`, `NUAGE_TOKEN`, `NUAGE_BRANCH`,
+  `DATABASE_URL`, `PORT`, `APP_KEY`, `APP_URL`, `METRICS_TOKEN`) from the environment, then
+  from a `.env` file in the folder the app runs in; a variable of the environment always
+  wins. `paquets::env("NAME")` reads the app's own settings the same way. Projects made by
+  `paquets new` keep `.env` out of Git and Docker images.
+
+### Changed
+- memoire-orm 0.2.3 (`NuageAdmin`, the client of Nuage DB's management API).
+- The Nuage DB guide: the server installs on any computer, and an app's application is made
+  with `paquets nuage create` rather than by hand in the console.
+
 ## [0.3.4] - 2026-11-14
 
 ### Changed

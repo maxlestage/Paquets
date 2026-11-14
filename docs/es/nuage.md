@@ -65,6 +65,8 @@ Abre http://localhost:8080/admin para la consola y http://localhost:8080/app par
 
 ## Desplegar un servidor Nuage DB
 
+El servidor funciona en cualquier sitio: en Heroku, en un servidor, en tu propio ordenador (Linux, macOS, Windows), con las copias de seguridad donde quieras. Un comando lo instala como un servicio que arranca con el ordenador, con su clave, sus tokens y sus copias: `curl -fsSL https://raw.githubusercontent.com/maxlestage/Nuage/master/install.sh | sudo bash` (Windows: `irm https://raw.githubusercontent.com/maxlestage/Nuage/master/install.ps1 | iex`), o `cargo install --locked --git https://github.com/maxlestage/Nuage nuage` (consulta [Instalar en cualquier ordenador](https://github.com/maxlestage/Nuage/blob/master/README.es.md#instalar-en-cualquier-ordenador)).
+
 El servidor es un solo programa configurado con variables de entorno. Despliégalo una vez, junto a tus aplicaciones:
 
 | Variable | Uso |
@@ -72,6 +74,7 @@ El servidor es un solo programa configurado con variables de entorno. Despliéga
 | `PORT` | el puerto (lo define Heroku y la mayoría de los proveedores; `8080` si no) |
 | `NUAGE_TOKEN` | el token de la API de la base: sin él, la API rechaza todas las peticiones |
 | `NUAGE_ADMIN_PASSWORD` | la contraseña de `/admin` y `/app`: sin ella, la consola está apagada |
+| `NUAGE_ADMIN_TOKEN` | el token de gestión (`paquets nuage create`, `nuage apps create`): crea las aplicaciones y sus tokens; 32 caracteres como mínimo |
 | `NUAGE_DATA_DIR` | la carpeta de los datos (`nuage-data` por defecto) |
 | `NUAGE_BACKUP_DIR` | copias de seguridad en una carpeta |
 | `NUAGE_BACKUP_S3_BUCKET`, `_REGION`, `_ENDPOINT`, `_ACCESS_KEY_ID`, `_SECRET_ACCESS_KEY` | copias de seguridad en un almacenamiento compatible con S3 |
@@ -107,12 +110,25 @@ Sirve el servidor por HTTPS (Heroku y la mayoría de los proveedores lo hacen po
 
 ## Conectar tu aplicación
 
-Dale a tu aplicación la dirección y el token del servidor. En Heroku: tu aplicación → **Settings** → **Reveal Config Vars**:
+Cada aplicación tiene la suya en el servidor: una base propia, abierta por su propio token. Un comando la crea, en la carpeta del proyecto:
+
+```bash
+export NUAGE_URL=https://mi-nuage.herokuapp.com NUAGE_ADMIN_TOKEN=…   # el servidor y su token de gestión
+paquets nuage create            # la aplicación toma el nombre del paquete; o: paquets nuage create tienda
+#   📦 application `mi-app` created on https://mi-nuage.herokuapp.com, with its own database
+#   .env: NUAGE_URL and NUAGE_TOKEN written: `paquets dev` runs on it
+#   production: set the same two variables on your host, e.g. on Heroku:
+#   heroku config:set NUAGE_URL=https://mi-nuage.herokuapp.com NUAGE_TOKEN=nuage_…
+```
+
+`NUAGE_ADMIN_TOKEN` es el del servidor (su archivo de ajustes, o sus Config Vars en Heroku): abre todas las aplicaciones del servidor, así que se queda en tu terminal, nunca en `.env` ni en una aplicación. `paquets nuage create --print` muestra las dos líneas en lugar de escribirlas, `paquets nuage list` lista las aplicaciones. En el propio ordenador del servidor, `sudo nuage apps create mi-app` no pide ningún token; desde Rust, `paquets::orm::NuageAdmin` hace lo mismo (consulta [la guía de Memoire](https://github.com/maxlestage/Memoire/blob/master/docs/es/nuage.md#varias-aplicaciones)).
+
+Después dale a tu aplicación la dirección y su token en producción. En Heroku: tu aplicación → **Settings** → **Reveal Config Vars**:
 
 | Config var | Valor |
 |---|---|
 | `NUAGE_URL` | `https://mi-nuage.herokuapp.com` |
-| `NUAGE_TOKEN` | el `NUAGE_TOKEN` del servidor |
+| `NUAGE_TOKEN` | el token de la aplicación (`paquets nuage create`), o el `NUAGE_TOKEN` del servidor para su primera aplicación |
 
 La aplicación se reinicia, se conecta, comprueba el token y crea las tablas de tus modelos. Si no se puede llegar al servidor o rechaza el token, la aplicación no arranca y dice por qué. El token nunca forma parte de la URL, y la línea de arranque nunca lo muestra.
 

@@ -21,7 +21,7 @@ PORT=8080 DATABASE_URL=sqlite://app.db paquets dev
 
 On Heroku, `PORT` is set for you, and `DATABASE_URL` too when you add the Heroku Postgres add-on; set `NUAGE_URL` and `NUAGE_TOKEN` yourself to use a Nuage DB server (see [Nuage DB](nuage.md#connect-your-app)). Your own variables go in **Settings → Config Vars** (see [Deploy to Heroku](deploy-heroku-mobile.md#settings-config-vars)). With Docker, pass them with `-e NAME=value` (see [Docker](deploy-docker.md)).
 
-Paquets doesn't read `.env` files. If you like them, the [`dotenvy`](https://crates.io/crates/dotenvy) crate loads one with a single call at the start of `main`.
+While you develop, Paquets also reads a **`.env` file** in the folder the app runs in: `KEY=value` lines (`#` comments, `export`, quotes). A variable of the environment always wins over the file, so in production the host's settings count; `paquets new` puts `.env` in `.gitignore` and `.dockerignore`, and `paquets nuage create` writes the `NUAGE_URL` and `NUAGE_TOKEN` of a new Nuage DB application there. Every setting of this page is read this way, and so is yours with `paquets::env("NAME")`; `std::env::var` sees the environment only.
 
 ## App settings
 
