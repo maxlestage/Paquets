@@ -208,10 +208,34 @@ section[id] {
   margin-top: 48px;
 }
 
-/* The two links of the Nuage DB section: its guide and its repository. */
+/* The two links of the Nuage DB section: its guide and its repository, side by side
+   when they fit, else one under the other. */
 .nuage__links {
   flex-wrap: wrap;
   gap: 16px;
+}
+
+.nuage__links .magnetic,
+.cta__actions .magnetic {
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  .nuage__links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nuage__links .magnetic__inner {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nuage__links .btn,
+  .cta__actions .btn {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 /* ----- Grain --------------------------------------------------------------- */
@@ -966,7 +990,7 @@ html.has-cursor .cursor {
 .nav--docs {
   padding-top: 11px;
   padding-bottom: 11px;
-  background: rgba(7, 6, 13, 0.68);
+  background: rgba(7, 6, 13, 0.94);
   backdrop-filter: blur(18px) saturate(150%);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   border-bottom-color: var(--border);
@@ -974,6 +998,31 @@ html.has-cursor .cursor {
 
 .nav--hidden {
   transform: translateY(-110%);
+}
+
+/* The background does not wait for the islands: if their script never runs (an old copy
+   in a cache, JavaScript off), the bar still turns opaque as soon as the page scrolls,
+   with a scroll-driven animation where the browser has them (small screens always have
+   a background, see "Responsive"). */
+@keyframes nav-solid {
+  to {
+    background: rgba(7, 6, 13, 0.94);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .nav:not(.nav--scrolled):not(.nav--docs) {
+    animation: nav-solid linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 60px;
+  }
+
+  html.menu-open .nav:not(.nav--scrolled):not(.nav--docs) {
+    animation: none;
+  }
 }
 
 html.menu-open .nav--hidden {
@@ -5201,6 +5250,15 @@ button.doc-search kbd {
     display: none;
   }
 
+  /* On phones and tablets the bar always has its background: the page can never show
+     through the logo, the search and the menu button, whatever the script does. */
+  .nav {
+    background: rgba(7, 6, 13, 0.94);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+
   .nav > .lang {
     margin-left: auto;
   }
@@ -5626,9 +5684,9 @@ button.doc-search kbd {
   }
 }
 
-/* Too narrow for the logo, the search, the languages and the menu on one line: the
-   languages stay in the menu. */
-@media (max-width: 413px) {
+/* On phones, the logo, the search and the menu button only: the languages are in the
+   menu. */
+@media (max-width: 600px) {
   .nav > .lang {
     display: none;
   }
