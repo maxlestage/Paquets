@@ -823,7 +823,9 @@ fn command() -> Option<String> {
         .filter(|c| !c.trim().is_empty())
 }
 
-/// `pkg/<name>.js` and `pkg/<name>_bg.wasm`, as written by `wasm-bindgen --target web`.
+/// `pkg/<name>.js` and `pkg/<name>_bg.wasm`, as written by `wasm-bindgen --target web`,
+/// with `?v=` and a hash of both files: each build has its own URLs, so a browser (or
+/// the service worker) never runs an old module with a new binary, or the reverse.
 fn find_bundle(dir: &Path) -> Option<(String, String)> {
     let mut names: Vec<String> = std::fs::read_dir(dir)
         .ok()?
@@ -832,9 +834,13 @@ fn find_bundle(dir: &Path) -> Option<(String, String)> {
     names.sort();
     names.iter().find_map(|name| {
         let stem = name.strip_suffix("_bg.wasm")?;
-        dir.join(format!("{stem}.js"))
-            .is_file()
-            .then(|| (format!("/pkg/{stem}.js"), format!("/pkg/{name}")))
+        let js = std::fs::read(dir.join(format!("{stem}.js"))).ok()?;
+        let wasm = std::fs::read(dir.join(name)).ok()?;
+        let v = active::pwa::version([js, wasm]);
+        Some((
+            format!("/pkg/{stem}.js?v={v}"),
+            format!("/pkg/{name}?v={v}"),
+        ))
     })
 }
 
@@ -917,10 +923,15 @@ mod tests {
         std::fs::write(dir.join("app_bg.wasm"), b"").unwrap();
         assert_eq!(find_bundle(&dir), None, "no JavaScript module yet");
         std::fs::write(dir.join("app.js"), b"").unwrap();
-        assert_eq!(
-            find_bundle(&dir),
-            Some(("/pkg/app.js".into(), "/pkg/app_bg.wasm".into()))
-        );
+        let (js, wasm) = find_bundle(&dir).unwrap();
+        let v = js.strip_prefix("/pkg/app.js?v=").unwrap().to_owned();
+        assert_eq!(v.len(), 10);
+        assert_eq!(wasm, format!("/pkg/app_bg.wasm?v={v}"));
+        // A new build (here, a new module) gets new URLs: both files at once.
+        std::fs::write(dir.join("app.js"), b"export default 1").unwrap();
+        let (js2, wasm2) = find_bundle(&dir).unwrap();
+        assert_ne!(js2, js);
+        assert_ne!(wasm2, wasm);
         std::fs::remove_dir_all(dir).unwrap();
     }
 
