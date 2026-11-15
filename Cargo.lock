@@ -1841,7 +1841,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#424b7a6e337493361aac34b9a5bc6a8910e79151"
+source = "git+https://github.com/maxlestage/Memoire#9849dc1e14f28d506042dfaf1d9637b0c857ed74"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -1879,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#424b7a6e337493361aac34b9a5bc6a8910e79151"
+source = "git+https://github.com/maxlestage/Memoire#9849dc1e14f28d506042dfaf1d9637b0c857ed74"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2533,7 +2533,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#fb5e901a2ae7ca5a0cb62fd0111d9bc6a07dd5c0"
+source = "git+https://github.com/maxlestage/Securite#02e1c478c88882bc22be304e919247ca4a012218"
 dependencies = [
  "vitesse",
 ]
@@ -3014,7 +3014,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#fb5e901a2ae7ca5a0cb62fd0111d9bc6a07dd5c0"
+source = "git+https://github.com/maxlestage/Securite#02e1c478c88882bc22be304e919247ca4a012218"
 dependencies = [
  "aho-corasick",
  "argon2",
@@ -3862,7 +3862,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vitesse"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Vitesse#5add751af03454ba4f6f2cc32235bcd76443aee3"
+source = "git+https://github.com/maxlestage/Vitesse#09f86f2017cd77bc5a0ac50d88f8bb9e3ace8f10"
 dependencies = [
  "brotli",
  "bytes",
