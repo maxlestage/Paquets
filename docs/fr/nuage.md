@@ -149,6 +149,35 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
+## Le stockage clé-valeur : un cache, des compteurs, des verrous
+
+À côté de sa base, votre app a un **stockage clé-valeur**, qui s'utilise comme Redis, sans rien installer. Les gestionnaires l'obtiennent avec `req.kv()` :
+
+```rust
+use std::time::Duration;
+use paquets::prelude::*;
+
+async fn tableau(req: Request) -> Result<String> {
+    let kv = req.kv();
+    // Un cache en un appel : lu, ou calculé et gardé cinq minutes.
+    let total: i64 = kv.remember("commandes:total", Duration::from_secs(300), || async {
+        Commande::count(req.db()).await.map(|n| n as i64)
+    }).await?;
+    // Un compteur avec sa fenêtre : une limite de débit en une étape.
+    let visites = kv.incr_by("visites:minute", 1, Some(Duration::from_secs(60))).await?;
+    // Un seul travailleur à la fois : un verrou qui se libère tout seul après 30 secondes.
+    if kv.set_if_absent("verrou:rapport", "moi", Some(Duration::from_secs(30))).await? {
+        // ... le travail ...
+        kv.delete("verrou:rapport").await?;
+    }
+    Ok(format!("{total} commandes, {visites} visites cette minute"))
+}
+```
+
+`get`, `get_string`, `set`, `set_for` (une expiration), `get_json` et `set_json`, `delete`, `exists`, `incr`, `expire`, `persist`, `ttl`, `keys(préfixe)` et `clear` font le reste.
+
+Sur un serveur Nuage DB (`NUAGE_URL=https://…`, un serveur 0.4.4 ou plus récent), c'est le stockage de l'application sur le serveur : toutes les instances de votre app le partagent, un verrou ou une limite de débit vaut donc pour toutes. Avec n'importe quelle autre base (le mode local, la mémoire, SQLite, PostgreSQL…), c'est un stockage dans la mémoire de l'app elle-même, avec les mêmes méthodes : le code est le même sur votre ordinateur et en production. Dans les deux cas c'est de la mémoire : un redémarrage le vide, et ce qui doit survivre va dans la base. Sur le serveur, `req.kv().nuage()` donne le `NuageKv` de Memoire, pour les commandes de Redis (`command`, `pipeline`).
+
 ## Des branches pour les aperçus et les tests
 
 Une branche est une copie de la base faite en un instant, quelle que soit sa taille : elle partage toutes les pages de sa parente et ne stocke que ses propres changements. Les changements ultérieurs de la base principale ne l'atteignent pas.

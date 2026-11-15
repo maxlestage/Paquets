@@ -149,6 +149,35 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
+## The key-value store: a cache, counters, locks
+
+Next to its database, your app has a **key-value store**, the way Redis is used, with nothing to install. Handlers get it with `req.kv()`:
+
+```rust
+use std::time::Duration;
+use paquets::prelude::*;
+
+async fn dashboard(req: Request) -> Result<String> {
+    let kv = req.kv();
+    // A cache in one call: read, or computed and kept five minutes.
+    let total: i64 = kv.remember("orders:total", Duration::from_secs(300), || async {
+        Order::count(req.db()).await.map(|n| n as i64)
+    }).await?;
+    // A counter with its window: a rate limit in one step.
+    let hits = kv.incr_by("hits:minute", 1, Some(Duration::from_secs(60))).await?;
+    // One worker at a time: a lock that frees itself after 30 seconds.
+    if kv.set_if_absent("lock:report", "me", Some(Duration::from_secs(30))).await? {
+        // ... the work ...
+        kv.delete("lock:report").await?;
+    }
+    Ok(format!("{total} orders, {hits} hits this minute"))
+}
+```
+
+`get`, `get_string`, `set`, `set_for` (an expiry), `get_json` and `set_json`, `delete`, `exists`, `incr`, `expire`, `persist`, `ttl`, `keys(prefix)` and `clear` do the rest.
+
+On a Nuage DB server (`NUAGE_URL=https://…`, a server of 0.4.4 or later), it is the application's store on the server: every instance of your app shares it, so a lock or a rate limit holds across all of them. With any other database (the local mode, memory, SQLite, PostgreSQL...), it is a store in the app's own memory, with the same methods: the code is the same on your laptop and in production. Either way it is memory: a restart empties it, and what must survive goes in the database. On the server, `req.kv().nuage()` gives Memoire's `NuageKv`, for the commands of Redis (`command`, `pipeline`).
+
 ## Branches for previews and tests
 
 A branch is a copy of the database made in an instant, whatever its size: it shares every page of its parent and only stores its own changes. Later changes of the main database don't reach it.
