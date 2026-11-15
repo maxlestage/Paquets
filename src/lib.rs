@@ -118,6 +118,8 @@ mod envfile;
 #[cfg(not(target_arch = "wasm32"))]
 mod error;
 #[cfg(not(target_arch = "wasm32"))]
+mod kv;
+#[cfg(not(target_arch = "wasm32"))]
 mod ops;
 #[cfg(not(target_arch = "wasm32"))]
 mod page;
@@ -138,6 +140,8 @@ pub use docs::RouteInfo;
 pub use envfile::env;
 #[cfg(not(target_arch = "wasm32"))]
 pub use error::{Error, Result};
+#[cfg(not(target_arch = "wasm32"))]
+pub use kv::Kv;
 #[cfg(not(target_arch = "wasm32"))]
 pub use page::{Page, THEME};
 #[cfg(not(target_arch = "wasm32"))]
@@ -222,7 +226,7 @@ pub mod prelude {
     #[cfg(not(target_arch = "wasm32"))]
     pub use crate::auth::AuthExt;
     #[cfg(not(target_arch = "wasm32"))]
-    pub use crate::{App, Db, Error, Page, Pwa, RequestExt, Result};
+    pub use crate::{App, Db, Error, Kv, Page, Pwa, RequestExt, Result};
     #[cfg(not(target_arch = "wasm32"))]
     pub use memoire_orm::{Migration, Migrator};
     #[cfg(not(target_arch = "wasm32"))]

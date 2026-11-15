@@ -149,6 +149,35 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
+## El almacén clave-valor: una caché, contadores, cerrojos
+
+Junto a su base, su app tiene un **almacén clave-valor**, que se usa como Redis, sin instalar nada. Los manejadores lo obtienen con `req.kv()`:
+
+```rust
+use std::time::Duration;
+use paquets::prelude::*;
+
+async fn panel(req: Request) -> Result<String> {
+    let kv = req.kv();
+    // Una caché en una llamada: leída, o calculada y guardada cinco minutos.
+    let total: i64 = kv.remember("pedidos:total", Duration::from_secs(300), || async {
+        Pedido::count(req.db()).await.map(|n| n as i64)
+    }).await?;
+    // Un contador con su ventana: un límite de peticiones en un paso.
+    let visitas = kv.incr_by("visitas:minuto", 1, Some(Duration::from_secs(60))).await?;
+    // Un solo trabajador a la vez: un cerrojo que se libera solo tras 30 segundos.
+    if kv.set_if_absent("cerrojo:informe", "yo", Some(Duration::from_secs(30))).await? {
+        // ... el trabajo ...
+        kv.delete("cerrojo:informe").await?;
+    }
+    Ok(format!("{total} pedidos, {visitas} visitas este minuto"))
+}
+```
+
+`get`, `get_string`, `set`, `set_for` (una caducidad), `get_json` y `set_json`, `delete`, `exists`, `incr`, `expire`, `persist`, `ttl`, `keys(prefijo)` y `clear` hacen el resto.
+
+En un servidor Nuage DB (`NUAGE_URL=https://…`, un servidor 0.4.4 o posterior), es el almacén de la aplicación en el servidor: todas las instancias de su app lo comparten, así que un cerrojo o un límite de peticiones vale para todas. Con cualquier otra base (el modo local, la memoria, SQLite, PostgreSQL…), es un almacén en la memoria de la propia app, con los mismos métodos: el código es el mismo en su ordenador y en producción. En ambos casos es memoria: un reinicio lo vacía, y lo que debe sobrevivir va en la base. En el servidor, `req.kv().nuage()` da el `NuageKv` de Memoire, para los comandos de Redis (`command`, `pipeline`).
+
 ## Ramas para previsualizaciones y pruebas
 
 Una rama es una copia de la base hecha en un instante, sea cual sea su tamaño: comparte todas las páginas de su madre y solo guarda sus propios cambios. Los cambios posteriores de la base principal no le llegan.

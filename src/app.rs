@@ -865,6 +865,22 @@ pub trait RequestExt {
     /// }
     /// ```
     fn db(&self) -> &'static Db;
+
+    /// The application's key-value store: a cache, sessions, counters, rate limits, locks,
+    /// the way Redis is used. On a Nuage DB server it is the application's store there,
+    /// shared by every instance of the app; otherwise a store in this process's memory,
+    /// with the same methods. See [`Kv`](crate::Kv).
+    ///
+    /// ```
+    /// use std::time::Duration;
+    /// use paquets::prelude::*;
+    ///
+    /// async fn hits(req: Request) -> Result<String> {
+    ///     let n = req.kv().incr_by("hits", 1, Some(Duration::from_secs(60))).await?;
+    ///     Ok(format!("{n} hits this minute"))
+    /// }
+    /// ```
+    fn kv(&self) -> crate::Kv;
 }
 
 impl RequestExt for Request {
@@ -873,6 +889,10 @@ impl RequestExt for Request {
             Some(handle) => handle.0,
             None => panic!("req.db() needs an app created with paquets::App"),
         }
+    }
+
+    fn kv(&self) -> crate::Kv {
+        crate::Kv::of(self.db())
     }
 }
 
