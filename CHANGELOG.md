@@ -6,17 +6,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.7] - 2026-11-15
+
+### Changed
+- `req.kv()`, `Kv` and the Nuage DB guide (`docs/*/nuage.md`) describe the key-value store by
+  what it does (a cache, sessions, counters, rate limits, locks) rather than by another
+  product's name. Nothing changes in the code.
+- memoire-orm 0.2.5.
+
 ## [0.3.6] - 2026-11-15
 
 ### Added
 - **`req.kv()`**, the app's key-value store ([`Kv`](https://docs.rs/paquets/latest/paquets/struct.Kv.html)):
-  a cache, sessions, counters, rate limits and locks, the way Redis is used, with nothing to
-  install. `get`, `get_string`, `set`, `set_for` (an expiry), `set_if_absent` (a lock),
+  a cache, sessions, counters, rate limits and locks, with nothing to install. `get`, `get_string`, `set`, `set_for` (an expiry), `set_if_absent` (a lock),
   `delete`, `exists`, `incr`, `incr_by` (with the window of a counter it creates: a rate
   limit in one step), `expire`, `persist`, `ttl`, `keys(prefix)`, `clear`, `get_json`,
   `set_json`, and `remember(key, ttl, || compute())`, a cache in one call. On a Nuage DB
   server (0.4.4 or later) it is the application's store on the server, shared by every
-  instance of the app (`kv.nuage()` gives Memoire's `NuageKv`, for the commands of Redis);
+  instance of the app (`kv.nuage()` gives Memoire's `NuageKv`, for commands by name);
   with any other database it is a store in the app's own memory, with the same methods.
   `Kv::of(&db)` and `Kv::in_memory()` (for a test) make one by hand.
 

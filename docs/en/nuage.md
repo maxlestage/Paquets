@@ -151,7 +151,7 @@ async fn main() -> std::io::Result<()> {
 
 ## The key-value store: a cache, counters, locks
 
-Next to its database, your app has a **key-value store**, the way Redis is used, with nothing to install. Handlers get it with `req.kv()`:
+Next to its database, your app has a **key-value store**, with nothing to install. Handlers get it with `req.kv()`:
 
 ```rust
 use std::time::Duration;
@@ -176,7 +176,7 @@ async fn dashboard(req: Request) -> Result<String> {
 
 `get`, `get_string`, `set`, `set_for` (an expiry), `get_json` and `set_json`, `delete`, `exists`, `incr`, `expire`, `persist`, `ttl`, `keys(prefix)` and `clear` do the rest.
 
-On a Nuage DB server (`NUAGE_URL=https://…`, a server of 0.4.4 or later), it is the application's store on the server: every instance of your app shares it, so a lock or a rate limit holds across all of them. With any other database (the local mode, memory, SQLite, PostgreSQL...), it is a store in the app's own memory, with the same methods: the code is the same on your laptop and in production. Either way it is memory: a restart empties it, and what must survive goes in the database. On the server, `req.kv().nuage()` gives Memoire's `NuageKv`, for the commands of Redis (`command`, `pipeline`).
+On a Nuage DB server (`NUAGE_URL=https://…`, a server of 0.4.4 or later), it is the application's store on the server: every instance of your app shares it, so a lock or a rate limit holds across all of them. With any other database (the local mode, memory, SQLite, PostgreSQL...), it is a store in the app's own memory, with the same methods: the code is the same on your laptop and in production. Either way it is memory: a restart empties it, and what must survive goes in the database. On the server, `req.kv().nuage()` gives Memoire's `NuageKv`, for commands by name and several in one round trip (`command`, `pipeline`).
 
 ## Branches for previews and tests
 
