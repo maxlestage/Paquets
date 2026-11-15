@@ -866,8 +866,8 @@ pub trait RequestExt {
     /// ```
     fn db(&self) -> &'static Db;
 
-    /// The application's key-value store: a cache, sessions, counters, rate limits, locks,
-    /// the way Redis is used. On a Nuage DB server it is the application's store there,
+    /// The application's key-value store: a cache, sessions, counters, rate limits, locks.
+    /// On a Nuage DB server it is the application's store there,
     /// shared by every instance of the app; otherwise a store in this process's memory,
     /// with the same methods. See [`Kv`](crate::Kv).
     ///

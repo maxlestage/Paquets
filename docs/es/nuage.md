@@ -151,7 +151,7 @@ async fn main() -> std::io::Result<()> {
 
 ## El almacén clave-valor: una caché, contadores, cerrojos
 
-Junto a su base, su app tiene un **almacén clave-valor**, que se usa como Redis, sin instalar nada. Los manejadores lo obtienen con `req.kv()`:
+Junto a su base, su app tiene un **almacén clave-valor**, sin instalar nada. Los manejadores lo obtienen con `req.kv()`:
 
 ```rust
 use std::time::Duration;
@@ -176,7 +176,7 @@ async fn panel(req: Request) -> Result<String> {
 
 `get`, `get_string`, `set`, `set_for` (una caducidad), `get_json` y `set_json`, `delete`, `exists`, `incr`, `expire`, `persist`, `ttl`, `keys(prefijo)` y `clear` hacen el resto.
 
-En un servidor Nuage DB (`NUAGE_URL=https://…`, un servidor 0.4.4 o posterior), es el almacén de la aplicación en el servidor: todas las instancias de su app lo comparten, así que un cerrojo o un límite de peticiones vale para todas. Con cualquier otra base (el modo local, la memoria, SQLite, PostgreSQL…), es un almacén en la memoria de la propia app, con los mismos métodos: el código es el mismo en su ordenador y en producción. En ambos casos es memoria: un reinicio lo vacía, y lo que debe sobrevivir va en la base. En el servidor, `req.kv().nuage()` da el `NuageKv` de Memoire, para los comandos de Redis (`command`, `pipeline`).
+En un servidor Nuage DB (`NUAGE_URL=https://…`, un servidor 0.4.4 o posterior), es el almacén de la aplicación en el servidor: todas las instancias de su app lo comparten, así que un cerrojo o un límite de peticiones vale para todas. Con cualquier otra base (el modo local, la memoria, SQLite, PostgreSQL…), es un almacén en la memoria de la propia app, con los mismos métodos: el código es el mismo en su ordenador y en producción. En ambos casos es memoria: un reinicio lo vacía, y lo que debe sobrevivir va en la base. En el servidor, `req.kv().nuage()` da el `NuageKv` de Memoire, para los comandos por su nombre y varios en un viaje (`command`, `pipeline`).
 
 ## Ramas para previsualizaciones y pruebas
 
