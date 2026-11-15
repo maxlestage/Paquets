@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.3.0"
-source = "git+https://github.com/maxlestage/Active#b2d816bd1d354d3f52fbd2c68893f4c464acdeee"
+source = "git+https://github.com/maxlestage/Active#4ae4c2c9a11f92804e6f0bf045a2d52d354ee0eb"
 dependencies = [
  "approx",
  "arrayvec",
@@ -815,7 +815,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#9849dc1e14f28d506042dfaf1d9637b0c857ed74"
+source = "git+https://github.com/maxlestage/Memoire#41967f0d11dd1f470b15ee6af7e564925e522a9b"
 dependencies = [
  "async-lock",
  "bytes",
@@ -846,7 +846,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#9849dc1e14f28d506042dfaf1d9637b0c857ed74"
+source = "git+https://github.com/maxlestage/Memoire#41967f0d11dd1f470b15ee6af7e564925e522a9b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1215,7 +1215,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#02e1c478c88882bc22be304e919247ca4a012218"
+source = "git+https://github.com/maxlestage/Securite#c4b3805fc08c754871cf20870cf0704e42ae3270"
 dependencies = [
  "vitesse",
 ]
@@ -1447,7 +1447,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#02e1c478c88882bc22be304e919247ca4a012218"
+source = "git+https://github.com/maxlestage/Securite#c4b3805fc08c754871cf20870cf0704e42ae3270"
 dependencies = [
  "aho-corasick",
  "argon2",
