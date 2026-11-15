@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.3.0"
-source = "git+https://github.com/maxlestage/Active#46aed67d44bcb9337d2f53e6c55aa82403e0ee4f"
+source = "git+https://github.com/maxlestage/Active#b4993f5181516b47f283e117e5871c6c3117b145"
 dependencies = [
  "approx",
  "arrayvec",
@@ -815,7 +815,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#4031e15a0abab797c3607075147a2027a737696f"
+source = "git+https://github.com/maxlestage/Memoire#12ac3aa74048d977fcdbbb8824a2e8891c905f06"
 dependencies = [
  "async-lock",
  "bytes",
@@ -846,7 +846,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#4031e15a0abab797c3607075147a2027a737696f"
+source = "git+https://github.com/maxlestage/Memoire#12ac3aa74048d977fcdbbb8824a2e8891c905f06"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1215,7 +1215,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#d4293611af06a74e54c9e18c20a3d4830e08055c"
+source = "git+https://github.com/maxlestage/Securite#7dc345dff6e92c3bc2f852c5dcf64e2dc9ba4308"
 dependencies = [
  "vitesse",
 ]
@@ -1447,7 +1447,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#d4293611af06a74e54c9e18c20a3d4830e08055c"
+source = "git+https://github.com/maxlestage/Securite#7dc345dff6e92c3bc2f852c5dcf64e2dc9ba4308"
 dependencies = [
  "aho-corasick",
  "argon2",
@@ -1964,7 +1964,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vitesse"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Vitesse#fff62f5b134ac6ee63ee3549aea03ac25b52b7d5"
+source = "git+https://github.com/maxlestage/Vitesse#c1e4b61e53af6b338133a166ecae096a1bd1199b"
 dependencies = [
  "bytes",
  "form_urlencoded",
