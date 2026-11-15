@@ -151,7 +151,7 @@ async fn main() -> std::io::Result<()> {
 
 ## Le stockage clé-valeur : un cache, des compteurs, des verrous
 
-À côté de sa base, votre app a un **stockage clé-valeur**, qui s'utilise comme Redis, sans rien installer. Les gestionnaires l'obtiennent avec `req.kv()` :
+À côté de sa base, votre app a un **stockage clé-valeur**, sans rien installer. Les gestionnaires l'obtiennent avec `req.kv()` :
 
 ```rust
 use std::time::Duration;
@@ -176,7 +176,7 @@ async fn tableau(req: Request) -> Result<String> {
 
 `get`, `get_string`, `set`, `set_for` (une expiration), `get_json` et `set_json`, `delete`, `exists`, `incr`, `expire`, `persist`, `ttl`, `keys(préfixe)` et `clear` font le reste.
 
-Sur un serveur Nuage DB (`NUAGE_URL=https://…`, un serveur 0.4.4 ou plus récent), c'est le stockage de l'application sur le serveur : toutes les instances de votre app le partagent, un verrou ou une limite de débit vaut donc pour toutes. Avec n'importe quelle autre base (le mode local, la mémoire, SQLite, PostgreSQL…), c'est un stockage dans la mémoire de l'app elle-même, avec les mêmes méthodes : le code est le même sur votre ordinateur et en production. Dans les deux cas c'est de la mémoire : un redémarrage le vide, et ce qui doit survivre va dans la base. Sur le serveur, `req.kv().nuage()` donne le `NuageKv` de Memoire, pour les commandes de Redis (`command`, `pipeline`).
+Sur un serveur Nuage DB (`NUAGE_URL=https://…`, un serveur 0.4.4 ou plus récent), c'est le stockage de l'application sur le serveur : toutes les instances de votre app le partagent, un verrou ou une limite de débit vaut donc pour toutes. Avec n'importe quelle autre base (le mode local, la mémoire, SQLite, PostgreSQL…), c'est un stockage dans la mémoire de l'app elle-même, avec les mêmes méthodes : le code est le même sur votre ordinateur et en production. Dans les deux cas c'est de la mémoire : un redémarrage le vide, et ce qui doit survivre va dans la base. Sur le serveur, `req.kv().nuage()` donne le `NuageKv` de Memoire, pour les commandes par leur nom et plusieurs en un aller-retour (`command`, `pipeline`).
 
 ## Des branches pour les aperçus et les tests
 

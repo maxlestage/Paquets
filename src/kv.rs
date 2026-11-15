@@ -9,8 +9,7 @@ use memoire_orm::{Error, Result};
 /// Memory of the store of this process: past it, the keys that expired go, then others.
 const LOCAL_MAX_BYTES: usize = 64 << 20;
 
-/// The key-value store: a cache, sessions, counters, rate limits and locks, the way Redis
-/// is used.
+/// The key-value store: a cache, sessions, counters, rate limits and locks.
 ///
 /// Handlers get it with [`req.kv()`](crate::RequestExt::kv):
 ///
@@ -160,8 +159,8 @@ impl Kv {
         }
     }
 
-    /// The store on the Nuage DB server, for what only it does (`command`, `pipeline`: the
-    /// commands of Redis); `None` for the store of this process.
+    /// The store on the Nuage DB server, for what only it does (`command`, `pipeline`:
+    /// commands by name, several in one round trip); `None` for the store of this process.
     #[cfg(feature = "nuage")]
     pub fn nuage(&self) -> Option<&memoire_orm::NuageKv> {
         match &self.0 {
