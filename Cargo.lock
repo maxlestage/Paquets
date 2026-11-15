@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "active"
 version = "0.3.0"
-source = "git+https://github.com/maxlestage/Active#4ae4c2c9a11f92804e6f0bf045a2d52d354ee0eb"
+source = "git+https://github.com/maxlestage/Active#437639f40035c27629dd4db3b44645a6e27cb999"
 dependencies = [
  "approx",
  "arrayvec",
@@ -269,9 +269,9 @@ dependencies = [
 
 [[package]]
 name = "brotli"
-version = "9.1.2"
+version = "9.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05e0144f854f7cfbc157229554c4a9580b8a653448e2bab608022ee0398a07dc"
+checksum = "9071f285ed78f04f37d675abaaef5de7689e2f30a216c8dc6795465d81910a13"
 dependencies = [
  "alloc-no-stdlib",
  "alloc-stdlib",
@@ -280,9 +280,9 @@ dependencies = [
 
 [[package]]
 name = "brotli-decompressor"
-version = "6.3.1"
+version = "6.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75c74c9c51b9140663e196b5fb88bc94c334d7a497c8311cb759d8557874747f"
+checksum = "cc031cd87c6529082b0b65c604e86af0ed7744841b17ccfe60b1e31fa606179e"
 dependencies = [
  "alloc-no-stdlib",
  "alloc-stdlib",
@@ -1841,7 +1841,7 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 [[package]]
 name = "memoire-orm"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#06e2ad9bad565dfaa9495cc64ec0817575a669d5"
+source = "git+https://github.com/maxlestage/Memoire#a12e2be3cdb6ee7071427b6a16598aac5a7ae5bf"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -1879,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "memoire-orm-derive"
 version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#06e2ad9bad565dfaa9495cc64ec0817575a669d5"
+source = "git+https://github.com/maxlestage/Memoire#a12e2be3cdb6ee7071427b6a16598aac5a7ae5bf"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2533,7 +2533,7 @@ dependencies = [
 [[package]]
 name = "pratique"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#3850a5f12d0e6e0ee98db4c6fbff30c4f733930e"
+source = "git+https://github.com/maxlestage/Securite#ac9f0a1708a932599e9c7aa271410d1259a4647c"
 dependencies = [
  "vitesse",
 ]
@@ -3014,7 +3014,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 [[package]]
 name = "securite"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#3850a5f12d0e6e0ee98db4c6fbff30c4f733930e"
+source = "git+https://github.com/maxlestage/Securite#ac9f0a1708a932599e9c7aa271410d1259a4647c"
 dependencies = [
  "aho-corasick",
  "argon2",
