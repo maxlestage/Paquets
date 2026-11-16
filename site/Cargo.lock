@@ -4,8 +4,8 @@ version = 4
 
 [[package]]
 name = "active"
-version = "0.3.0"
-source = "git+https://github.com/maxlestage/Active#b4993f5181516b47f283e117e5871c6c3117b145"
+version = "0.3.1"
+source = "git+https://github.com/maxlestage/Active#d7803665f09a820c847ec2d309e097cdf362c386"
 dependencies = [
  "approx",
  "arrayvec",
@@ -382,7 +382,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e35d6e78f4cebb90e51d543db8fe41528851d6deeef6ef21ebd4bfdc1e784776"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -814,8 +814,8 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "memoire-orm"
-version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#12ac3aa74048d977fcdbbb8824a2e8891c905f06"
+version = "0.2.6"
+source = "git+https://github.com/maxlestage/Memoire#5f90686efa5f701006d5df08a18a8711213fd358"
 dependencies = [
  "async-lock",
  "bytes",
@@ -845,8 +845,8 @@ dependencies = [
 
 [[package]]
 name = "memoire-orm-derive"
-version = "0.2.5"
-source = "git+https://github.com/maxlestage/Memoire#12ac3aa74048d977fcdbbb8824a2e8891c905f06"
+version = "0.2.6"
+source = "git+https://github.com/maxlestage/Memoire#5f90686efa5f701006d5df08a18a8711213fd358"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1000,7 +1000,7 @@ dependencies = [
 
 [[package]]
 name = "paquets"
-version = "0.3.7"
+version = "0.3.8"
 dependencies = [
  "active",
  "base64 0.23.1",
@@ -1018,7 +1018,7 @@ dependencies = [
 
 [[package]]
 name = "paquets-macros"
-version = "0.3.7"
+version = "0.3.8"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1214,8 +1214,8 @@ dependencies = [
 
 [[package]]
 name = "pratique"
-version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#7dc345dff6e92c3bc2f852c5dcf64e2dc9ba4308"
+version = "0.2.1"
+source = "git+https://github.com/maxlestage/Securite#0bd114d23e52c203eaca3b5e4dbb01327744c1ac"
 dependencies = [
  "vitesse",
 ]
@@ -1446,8 +1446,8 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "securite"
-version = "0.2.0"
-source = "git+https://github.com/maxlestage/Securite#7dc345dff6e92c3bc2f852c5dcf64e2dc9ba4308"
+version = "0.2.1"
+source = "git+https://github.com/maxlestage/Securite#0bd114d23e52c203eaca3b5e4dbb01327744c1ac"
 dependencies = [
  "aho-corasick",
  "argon2",
@@ -1964,7 +1964,7 @@ checksum = "accd4ea62f7bb7a82fe23066fb0957d48ef677f6eeb8215f372f52e48bb32426"
 [[package]]
 name = "vitesse"
 version = "0.2.0"
-source = "git+https://github.com/maxlestage/Vitesse#c1e4b61e53af6b338133a166ecae096a1bd1199b"
+source = "git+https://github.com/maxlestage/Vitesse#bf62240d748c9f982ac679c5eb9d5cc151a9e3e0"
 dependencies = [
  "bytes",
  "form_urlencoded",
