@@ -1,6 +1,7 @@
 //! The key-value store of an app: see [`Kv`].
 
 use std::collections::HashMap;
+use std::io::Write as _;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
@@ -71,16 +72,20 @@ struct Entries {
 }
 
 impl Entries {
-    /// The entry of `key`, unless its time has come.
-    fn alive(&mut self, key: &str) -> Option<&mut (Vec<u8>, Option<Instant>)> {
-        if self
-            .map
-            .get(key)
-            .is_some_and(|(_, at)| at.is_some_and(|at| at <= Instant::now()))
-        {
-            self.remove(key);
+    /// `f` of the entry of `key`, unless its time has come (the entry then goes): one
+    /// lookup for a key that is alive or missing.
+    fn alive_with<T>(
+        &mut self,
+        key: &str,
+        f: impl FnOnce(&mut (Vec<u8>, Option<Instant>)) -> T,
+    ) -> Option<T> {
+        match self.map.get_mut(key) {
+            Some(entry) if entry.1.is_none_or(|at| at > Instant::now()) => return Some(f(entry)),
+            Some(_) => {}
+            None => return None,
         }
-        self.map.get_mut(key)
+        self.remove(key);
+        None
     }
 
     fn remove(&mut self, key: &str) -> bool {
@@ -93,10 +98,23 @@ impl Entries {
         }
     }
 
+    /// Writes `value` under `key`: in place when the key exists (its `String` is kept).
     fn write(&mut self, key: &str, value: Vec<u8>, expires: Option<Instant>) {
-        self.remove(key);
-        self.bytes += key.len() + value.len();
-        self.map.insert(key.to_owned(), (value, expires));
+        match self.map.get_mut(key) {
+            Some(entry) => {
+                self.bytes = self.bytes - entry.0.len() + value.len();
+                *entry = (value, expires);
+            }
+            None => {
+                self.bytes += key.len() + value.len();
+                self.map.insert(key.to_owned(), (value, expires));
+            }
+        }
+        self.shrink(key);
+    }
+
+    /// Past [`LOCAL_MAX_BYTES`], the keys that expired go, then others (never `key`).
+    fn shrink(&mut self, key: &str) {
         if self.bytes > LOCAL_MAX_BYTES {
             let now = Instant::now();
             let expired: Vec<String> = self
@@ -172,7 +190,7 @@ impl Kv {
     /// The value of `key`; `None` when there is none (or it expired).
     pub async fn get(&self, key: &str) -> Result<Option<Vec<u8>>> {
         match &self.0 {
-            Inner::Local(l) => Ok(l.with(|e| e.alive(key).map(|(v, _)| v.clone()))),
+            Inner::Local(l) => Ok(l.with(|e| e.alive_with(key, |(v, _)| v.clone()))),
             #[cfg(feature = "nuage")]
             Inner::Nuage(kv) => kv.get(key).await,
         }
@@ -222,7 +240,7 @@ impl Kv {
     ) -> Result<bool> {
         match &self.0 {
             Inner::Local(l) => Ok(l.with(|e| {
-                if e.alive(key).is_some() {
+                if e.alive_with(key, |_| ()).is_some() {
                     return false;
                 }
                 e.write(key, value.as_ref().to_vec(), ttl.and_then(after));
@@ -236,7 +254,7 @@ impl Kv {
     /// Deletes `key`; `true` when it existed.
     pub async fn delete(&self, key: &str) -> Result<bool> {
         match &self.0 {
-            Inner::Local(l) => Ok(l.with(|e| e.alive(key).is_some() && e.remove(key))),
+            Inner::Local(l) => Ok(l.with(|e| e.alive_with(key, |_| ()).is_some() && e.remove(key))),
             #[cfg(feature = "nuage")]
             Inner::Nuage(kv) => kv.delete(key).await,
         }
@@ -245,7 +263,7 @@ impl Kv {
     /// `key` exists.
     pub async fn exists(&self, key: &str) -> Result<bool> {
         match &self.0 {
-            Inner::Local(l) => Ok(l.with(|e| e.alive(key).is_some())),
+            Inner::Local(l) => Ok(l.with(|e| e.alive_with(key, |_| ()).is_some())),
             #[cfg(feature = "nuage")]
             Inner::Nuage(kv) => kv.exists(key).await,
         }
@@ -262,27 +280,36 @@ impl Kv {
     pub async fn incr_by(&self, key: &str, by: i64, ttl_if_new: Option<Duration>) -> Result<i64> {
         match &self.0 {
             Inner::Local(l) => l.with(|e| {
-                let (current, expires) = match e.alive(key) {
-                    Some((value, expires)) => {
-                        let n = std::str::from_utf8(value)
-                            .ok()
-                            .and_then(|s| s.parse::<i64>().ok());
-                        (
-                            n.ok_or_else(|| {
-                                Error::Validation(format!(
-                                    "the value of `{key}` is not a whole number"
-                                ))
-                            })?,
-                            *expires,
-                        )
+                // An existing counter is rewritten in place: same key, same expiry.
+                let counted = e.alive_with(key, |(value, _)| {
+                    let current = std::str::from_utf8(value)
+                        .ok()
+                        .and_then(|s| s.parse::<i64>().ok())
+                        .ok_or_else(|| {
+                            Error::Validation(format!("the value of `{key}` is not a whole number"))
+                        })?;
+                    let next = current.checked_add(by).ok_or_else(|| {
+                        Error::Validation(format!("the counter `{key}` would overflow"))
+                    })?;
+                    let old_len = value.len();
+                    value.clear();
+                    // Writing to a `Vec` cannot fail.
+                    let _ = write!(value, "{next}");
+                    Ok((next, old_len, value.len()))
+                });
+                match counted {
+                    Some(counted) => {
+                        let (next, old_len, new_len) = counted?;
+                        e.bytes = e.bytes - old_len + new_len;
+                        e.shrink(key);
+                        Ok(next)
                     }
-                    None => (0, ttl_if_new.and_then(after)),
-                };
-                let next = current.checked_add(by).ok_or_else(|| {
-                    Error::Validation(format!("the counter `{key}` would overflow"))
-                })?;
-                e.write(key, next.to_string().into_bytes(), expires);
-                Ok(next)
+                    // A new counter starts at 0.
+                    None => {
+                        e.write(key, by.to_string().into_bytes(), ttl_if_new.and_then(after));
+                        Ok(by)
+                    }
+                }
             }),
             #[cfg(feature = "nuage")]
             Inner::Nuage(kv) => kv.incr_by(key, by, ttl_if_new).await,
@@ -292,13 +319,9 @@ impl Kv {
     /// Makes `key` expire after `ttl`; `false` when it does not exist.
     pub async fn expire(&self, key: &str, ttl: Duration) -> Result<bool> {
         match &self.0 {
-            Inner::Local(l) => Ok(l.with(|e| match e.alive(key) {
-                Some(entry) => {
-                    entry.1 = after(ttl);
-                    true
-                }
-                None => false,
-            })),
+            Inner::Local(l) => {
+                Ok(l.with(|e| e.alive_with(key, |entry| entry.1 = after(ttl)).is_some()))
+            }
             #[cfg(feature = "nuage")]
             Inner::Nuage(kv) => kv.expire(key, ttl).await,
         }
@@ -307,13 +330,7 @@ impl Kv {
     /// Makes `key` never expire; `false` when it does not exist.
     pub async fn persist(&self, key: &str) -> Result<bool> {
         match &self.0 {
-            Inner::Local(l) => Ok(l.with(|e| match e.alive(key) {
-                Some(entry) => {
-                    entry.1 = None;
-                    true
-                }
-                None => false,
-            })),
+            Inner::Local(l) => Ok(l.with(|e| e.alive_with(key, |entry| entry.1 = None).is_some())),
             #[cfg(feature = "nuage")]
             Inner::Nuage(kv) => kv.persist(key).await,
         }
@@ -323,8 +340,8 @@ impl Kv {
     pub async fn ttl(&self, key: &str) -> Result<Option<Duration>> {
         match &self.0 {
             Inner::Local(l) => Ok(l.with(|e| {
-                e.alive(key)
-                    .and_then(|(_, at)| *at)
+                e.alive_with(key, |(_, at)| *at)
+                    .flatten()
                     .map(|at| at.saturating_duration_since(Instant::now()))
             })),
             #[cfg(feature = "nuage")]
@@ -482,5 +499,55 @@ mod tests {
         // Another store of its own shares nothing.
         kv.set("mine", "1").await.unwrap();
         assert_eq!(Kv::in_memory().get("mine").await.unwrap(), None);
+    }
+
+    #[tokio::test]
+    async fn the_size_follows_the_writes_in_place() {
+        let kv = Kv::in_memory();
+        let local = match &kv.0 {
+            Inner::Local(local) => local.clone(),
+            #[cfg(feature = "nuage")]
+            Inner::Nuage(_) => unreachable!(),
+        };
+        // The size kept, and the size of what the store holds.
+        let sizes = || {
+            local.with(|e| {
+                let held = e.map.iter().map(|(k, (v, _))| k.len() + v.len()).sum();
+                (e.bytes, held)
+            })
+        };
+        kv.set("a", "hello").await.unwrap();
+        kv.set("a", "hi").await.unwrap();
+        assert_eq!(sizes(), (3, 3));
+        assert_eq!(kv.incr_by("n", 9, None).await.unwrap(), 9);
+        assert_eq!(kv.incr_by("n", 1, None).await.unwrap(), 10);
+        assert_eq!(sizes(), (6, 6));
+        assert_eq!(kv.incr_by("n", -5, None).await.unwrap(), 5);
+        assert_eq!(kv.get_string("n").await.unwrap().as_deref(), Some("5"));
+        // A counter rewritten in place keeps its expiry.
+        kv.expire("n", Duration::from_secs(60)).await.unwrap();
+        kv.incr("n").await.unwrap();
+        assert!(kv.ttl("n").await.unwrap().is_some());
+        // A failed increment changes nothing.
+        assert!(kv.incr("a").await.is_err());
+        kv.set("max", i64::MAX.to_string()).await.unwrap();
+        assert!(kv.incr("max").await.is_err());
+        assert_eq!(kv.get_string("a").await.unwrap().as_deref(), Some("hi"));
+        assert!(kv.delete("max").await.unwrap());
+        assert_eq!(sizes(), (5, 5));
+        // An entry that expired goes at its next read, and its size with it.
+        kv.set_for("t", "gone", Duration::from_millis(5))
+            .await
+            .unwrap();
+        kv.set_for("t", "soon", Duration::from_millis(5))
+            .await
+            .unwrap();
+        assert_eq!(sizes(), (10, 10));
+        tokio::time::sleep(Duration::from_millis(10)).await;
+        assert_eq!(kv.get("t").await.unwrap(), None);
+        assert!(!kv.exists("t").await.unwrap());
+        assert_eq!(kv.incr_by("t", 1, None).await.unwrap(), 1);
+        assert_eq!(kv.ttl("t").await.unwrap(), None);
+        assert_eq!(sizes(), (7, 7));
     }
 }
