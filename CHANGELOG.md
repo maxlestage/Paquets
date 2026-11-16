@@ -6,6 +6,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.8] - 2026-11-16
+
+### Changed
+- Faster requests with the dependencies of today: active 0.3.1, securite 0.2.1 (a faster
+  WAF, security headers and request id on every request) and memoire-orm 0.2.6. Server CPU
+  time per request of an app with the default shield, under load (wrk with 128
+  connections, server and load generator on separate cores, median of 7 interleaved runs):
+  a themed page 22.9 µs → 20.5 µs (−10%), `GET /api/todos` 23.4 µs → 20.4 µs (−13%),
+  `GET /api/todos/3` 17.0 µs → 14.0 µs (−18%), a JSON route 15.6 µs → 12.8 µs (−18%). The
+  answers are the same.
+- The store of this process behind `req.kv()` (every database but a Nuage DB server) does
+  less work per call, with the same values, expiries and memory limit: a key that exists is
+  rewritten in place (no new copy of the key), a counter is incremented in its own buffer,
+  and a key is found with one lookup instead of two. Median of 7 runs, 1,000 keys:
+  `incr_by` 168 ns → 96 ns (−43%), `set_for` 134 ns → 94 ns (−30%), `get` 99 ns → 81 ns
+  (−18%), `exists` 95 ns → 75 ns (−21%).
+- memoire-orm 0.2.6.
+
 ## [0.3.7] - 2026-11-15
 
 ### Changed
