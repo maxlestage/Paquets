@@ -6,6 +6,20 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.9] - 2026-11-17
+
+### Changed
+- Faster pages with the dependencies of today: vitesse 0.2.1 (a response body of 16 to
+  64 KiB is sent without a copy), active 0.3.2 (the HTML of a page escaped 16 bytes at a
+  time) and memoire-orm 0.2.7. Server CPU time per request of an app with the default
+  shield, under load (wrk with 128 connections, server and load generator on separate
+  cores, median of 7 interleaved runs): a 31 KB page of documentation text 68.8 µs →
+  63.5 µs (−8%), a 33 KB page of plain text 71.9 µs → 69.1 µs (−4%). Small pages, JSON
+  and the REST routes do not move beyond noise; a page whose text is one eighth characters
+  to escape (`&`, `"`, `<`, `>`) is slower, 89.3 µs → 95.0 µs (+6%). The answers are the
+  same, byte for byte.
+- memoire-orm 0.2.7.
+
 ## [0.3.8] - 2026-11-16
 
 ### Changed
