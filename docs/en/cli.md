@@ -141,7 +141,7 @@ paquets doctor
 ```
 
 ```text
-📦 Paquets 0.3.8
+📦 Paquets 0.3.9
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✓ wasm32-unknown-unknown target
