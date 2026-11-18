@@ -6,6 +6,20 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.10] - 2026-11-18
+
+### Changed
+- Faster pages with the dependencies of today: active 0.3.3 (HTML escaping of text dense in
+  characters to escape fixed, and faster overall), vitesse 0.2.2, securite and pratique 0.2.2
+  (a fast path of the WAF for clean inputs) and memoire-orm 0.2.8. Server CPU time per
+  request of an app with the default shield, under load (wrk with 128 connections, server
+  and load generator on separate cores, median of 7 interleaved runs): a page whose text is
+  one eighth characters to escape (`&`, `"`, `<`, `>`) 100.0 µs → 88.6 µs (−11%, the
+  slowdown of 0.3.9 is gone), a 31 KB page of documentation text 63.1 µs → 59.3 µs (−6%).
+  Small pages, a page of plain text, JSON and the REST routes do not move beyond noise. The
+  answers are the same, byte for byte.
+- memoire-orm 0.2.8 (the minimum version required).
+
 ## [0.3.9] - 2026-11-17
 
 ### Changed
