@@ -57,7 +57,7 @@ paquets doctor
 `paquets doctor` lists the tools it finds and tells you how to install the missing ones:
 
 ```text
-📦 Paquets 0.3.10
+📦 Paquets 0.3.11
 
   ✓ cargo 1.97.0 (c980f4866 2026-06-30)
   ✗ wasm32-unknown-unknown target (islands)
