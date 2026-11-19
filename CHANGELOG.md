@@ -6,6 +6,22 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.11] - 2026-11-19
+
+### Changed
+- Fewer instructions per request with the dependencies of today: vitesse 0.2.3 (HTTP/1
+  connection headers checked in one scan, security headers and compression without runtime
+  header parsing), active 0.3.4 (classes written in one string, fewer allocations when
+  building and rendering a view), securite and pratique 0.2.3 (a faster WAF and shield) and
+  memoire-orm 0.2.9. Instructions of the server per request of an app with the default
+  shield (callgrind, after a warm-up): a small page 72.0k → 70.0k (−3%), JSON 39.5k → 38.0k
+  (−4%), a REST record 42.6k → 41.2k (−3%), a REST list 71.8k → 70.3k (−2%), the large pages
+  −1% to −2%. Server CPU time per request under load (wrk with 128 connections, server and
+  load generator on separate cores, median of 8 interleaved runs): a REST record 15.3 µs →
+  14.7 µs (−4%), JSON 13.6 µs → 13.3 µs (−2%), a REST list 21.8 µs → 21.4 µs (−2%). The
+  large pages do not move beyond ±2%. The answers are the same, byte for byte.
+- memoire-orm 0.2.9 (the minimum version required).
+
 ## [0.3.10] - 2026-11-18
 
 ### Changed
